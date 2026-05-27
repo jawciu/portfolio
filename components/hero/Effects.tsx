@@ -35,9 +35,9 @@ export function Effects() {
         blendFunction={BlendFunction.NORMAL}
       />
       {/* Faint CRT scanlines */}
-      <Scanline density={1.1} opacity={0.06} blendFunction={BlendFunction.OVERLAY} />
+      <Scanline density={1.25} opacity={0.085} blendFunction={BlendFunction.OVERLAY} />
       {/* Phosphor grain, sits in the shadows */}
-      <Noise opacity={0.045} blendFunction={BlendFunction.OVERLAY} premultiply />
+      <Noise opacity={0.05} blendFunction={BlendFunction.OVERLAY} premultiply />
       {/* Soft vignette to protect edges + focus center-mass */}
       <Vignette offset={0.3} darkness={0.85} eskil={false} />
       {/* Rare, short datamosh glitch — punctuation, not constant */}

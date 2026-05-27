@@ -26,7 +26,9 @@ export const fragmentShader = /* glsl */ `
   uniform vec3 uGround;    // ground-fill regions
   uniform vec3 uCyan;      // energy core
   uniform vec3 uHot;       // white-hot peak
-  uniform vec3 uMagenta;   // rare high-voltage front
+  uniform vec3 uMagenta;   // high-voltage front
+  uniform vec3 uViolet;    // tone
+  uniform vec3 uPink;      // tone
 
   varying vec2 vUv;
 
@@ -85,11 +87,28 @@ export const fragmentShader = /* glsl */ `
     float vPresent = colWired * step(0.40, h21(vec2(col, cy) + 23.0));
 
     float width = 0.095;
-    float aaH = fwidth(dH) * 1.5;
-    float aaV = fwidth(dV) * 1.5;
-    float hMask = hPresent * smoothstep(width + aaH, width - aaH, dH);
-    float vMask = vPresent * smoothstep(width + aaV, width - aaV, dV);
-    float trace = max(hMask, vMask);
+    // Soft coverage fields: brightest along the centreline, dissolving outward
+    float fH = hPresent * smoothstep(width * 2.0, 0.0, dH);
+    float fV = vPresent * smoothstep(width * 2.0, 0.0, dV);
+    float field = max(fH, fV);
+
+    // Irregular stipple — jittered round dots, lit when the coverage field
+    // beats a per-dot random threshold. Dense/bright at the centre, sparse and
+    // dark toward the edges, then black. This is what makes the circuit grainy.
+    vec2 px = uv * uResolution;
+    float DOT = 3.2;
+    vec2 dcell = floor(px / DOT);
+    vec2 inCell = fract(px / DOT) - 0.5;
+    vec2 jit = vec2(h21(dcell + 1.3), h21(dcell + 2.7)) - 0.5;
+    float dotR = length(inCell - jit * 0.7);
+    float dotShape = smoothstep(0.55, 0.12, dotR);
+    float thresh = h21(dcell + 5.1);
+    float stipple = step(thresh, field) * dotShape;
+
+    // Dotted, brightness-graded masks used everywhere downstream
+    float hMask = stipple * fH;
+    float vMask = stipple * fV;
+    float trace = stipple * field;
 
     // Via where an active horizontal and active vertical cross
     float rowWiredAtCross = step(0.45, h21(vec2(row * 0.123, 7.7)));
@@ -98,7 +117,7 @@ export const fragmentShader = /* glsl */ `
     float vAtCross = colWiredAtCross * step(0.40, h21(vec2(col, row) + 23.0));
     float viaHere = hAtCross * vAtCross;
     float dVia = length(q - vec2(col, row));
-    float via = viaHere * smoothstep(0.20, 0.11, dVia);
+    float via = viaHere * smoothstep(0.20, 0.11, dVia) * (0.6 + 0.4 * stipple);
 
     // Nearest trace distance (for engraved edge sheen)
     float dTrace = 1e9;
@@ -145,8 +164,15 @@ export const fragmentShader = /* glsl */ `
     energy += sparkle;
 
     // ---- Colour ----
-    vec3 eCol = uCyan;
-    eCol = mix(eCol, uMagenta, clamp(ripple * 1.3, 0.0, 0.7));     // magenta high-voltage front
+    // Each fired circuit picks its own tone from the palette
+    float toneSel = h21(vec2(tick, 8.2));
+    vec3 toneCol = uCyan;
+    toneCol = mix(toneCol, uViolet,  smoothstep(0.30, 0.50, toneSel));
+    toneCol = mix(toneCol, uMagenta, smoothstep(0.55, 0.72, toneSel));
+    toneCol = mix(toneCol, uPink,    smoothstep(0.80, 0.95, toneSel));
+
+    vec3 eCol = toneCol;
+    eCol = mix(eCol, uMagenta, clamp(ripple * 1.3, 0.0, 0.7));     // mouse high-voltage front
     eCol = mix(eCol, uHot, clamp(energy * 0.45, 0.0, 0.7));        // white-hot cores
 
     // ---- Substrate ----
@@ -168,6 +194,10 @@ export const fragmentShader = /* glsl */ `
     // Vignette + subtle phosphor flicker
     outCol *= 1.0 - r * r * 0.7;
     outCol *= 0.97 + 0.03 * h11(floor(uTime * 30.0));
+
+    // Light film grain on top (the stipple already carries most of the texture)
+    float grain = h21(uv * uResolution + fract(uTime) * 97.1) - 0.5;
+    outCol += grain * 0.03;
 
     gl_FragColor = vec4(outCol, 1.0);
   }
