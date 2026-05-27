@@ -18,6 +18,7 @@ export const fragmentShader = /* glsl */ `
   uniform float uTime;
   uniform vec2  uResolution;
   uniform vec2  uMouse;
+  uniform float uScroll;   // page scroll in viewport-heights
 
   uniform vec3 uBg;        // background base
   uniform vec3 uBgFloor;   // center lift
@@ -77,8 +78,9 @@ export const fragmentShader = /* glsl */ `
     float aspect = uResolution.x / uResolution.y;
 
     float SCALE = 44.0;
-    vec2 par = (uMouse - 0.5) * 0.6;   // parallax in q-space; cancels in mouse dist
-    vec2 q = vec2(uv.x * aspect, uv.y) * SCALE + par;
+    vec2 par = (uMouse - 0.5) * 1.5;   // circuit (near layer) mouse parallax, q-space
+    float so = uScroll * 0.3;          // scroll parallax: circuit drifts at 30% of page
+    vec2 q = vec2(uv.x * aspect, uv.y - so) * SCALE + par;
 
     // Nearest horizontal lane (row) and vertical lane (col)
     float row = floor(q.y + 0.5);
@@ -134,7 +136,7 @@ export const fragmentShader = /* glsl */ `
 
     // Chunky, feathered stipple → soft riso dots that bleed in and out.
     vec2 px = uv * uResolution;
-    float DOT = 3.7;
+    float DOT = 2.6;
     vec2 dcell = floor(px / DOT);
     vec2 inCell = fract(px / DOT) - 0.5;
     vec2 jit = vec2(h21(dcell + 1.3), h21(dcell + 2.7)) - 0.5;
@@ -155,7 +157,7 @@ export const fragmentShader = /* glsl */ `
     float vAtCross = colWiredAtCross * step(dens, h21(vec2(col, row) + 23.0));
     float viaHere = hAtCross * vAtCross;
     float dVia = length(q - vec2(col, row));
-    float via = viaHere * smoothstep(0.20, 0.11, dVia) * (0.6 + 0.4 * stipple);
+    float via = viaHere * smoothstep(0.20, 0.11, dVia) * (0.15 + 0.85 * stipple);
 
     // Nearest trace distance (for engraved edge sheen)
     float dTrace = 1e9;
@@ -187,12 +189,12 @@ export const fragmentShader = /* glsl */ `
       : (step(abs(col - activeCol), 0.5) * vMask);
     float sweep = pulse * onLane;
 
-    // Mouse current injection (parallax cancels → glued to cursor)
-    vec2 mq = vec2(uMouse.x * aspect, uMouse.y) * SCALE + par;
+    // Mouse: random little sparkles on the trace dots near the cursor (no rings)
+    vec2 mq = vec2(uMouse.x * aspect, uMouse.y - so) * SCALE + par;
     float dM = length(q - mq);
-    float pool = exp(-dM * dM * 0.375);
-    float ripple = band(dM * 1.65 - uTime * 2.0) * exp(-dM * 0.45);
-    float mouseE = (pool * 0.8 + ripple * 1.5) * trace;
+    float mReach = exp(-dM * dM * 0.12);
+    float mSpark = step(0.62, h21(dcell + floor(uTime * 7.0)));
+    float mouseE = mReach * (0.25 + 1.2 * mSpark) * trace;
 
     float lineEnergy = base + sweep + mouseE * 1.3;
 
@@ -213,7 +215,10 @@ export const fragmentShader = /* glsl */ `
     light = mix(light, uHot, clamp((lineEnergy + viaEnergy) * 0.4, 0.0, 0.6)); // white-hot peaks
 
     // ---- Substrate ----
-    float r = length(uv - vec2(0.5));
+    // Background (far layer) drifts with the mouse at its own slower rate, so it
+    // parallaxes against the circuit instead of sitting still.
+    vec2 bgPar = (uMouse - 0.5) * 0.012;
+    float r = length((uv - vec2(0.5)) + bgPar);
     vec3 outCol = mix(uBgFloor, uBg, smoothstep(0.0, 0.95, r));
 
     // Engraved pipe: dark floor + faint edge sheen

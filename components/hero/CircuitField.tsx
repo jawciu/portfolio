@@ -16,6 +16,7 @@ export function CircuitField() {
       uTime: { value: 0 },
       uResolution: { value: new THREE.Vector2(size.width, size.height) },
       uMouse: { value: new THREE.Vector2(0.5, 0.5) },
+      uScroll: { value: 0 },
       uBg: { value: new THREE.Color("#05070a") },
       uBgFloor: { value: new THREE.Color("#0a0e14") },
       uPipe: { value: new THREE.Color("#11161d") },
@@ -46,6 +47,11 @@ export function CircuitField() {
     matRef.current.uniforms.uTime.value += dt;
     // Lerp mouse toward target for smooth parallax
     matRef.current.uniforms.uMouse.value.lerp(mouseTarget.current, 0.05);
+    // Scroll position in viewport-heights → scroll parallax in the shader
+    if (typeof window !== "undefined") {
+      matRef.current.uniforms.uScroll.value =
+        window.scrollY / window.innerHeight;
+    }
   });
 
   return (
