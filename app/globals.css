@@ -1,0 +1,41 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #050507;
+  --color-bg-elev: #0a0a0d;
+  --color-fg: #f5f5f5;
+  --color-fg-muted: #8a8a92;
+  --color-accent-cyan: #00d4ff;
+  --color-accent-magenta: #ff006e;
+  --color-accent-amber: #ffaa00;
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+}
+
+html,
+body {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  scroll-behavior: auto;
+}
+
+body {
+  font-family: var(--font-body), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--color-accent-cyan);
+  color: var(--color-bg);
+}
+
+/* Hide scrollbar (Lenis handles smooth scroll, native bar is ugly) */
+::-webkit-scrollbar {
+  width: 0;
+  background: transparent;
+}
+
+html {
+  scrollbar-width: none;
+}
