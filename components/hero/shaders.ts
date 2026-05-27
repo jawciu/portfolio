@@ -230,6 +230,24 @@ export const fragmentShader = /* glsl */ `
     float fillR = step(0.62, h21(floor(q * 0.22) + 3.0));
     outCol += uGround * fillR * (1.0 - trace) * 0.6;
 
+    // ---- Data-stream layer (vintage code-printout) ----
+    // Rows of "character" dots that cluster into dense blocks and empty areas
+    // (slowly contracting), with occasional horizontal smear — like melted
+    // printed numbers transforming into stripes. Lives in the negative space.
+    float region = vnoise(uv * vec2(2.5, 3.5) - uTime * 0.04);     // breathing full/empty
+    float regionMask = smoothstep(0.5, 0.8, region);
+    float smearBand = step(0.7, vnoise(vec2(uv.y * 9.0, uTime * 0.12)));
+    float smear = mix(1.0, 6.0, smearBand);                        // stretch some rows sideways
+    vec2 cpx = px / vec2(5.5 * smear, 9.0);                        // character grid (bigger than grain)
+    vec2 ccell = floor(cpx);
+    vec2 cin = fract(cpx) - 0.5;
+    float rowDens = 0.35 + 0.45 * h21(vec2(ccell.y * 0.13, 5.0));  // some rows fuller than others
+    float charOn = step(1.0 - rowDens, h21(ccell + 41.0));
+    float cdot = smoothstep(0.5, 0.12, length(cin));
+    float data = charOn * cdot * regionMask * (1.0 - trace) * 0.55;
+    vec3 dataCol = mix(uPink, uCyan, step(0.8, h21(vec2(ccell.y, 9.0))));
+    outCol += dataCol * data;
+
     // Living light on top
     outCol += light * 4.0;
 
