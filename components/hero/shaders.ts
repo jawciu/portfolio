@@ -7,147 +7,168 @@ export const vertexShader = /* glsl */ `
   }
 `;
 
-// Fragment shader — dark, moody connected circuit board.
-// Traces are barely-there metal; the LIGHT is the subject. Energy radiates
-// outward along the wires from the mouse position (current injection), with a
-// faint ambient flow when idle.
+// Fragment shader — "a dead circuit board in a dark room, and you can see the
+// electricity find its way home."
+// Dark engraved Manhattan routing (long bundled runs + vias), nearly invisible
+// unlit. Cyan-phosphor energy packets travel through the pipes; magenta is the
+// rare high-voltage front. Mouse injects current that ripples out along wires.
 export const fragmentShader = /* glsl */ `
   precision highp float;
 
   uniform float uTime;
-  uniform vec2 uResolution;
-  uniform vec2 uMouse;
-  uniform vec3 uColorA;     // energy cyan
-  uniform vec3 uColorB;     // energy magenta / pink
-  uniform vec3 uColorC;     // energy warm amber spark
-  uniform vec3 uMetalWarm;  // dark copper base
-  uniform vec3 uMetalCool;  // faint steel sheen
-  uniform vec3 uPcb;        // deep board tint
+  uniform vec2  uResolution;
+  uniform vec2  uMouse;
+
+  uniform vec3 uBg;        // background base
+  uniform vec3 uBgFloor;   // center lift
+  uniform vec3 uPipe;      // unlit pipe floor (very dark)
+  uniform vec3 uPipeEdge;  // engraved edge sheen
+  uniform vec3 uGround;    // ground-fill regions
+  uniform vec3 uCyan;      // energy core
+  uniform vec3 uHot;       // white-hot peak
+  uniform vec3 uMagenta;   // rare high-voltage front
 
   varying vec2 vUv;
 
-  float hash21(vec2 p) {
+  float h11(float n) { return fract(sin(n * 127.1) * 43758.5453); }
+  float h21(vec2 p) {
     p = fract(p * vec2(123.34, 456.21));
     p += dot(p, p + 45.32);
     return fract(p.x * p.y);
   }
 
-  float edgeOpen(vec2 mid, float thr) {
-    return step(thr, hash21(mid + 7.3));
+  // Travelling data packet along a 1D wire coordinate: sharp front, long
+  // phosphor tail, irregular spacing/brightness, subtle AC flicker.
+  float packet(float x, float t) {
+    float SPACING = 2.3;
+    float m = x - t * 2.2;
+    float slot = floor(m / SPACING);
+    float local = m / SPACING - slot;
+    float present = step(0.55, h11(slot * 1.7));        // ~45% of slots carry a packet
+    float center = 0.25 + 0.5 * h11(slot * 2.3 + 1.0);  // jittered position
+    float d = local - center;
+    float head = exp(-max(d, 0.0) * 16.0);              // sharp leading edge
+    float tail = exp(-max(-d, 0.0) * 4.0);              // long trailing afterglow
+    float pk = present * max(head, tail * 0.85);
+    pk *= 0.85 + 0.15 * sin(t * 40.0 + slot);           // vintage AC buzz
+    return pk;
   }
 
-  vec3 segDist(vec2 p, vec2 a, vec2 b) {
-    vec2 pa = p - a;
-    vec2 ba = b - a;
-    float h = clamp(dot(pa, ba) / dot(ba, ba), 0.0, 1.0);
-    vec2 cp = a + ba * h;
-    return vec3(length(p - cp), cp);
-  }
-
-  // Narrow travelling pulse, wrap-safe
+  // Wrap-safe ripple band for mouse-driven outward pulses
   float band(float x) {
     float f = fract(x);
     float d = min(f, 1.0 - f);
-    return exp(-d * d * 80.0);
+    return exp(-d * d * 60.0);
   }
 
   void main() {
     vec2 uv = vUv;
     float aspect = uResolution.x / uResolution.y;
 
-    // Gentle parallax; cancels out of mouse-distance so the lit spot stays
-    // glued to the cursor.
-    vec2 par = (uMouse - 0.5) * 0.025;
-    vec2 P = vec2((uv.x + par.x) * aspect, uv.y + par.y);
+    float SCALE = 44.0;
+    vec2 par = (uMouse - 0.5) * 0.6;   // parallax in q-space; cancels in mouse dist
+    vec2 q = vec2(uv.x * aspect, uv.y) * SCALE + par;
 
-    float gridSize = 20.0;          // denser routing
-    vec2 g = P * gridSize;
-    vec2 cellId = floor(g);
-    vec2 cl = fract(g) - 0.5;
+    // Nearest horizontal lane (row) and vertical lane (col)
+    float row = floor(q.y + 0.5);
+    float col = floor(q.x + 0.5);
+    float dH = abs(q.y - row);
+    float dV = abs(q.x - col);
+    float cx = floor(q.x);
+    float cy = floor(q.y);
 
-    // Shared-edge connectivity → continuous wires
-    float thr = 0.50;
-    float openR = edgeOpen(cellId + vec2(0.5, 0.0), thr);
-    float openL = edgeOpen(cellId + vec2(-0.5, 0.0), thr);
-    float openU = edgeOpen(cellId + vec2(0.0, 0.5), thr);
-    float openD = edgeOpen(cellId + vec2(0.0, -0.5), thr);
-    float conn = openR + openL + openU + openD;
+    // Two-level presence → some rows/cols are wired (long bundled runs), with
+    // gaps along them; the rest is quiet negative space.
+    float rowWired = step(0.45, h21(vec2(row * 0.123, 7.7)));
+    float colWired = step(0.45, h21(vec2(13.3, col * 0.123)));
+    float hPresent = rowWired * step(0.40, h21(vec2(cx, row) + 11.0));
+    float vPresent = colWired * step(0.40, h21(vec2(col, cy) + 23.0));
 
-    // Route traces, track nearest point for continuous flow coordinate
-    float best = 1e9;
-    vec2 bestCp = vec2(0.0);
-    vec2 c0 = vec2(0.0);
-    if (openR > 0.5) { vec3 s = segDist(cl, c0, vec2(0.5, 0.0));  if (s.x < best) { best = s.x; bestCp = s.yz; } }
-    if (openL > 0.5) { vec3 s = segDist(cl, c0, vec2(-0.5, 0.0)); if (s.x < best) { best = s.x; bestCp = s.yz; } }
-    if (openU > 0.5) { vec3 s = segDist(cl, c0, vec2(0.0, 0.5));  if (s.x < best) { best = s.x; bestCp = s.yz; } }
-    if (openD > 0.5) { vec3 s = segDist(cl, c0, vec2(0.0, -0.5)); if (s.x < best) { best = s.x; bestCp = s.yz; } }
+    float width = 0.095;
+    float aaH = fwidth(dH) * 1.5;
+    float aaV = fwidth(dV) * 1.5;
+    float hMask = hPresent * smoothstep(width + aaH, width - aaH, dH);
+    float vMask = vPresent * smoothstep(width + aaV, width - aaV, dV);
+    float trace = max(hMask, vMask);
 
-    float dTrace = best;
-    float aa = fwidth(dTrace) * 1.5;
-    float width = 0.038;            // finer traces
-    float traceMask = smoothstep(width + aa, width - aa, dTrace);
+    // Via where an active horizontal and active vertical cross
+    float rowWiredAtCross = step(0.45, h21(vec2(row * 0.123, 7.7)));
+    float colWiredAtCross = step(0.45, h21(vec2(13.3, col * 0.123)));
+    float hAtCross = rowWiredAtCross * step(0.40, h21(vec2(col, row) + 11.0));
+    float vAtCross = colWiredAtCross * step(0.40, h21(vec2(col, row) + 23.0));
+    float viaHere = hAtCross * vAtCross;
+    float dVia = length(q - vec2(col, row));
+    float via = viaHere * smoothstep(0.20, 0.11, dVia);
 
-    // Vias / pads at nodes
-    float padR = 0.06 + 0.045 * step(2.5, conn);
-    float dPad = length(cl);
-    float pad = (conn > 0.5) ? smoothstep(padR + aa, padR - aa, dPad) : 0.0;
-    float ring = (conn > 2.5) ? smoothstep(0.022, 0.0, abs(dPad - padR * 0.62)) : 0.0;
-    float solid = max(traceMask, pad);
+    // Nearest trace distance (for engraved edge sheen)
+    float dTrace = 1e9;
+    if (hPresent > 0.5) dTrace = min(dTrace, dH);
+    if (vPresent > 0.5) dTrace = min(dTrace, dV);
 
-    // Faint metallic read (dark, so the circuit is just legible unlit)
-    float tube = 1.0 - clamp(dTrace / width, 0.0, 1.0);
-    float metalShade = pow(tube, 0.5);
-    vec3 metal = mix(uMetalWarm * 0.35, uMetalWarm, metalShade);
-    metal += uMetalCool * pow(tube, 6.0) * 0.25;
-    metal -= uMetalCool * ring * 0.1;
-    metal *= solid;
+    // ---- Energy ----
+    // Faint constant hum so the routing stays just-alive
+    float base = trace * 0.03;
 
-    // ---- Mouse distance (in grid units; parallax cancels) ----
-    vec2 mP = vec2((uMouse.x + par.x) * aspect, uMouse.y + par.y);
-    vec2 mouseG = mP * gridSize;
-    float dM = length(g - mouseG);
+    // ONE circuit at a time: each PERIOD, pick a single row OR column and send
+    // a single pulse sweeping its full length, then jump to another wire.
+    float PERIOD = 2.2;
+    float tick = floor(uTime / PERIOD);
+    float prog = fract(uTime / PERIOD);
+    float axisIsH = step(0.5, h21(vec2(tick, 2.3)));
+    float activeRow = floor(h21(vec2(tick, 3.1)) * (SCALE + 1.0));
+    float activeCol = floor(h21(vec2(tick, 4.7)) * (SCALE * aspect + 1.0));
+    float dirSign = step(0.5, h21(vec2(tick, 5.5))) * 2.0 - 1.0;
 
-    // Energy injected at the cursor, rippling outward along the wires
-    float pool  = exp(-dM * dM * 0.020);             // soft light pool at cursor
-    float rings = band(dM * 0.5 - uTime * 2.4);      // expanding pulses from cursor
-    float reach = exp(-dM * 0.10);                   // pulses fade with distance
-    float mouseE = pool * 0.9 + rings * reach * 1.6;
+    float along = (axisIsH > 0.5) ? uv.x : uv.y;
+    float headPos = (dirSign > 0.0) ? prog : 1.0 - prog;
+    float d = along - headPos;
+    float headLight = exp(-max(d * dirSign, 0.0) * 40.0);   // sharp leading edge
+    float tailLight = exp(-max(-d * dirSign, 0.0) * 8.0);   // long phosphor tail
+    float pulse = max(headLight, tailLight * 0.8);
+    float onLane = (axisIsH > 0.5)
+      ? (step(abs(row - activeRow), 0.5) * hMask)
+      : (step(abs(col - activeCol), 0.5) * vMask);
+    float sweep = pulse * onLane;
 
-    // Subtle ambient flow so it breathes when the mouse is still
-    vec2 worldCp = cellId + bestCp + 0.5;
-    float flow = dot(worldCp, normalize(vec2(1.0, 0.6)));
-    float ambient = band(flow * 0.3 - uTime * 0.7) * 0.18;
+    // Mouse current injection (parallax cancels → glued to cursor)
+    vec2 mq = vec2(uMouse.x * aspect, uMouse.y) * SCALE + par;
+    float dM = length(q - mq);
+    float pool = exp(-dM * dM * 0.375);
+    float ripple = band(dM * 1.65 - uTime * 2.0) * exp(-dM * 0.45);
+    float mouseE = (pool * 0.8 + ripple * 1.5) * trace;
 
-    float energy = (ambient + mouseE) * traceMask;
+    float energy = base + sweep + mouseE * 1.3;
 
-    // Pads flare as energy reaches them
-    float padFlow = band(dot(cellId + 0.5, normalize(vec2(1.0, 0.6))) * 0.3 - uTime * 0.7);
-    float padNear = exp(-length((cellId + 0.5) - mouseG) * 0.12);
-    energy += pad * (padFlow * 0.25 + padNear * (0.6 + 0.4 * sin(uTime * 3.0)));
+    // Sparkle: vias flash only when current passes, ~50% of the time
+    float twinkle = step(0.5, h21(vec2(col, row) + floor(uTime * 2.0)));
+    float sparkle = via * (0.25 + (sweep + mouseE) * 2.6) * (0.5 + 0.5 * twinkle);
+    energy += sparkle;
 
-    // Energy colour — cool dominant, occasional warm/pink sparks (cosmic-web feel)
-    vec2 region = floor(g * 0.18);
-    float rmix = hash21(region);
-    vec3 eCol = mix(uColorA, uColorB, smoothstep(0.6, 1.0, rmix));
-    eCol = mix(eCol, uColorC, step(0.9, hash21(region + 3.0)) * 0.8);
-    eCol = mix(eCol, vec3(1.0), clamp(energy * 0.4, 0.0, 0.6));   // white-hot cores
+    // ---- Colour ----
+    vec3 eCol = uCyan;
+    eCol = mix(eCol, uMagenta, clamp(ripple * 1.3, 0.0, 0.7));     // magenta high-voltage front
+    eCol = mix(eCol, uHot, clamp(energy * 0.45, 0.0, 0.7));        // white-hot cores
 
-    // Bright star-nodes at select vias (like glowing web nodes)
-    float starPick = step(0.86, hash21(cellId + 12.0));
-    float star = starPick * pad * (0.25 + (padNear) * 2.5);
+    // ---- Substrate ----
+    float r = length(uv - vec2(0.5));
+    vec3 outCol = mix(uBgFloor, uBg, smoothstep(0.0, 0.95, r));
 
-    // ---- Composite (moody: dark board, light is the subject) ----
-    vec3 col = vec3(0.0);
-    col += uPcb * (1.0 - solid) * 0.6;          // deep board tint in the gaps
-    col += metal * 0.5;                          // faint legible circuit
-    col += eCol * energy * 4.5;                  // glowing energy through wires
-    col += eCol * star;                          // node sparkles
+    // Engraved pipe: dark floor + faint edge sheen
+    vec3 pipe = uPipe;
+    pipe += uPipeEdge * smoothstep(width * 0.55, width, dTrace) * 0.7;
+    outCol = mix(outCol, pipe, trace);
 
-    // Strong vignette for mood
-    vec2 centered = uv - 0.5;
-    float vignette = 1.0 - dot(centered, centered) * 1.4;
-    col *= max(vignette, 0.0);
+    // Quiet ground-fill regions in the negative space
+    float fillR = step(0.62, h21(floor(q * 0.22) + 3.0));
+    outCol += uGround * fillR * (1.0 - trace) * 0.6;
 
-    gl_FragColor = vec4(col, 1.0);
+    // Living light on top
+    outCol += eCol * energy * 4.0;
+
+    // Vignette + subtle phosphor flicker
+    outCol *= 1.0 - r * r * 0.7;
+    outCol *= 0.97 + 0.03 * h11(floor(uTime * 30.0));
+
+    gl_FragColor = vec4(outCol, 1.0);
   }
 `;

@@ -5,6 +5,16 @@ export default function Home() {
     <>
       <Hero />
 
+      {/* Darkening plate — keeps the headline readable over the live circuit */}
+      <div
+        aria-hidden
+        className="fixed inset-0 z-[5] pointer-events-none"
+        style={{
+          background:
+            "linear-gradient(105deg, rgba(5,7,10,0.9) 0%, rgba(5,7,10,0.55) 32%, rgba(5,7,10,0) 60%)",
+        }}
+      />
+
       <main className="relative z-10 min-h-screen flex flex-col">
         {/* Top nav */}
         <header className="flex items-center justify-between px-8 py-6 md:px-14">
