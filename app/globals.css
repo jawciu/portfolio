@@ -10,6 +10,46 @@
   --color-accent-amber: #ffaa00;
   --font-display: var(--font-display);
   --font-body: var(--font-body);
+  --font-mono: var(--font-mono);
+}
+
+/* Glitchy chromatic-split heading */
+.glitch-text {
+  text-shadow:
+    0.018em 0 rgba(255, 95, 196, 0.65),
+    -0.018em 0 rgba(63, 224, 208, 0.65);
+  animation: glitchShift 7s steps(1) infinite;
+}
+@keyframes glitchShift {
+  0%, 90%, 100% {
+    text-shadow:
+      0.018em 0 rgba(255, 95, 196, 0.65),
+      -0.018em 0 rgba(63, 224, 208, 0.65);
+    clip-path: none;
+  }
+  91% {
+    text-shadow:
+      0.07em 0 rgba(255, 95, 196, 0.9),
+      -0.05em 0 rgba(63, 224, 208, 0.9);
+    clip-path: inset(20% 0 35% 0);
+  }
+  93% {
+    text-shadow:
+      -0.05em 0 rgba(255, 95, 196, 0.9),
+      0.06em 0 rgba(63, 224, 208, 0.9);
+    clip-path: inset(55% 0 10% 0);
+  }
+  95% {
+    clip-path: none;
+  }
+}
+
+@keyframes blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+.caret {
+  animation: blink 1.1s steps(1) infinite;
 }
 
 html,

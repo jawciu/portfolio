@@ -18,8 +18,6 @@ export function Effects() {
 
   return (
     <EffectComposer multisampling={0} disableNormalPass>
-      {/* Phosphor glow — high threshold so only the energy/sparkle blooms,
-          never the dark substrate */}
       <Bloom
         luminanceThreshold={0.55}
         luminanceSmoothing={0.3}
@@ -27,27 +25,24 @@ export function Effects() {
         radius={0.7}
         mipmapBlur
       />
-      {/* Whisper-low baseline RGB split (the vintage tell when overdone) */}
       <ChromaticAberration
-        offset={[0.0009, 0.0006]}
+        offset={[0.0018, 0.0012]}
         radialModulation={false}
         modulationOffset={0}
         blendFunction={BlendFunction.NORMAL}
       />
-      {/* Faint CRT scanlines */}
       <Scanline density={1.25} opacity={0.085} blendFunction={BlendFunction.OVERLAY} />
-      {/* Phosphor grain, sits in the shadows */}
-      <Noise opacity={0.05} blendFunction={BlendFunction.OVERLAY} premultiply />
-      {/* Soft vignette to protect edges + focus center-mass */}
+      <Noise opacity={0.07} blendFunction={BlendFunction.OVERLAY} premultiply />
       <Vignette offset={0.3} darkness={0.85} eskil={false} />
-      {/* Rare, short datamosh glitch — punctuation, not constant */}
+      {/* Rare, slow block-tear punctuation; the eased glitch surge lives in the shader */}
       {tier >= 3 && (
         <Glitch
-          delay={[8, 16]}
-          duration={[0.06, 0.14]}
-          strength={[0.02, 0.12]}
+          delay={[7, 13]}
+          duration={[0.3, 0.6]}
+          strength={[0.04, 0.18]}
           mode={GlitchMode.SPORADIC}
-          ratio={0.9}
+          ratio={0.85}
+          columns={0.05}
           active
         />
       )}

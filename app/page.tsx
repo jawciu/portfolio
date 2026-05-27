@@ -1,78 +1,110 @@
 import Hero from "@/components/Hero";
 
+// Barcode bar widths (px) — purely decorative
+const BARS = [2, 1, 3, 1, 1, 2, 4, 1, 2, 1, 3, 1, 1, 5, 1, 2, 1, 3, 2, 1, 1, 4, 1, 2, 1, 1, 3, 1, 2, 1];
+
+const TELEMETRY = [
+  "SYS:CJ-2026  STATUS:ONLINE",
+  "RENDER:WEBGL  FPS:60",
+  "NODE:0x3F  LINK:STABLE",
+  "PROC:DESIGN.EXE  MEM:OK",
+  "SIG:▚▚▚░░  98.4%",
+];
+
 export default function Home() {
   return (
     <>
       <Hero />
 
-      {/* Darkening plate — keeps the headline readable over the live circuit */}
+      {/* Darkening for legibility — kept soft + off-center */}
       <div
         aria-hidden
         className="fixed inset-0 z-[5] pointer-events-none"
         style={{
           background:
-            "linear-gradient(105deg, rgba(5,7,10,0.9) 0%, rgba(5,7,10,0.55) 32%, rgba(5,7,10,0) 60%)",
+            "radial-gradient(130% 120% at 18% 38%, rgba(5,7,10,0.82), rgba(5,7,10,0.2) 55%, transparent 75%)",
         }}
       />
 
-      <main className="relative z-10 min-h-screen flex flex-col">
-        {/* Top nav */}
-        <header className="flex items-center justify-between px-8 py-6 md:px-14">
-          <div className="font-display text-sm tracking-widest uppercase text-fg/80">
-            Caroline Jaworsky
-          </div>
-          <nav className="hidden md:flex gap-8 text-sm text-fg-muted">
-            <a href="#work" className="hover:text-fg transition-colors">
-              Work
-            </a>
-            <a href="#about" className="hover:text-fg transition-colors">
-              About
-            </a>
-            <a href="#contact" className="hover:text-fg transition-colors">
-              Contact
-            </a>
+      <main className="relative z-10 min-h-screen font-mono text-fg">
+        {/* Top status bar */}
+        <header className="flex items-start justify-between px-6 py-5 md:px-10 text-[10px] md:text-[11px] tracking-[0.25em] uppercase text-fg-muted">
+          <span className="text-accent-cyan/80">C:\CAROLINE\PORTFOLIO\2026.EXE</span>
+          <nav className="flex gap-5 md:gap-7">
+            <a href="#work" className="hover:text-fg transition-colors">[ WORK ]</a>
+            <a href="#about" className="hover:text-fg transition-colors">[ ABOUT ]</a>
+            <a href="#index" className="hover:text-fg transition-colors">[ INDEX ]</a>
           </nav>
         </header>
 
-        {/* Hero headline */}
-        <section className="flex-1 flex items-center px-8 md:px-14">
-          <div className="max-w-5xl">
-            <p className="font-body text-sm md:text-base text-accent-cyan/80 tracking-widest uppercase mb-6">
-              Product Designer · 2026
-            </p>
-            <h1 className="font-display text-[clamp(3rem,9vw,9rem)] leading-[0.95] tracking-tight font-medium">
-              Designing
-              <br />
-              consumer &amp; B2B
-              <br />
-              <span className="italic font-light">interfaces.</span>
-            </h1>
-            <p className="mt-8 max-w-xl text-fg-muted text-base md:text-lg leading-relaxed">
-              Selected work across digital products, brand systems, and the
-              fuzzy spaces between code and craft.
-            </p>
+        {/* Left telemetry column */}
+        <aside className="absolute left-6 md:left-10 top-[42%] hidden md:block text-[10px] leading-[1.7] tracking-[0.12em] text-accent-cyan/45">
+          {TELEMETRY.map((t) => (
+            <div key={t}>{t}</div>
+          ))}
+        </aside>
+
+        {/* Rotated right-edge label */}
+        <div className="absolute right-2 top-1/2 -translate-y-1/2 hidden md:block [writing-mode:vertical-rl] rotate-180 text-[10px] tracking-[0.4em] uppercase text-fg-muted/50">
+          Portfolio // 2026 // Selected_Works
+        </div>
+
+        {/* Main title block */}
+        <section className="px-6 md:px-14 pt-[16vh] max-w-4xl">
+          <div className="mb-5 text-[11px] md:text-[12px] tracking-[0.32em] uppercase text-accent-cyan/85">
+            ▚ Product Designer — Consumer &amp; B2B
           </div>
+          <h1
+            data-text="CAROLINE JAWORSKY"
+            className="glitch-text font-sans font-bold uppercase leading-[0.86] tracking-tight text-[clamp(2.8rem,11vw,8.5rem)]"
+          >
+            Caroline
+            <br />
+            Jaworsky
+          </h1>
+          <p className="mt-7 max-w-md text-[12px] md:text-[13px] leading-relaxed text-fg-muted">
+            <span className="text-accent-magenta">&gt;</span> digital_products /
+            brand_systems / interface_craft
+            <br />
+            <span className="text-accent-magenta">&gt;</span> building at the edge
+            of code &amp; craft
+          </p>
         </section>
 
-        {/* Scroll hint */}
-        <footer className="px-8 md:px-14 pb-8 flex items-end justify-between">
-          <div className="text-xs text-fg-muted/60 tracking-widest uppercase">
-            Scroll
-            <span aria-hidden className="ml-3 inline-block w-8 h-px bg-fg-muted/40 align-middle" />
-          </div>
-          <div className="text-xs text-fg-muted/60 tracking-widest uppercase">
-            Available for select projects
-          </div>
+        {/* Bottom-left barcode */}
+        <div
+          aria-hidden
+          className="absolute bottom-7 left-6 md:left-10 flex items-end gap-[2px] h-9 opacity-70"
+        >
+          {BARS.map((w, i) => (
+            <span
+              key={i}
+              style={{ width: `${w}px` }}
+              className="block h-full bg-fg/70"
+            />
+          ))}
+        </div>
+
+        {/* Bottom-right terminal prompt */}
+        <footer className="absolute bottom-7 right-6 md:right-10 text-[10px] md:text-[11px] tracking-[0.25em] uppercase text-fg-muted">
+          C:\&gt; available_for_select_projects
+          <span className="caret ml-1 text-accent-cyan">█</span>
         </footer>
       </main>
 
-      {/* Spacer so there's something to scroll to and the smooth-scroll wiring is alive */}
-      <section className="relative z-10 min-h-screen px-8 md:px-14 py-24">
-        <h2 className="font-display text-4xl md:text-6xl tracking-tight max-w-3xl">
+      {/* Next section */}
+      <section
+        id="work"
+        className="relative z-10 min-h-screen px-6 md:px-14 py-24 font-mono"
+      >
+        <div className="text-[11px] tracking-[0.3em] uppercase text-accent-cyan/70 mb-4">
+          C:\&gt; dir /work
+        </div>
+        <h2 className="font-sans font-bold uppercase text-4xl md:text-6xl tracking-tight max-w-3xl">
           Selected Work
         </h2>
-        <p className="mt-6 max-w-xl text-fg-muted">
-          Case studies coming soon. This space is reserved for the work.
+        <p className="mt-6 max-w-md text-[12px] text-fg-muted leading-relaxed">
+          &gt; case_studies loading... reserved for the work.
         </p>
       </section>
     </>
