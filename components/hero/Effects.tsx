@@ -3,7 +3,6 @@
 import {
   EffectComposer,
   Bloom,
-  ChromaticAberration,
   Scanline,
   Noise,
   Vignette,
@@ -11,6 +10,7 @@ import {
 } from "@react-three/postprocessing";
 import { BlendFunction, GlitchMode } from "postprocessing";
 import { useGPUTier } from "@/lib/useGPUTier";
+import { PinkAberration } from "./PinkAberration";
 
 export function Effects() {
   const tier = useGPUTier();
@@ -27,13 +27,8 @@ export function Effects() {
         radius={0.7}
         mipmapBlur
       />
-      {/* Whisper-low baseline RGB split (the vintage tell when overdone) */}
-      <ChromaticAberration
-        offset={[0.0024, 0.0016]}
-        radialModulation={false}
-        modulationOffset={0}
-        blendFunction={BlendFunction.NORMAL}
-      />
+      {/* Pink-tinted RGB split — fringe reads as magenta, not red */}
+      <PinkAberration offset={[0.0024, 0.0016]} pinkBias={0.5} />
       {/* Faint CRT scanlines */}
       <Scanline density={1.25} opacity={0.085} blendFunction={BlendFunction.OVERLAY} />
       {/* Phosphor grain, sits in the shadows */}

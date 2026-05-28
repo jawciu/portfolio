@@ -244,9 +244,13 @@ export const fragmentShader = /* glsl */ `
     float rowDens = 0.35 + 0.45 * h21(vec2(ccell.y * 0.13, 5.0));  // some rows fuller than others
     float charOn = step(1.0 - rowDens, h21(ccell + 41.0));
     float cdot = smoothstep(0.5, 0.12, length(cin));
-    float data = charOn * cdot * regionMask * (1.0 - trace) * 0.55;
-    vec3 dataCol = mix(uPink, uCyan, step(0.8, h21(vec2(ccell.y, 9.0))));
-    outCol += dataCol * data;
+    float data = charOn * cdot * regionMask * (1.0 - trace) * 0.42;
+    vec3 dataCol = mix(uMagenta, uCyan, step(0.8, h21(vec2(ccell.y, 9.0))));
+    // Travelling pulse softly illuminates nearby data dots as it sweeps past
+    float dataLight = pulse * ((axisIsH > 0.5)
+      ? exp(-abs(row - activeRow) * 0.45)
+      : exp(-abs(col - activeCol) * 0.45));
+    outCol += dataCol * data * (1.0 + dataLight * 1.4);
 
     // Living light on top
     outCol += light * 4.0;

@@ -26,7 +26,7 @@ export function CircuitField() {
       uHot: { value: new THREE.Color("#eafffb") },
       uMagenta: { value: new THREE.Color("#ff3da6") },
       uViolet: { value: new THREE.Color("#8b5cff") },
-      uPink: { value: new THREE.Color("#ff5fc4") },
+      uPink: { value: new THREE.Color("#ff66d9") },
     }),
     [size.width, size.height],
   );
