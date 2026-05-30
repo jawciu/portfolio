@@ -56,7 +56,7 @@ export default function Home() {
           </div>
           <h1
             data-text="CAROLINE JAWORSKY"
-            className="glitch-text font-sans font-bold uppercase leading-[0.86] tracking-tight text-[clamp(2.8rem,11vw,8.5rem)]"
+            className="glitch-text font-mono font-semibold uppercase leading-[0.95] tracking-tight text-[clamp(1.9rem,6vw,5rem)]"
           >
             Caroline
             <br />

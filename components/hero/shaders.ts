@@ -244,7 +244,11 @@ export const fragmentShader = /* glsl */ `
     float rowDens = 0.35 + 0.45 * h21(vec2(ccell.y * 0.13, 5.0));  // some rows fuller than others
     float charOn = step(1.0 - rowDens, h21(ccell + 41.0));
     float cdot = smoothstep(0.5, 0.12, length(cin));
-    float data = charOn * cdot * regionMask * (1.0 - trace) * 0.42;
+    // Most of the time data dots stay off the wires; occasionally a slow-moving
+    // patch of noise lets them spill over the traces.
+    float spill = smoothstep(0.55, 0.85, vnoise(uv * vec2(3.5, 4.5) + uTime * 0.06));
+    float traceMask = mix(1.0 - trace, 1.0 - trace * 0.35, spill);
+    float data = charOn * cdot * regionMask * traceMask * 0.42;
     vec3 dataCol = mix(uMagenta, uCyan, step(0.8, h21(vec2(ccell.y, 9.0))));
     // Travelling pulse softly illuminates nearby data dots as it sweeps past
     float dataLight = pulse * ((axisIsH > 0.5)

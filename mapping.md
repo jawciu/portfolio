@@ -66,7 +66,9 @@ The vintage code-printout grain — small magenta/cyan dots clustered in the *ne
 
 - **Region mask + smear bands**: [components/hero/shaders.ts:237-240](components/hero/shaders.ts#L237-L240)
 - **Character grid + dot shape**: [components/hero/shaders.ts:241-247](components/hero/shaders.ts#L241-L247)
-- **Colour**: [components/hero/shaders.ts:248](components/hero/shaders.ts#L248)
+- **Trace-spill mask** (`spill` / `traceMask`): controls whether dots occasionally appear over the wires. `spill` is a slow noise field; where it's high, dots bleed onto traces. [components/hero/shaders.ts:248-251](components/hero/shaders.ts#L248-L251)
+- **Colour**: [components/hero/shaders.ts:252](components/hero/shaders.ts#L252)
+- **`dataLight`**: a multiplier (not a visible layer) that brightens nearby data dots when the travelling circuit pulse sweeps a neighboring lane. [components/hero/shaders.ts:253-256](components/hero/shaders.ts#L253-L256)
   ```glsl
   vec3 dataCol = mix(uMagenta, uCyan, step(0.8, h21(vec2(ccell.y, 9.0))));
   ```
