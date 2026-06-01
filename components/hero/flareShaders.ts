@@ -62,6 +62,29 @@ export const fragmentShader = /* glsl */ `
     return length(pa - ba * h) - r;
   }
 
+  // Smooth minimum — merges two SDFs into a metaball neck
+  float smin(float a, float b, float k) {
+    float h = clamp(0.5 + 0.5 * (b - a) / k, 0.0, 1.0);
+    return mix(b, a, h) - k * h * (1.0 - h);
+  }
+
+  // Backlit orb: pale-cyan fill + thin iridescent rim (orange top -> teal mid
+  // -> magenta bottom) + soft outer halo. sd = signed distance to the surface
+  // (<0 inside); vt = 0 at the orb's top, 1 at its bottom (drives rim hue).
+  vec3 orbShade(float sd, float vt) {
+    float fill = smoothstep(0.010, -0.010, sd);
+    float rim  = exp(-pow(sd / 0.012, 2.0));
+    float glow = exp(-pow(max(sd, 0.0) / 0.07, 2.0)) * 0.35;
+    vec3 core = vec3(0.80, 0.96, 1.0);
+    vec3 ctop = vec3(1.00, 0.52, 0.18);   // orange
+    vec3 cmid = vec3(0.20, 0.90, 0.62);   // teal / green
+    vec3 cbot = vec3(1.00, 0.24, 0.62);   // magenta / pink
+    vec3 rimCol = (vt < 0.5)
+      ? mix(ctop, cmid, smoothstep(0.0, 1.0, vt * 2.0))
+      : mix(cmid, cbot, smoothstep(0.0, 1.0, (vt - 0.5) * 2.0));
+    return core * fill * 0.85 + rimCol * (rim * 1.2 + glow);
+  }
+
   void main() {
     vec2 uv = vUv;
     float aspect = uResolution.x / uResolution.y;
@@ -107,26 +130,37 @@ export const fragmentShader = /* glsl */ `
     }
 
     // =====================================================================
-    // (2) PRISM — concentric rainbow arcs emanating from a centre off the
-    //     right edge, drifting outward (the "pulse"), brightest pale-cyan
-    //     core on the right. Reads as light refracting through curved glass.
+    // (2) ORB ROW (static) — a small ball merging into a big ball (metaball),
+    //     then semicircle "frames": each is the left half of a large orb,
+    //     clipped on the right to a bright vertical cut edge, with a dark
+    //     gutter between frames. Brightness falls off left -> right.
+    //     Recreated from the reference render; animation comes later.
     // =====================================================================
     {
-      vec2 pc = vec2(aspect * 0.92, 0.56);
-      pc.y += 0.02 * sin(uTime * 0.4);
-      vec2 q = P - pc;
-      q.y *= 0.82;                             // taller-than-wide lens
-      float rad = length(q);
-      // warp the rings a touch so they morph rather than sit as perfect circles
-      float warp = 0.04 * fbm(q * 3.0 + uTime * 0.15);
-      float rings = (rad + warp) * 5.4 - uTime * 0.45;
-      vec3 rc = pal(fract(rings * 0.11) + 0.05 * sin(uTime * 0.2));
-      float arc = 0.5 + 0.5 * sin(rings * 6.28318);
-      arc = pow(arc, 1.6);
-      float confine = smoothstep(1.05, 0.15, rad);
-      col += rc * arc * confine * 0.85;
-      // pale core, blooms toward the right
-      col += vec3(0.82, 0.96, 1.0) * smoothstep(0.55, 0.0, rad) * 0.9;
+      float R = 0.28;                          // shared orb radius
+      float cy = 0.50;
+
+      // -- element A: metaball (small ball + big ball) --
+      vec2 cBig = vec2(0.70, cy);
+      vec2 cSml = vec2(0.52, 0.57);
+      float sdA = smin(length(P - cSml) - 0.085, length(P - cBig) - R, 0.06);
+      float vtA = clamp((P.y - (cy - R)) / (2.0 * R), 0.0, 1.0);
+      float clipA = smoothstep(cBig.x + 0.004, cBig.x - 0.004, P.x);
+      col += orbShade(sdA, vtA) * clipA * 1.00;
+
+      // -- elements B, C, D: semicircle frames --
+      // B
+      float sdB = length(P - vec2(1.10, cy)) - R;
+      float vtB = clamp((P.y - (cy - R)) / (2.0 * R), 0.0, 1.0);
+      col += orbShade(sdB, vtB) * smoothstep(1.104, 1.096, P.x) * 0.80;
+      // C
+      float sdC = length(P - vec2(1.50, cy)) - R;
+      float vtC = clamp((P.y - (cy - R)) / (2.0 * R), 0.0, 1.0);
+      col += orbShade(sdC, vtC) * smoothstep(1.504, 1.496, P.x) * 0.55;
+      // D (mostly off the right edge — a faint sliver)
+      float sdD = length(P - vec2(1.90, cy)) - R;
+      float vtD = clamp((P.y - (cy - R)) / (2.0 * R), 0.0, 1.0);
+      col += orbShade(sdD, vtD) * smoothstep(1.904, 1.896, P.x) * 0.30;
     }
 
     // =====================================================================
