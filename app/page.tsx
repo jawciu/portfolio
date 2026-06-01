@@ -5,14 +5,15 @@ export default function Home() {
     <>
       <Hero />
 
-      {/* Darkening plate — keeps the headline readable over the live flares.
-          Weighted to the left where the copy sits. */}
+      {/* Darkening plate — just enough to seat the headline. Kept light + low
+          so the left-rail glass (sphere + pill) reads vivid; the contrast it
+          adds is pooled at the lower-left behind the copy, not the whole edge. */}
       <div
         aria-hidden
         className="fixed inset-0 z-[5] pointer-events-none"
         style={{
           background:
-            "linear-gradient(100deg, rgba(7,7,9,0.92) 0%, rgba(7,7,9,0.6) 30%, rgba(7,7,9,0.05) 55%, rgba(7,7,9,0) 70%)",
+            "linear-gradient(180deg, rgba(7,7,9,0) 40%, rgba(7,7,9,0.45) 100%), radial-gradient(70% 50% at 22% 92%, rgba(7,7,9,0.55) 0%, rgba(7,7,9,0) 70%)",
         }}
       />
 
