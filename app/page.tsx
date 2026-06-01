@@ -5,70 +5,71 @@ export default function Home() {
     <>
       <Hero />
 
-      {/* Darkening plate — keeps the headline readable over the live circuit */}
+      {/* Darkening plate — keeps the headline readable over the live flares.
+          Weighted to the left where the copy sits. */}
       <div
         aria-hidden
         className="fixed inset-0 z-[5] pointer-events-none"
         style={{
           background:
-            "linear-gradient(105deg, rgba(5,7,10,0.9) 0%, rgba(5,7,10,0.55) 32%, rgba(5,7,10,0) 60%)",
+            "linear-gradient(100deg, rgba(7,7,9,0.92) 0%, rgba(7,7,9,0.6) 30%, rgba(7,7,9,0.05) 55%, rgba(7,7,9,0) 70%)",
         }}
       />
 
       <main className="relative z-10 min-h-screen flex flex-col">
-        {/* Top nav */}
-        <header className="flex items-center justify-between px-8 py-6 md:px-14">
-          <div className="font-display text-sm tracking-widest uppercase text-fg/80">
-            Caroline Jaworsky
+        {/* Top bar */}
+        <header className="flex items-center justify-between px-8 py-6 md:px-12">
+          <div className="font-mono text-[11px] md:text-xs tracking-[0.2em] uppercase text-fg/70">
+            C:\CAROLINE\PORTFOLIO\2026.EXE
           </div>
-          <nav className="hidden md:flex gap-8 text-sm text-fg-muted">
-            <a href="#work" className="hover:text-fg transition-colors">
-              Work
+          <nav className="flex gap-6 md:gap-10 font-mono text-xs md:text-sm tracking-[0.25em] text-fg">
+            <a href="#work" className="hover:text-fg/60 transition-colors">
+              [ WORK ]
             </a>
-            <a href="#about" className="hover:text-fg transition-colors">
-              About
-            </a>
-            <a href="#contact" className="hover:text-fg transition-colors">
-              Contact
+            <a href="#about" className="hover:text-fg/60 transition-colors">
+              [ ABOUT ]
             </a>
           </nav>
         </header>
 
-        {/* Hero headline */}
-        <section className="flex-1 flex items-center px-8 md:px-14">
-          <div className="max-w-5xl">
-            <p className="font-body text-sm md:text-base text-accent-cyan/80 tracking-widest uppercase mb-6">
-              Product Designer · 2026
+        {/* Hero copy — sits lower-left, like the comp */}
+        <section className="flex-1 flex flex-col justify-end px-8 md:px-12 pb-[18vh]">
+          <div className="max-w-3xl">
+            {/* role line */}
+            <div className="flex items-center gap-4 mb-7 font-mono text-xs md:text-sm tracking-[0.25em] uppercase text-fg/85">
+              <span aria-hidden className="inline-block w-3.5 h-3.5 bg-fg/90" />
+              <span>Product Designer</span>
+              <span aria-hidden className="text-fg/40">•</span>
+              <span>AI Builder</span>
+            </div>
+
+            <p className="font-body text-lg md:text-2xl text-fg/80 mb-4">
+              Hi I&rsquo;m Caroline,
             </p>
-            <h1 className="font-display text-[clamp(3rem,9vw,9rem)] leading-[0.95] tracking-tight font-medium">
-              Designing
+            <h1 className="font-body font-bold uppercase text-[clamp(2rem,5.2vw,4.25rem)] leading-[1.02] tracking-tight text-fg">
+              I turn early concepts into
               <br />
-              consumer &amp; B2B
-              <br />
-              <span className="italic font-light">interfaces.</span>
+              launch-ready products
             </h1>
-            <p className="mt-8 max-w-xl text-fg-muted text-base md:text-lg leading-relaxed">
-              Selected work across digital products, brand systems, and the
-              fuzzy spaces between code and craft.
-            </p>
           </div>
         </section>
-
-        {/* Scroll hint */}
-        <footer className="px-8 md:px-14 pb-8 flex items-end justify-between">
-          <div className="text-xs text-fg-muted/60 tracking-widest uppercase">
-            Scroll
-            <span aria-hidden className="ml-3 inline-block w-8 h-px bg-fg-muted/40 align-middle" />
-          </div>
-          <div className="text-xs text-fg-muted/60 tracking-widest uppercase">
-            Available for select projects
-          </div>
-        </footer>
       </main>
 
+      {/* Vertical run label, right edge */}
+      <div
+        aria-hidden
+        className="fixed right-3 top-1/2 z-10 -translate-y-1/2 font-mono text-[10px] md:text-xs tracking-[0.35em] uppercase text-fg/45 pointer-events-none"
+        style={{ writingMode: "vertical-rl" }}
+      >
+        Portfolio // 2026 // Selected_Works
+      </div>
+
       {/* Spacer so there's something to scroll to and the smooth-scroll wiring is alive */}
-      <section className="relative z-10 min-h-screen px-8 md:px-14 py-24">
-        <h2 className="font-display text-4xl md:text-6xl tracking-tight max-w-3xl">
+      <section
+        id="work"
+        className="relative z-10 min-h-screen px-8 md:px-12 py-24"
+      >
+        <h2 className="font-body font-bold uppercase text-4xl md:text-6xl tracking-tight max-w-3xl">
           Selected Work
         </h2>
         <p className="mt-6 max-w-xl text-fg-muted">

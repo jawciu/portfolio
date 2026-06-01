@@ -2,7 +2,7 @@
 
 import { Canvas } from "@react-three/fiber";
 import { Suspense } from "react";
-import { CircuitField } from "./CircuitField";
+import { FlareField } from "./FlareField";
 import { Effects } from "./Effects";
 
 export function Scene() {
@@ -17,9 +17,9 @@ export function Scene() {
       camera={{ position: [0, 0, 1], fov: 50 }}
       frameloop="always"
     >
-      <color attach="background" args={["#050507"]} />
+      <color attach="background" args={["#070709"]} />
       <Suspense fallback={null}>
-        <CircuitField />
+        <FlareField />
         <Effects />
       </Suspense>
     </Canvas>
