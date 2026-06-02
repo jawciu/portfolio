@@ -20,10 +20,10 @@ export function Effects() {
   return (
     <EffectComposer multisampling={0} disableNormalPass>
       <Bloom
-        luminanceThreshold={0.3}
-        luminanceSmoothing={0.35}
-        intensity={1.35}
-        radius={0.9}
+        luminanceThreshold={0.55}
+        luminanceSmoothing={0.3}
+        intensity={1.0}
+        radius={0.85}
         mipmapBlur
       />
       <ChromaticAberration
