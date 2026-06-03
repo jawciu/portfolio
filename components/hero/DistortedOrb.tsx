@@ -189,6 +189,12 @@ type OrbDef = {
   speed: number;
   phase: number;
   seed: number;
+  // optional brief full-disappearance: once per hideCycle seconds, a gaussian pulse
+  // (width as a fraction of the cycle) slides the disc hideDepth further past its cut
+  // so the sliver vanishes completely for ~hideWidth*hideCycle*2 seconds, then returns.
+  hideCycle?: number;
+  hideWidth?: number;
+  hideDepth?: number;
 };
 
 // The three left orbs: biggest -> smallest, each revealed only as a thin crescent
@@ -197,18 +203,23 @@ type OrbDef = {
 // Orb 1 carries a negative bias + larger amp so it thins to nothing and returns.
 const LEFT_ORBS: OrbDef[] = [
   {
-    // Stays a THIN sliver at all times: small amp so even its widest point is a
-    // slither, with a negative bias so it thins to nothing and returns. It never
-    // opens into a big crescent.
-    pos: [1.0, 0.05, 0], size: 4.0, maskX: 0.28, maskFeat: 0.02,
-    bright: 0.85, amp: 0.035, ampY: 0.018, bias: -0.03, speed: 0.3, phase: 0.0, seed: 1.7,
+    // A very THIN sliver that gently breathes, then fully vanishes for ~0.5s each
+    // cycle and returns. Tiny amp keeps its widest point a slither; the hide pulse
+    // does the disappearing.
+    pos: [0.92, 0.05, 0], size: 4.0, maskX: 0.25, maskFeat: 0.02,
+    bright: 0.85, amp: 0.008, ampY: 0.01, bias: -0.005, speed: 0.32, phase: 0.0, seed: 1.7,
+    // The disc travels ~0.17 units to fully clear its cut. To make that fade happen
+    // at the SAME ramp rate as the other orbs (~0.02 units/s), the pulse must be very
+    // wide: ramp rate ~= hideDepth*0.607/(hideWidth*hideCycle). With these values that
+    // is ~0.019/s, matching orbs 2-3 — so it fades to gone and back at their pace.
+    hideCycle: 32.0, hideWidth: 0.17, hideDepth: 0.17,
   },
   {
-    pos: [1.2465, -0.04, 0], size: 3.05, maskX: 0.36, maskFeat: 0.024,
+    pos: [1.167, -0.04, 0], size: 3.05, maskX: 0.36, maskFeat: 0.024,
     bright: 0.95, amp: 0.06, ampY: 0.018, bias: 0.0, speed: 0.34, phase: 2.1, seed: 4.2,
   },
   {
-    pos: [1.617, 0.05, 0], size: 2.2, maskX: 0.44, maskFeat: 0.03,
+    pos: [1.537, 0.05, 0], size: 2.2, maskX: 0.44, maskFeat: 0.03,
     bright: 1.02, amp: 0.056, ampY: 0.016, bias: 0.0, speed: 0.31, phase: 4.0, seed: 8.9,
   },
 ];
@@ -246,8 +257,18 @@ function Orb({
     const t = state.clock.elapsedTime;
     const mx = (mouse.current.x - 0.5) * 0.05;
     const my = (mouse.current.y - 0.5) * 0.03;
+    let sx = def.bias + Math.sin(t * def.speed + def.phase) * def.amp;
+    if (def.hideCycle) {
+      // brief gaussian pulse (centred mid-cycle) that slides the disc fully past
+      // its cut so the sliver disappears completely, then returns.
+      const ph = (t / def.hideCycle) % 1;
+      const d = ph - 0.5;
+      const w = def.hideWidth ?? 0.06;
+      const hide = Math.exp(-(d * d) / (2 * w * w));
+      sx -= hide * (def.hideDepth ?? 0.17);
+    }
     (u.uShift.value as THREE.Vector2).set(
-      def.bias + Math.sin(t * def.speed + def.phase) * def.amp + mx,
+      sx + mx,
       Math.cos(t * def.speed * 0.8 + def.phase) * def.ampY + my,
     );
     u.uTime.value = t;
@@ -322,7 +343,7 @@ function MergedOrbs({
   });
 
   return (
-    <mesh ref={ref} position={[2.117, -0.01, 0]} renderOrder={order}>
+    <mesh ref={ref} position={[2.237, -0.01, 0]} renderOrder={order}>
       <planeGeometry args={[1.6, 1.6]} />
       <shaderMaterial
         vertexShader={orbVertex}
