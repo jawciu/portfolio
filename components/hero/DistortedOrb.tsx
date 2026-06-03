@@ -162,19 +162,20 @@ const R = {
   feather: 0.26,
 };
 
-// Band radii for the MERGED pair: warm rim squeezed toward the edge, green pulled
-// out to fill more of the interior, small light-green (not white) core.
+// Band radii for the MERGED pair: warm rim squeezed into a THIN band near the edge,
+// green pulled way in to fill most of the interior, with a generous light-GREEN core
+// (deliberately not white — the white centre read too intense).
 const RM = {
-  magR: 0.56,
-  orangeR: 0.5,
-  yellowR: 0.44,
-  greenR: 0.32,
-  paleR: 0.1,
-  bandS: 0.115,
-  edge: 0.58,
-  feather: 0.26,
+  magR: 0.6,
+  orangeR: 0.55,
+  yellowR: 0.49,
+  greenR: 0.33,
+  paleR: 0.14,
+  bandS: 0.125,
+  edge: 0.62,
+  feather: 0.27,
 };
-const CORE_LIGHT = new THREE.Color("#dcf1e6"); // light green-white centre (toned-down white)
+const CORE_LIGHT = new THREE.Color("#bdeed9"); // light mint-GREEN centre (no harsh white)
 
 type OrbDef = {
   pos: [number, number, number];
@@ -196,8 +197,11 @@ type OrbDef = {
 // Orb 1 carries a negative bias + larger amp so it thins to nothing and returns.
 const LEFT_ORBS: OrbDef[] = [
   {
-    pos: [1.0, 0.05, 0], size: 4.0, maskX: 0.29, maskFeat: 0.02,
-    bright: 0.85, amp: 0.077, ampY: 0.02, bias: -0.015, speed: 0.3, phase: 0.0, seed: 1.7,
+    // Stays a THIN sliver at all times: small amp so even its widest point is a
+    // slither, with a negative bias so it thins to nothing and returns. It never
+    // opens into a big crescent.
+    pos: [1.0, 0.05, 0], size: 4.0, maskX: 0.28, maskFeat: 0.02,
+    bright: 0.85, amp: 0.035, ampY: 0.018, bias: -0.03, speed: 0.3, phase: 0.0, seed: 1.7,
   },
   {
     pos: [1.2465, -0.04, 0], size: 3.05, maskX: 0.36, maskFeat: 0.024,
@@ -283,11 +287,11 @@ function MergedOrbs({
       uGreen: { value: GREEN }, uPale: { value: CORE_LIGHT },
       uMagR: { value: RM.magR }, uOrangeR: { value: RM.orangeR }, uYellowR: { value: RM.yellowR },
       uGreenR: { value: RM.greenR }, uPaleR: { value: RM.paleR }, uBandS: { value: RM.bandS },
-      uEdge: { value: RM.edge }, uFeather: { value: RM.feather }, uBright: { value: 1.06 },
+      uEdge: { value: RM.edge }, uFeather: { value: RM.feather }, uBright: { value: 1.0 },
       uSeed: { value: 30.0 },
       uCenterA: { value: new THREE.Vector2(-0.06, 0.0) },
-      uCenterB: { value: new THREE.Vector2(0.16, 0.04) },
-      uRadA: { value: 0.26 }, uRadB: { value: 0.15 }, uK: { value: 0.19 },
+      uCenterB: { value: new THREE.Vector2(0.14, 0.04) },
+      uRadA: { value: 0.26 }, uRadB: { value: 0.16 }, uK: { value: 0.24 },
       uShift: { value: new THREE.Vector2(0, 0) }, uTime: { value: 0 },
     }),
     [],
@@ -303,10 +307,16 @@ function MergedOrbs({
     const t = state.clock.elapsedTime;
     const mx = (mouse.current.x - 0.5) * 0.04;
     const my = (mouse.current.y - 0.5) * 0.025;
-    // gentle shared bob — both centres move together so the neck stays intact
+    // The satellite slides toward / away from the main orb so the pair MERGES MORE
+    // (neck thickens, nearly one blob) then MERGES LESS (neck thins, more distinct)
+    // — never fully separating. The neck softness breathes in sync.
+    const sep = 0.14 + Math.sin(t * 0.28) * 0.05; // satellite distance oscillates (closer avg => more solid neck)
+    (u.uCenterB.value as THREE.Vector2).set(sep, 0.04 + Math.cos(t * 0.21) * 0.02);
+    u.uK.value = 0.26 - Math.sin(t * 0.28) * 0.07; // closer => thicker neck; breathes more
+    // gentle shared bob on top
     (u.uShift.value as THREE.Vector2).set(
-      Math.sin(t * 0.24) * 0.02 + mx,
-      Math.cos(t * 0.19) * 0.015 + my,
+      Math.sin(t * 0.2) * 0.015 + mx,
+      Math.cos(t * 0.17) * 0.012 + my,
     );
     u.uTime.value = t;
   });
