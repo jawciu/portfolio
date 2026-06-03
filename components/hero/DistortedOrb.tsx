@@ -206,7 +206,7 @@ const LEFT_ORBS: OrbDef[] = [
     // A very THIN sliver that gently breathes, then fully vanishes for ~0.5s each
     // cycle and returns. Tiny amp keeps its widest point a slither; the hide pulse
     // does the disappearing.
-    pos: [0.92, 0.05, 0], size: 4.0, maskX: 0.25, maskFeat: 0.02,
+    pos: [0.92, 0.04, 0], size: 4.0, maskX: 0.25, maskFeat: 0.02,
     bright: 0.85, amp: 0.008, ampY: 0.01, bias: -0.005, speed: 0.32, phase: 0.0, seed: 1.7,
     // The disc travels ~0.17 units to fully clear its cut. To make that fade happen
     // at the SAME ramp rate as the other orbs (~0.02 units/s), the pulse must be very
@@ -215,8 +215,11 @@ const LEFT_ORBS: OrbDef[] = [
     hideCycle: 32.0, hideWidth: 0.17, hideDepth: 0.17,
   },
   {
-    pos: [1.167, -0.04, 0], size: 3.05, maskX: 0.36, maskFeat: 0.024,
-    bright: 0.95, amp: 0.06, ampY: 0.018, bias: 0.0, speed: 0.34, phase: 2.1, seed: 4.2,
+    // Choreographed with orb 1: same 32s period (speed 2pi/32 = 0.196), positioned
+    // close, and phased so its widest wax (~t=13) reaches orb 1's sliver just as orb 1
+    // is fading — they converge into one shape, then orb 1 vanishes and orb 2 recedes.
+    pos: [1.0, 0.04, 0], size: 3.05, maskX: 0.36, maskFeat: 0.024,
+    bright: 0.95, amp: 0.085, ampY: 0.015, bias: 0.0, speed: 0.196, phase: 5.3, seed: 4.2,
   },
   {
     pos: [1.537, 0.05, 0], size: 2.2, maskX: 0.44, maskFeat: 0.03,
