@@ -63,7 +63,10 @@ const orbFragment = /* glsl */ `
     // separator. The orb body to the right of the cut stays masked off.
     float qr   = length(vUv - 0.5) * 2.0;
     float mask = 1.0 - smoothstep(uMaskX, uMaskX + uMaskFeat, vUv.x);
-    float vig  = 1.0 - smoothstep(0.96, 1.0, qr);
+    // vignette sits far out (the disc closes by qr~0.92 at most) purely as
+    // quad-corner insurance — it never clips the diffuse edge, so the soft
+    // falloff is constant at every shift position.
+    float vig  = 1.0 - smoothstep(0.94, 1.12, qr);
 
     // The orb CONTENT slides horizontally behind the fixed cut (uShift), so the
     // visible crescent waxes and wanes in place — sliver, then fuller, then back.
@@ -124,15 +127,20 @@ const MAG = new THREE.Color("#ff2f7e"); // diffuse magenta outer glow
 const ORANGE = new THREE.Color("#ff8526"); // hot orange rim (brightest band)
 const YELLOW = new THREE.Color("#ffcf52"); // warm yellow between orange and jade
 const GREEN = new THREE.Color("#3fc4ad"); // clean jade / seafoam transition
+// All radii are deliberately SMALL relative to the quad (which spans r up to ~1.4
+// at the corners). The whole disc + its long diffuse fade closes out by r ~= 0.68,
+// so even at the maximum in-mask shift the soft edge never reaches the quad
+// boundary — i.e. the diffusion stays soft at ALL shift positions (no sharp clip).
 const R = {
-  magR: 0.7, // outermost, wide + diffuse
-  orangeR: 0.56,
-  yellowR: 0.46,
-  greenR: 0.34,
-  paleR: 0.12,
-  bandS: 0.165, // wide => smooth watercolour melt, no concentric "bullseye" rings
-  edge: 0.74, // disc fades from here...
-  feather: 0.3, // ...over this width => diffuse magenta edge
+  magR: 0.515, // outermost, wide + diffuse
+  orangeR: 0.41,
+  yellowR: 0.333,
+  greenR: 0.246,
+  paleR: 0.088,
+  bandS: 0.12, // wide => smooth watercolour melt, no concentric "bullseye" rings
+  edge: 0.54, // solid disc body fades from here...
+  feather: 0.26, // ...over this width => long diffuse magenta edge. Body+fade closes
+  //              by r~0.80 (qr<0.92 even at full shift) so it never hits the quad edge.
 };
 
 function useOrbDefs(): OrbDef[] {
@@ -145,40 +153,41 @@ function useOrbDefs(): OrbDef[] {
     // right so the row reads with depth. Sized so the row spans a bit more than
     // half the viewport width on the right side.
     // Five orbs of DIFFERENT sizes — biggest on the left, smallest on the right.
-    // Each is masked by a one-sided cut so we only see its left edge: the big left
-    // orbs are cut to thin slivers (so they read small even though they're huge),
-    // the small right orbs are revealed almost whole. Positions are laid out so the
-    // crescents sit edge-to-edge across the right ~half with clean dark separators.
+    // Each is masked by a one-sided cut revealing its rounded LEFT edge. Because the
+    // disc now occupies a small fraction of its quad, sizes are larger numbers than
+    // before (the quad is mostly transparent margin). Layout: orbs 1-3 stand apart
+    // with clean dark gaps; orbs 4-5 are the merging pair (a near-whole disc + a
+    // small satellite necking off its right), running off the right screen edge.
     return [
       // 1 — far-left: BIGGEST orb, cut to a thin magenta/orange rim sliver
       {
-        pos: [0.799, 0.05, 0], size: 2.7,
-        pale: CORE_MINT(), maskX: 0.26, maskFeat: 0.025,
-        bright: 0.85, drift: 1.0, seed: 1.7,
+        pos: [1.08, 0.05, 0], size: 4.0,
+        pale: CORE_MINT(), maskX: 0.33, maskFeat: 0.02,
+        bright: 0.85, drift: 0.8, seed: 1.7,
       },
       // 2 — large orb, left crescent: orange rim + yellow + jade
       {
-        pos: [1.01, -0.04, 0], size: 2.16,
-        pale: CORE_MINT(), maskX: 0.4, maskFeat: 0.03,
-        bright: 0.95, drift: 0.92, seed: 4.2,
+        pos: [1.354, -0.04, 0], size: 3.05,
+        pale: CORE_MINT(), maskX: 0.43, maskFeat: 0.024,
+        bright: 0.95, drift: 0.95, seed: 4.2,
       },
       // 3 — medium orb, ~half disc: full ramp into the jade core
       {
-        pos: [1.453, 0.05, 0], size: 1.62,
-        pale: CORE_MINT(), maskX: 0.52, maskFeat: 0.035,
-        bright: 1.02, drift: 0.82, seed: 8.9,
+        pos: [1.864, 0.05, 0], size: 2.2,
+        pale: CORE_MINT(), maskX: 0.55, maskFeat: 0.03,
+        bright: 1.02, drift: 0.85, seed: 8.9,
       },
-      // 4 — small orb, most of the disc: centre lifting to light cyan-mint
+      // 4 — small near-WHOLE orb (the merging pair's main body), light cyan centre
       {
-        pos: [1.897, -0.03, 0], size: 0.95,
-        pale: CORE_LIGHT(), maskX: 0.72, maskFeat: 0.04,
-        bright: 1.08, drift: 0.72, seed: 13.3,
+        pos: [2.469, -0.02, 0], size: 1.35,
+        pale: CORE_LIGHT(), maskX: 0.92, maskFeat: 0.04,
+        bright: 1.08, drift: 0.4, seed: 13.3,
       },
-      // 5 — far-right: SMALLEST orb, revealed almost whole, white-cyan centre
+      // 5 — far-right: SMALLEST orb, a satellite necking off #4, cut by screen edge
       {
-        pos: [2.399, 0.0, 0], size: 0.63,
+        pos: [2.869, 0.0, 0], size: 0.86,
         pale: CORE_LIGHT(), maskX: 0.95, maskFeat: 0.05,
-        bright: 1.12, drift: 0.6, seed: 20.1,
+        bright: 1.12, drift: 0.3, seed: 20.1,
       },
     ];
   }, []);
@@ -259,8 +268,8 @@ export function DistortedOrb({
       // clearly waxes and wanes — sometimes a sliver, then fuller, then back. The
       // x amplitude is the dominant motion (that's what changes the reveal).
       (u.uShift.value as THREE.Vector2).set(
-        Math.sin(t * 0.32 * d.drift + i * 1.7) * 0.1 * d.drift + mx,
-        Math.cos(t * 0.22 * d.drift + i) * 0.03 * d.drift + my,
+        Math.sin(t * 0.32 * d.drift + i * 1.7) * 0.055 * d.drift + mx,
+        Math.cos(t * 0.22 * d.drift + i) * 0.022 * d.drift + my,
       );
       u.uTime.value = t;
     });
