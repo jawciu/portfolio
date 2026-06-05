@@ -362,15 +362,29 @@ function MergedOrbs({
   );
 }
 
+// The orb row sits LOW on the hero (only the top halves show), then rises to
+// centred as the first viewport is scrolled. ORB_BASE_Y puts the orbs' centreline
+// just below the bottom edge at rest; ORB_RISE brings them up to centre at p=1.
+const ORB_BASE_Y = -1.15;
+const ORB_RISE = 1.5;
+
 export function DistortedOrb({
   mouse,
+  progress,
   reduced = false,
 }: {
   mouse: React.RefObject<THREE.Vector2>;
+  progress: React.RefObject<number>;
   reduced?: boolean;
 }) {
+  const groupRef = useRef<THREE.Group>(null);
+  useFrame(() => {
+    if (groupRef.current) {
+      groupRef.current.position.y = ORB_BASE_Y + (progress.current ?? 0) * ORB_RISE;
+    }
+  });
   return (
-    <group position={[-0.12, 0, 0]}>
+    <group ref={groupRef} position={[-0.12, ORB_BASE_Y, 0]}>
       {LEFT_ORBS.map((def, i) => (
         <Orb key={i} def={def} order={i} mouse={mouse} reduced={reduced} />
       ))}

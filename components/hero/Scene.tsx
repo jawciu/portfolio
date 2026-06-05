@@ -58,7 +58,7 @@ export function Scene() {
           <Lightformer intensity={1.2} color="#ff2d6a" position={[2, 2, 3]} scale={[4, 4, 1]} />
         </Environment>
         <Backdrop mouse={mouse} progress={progress} reduced={reduced} />
-        <DistortedOrb mouse={mouse} reduced={reduced} />
+        <DistortedOrb mouse={mouse} progress={progress} reduced={reduced} />
         {/* Glass is core to the look — keep it, but drop transmission cost
             (samples/resolution) on lower-tier GPUs rather than removing it. */}
         <GlassRail progress={progress} reduced={reduced} lowQuality={tier < 3} />

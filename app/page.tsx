@@ -34,7 +34,7 @@ export default function Home() {
         </header>
 
         {/* Hero copy — sits lower-left, like the comp */}
-        <section className="flex-1 flex flex-col justify-end px-8 md:px-12 pb-[18vh]">
+        <section className="flex-1 flex flex-col justify-end px-8 md:px-12 pb-[calc(18vh+100px)]">
           <div className="max-w-3xl">
             {/* role line */}
             <div className="flex items-center gap-4 mb-7 font-mono text-xs md:text-sm tracking-[0.25em] uppercase text-fg/85">

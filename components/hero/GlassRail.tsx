@@ -95,7 +95,9 @@ function GlassShape({
     // scroll-driven drift up + rotate (kept even in reduced motion — gentlest
     // scroll response only); idle float is dropped when reduced.
     const idle = reduced ? 0 : 0.05 * Math.sin(state.clock.elapsedTime * 0.5);
-    group.current.position.y = driftBase + p * 1.6 + idle;
+    // driftBase now starts each pin BELOW the fold; it rises into view as the first
+    // viewport is scrolled (reaching its home position around p=1).
+    group.current.position.y = driftBase + p * 2.0 + idle;
     group.current.rotation.z = p * 0.25;
     if (coreMat.current) {
       if (!reduced) coreMat.current.uniforms.uTime.value += dt;
@@ -194,7 +196,7 @@ export function GlassRail({
         texUrl="/assets/iridescent-sphere.png"
         position={[-1.95, 0, 0.8]}
         radius={0.28}
-        driftBase={0.2}
+        driftBase={-1.8}
         vivid
         saturation={1.85}
       />
@@ -206,7 +208,7 @@ export function GlassRail({
         position={[-1.95, 0, 0.8]}
         radius={0.17}
         length={1.05}
-        driftBase={-0.62}
+        driftBase={-2.62}
         vivid
       />
       {/* accent pill — bottom right, see-through (sits near the orb carousel) */}
@@ -217,7 +219,7 @@ export function GlassRail({
         position={[2.1, 0, 0.8]}
         radius={0.18}
         length={1.15}
-        driftBase={-1.1}
+        driftBase={-3.1}
       />
     </group>
   );
