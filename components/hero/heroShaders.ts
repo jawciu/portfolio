@@ -43,6 +43,21 @@ export const backdropFragment = /* glsl */ `
     return vec3(0.5) + vec3(0.5)*cos(6.28318*(vec3(1.0)*t + vec3(0.00,0.33,0.67)));
   }
 
+  // Firewall colour ramp (5 reference stops): orange -> coral -> pink -> purple ->
+  // blue. Values are LINEAR (sRGB hex pre-converted) so the renderer's sRGB output
+  // encoding lands exactly on the source hex instead of washing it out pale.
+  vec3 flameRamp(float t){
+    vec3 c0 = vec3(1.000, 0.246, 0.098); // #FF8858 orange
+    vec3 c1 = vec3(0.913, 0.122, 0.136); // #F56267 coral
+    vec3 c2 = vec3(0.784, 0.117, 0.956); // #E560FA pink
+    vec3 c3 = vec3(0.191, 0.045, 0.823); // #793CEA purple
+    vec3 c4 = vec3(0.021, 0.036, 0.392); // #2835A8 blue
+    if (t < 0.25) return mix(c0, c1, smoothstep(0.00, 0.25, t));
+    if (t < 0.50) return mix(c1, c2, smoothstep(0.25, 0.50, t));
+    if (t < 0.75) return mix(c2, c3, smoothstep(0.50, 0.75, t));
+    return mix(c3, c4, smoothstep(0.75, 1.00, t));
+  }
+
   void main(){
     vec2 uv = vUv;
     float aspect = uResolution.x / uResolution.y;
@@ -54,52 +69,73 @@ export const backdropFragment = /* glsl */ `
     col += vec3(0.09,0.035,0.045) * smoothstep(0.7,0.0,length(P-vec2(0.20,0.20)));
     col += vec3(0.02,0.025,0.06) * smoothstep(1.1,0.0,length(P-vec2(1.4,0.85)));
 
-    // ---- FIREBALL -------------------------------------------------------
-    // 7 anchor lobes packed TIGHT (centre spacing well under 2r) under a wide
-    // gaussian + low iso-floor, so the metaball field fuses them into one
-    // continuous scalloped comet (no separate dots). Colour is driven by the
-    // along-chain parameter: warm orange head -> magenta bridge -> deep
-    // blue-purple body. Gentle breathe + wobble; the head stays brightest.
+    // ---- FIREWALL -------------------------------------------------------
+    // 7 discs in a row, each MASKED to its right-hand cap (same trick as the
+    // orbs): the head shows almost a whole circle, the next few read as
+    // semicircles, and the tail discs shrink to thin slivers. Spacing tightens
+    // on the left so the front caps overlap into one body, and opens up on the
+    // right so the slivers separate. Colour ramps orange -> coral -> pink ->
+    // purple -> blue along the chain; a blue rim haloes every cap.
     {
-      float field = 0.0, alongAccum = 0.0, wsum = 0.0;
-      vec2  head  = vec2(0.150, 0.200);
       const int N = 7;
-      float breathe = 1.0 + 0.035 * sin(uTime * 0.6);
-      float x = 0.0, prevR = 0.0;
+      vec2  head  = vec2(0.150, 0.195);
+      float breathe = 1.0 + 0.030 * sin(uTime * 0.6);
+      float wob = (fbm(P * 7.0 + uTime * 0.05) - 0.5);   // shared lumpy-edge wobble
+
+      // pass 1: accumulate centre x positions (spacing depends on radii)
+      float cx[N]; float cr[N];
+      float xacc = 0.0, prevR = 0.0;
       for (int i = 0; i < N; i++){
-        float fi = float(i);
-        float t  = fi / float(N-1);               // 0 head -> 1 tip
-        float r  = mix(0.074, 0.030, t) * breathe;// orange head -> soft tapered tip (no bead)
-        if (i > 0) x += (prevR + r) * 0.54;       // TIGHT packing -> necks fully fuse
+        float t = float(i) / float(N-1);
+        float r = mix(0.100, 0.084, t) * breathe;        // discs stay LARGE + tall; mask does the thinning
+        if (i > 0) xacc += (prevR + r) * mix(0.46, 0.98, t); // overlap left, gap right
         prevR = r;
-        vec2 c = head + vec2(x, 0.0);
-        c.y += 0.006 * sin(uTime*0.8 + fi*1.7);   // organic wobble (keeps it alive)
-        c.x += 0.004 * sin(uTime*0.6 + fi*2.1);
-        float dd = length(P - c) / r;
-        float g  = exp(-dd*dd*1.7);               // WIDE gaussian -> soft melt, fills necks
-        field += g;
-        alongAccum += g*t; wsum += g;
+        cx[i] = head.x + xacc;
+        cr[i] = r;
       }
 
-      // dither the iso-test input -> breaks contour banding on the additive lift
-      field += (hash21(P*uResolution) - 0.5) * 0.015;
-      float body  = smoothstep(0.24, 1.05, field);// LOW floor -> inter-lobe minima stay inside
-      float aCh   = (wsum>0.0)? alongAccum/wsum : 0.0;  // 0 head -> 1 tail
+      // pass 2: composite BACK (tail) -> FRONT (head) so the head sits on top
+      for (int j = 0; j < N; j++){
+        int   i = N - 1 - j;
+        float t = float(i) / float(N-1);
+        vec2  c = vec2(cx[i], head.y);
+        c.y += 0.006 * sin(uTime*0.7 + float(i)*1.7);    // organic wobble
+        float r = cr[i];
+        float d = length(P - c) / r;                     // 0 centre -> 1 rim
+        d += wob * mix(0.11, 0.03, t);                   // lumpy cloud edge (head cloudier)
 
-      // palette: warm head fades FAST into a deep blue-purple (indigo) body
-      float warm  = smoothstep(0.26, 0.0, aCh);   // 1 at head, gone by aCh~0.26
-      vec3  hot   = vec3(1.00, 0.50, 0.24);       // warm orange head
-      vec3  deep  = mix(vec3(0.50,0.30,1.02),     // vivid blue-purple -> deep indigo at the tip
-                        vec3(0.30,0.16,0.82), aCh);
-      vec3  fcol  = mix(deep, hot, warm);
-      // magenta iridescent bridge — widened so it carries through the mid dead-zone
-      float bridge = smoothstep(0.08,0.24,aCh) * smoothstep(0.62,0.30,aCh);
-      fcol = mix(fcol, vec3(0.86,0.30,0.66), bridge*0.7);
-      // hot core only in the dense head
-      float core = smoothstep(1.05,1.7,field) * warm;
-      fcol = mix(fcol, vec3(1.0,0.72,0.46), core*0.55);
+        // mask: a straight vertical cut revealing only the right cap. Head cut sits
+        // past the left rim (almost whole circle); the next discs thin into caps and
+        // the tail into slivers. (The masked-circle trick, like the orbs.)
+        float cut = c.x + r * mix(-1.10, 0.80, pow(t, 0.72));
+        float vis = smoothstep(cut, cut + 0.012, P.x);
 
-      col += fcol * body * 2.05 * (1.0 - 0.32*aCh); // tail dimmer
+        vec3  base   = flameRamp(t);                      // already LINEAR -> stays saturated
+        float bright = mix(1.18, 0.92, t);
+        float body   = 1.0 - smoothstep(0.82, 1.05, d);  // solid cap, soft edge
+        float glow   = exp(-d*d*1.9);                     // soft outer falloff
+
+        // saturated body (front over back)
+        col = mix(col, base * bright, clamp(body * vis, 0.0, 1.0));
+        // outer halo ONLY (never re-light the centre -> no yellow/white blowout)
+        col += base * bright * 0.40 * glow * (1.0 - body) * vis;
+        // bright SATURATED blue leading rim riding the convex right edge (linear blue)
+        float rim = smoothstep(0.74, 1.00, d) * (1.0 - smoothstep(1.00, 1.18, d));
+        col += vec3(0.04, 0.12, 1.10) * rim * vis * mix(0.55, 1.20, t);
+      }
+
+      // magenta-pink halo ringing the head — sits OUTSIDE the orange core so it
+      // doesn't redden it (a soft annulus around the body, not on top of it).
+      {
+        float hd = length(P - head);
+        float ring = smoothstep(0.085, 0.16, hd) * smoothstep(0.26, 0.16, hd);
+        col += vec3(0.22,0.02,0.12) * ring * 0.45;
+      }
+      // broad deep-blue halo wrapping the whole chain (linear)
+      float chainY = abs(P.y - head.y);
+      float chainX = smoothstep(head.x-0.10, head.x+0.04, P.x)
+                   * smoothstep(cx[N-1]+0.18, cx[N-1]-0.04, P.x);
+      col += vec3(0.012,0.03,0.30) * chainX * smoothstep(0.16, 0.0, chainY) * 0.6;
     }
 
     // vignette + grain
