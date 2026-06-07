@@ -1,4 +1,5 @@
 import Hero from "@/components/Hero";
+import { HeroCopy } from "@/components/HeroCopy";
 
 export default function Home() {
   return (
@@ -35,7 +36,7 @@ export default function Home() {
 
         {/* Hero copy — sits lower-left, like the comp */}
         <section className="flex-1 flex flex-col justify-end px-8 md:px-12 pb-[calc(18vh+100px)]">
-          <div className="max-w-3xl">
+          <div className="max-w-3xl flex flex-col gap-4">
             {/* role line */}
             <div className="flex items-center gap-4 mb-7 font-mono text-xs md:text-sm tracking-[0.25em] uppercase text-fg/85">
               <span aria-hidden className="inline-block w-3.5 h-3.5 bg-fg/90" />
@@ -44,14 +45,7 @@ export default function Home() {
               <span>AI Builder</span>
             </div>
 
-            <p className="font-body text-lg md:text-2xl text-fg/80 mb-4">
-              Hi I&rsquo;m Caroline,
-            </p>
-            <h1 className="font-body font-bold uppercase text-[clamp(2rem,5.2vw,4.25rem)] leading-[1.02] tracking-tight text-fg">
-              I turn early concepts into
-              <br />
-              launch-ready products
-            </h1>
+            <HeroCopy />
           </div>
         </section>
       </main>
