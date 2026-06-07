@@ -313,9 +313,12 @@ function MergedOrbs({
       uGreenR: { value: RM.greenR }, uPaleR: { value: RM.paleR }, uBandS: { value: RM.bandS },
       uEdge: { value: RM.edge }, uFeather: { value: RM.feather }, uBright: { value: 1.0 },
       uSeed: { value: 30.0 },
-      uCenterA: { value: new THREE.Vector2(-0.06, 0.0) },
-      uCenterB: { value: new THREE.Vector2(0.14, 0.04) },
-      uRadA: { value: 0.26 }, uRadB: { value: 0.16 }, uK: { value: 0.24 },
+      // NOTE: geometry below is in the 2.2-wide quad's uv space (rescaled from the
+      // old 1.6 quad by ~0.727 so the orbs keep their world size while gaining
+      // right-side margin for the satellite to fully separate without a hard clip).
+      uCenterA: { value: new THREE.Vector2(-0.045, 0.0) },
+      uCenterB: { value: new THREE.Vector2(0.06, 0.03) },
+      uRadA: { value: 0.19 }, uRadB: { value: 0.115 }, uK: { value: 0.3 },
       uShift: { value: new THREE.Vector2(0, 0) }, uTime: { value: 0 },
     }),
     [],
@@ -329,25 +332,27 @@ function MergedOrbs({
       return;
     }
     const t = state.clock.elapsedTime;
-    const mx = (mouse.current.x - 0.5) * 0.065;
-    const my = (mouse.current.y - 0.5) * 0.04;
-    // The satellite slides toward / away from the main orb so the pair MERGES MORE
-    // (neck thickens, nearly one blob) then MERGES LESS (neck thins, more distinct)
-    // — never fully separating. The neck softness breathes in sync.
-    const sep = 0.14 + Math.sin(t * 0.28) * 0.05; // satellite distance oscillates (closer avg => more solid neck)
-    (u.uCenterB.value as THREE.Vector2).set(sep, 0.04 + Math.cos(t * 0.21) * 0.02);
-    u.uK.value = 0.26 - Math.sin(t * 0.28) * 0.07; // closer => thicker neck; breathes more
+    const mx = (mouse.current.x - 0.5) * 0.047;
+    const my = (mouse.current.y - 0.5) * 0.029;
+    // Breathe between a fat MERGE and a full SEPARATION. Both orbs move now: the
+    // bigger orb A drifts a little to the left while the smaller satellite B slides
+    // much further right (cropped by the screen edge, not a hard shader clip) — so
+    // at the extreme they fully pull apart, then merge back. (uv in the 2.2 quad.)
+    const sepAmt = Math.sin(t * 0.28) * 0.5 + 0.5; // 0 = merged, 1 = separated
+    (u.uCenterA.value as THREE.Vector2).set(-0.045 - sepAmt * 0.075, 0.0);
+    (u.uCenterB.value as THREE.Vector2).set(0.06 + sepAmt * 0.14, 0.03 + Math.cos(t * 0.21) * 0.015);
+    u.uK.value = 0.3 - sepAmt * 0.25; // fat neck when merged -> pinches off when separated
     // gentle shared bob on top
     (u.uShift.value as THREE.Vector2).set(
-      Math.sin(t * 0.2) * 0.015 + mx,
-      Math.cos(t * 0.17) * 0.012 + my,
+      Math.sin(t * 0.2) * 0.011 + mx,
+      Math.cos(t * 0.17) * 0.009 + my,
     );
     u.uTime.value = t;
   });
 
   return (
     <mesh ref={ref} position={[2.237, -0.01, 0]} renderOrder={order}>
-      <planeGeometry args={[1.6, 1.6]} />
+      <planeGeometry args={[2.2, 2.2]} />
       <shaderMaterial
         vertexShader={orbVertex}
         fragmentShader={mergedFragment}
