@@ -339,9 +339,14 @@ function MergedOrbs({
     // much further right (cropped by the screen edge, not a hard shader clip) — so
     // at the extreme they fully pull apart, then merge back. (uv in the 2.2 quad.)
     const sepAmt = Math.sin(t * 0.28) * 0.5 + 0.5; // 0 = merged, 1 = separated
-    (u.uCenterA.value as THREE.Vector2).set(-0.045 - sepAmt * 0.075, 0.0);
-    (u.uCenterB.value as THREE.Vector2).set(0.06 + sepAmt * 0.14, 0.03 + Math.cos(t * 0.21) * 0.015);
-    u.uK.value = 0.3 - sepAmt * 0.25; // fat neck when merged -> pinches off when separated
+    (u.uCenterA.value as THREE.Vector2).set(-0.02 - sepAmt * 0.10, 0.0);
+    // satellite goes fully concentric with A at the merge (sepAmt->0) so the fused
+    // shape is a true circle for a beat, then drifts out + up as it separates.
+    (u.uCenterB.value as THREE.Vector2).set(
+      -0.02 + sepAmt * 0.22,
+      sepAmt * (0.03 + Math.cos(t * 0.21) * 0.015),
+    );
+    u.uK.value = 0.42 - sepAmt * 0.37; // fully fused into one when merged -> pinches off when separated
     // gentle shared bob on top
     (u.uShift.value as THREE.Vector2).set(
       Math.sin(t * 0.2) * 0.011 + mx,
