@@ -87,8 +87,8 @@ export const backdropFragment = /* glsl */ `
       float xacc = 0.0, prevR = 0.0;
       for (int i = 0; i < N; i++){
         float t = float(i) / float(N-1);
-        float r = mix(0.100, 0.084, t) * breathe;        // discs stay LARGE + tall; mask does the thinning
-        if (i > 0) xacc += (prevR + r) * mix(0.46, 0.98, t); // overlap left, gap right
+        float r = mix(0.080, 0.130, t) * breathe;        // SMALL on the left -> BIG on the right
+        if (i > 0) xacc += (prevR + r) * mix(0.40, 0.50, t); // tight (fuse) left, gently opening right
         prevR = r;
         cx[i] = head.x + xacc;
         cr[i] = r;
@@ -102,34 +102,44 @@ export const backdropFragment = /* glsl */ `
         c.y += 0.006 * sin(uTime*0.7 + float(i)*1.7);    // organic wobble
         float r = cr[i];
         float d = length(P - c) / r;                     // 0 centre -> 1 rim
-        d += wob * mix(0.11, 0.03, t);                   // lumpy cloud edge (head cloudier)
+        d += wob * mix(0.12, 0.03, t);                   // lumpy cloud edge (head cloudier)
 
-        // mask: a straight vertical cut revealing only the right cap. Head cut sits
-        // past the left rim (almost whole circle); the next discs thin into caps and
-        // the tail into slivers. (The masked-circle trick, like the orbs.)
-        float cut = c.x + r * mix(-1.10, 0.80, pow(t, 0.72));
-        float vis = smoothstep(cut, cut + 0.012, P.x);
+        // mask: a straight vertical cut. The LEFT THREE stay nearly whole (cut sits
+        // past their left rim) so their big soft bodies overlap into one lumpy
+        // metaball head; from disc 3 on, the cut marches right -> caps -> slivers.
+        float cut = c.x + r * mix(-1.30, 0.92, smoothstep(0.22, 1.0, t));
+        float vis = smoothstep(cut, cut + 0.014, P.x);
 
-        vec3  base   = flameRamp(t);                      // already LINEAR -> stays saturated
-        float bright = mix(1.18, 0.92, t);
-        float body   = 1.0 - smoothstep(0.82, 1.05, d);  // solid cap, soft edge
-        float glow   = exp(-d*d*1.9);                     // soft outer falloff
+        // internal gradient: a warm CORE blending out to the NEXT ramp colour at the
+        // rim (orange->coral, coral->pink, pink->purple, ...), so each disc is a
+        // gradient, not a flat fill.
+        vec3  coreCol = flameRamp(t);
+        vec3  edgeCol = flameRamp(min(t + 0.22, 1.0));
+        float grad    = smoothstep(0.32, 1.08, d);       // core colour dominates; next colour only at the rim
+        vec3  base    = mix(coreCol, edgeCol, grad);
+
+        // purple/blue are dark in linear space -> lift the mid & tail so they glow and
+        // bridge the chain instead of receding. The gaussian bump centres extra lift on
+        // the PURPLE disc (t~0.70), the dimmest stop, so it doesn't read as a gap.
+        float bright = mix(1.15, 1.58, t) + 0.55 * exp(-pow((t - 0.70) / 0.16, 2.0));
+        float body   = 1.0 - smoothstep(0.52, 1.22, d);  // VERY soft, diffuse edge
+        float glow   = exp(-d*d*0.95);                    // wide, melty outer falloff
 
         // saturated body (front over back)
         col = mix(col, base * bright, clamp(body * vis, 0.0, 1.0));
-        // outer halo ONLY (never re-light the centre -> no yellow/white blowout)
-        col += base * bright * 0.40 * glow * (1.0 - body) * vis;
+        // soft halo -> wide enough that neighbours melt into each other (fills gaps)
+        col += base * bright * mix(0.55, 0.85, t) * glow * (1.0 - body) * vis;
         // bright SATURATED blue leading rim riding the convex right edge (linear blue)
-        float rim = smoothstep(0.74, 1.00, d) * (1.0 - smoothstep(1.00, 1.18, d));
-        col += vec3(0.04, 0.12, 1.10) * rim * vis * mix(0.55, 1.20, t);
+        float rim = smoothstep(0.70, 1.02, d) * (1.0 - smoothstep(1.02, 1.26, d));
+        col += vec3(0.04, 0.12, 1.10) * rim * vis * mix(0.40, 1.15, t);
       }
 
       // magenta-pink halo ringing the head — sits OUTSIDE the orange core so it
       // doesn't redden it (a soft annulus around the body, not on top of it).
       {
         float hd = length(P - head);
-        float ring = smoothstep(0.085, 0.16, hd) * smoothstep(0.26, 0.16, hd);
-        col += vec3(0.22,0.02,0.12) * ring * 0.45;
+        float ring = smoothstep(0.095, 0.18, hd) * smoothstep(0.30, 0.18, hd);
+        col += vec3(0.22,0.02,0.12) * ring * 0.28;
       }
       // broad deep-blue halo wrapping the whole chain (linear)
       float chainY = abs(P.y - head.y);
