@@ -4,64 +4,6 @@ import { useRef, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
-// Cursor "smudge": the most recent pointer-path points are dragged through the
-// wet paint. Each stamp pulls the colour bands along the motion direction and
-// fades over SMUDGE_LIFE so the smear slowly heals back.
-const SMUDGE_MAX = 12;
-const SMUDGE_LIFE = 2.0; // seconds for the little colour tail to fade back
-
-export type Smudge = {
-  x: number; y: number; // world position on the z=0 plane
-  dx: number; dy: number; // unit motion direction
-  born: number; // performance.now()/1000 when stamped
-  amp: number; // initial strength (scaled by cursor speed)
-};
-
-// One smudge-uniform block per material (each orb owns its own arrays).
-function smudgeUniforms() {
-  return {
-    uSmudgeCount: { value: 0 },
-    uSmudgePos: { value: Array.from({ length: SMUDGE_MAX }, () => new THREE.Vector2()) },
-    uSmudgeDir: { value: Array.from({ length: SMUDGE_MAX }, () => new THREE.Vector2()) },
-    uSmudgeStr: { value: new Float32Array(SMUDGE_MAX) },
-    uSmudgeRad: { value: 0.07 }, // small local spot under the cursor (vUv-0.5 space)
-    uSmudgeAmp: { value: 0.045 }, // gentle pull — just enough to trail a little colour
-  };
-}
-
-// Project the shared world-space trail into one orb's local (vUv-0.5) space and
-// write the live (un-healed) stamps into its uniform arrays.
-const _wp = new THREE.Vector3();
-function fillSmudge(
-  mesh: THREE.Mesh,
-  u: { [k: string]: THREE.IUniform },
-  trail: Smudge[],
-  size: number,
-  now: number,
-) {
-  const pos = u.uSmudgePos.value as THREE.Vector2[];
-  const dir = u.uSmudgeDir.value as THREE.Vector2[];
-  const str = u.uSmudgeStr.value as Float32Array;
-  let c = 0;
-  // Walk newest -> oldest, keeping only the stamps that actually land over THIS
-  // orb (|local| within reach of the gaussian). Without the spatial filter a long
-  // drag's newest stamps all cluster at the cursor and starve the orbs behind it.
-  for (let i = trail.length - 1; i >= 0 && c < SMUDGE_MAX; i--) {
-    const s = trail[i];
-    const age = now - s.born;
-    if (age >= SMUDGE_LIFE) continue;
-    _wp.set(s.x, s.y, 0);
-    mesh.worldToLocal(_wp); // local units are ±size/2; /size => ±0.5 (= vUv-0.5)
-    const lx = _wp.x / size, ly = _wp.y / size;
-    if (Math.abs(lx) > 0.65 || Math.abs(ly) > 0.65) continue; // off this quad
-    pos[c].set(lx, ly);
-    dir[c].set(s.dx, s.dy);
-    str[c] = (1 - age / SMUDGE_LIFE) * s.amp;
-    c++;
-  }
-  u.uSmudgeCount.value = c;
-}
-
 // ---------------------------------------------------------------------------
 // Backlit orb = radial colour ramp on a billboard quad. Ramp OUTSIDE -> IN:
 //   diffuse MAGENTA glow -> hot ORANGE rim -> warm YELLOW -> jade GREEN -> mint core.
@@ -111,28 +53,6 @@ const glslCommon = /* glsl */ `
   uniform float uFeather;
   uniform float uBright;
 
-  // ---- Smudge: cursor drags the 'wet paint' -------------------------------
-  #define SMUDGE_MAX 12
-  uniform int   uSmudgeCount;
-  uniform vec2  uSmudgePos[SMUDGE_MAX];   // cursor path points, in (vUv-0.5) space
-  uniform vec2  uSmudgeDir[SMUDGE_MAX];   // motion direction at each point
-  uniform float uSmudgeStr[SMUDGE_MAX];   // strength (decays as the smear heals)
-  uniform float uSmudgeRad;               // influence radius
-  uniform float uSmudgeAmp;               // max displacement
-
-  // Sum each active stamp's directional pull, weighted by a gaussian falloff, so
-  // dragging the cursor smears the colour bands along the path like wet paint.
-  vec2 smudgeField(vec2 q){
-    vec2 acc = vec2(0.0);
-    for (int i = 0; i < SMUDGE_MAX; i++){
-      if (i >= uSmudgeCount) break;
-      vec2 d = q - uSmudgePos[i];
-      float f = exp(-dot(d, d) / (uSmudgeRad * uSmudgeRad));
-      acc += uSmudgeDir[i] * (uSmudgeStr[i] * f);
-    }
-    return acc * uSmudgeAmp;
-  }
-
   // Map a radius r (0 at the core, ~uEdge at the disc edge) to the watercolour ramp.
   vec3 bandColour(float r, out float alpha){
     float wMag    = gauss(r - uMagR,    uBandS * 1.5) * 1.2;
@@ -166,13 +86,7 @@ const orbFragment = /* glsl */ `
     float mask = 1.0 - smoothstep(uMaskX, uMaskX + uMaskFeat, vUv.x);
     float vig  = 1.0 - smoothstep(0.94, 1.12, qr);
 
-    vec2 q = (vUv - 0.5);
-    // Confine the smudge to colour that's already inside the orb: fade it out as
-    // the base sample nears the rim so it can never drag the black edge inward.
-    vec2 base = q + uShift;
-    float r0 = length(base) * 2.0;
-    float inside = 1.0 - smoothstep(uEdge * 0.78, uEdge, r0);
-    vec2 p = base - smudgeField(q) * inside; // drag the paint along the cursor path
+    vec2 p = (vUv - 0.5) + uShift;
     float r = length(p) * 2.0;
     float n  = vnoise(p * 3.0 + vec2(uSeed, uTime * 0.1));
     float n2 = vnoise(p * 6.0 - vec2(uTime * 0.08, uSeed));
@@ -212,15 +126,7 @@ const mergedFragment = /* glsl */ `
     float qr  = length(vUv - 0.5) * 2.0;
     float vig = 1.0 - smoothstep(0.94, 1.12, qr);
 
-    vec2 q = (vUv - 0.5);
-    // Confine the smudge to colour already inside the merged field: fade it out as
-    // the base sample nears the rim so the black edge can't be dragged inward.
-    vec2 base = q + uShift;
-    float dA0 = length(base - uCenterA) / uRadA * uEdge;
-    float dB0 = length(base - uCenterB) / uRadB * uEdge;
-    float r0  = smin(dA0, dB0, uK);
-    float inside = 1.0 - smoothstep(uEdge * 0.78, uEdge, r0);
-    vec2 p = base - smudgeField(q) * inside; // drag the paint along the cursor path
+    vec2 p = (vUv - 0.5) + uShift;
     // distance to each centre, normalised so the body edge maps to r = uEdge
     float dA = length(p - uCenterA) / uRadA * uEdge;
     float dB = length(p - uCenterB) / uRadB * uEdge;
@@ -330,17 +236,15 @@ function leftUniforms(def: OrbDef) {
     uEdge: { value: R.edge }, uFeather: { value: R.feather }, uBright: { value: def.bright },
     uSeed: { value: def.seed }, uMaskX: { value: def.maskX }, uMaskFeat: { value: def.maskFeat },
     uShift: { value: new THREE.Vector2(def.bias, 0) }, uTime: { value: 0 },
-    ...smudgeUniforms(),
   };
 }
 
 function Orb({
-  def, order, mouse, smudge, reduced,
+  def, order, mouse, reduced,
 }: {
   def: OrbDef;
   order: number;
   mouse: React.RefObject<THREE.Vector2>;
-  smudge: React.RefObject<Smudge[]>;
   reduced: boolean;
 }) {
   const ref = useRef<THREE.Mesh>(null);
@@ -353,10 +257,9 @@ function Orb({
       (u.uShift.value as THREE.Vector2).set(def.bias, 0);
       return;
     }
-    if (ref.current) fillSmudge(ref.current, u, smudge.current, def.size, performance.now() / 1000);
     const t = state.clock.elapsedTime;
-    const mx = (mouse.current.x - 0.5) * 0.05;
-    const my = (mouse.current.y - 0.5) * 0.03;
+    const mx = (mouse.current.x - 0.5) * 0.08;
+    const my = (mouse.current.y - 0.5) * 0.05;
     let sx = def.bias + Math.sin(t * def.speed + def.phase) * def.amp;
     if (def.hideCycle) {
       // brief gaussian pulse (centred mid-cycle) that slides the disc fully past
@@ -395,10 +298,9 @@ function Orb({
 // orb (A) and its smaller satellite (B) into one continuous shape running off the
 // right screen edge.
 function MergedOrbs({
-  mouse, smudge, reduced, order,
+  mouse, reduced, order,
 }: {
   mouse: React.RefObject<THREE.Vector2>;
-  smudge: React.RefObject<Smudge[]>;
   reduced: boolean;
   order: number;
 }) {
@@ -415,7 +317,6 @@ function MergedOrbs({
       uCenterB: { value: new THREE.Vector2(0.14, 0.04) },
       uRadA: { value: 0.26 }, uRadB: { value: 0.16 }, uK: { value: 0.24 },
       uShift: { value: new THREE.Vector2(0, 0) }, uTime: { value: 0 },
-      ...smudgeUniforms(),
     }),
     [],
   );
@@ -427,10 +328,9 @@ function MergedOrbs({
       (u.uShift.value as THREE.Vector2).set(0, 0);
       return;
     }
-    if (ref.current) fillSmudge(ref.current, u, smudge.current, 1.6, performance.now() / 1000);
     const t = state.clock.elapsedTime;
-    const mx = (mouse.current.x - 0.5) * 0.04;
-    const my = (mouse.current.y - 0.5) * 0.025;
+    const mx = (mouse.current.x - 0.5) * 0.065;
+    const my = (mouse.current.y - 0.5) * 0.04;
     // The satellite slides toward / away from the main orb so the pair MERGES MORE
     // (neck thickens, nearly one blob) then MERGES LESS (neck thins, more distinct)
     // — never fully separating. The neck softness breathes in sync.
@@ -470,12 +370,10 @@ const ORB_RISE = 1.5;
 
 export function DistortedOrb({
   mouse,
-  smudge,
   progress,
   reduced = false,
 }: {
   mouse: React.RefObject<THREE.Vector2>;
-  smudge: React.RefObject<Smudge[]>;
   progress: React.RefObject<number>;
   reduced?: boolean;
 }) {
@@ -488,9 +386,9 @@ export function DistortedOrb({
   return (
     <group ref={groupRef} position={[-0.12, ORB_BASE_Y, 0]}>
       {LEFT_ORBS.map((def, i) => (
-        <Orb key={i} def={def} order={i} mouse={mouse} smudge={smudge} reduced={reduced} />
+        <Orb key={i} def={def} order={i} mouse={mouse} reduced={reduced} />
       ))}
-      <MergedOrbs mouse={mouse} smudge={smudge} reduced={reduced} order={3} />
+      <MergedOrbs mouse={mouse} reduced={reduced} order={3} />
     </group>
   );
 }
