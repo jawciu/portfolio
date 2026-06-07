@@ -43,6 +43,12 @@ export const backdropFragment = /* glsl */ `
     return vec3(0.5) + vec3(0.5)*cos(6.28318*(vec3(1.0)*t + vec3(0.00,0.33,0.67)));
   }
 
+  // polynomial smooth-min — fuses two fields into one with a smooth neck (metaball)
+  float smin(float a, float b, float k){
+    float h = clamp(0.5 + 0.5*(b-a)/k, 0.0, 1.0);
+    return mix(b, a, h) - k*h*(1.0-h);
+  }
+
   // Firewall colour ramp (5 reference stops): orange -> coral -> pink -> purple ->
   // blue. Values are LINEAR (sRGB hex pre-converted) so the renderer's sRGB output
   // encoding lands exactly on the source hex instead of washing it out pale.
@@ -70,68 +76,97 @@ export const backdropFragment = /* glsl */ `
     col += vec3(0.02,0.025,0.06) * smoothstep(1.1,0.0,length(P-vec2(1.4,0.85)));
 
     // ---- FIREWALL -------------------------------------------------------
-    // 7 discs in a row, each MASKED to its right-hand cap (same trick as the
-    // orbs): the head shows almost a whole circle, the next few read as
-    // semicircles, and the tail discs shrink to thin slivers. Spacing tightens
-    // on the left so the front caps overlap into one body, and opens up on the
-    // right so the slivers separate. Colour ramps orange -> coral -> pink ->
-    // purple -> blue along the chain; a blue rim haloes every cap.
+    // Two parts. (1) The HEAD: discs 0-2 fused with a smooth-min into one lumpy
+    // metaball blob (smallest lobe on the left melts into the bigger two), like
+    // the orbs' merged pair. (2) The CHAIN: discs 3-6 as masked caps, each showing
+    // LESS than half a circle — bigger discs to the right but you see less of them —
+    // drawn LEFT->RIGHT so the right cap sits ON TOP of the one to its left.
+    // Radii grow left->right; colour ramps orange -> coral -> pink -> purple -> blue.
     {
       const int N = 7;
       vec2  head  = vec2(0.150, 0.195);
       float breathe = 1.0 + 0.030 * sin(uTime * 0.6);
       float wob = (fbm(P * 7.0 + uTime * 0.05) - 0.5);   // shared lumpy-edge wobble
 
-      // pass 1: accumulate centre x positions (spacing depends on radii)
+      // accumulate centre x positions (spacing depends on radii)
       float cx[N]; float cr[N];
       float xacc = 0.0, prevR = 0.0;
       for (int i = 0; i < N; i++){
         float t = float(i) / float(N-1);
-        float r = mix(0.080, 0.130, t) * breathe;        // SMALL on the left -> BIG on the right
-        if (i > 0) xacc += (prevR + r) * mix(0.40, 0.50, t); // tight (fuse) left, gently opening right
+        float r = mix(0.090, 0.140, t) * breathe;        // SMALL on the left -> BIG on the right
+        // HEAD lobes: explicit, clearly STEPPED sizes so they read as distinct bumps
+        // (smallest -> medium -> biggest) yet fuse into one fat teardrop mass.
+        if (i == 0) r = 0.044 * breathe;                 // small -> pointed teardrop nose
+        if (i == 1) r = 0.074 * breathe;
+        if (i == 2) r = 0.108 * breathe;                 // biggest of the trio; the head is the tallest mass
+        float sf = (i <= 2) ? 0.60 : mix(0.38, 0.64, (t - 0.5) / 0.5); // head steps; caps tight->widening
+        if (i > 0) xacc += (prevR + r) * sf;
         prevR = r;
         cx[i] = head.x + xacc;
         cr[i] = r;
       }
 
-      // pass 2: composite BACK (tail) -> FRONT (head) so the head sits on top
-      for (int j = 0; j < N; j++){
-        int   i = N - 1 - j;
-        float t = float(i) / float(N-1);
-        vec2  c = vec2(cx[i], head.y);
-        c.y += 0.006 * sin(uTime*0.7 + float(i)*1.7);    // organic wobble
-        float r = cr[i];
-        float d = length(P - c) / r;                     // 0 centre -> 1 rim
-        d += wob * mix(0.12, 0.03, t);                   // lumpy cloud edge (head cloudier)
+      // (1) METABALL HEAD — smooth-union of discs 0,1,2 into one fused blob.
+      {
+        float bob0 = 0.006*sin(uTime*0.7 + 0.0);
+        float bob1 = 0.006*sin(uTime*0.7 + 1.7);
+        float bob2 = 0.006*sin(uTime*0.7 + 3.4);
+        float dn0 = length(P - vec2(cx[0], head.y+bob0)) / cr[0];
+        float dn1 = length(P - vec2(cx[1], head.y+bob1)) / cr[1];
+        float dn2 = length(P - vec2(cx[2], head.y+bob2)) / cr[2];
+        float dh  = smin(smin(dn0, dn1, 0.36), dn2, 0.36); // fused into one teardrop, steps still read
+        dh += wob * 0.12;                                  // lumpy cloud edge
 
-        // mask: a straight vertical cut. The LEFT THREE stay nearly whole (cut sits
-        // past their left rim) so their big soft bodies overlap into one lumpy
-        // metaball head; from disc 3 on, the cut marches right -> caps -> slivers.
-        float cut = c.x + r * mix(-1.30, 0.92, smoothstep(0.22, 1.0, t));
-        float vis = smoothstep(cut, cut + 0.014, P.x);
+        // colour stays WARM across the blob: orange(left) -> coral(right), pink only as a
+        // faint rim. Keeping the head warm stops the whole piece skewing cold/purple.
+        float hx    = clamp((P.x - head.x) / max(cx[2]-head.x, 0.001), 0.0, 1.0);
+        float headT = hx * 0.24;
+        vec3  hcore = flameRamp(headT);
+        vec3  hedge = flameRamp(min(headT + 0.22, 1.0));
+        vec3  hcol  = mix(hcore, hedge, smoothstep(0.46, 1.10, dh)); // orange core dominates; coral only at rim
 
-        // internal gradient: a warm CORE blending out to the NEXT ramp colour at the
-        // rim (orange->coral, coral->pink, pink->purple, ...), so each disc is a
-        // gradient, not a flat fill.
-        vec3  coreCol = flameRamp(t);
-        vec3  edgeCol = flameRamp(min(t + 0.22, 1.0));
-        float grad    = smoothstep(0.32, 1.08, d);       // core colour dominates; next colour only at the rim
-        vec3  base    = mix(coreCol, edgeCol, grad);
+        float hbody = 1.0 - smoothstep(0.62, 1.20, dh);   // soft, diffuse blob edge
+        float hglow = exp(-dh*dh*0.95);
+        col = mix(col, hcol * 1.18, clamp(hbody, 0.0, 1.0));
+        col += hcol * 1.18 * 0.6 * hglow * (1.0 - hbody);
+        // subtle blue rim cupping the blob's outer edge
+        float hrim = smoothstep(0.84, 1.08, dh) * (1.0 - smoothstep(1.08, 1.34, dh));
+        col += vec3(0.04, 0.12, 1.10) * hrim * 0.40;
+      }
 
-        // purple/blue are dark in linear space -> lift the mid & tail so they glow and
-        // bridge the chain instead of receding. The gaussian bump centres extra lift on
-        // the PURPLE disc (t~0.70), the dimmest stop, so it doesn't read as a gap.
-        float bright = mix(1.15, 1.58, t) + 0.55 * exp(-pow((t - 0.70) / 0.16, 2.0));
-        float body   = 1.0 - smoothstep(0.52, 1.22, d);  // VERY soft, diffuse edge
-        float glow   = exp(-d*d*0.95);                    // wide, melty outer falloff
+      // (2) CAP CHAIN — discs 3..6 drawn LEFT->RIGHT so the RIGHT one is on top.
+      for (int i = 3; i < N; i++){
+        float t  = float(i) / float(N-1);                 // 0.5 .. 1.0
+        float ct = (t - 0.5) / 0.5;                        // 0 at disc3 .. 1 at disc6
+        vec2  c  = vec2(cx[i], head.y + 0.006*sin(uTime*0.7 + float(i)*1.7));
+        float r  = cr[i];
+        float d  = length(P - c) / r;
+        d += wob * 0.04;
 
-        // saturated body (front over back)
-        col = mix(col, base * bright, clamp(body * vis, 0.0, 1.0));
-        // soft halo -> wide enough that neighbours melt into each other (fills gaps)
-        col += base * bright * mix(0.55, 0.85, t) * glow * (1.0 - body) * vis;
-        // bright SATURATED blue leading rim riding the convex right edge (linear blue)
+        // mask: cut well past centre -> clearly LESS than half a circle, thinning to a
+        // sliver. disc 3 already shows under half; the tail caps become thin arcs.
+        float cut = c.x + r * mix(0.30, 0.96, ct);        // deeper cut down-chain -> shorter, thinner arcs
+        float vis = smoothstep(cut, cut + 0.016, P.x);
+
+        // colour: stretch the PURPLE band (pow ease) so the mid-chain stays magenta/
+        // purple and blue only arrives at the very last sliver, instead of jumping early.
+        float capColorT = 0.5 + 0.5 * pow(ct, 1.5);
+        vec3  coreCol = flameRamp(capColorT);
+        vec3  edgeCol = flameRamp(min(capColorT + 0.20, 1.0));
+        vec3  base    = mix(coreCol, edgeCol, smoothstep(0.32, 1.08, d));
+
+        // gentle lift on the purple stop, then a strong progressive DIM down the chain so
+        // each cap is darker than the last and the final slivers fade into near-black.
+        float bright = mix(1.34, 1.10, ct) + 0.22 * exp(-pow((capColorT - 0.75) / 0.14, 2.0));
+        float tail   = mix(1.0, 0.18, smoothstep(0.18, 1.0, ct));
+        float body   = 1.0 - smoothstep(0.52, 1.22, d);   // very soft, diffuse edge
+        float glow   = exp(-d*d*0.95);
+
+        col = mix(col, base * bright, clamp(body * vis * tail, 0.0, 1.0));
+        col += base * bright * mix(0.60, 0.85, ct) * glow * (1.0 - body) * vis * tail;
+        // blue leading rim on the convex right edge — dims down the chain with the body
         float rim = smoothstep(0.70, 1.02, d) * (1.0 - smoothstep(1.02, 1.26, d));
-        col += vec3(0.04, 0.12, 1.10) * rim * vis * mix(0.40, 1.15, t);
+        col += vec3(0.04, 0.12, 1.10) * rim * vis * mix(0.85, 1.05, ct) * tail;
       }
 
       // magenta-pink halo ringing the head — sits OUTSIDE the orange core so it
