@@ -168,18 +168,9 @@ export const backdropFragment = /* glsl */ `
         col += vec3(0.04, 0.12, 1.10) * rim * vis * mix(0.85, 1.05, ct) * tail;
       }
 
-      // (3) DARK CREASES — a soft shadow at each section boundary (the notches in the
-      // reference). Only the CAPS 3..6 get one (each sits on top of its left neighbour ->
-      // a notch at their cut/left edge). The HEAD lobes are left CLEAN — no rim notch —
-      // so the nose and front lobes read as smooth gradients, not dark-outlined discs.
-      for (int i = 3; i < N; i++){
-        float t    = float(i) / float(N-1);
-        float cut  = cx[i] + cr[i] * (-1.20 + 2.15 * pow(t, 0.62));
-        float d    = length(P - vec2(cx[i], head.y)) / cr[i];
-        float line = exp(-pow((P.x - cut) / 0.009, 2.0));     // thin shadow at the cut edge
-        float span = 1.0 - smoothstep(0.74, 1.04, d);         // only across that disc's height
-        col *= 1.0 - 0.38 * line * span;
-      }
+      // (3) NO CREASES — neither the head lobes nor the chain caps get a dark notch.
+      // Where caps overlap, the front cap's colour simply takes over via its reveal
+      // ramp, so the sections blend instead of being separated by a dark seam.
 
       // magenta-pink halo ringing the head — sits OUTSIDE the orange core so it
       // doesn't redden it (a soft annulus around the body, not on top of it).
