@@ -88,48 +88,56 @@ export const backdropFragment = /* glsl */ `
       float breathe = 1.0 + 0.030 * sin(uTime * 0.6);
       float wob = (fbm(P * 7.0 + uTime * 0.05) - 0.5);   // shared lumpy-edge wobble
 
-      // accumulate centre x positions (spacing depends on radii)
+      // radii: stepped head (small nose -> medium -> big), then growing caps.
       float cx[N]; float cr[N];
-      float xacc = 0.0, prevR = 0.0;
-      for (int i = 0; i < N; i++){
-        float t = float(i) / float(N-1);
-        float r = mix(0.090, 0.140, t) * breathe;        // SMALL on the left -> BIG on the right
-        // HEAD lobes: explicit, clearly STEPPED sizes (smallest -> medium -> biggest).
-        if (i == 0) r = 0.044 * breathe;                 // small -> round nose
-        if (i == 1) r = 0.074 * breathe;
-        if (i == 2) r = 0.108 * breathe;                 // biggest of the trio; head is the tallest mass
-        float sf = (i <= 2) ? 0.60 : mix(0.38, 0.52, (t - 0.5) / 0.5); // head steps; caps tighter cadence
-        if (i > 0) xacc += (prevR + r) * sf;
-        prevR = r;
-        cx[i] = head.x + xacc;
-        cr[i] = r;
-      }
+      cr[0] = 0.056 * breathe;
+      cr[1] = 0.080 * breathe;
+      cr[2] = 0.104 * breathe;
+      for (int i = 3; i < N; i++) cr[i] = mix(0.102, 0.140, float(i-3)/3.0) * breathe;
+      // HEAD positions: overlap tuned so disc0 covers disc1's left ~1/4 (disc1 shows ~3/4)
+      // and disc1 covers disc2's left ~1/2 (disc2 shows ~half). They then MERGE via smin.
+      cx[0] = head.x;
+      cx[1] = cx[0] + 0.70 * cr[0] + 0.50 * cr[1];       // nose overlaps disc1's 3/4 cut -> they touch
+      cx[2] = cx[1] + 0.70 * cr[1];                      // disc1 overlaps disc2's half cut -> they touch
+      // caps continue, opening out toward the tail.
+      cx[3] = cx[2] + (cr[2] + cr[3]) * 0.52;
+      cx[4] = cx[3] + (cr[3] + cr[4]) * 0.58;
+      cx[5] = cx[4] + (cr[4] + cr[5]) * 0.66;
+      cx[6] = cx[5] + (cr[5] + cr[6]) * 0.74;
 
-      // (1) HEAD — discs 2,1,0 drawn back-to-front so the FULL nose ends on top. The
-      // reveal curve gives disc0 a full circle, disc1 ~3/4, disc2 ~half.
-      for (int p = 0; p < 3; p++){
-        int   i = 2 - p;
-        float t = float(i) / float(N-1);
-        vec2  c = vec2(cx[i], head.y + 0.006*sin(uTime*0.7 + float(i)*1.7));
-        float r = cr[i];
-        float d = length(P - c) / r;
-        d += wob * 0.10;                                   // lumpy cloud edge
-        float cut = c.x + r * (-1.20 + 2.15 * pow(t, 0.62)); // full -> 3/4 -> half
-        float vis = smoothstep(cut, cut + 0.014, P.x);
+      // (1) HEAD — each circle is a FULL circle MASKED to a partial with a STRAIGHT LEFT
+      // edge (disc0 full, disc1 ~3/4, disc2 ~half), and they MERGE only where they TOUCH.
+      // Implemented as signed-distance circles intersected with a left half-plane (the
+      // straight cut), unioned with smin: away from the contact the left edge stays a
+      // straight line; right at the contact with the smaller circle the smin fillets them
+      // together (the merge). disc0 has no cut.
+      {
+        float HK = 0.046;                                  // merge fillet size at the contacts
+        vec2  c0 = vec2(cx[0], head.y + 0.006*sin(uTime*0.7      ));
+        vec2  c1 = vec2(cx[1], head.y + 0.006*sin(uTime*0.7 + 1.7));
+        vec2  c2 = vec2(cx[2], head.y + 0.006*sin(uTime*0.7 + 3.4));
+        float cut1 = c1.x - 0.50 * cr[1];                  // 3/4 visible (straight left edge)
+        float cut2 = c2.x - 0.00 * cr[2];                  // half visible (straight left edge)
+        float d0 = length(P - c0) - cr[0];                 // full circle
+        float d1 = max(length(P - c1) - cr[1], cut1 - P.x);
+        float d2 = max(length(P - c2) - cr[2], cut2 - P.x);
+        float D  = smin(smin(d0, d1, HK), d2, HK);
+        D += wob * 0.008;                                  // lumpy cloud edge
 
-        // warm colour by horizontal position across the head: orange -> coral.
+        // warm colour: orange core (deep inside) -> coral toward the rim.
         float hx    = clamp((P.x - head.x) / max(cx[2]-head.x, 0.001), 0.0, 1.0);
         float headT = hx * 0.24;
         vec3  hcore = flameRamp(headT);
         vec3  hedge = flameRamp(min(headT + 0.22, 1.0));
-        vec3  base  = mix(hcore, hedge, smoothstep(0.46, 1.10, d)); // orange core; coral at rim
+        float depth = clamp(-D / 0.09, 0.0, 1.0);
+        vec3  base  = mix(hedge, hcore, smoothstep(0.0, 0.6, depth));
 
-        float body = 1.0 - smoothstep(0.62, 1.20, d);
-        float glow = exp(-d*d*0.95);
-        col = mix(col, base * 1.18, clamp(body * vis, 0.0, 1.0));
-        col += base * 1.18 * 0.55 * glow * (1.0 - body) * vis;
-        float rim = smoothstep(0.84, 1.08, d) * (1.0 - smoothstep(1.08, 1.34, d));
-        col += vec3(0.04, 0.12, 1.10) * rim * vis * 0.40;
+        float body = smoothstep(0.009, -0.014, D);         // soft melty edge
+        float glow = exp(-pow(max(D, 0.0) / 0.050, 2.0));  // wide diffuse outer glow
+        col = mix(col, base * 1.12, clamp(body, 0.0, 1.0));
+        col += base * 1.12 * 0.46 * glow * (1.0 - body);
+        float rim = exp(-pow((D + 0.010) / 0.012, 2.0));   // faint blue rim
+        col += vec3(0.04, 0.12, 1.10) * rim * 0.24;
       }
 
       // (2) CAP CHAIN — discs 3..6 drawn LEFT->RIGHT so the RIGHT one is on top.
@@ -166,17 +174,8 @@ export const backdropFragment = /* glsl */ `
         col += vec3(0.04, 0.12, 1.10) * rim * vis * mix(0.85, 1.05, ct) * tail;
       }
 
-      // (3) DARK CREASES — a soft shadow at each section boundary (the notches in the
-      // reference). The line always rides the edge of whichever disc is ON TOP:
-      //  - HEAD lobes 0,1 sit on top -> a CURVED notch along their right RIM, so each
-      //    front lobe reads as a circle proud in front of the one behind.
-      //  - CAPS 3..6 sit on top of their left neighbour -> a notch at their cut (left) edge.
-      for (int i = 0; i < 2; i++){
-        float d    = length(P - vec2(cx[i], head.y)) / cr[i];
-        float ring = exp(-pow((d - 1.0) / 0.07, 2.0));        // band hugging the rim
-        float side = smoothstep(cx[i] - 0.25*cr[i], cx[i] + 0.10*cr[i], P.x); // right rim only
-        col *= 1.0 - 0.40 * ring * side;
-      }
+      // (3) DARK CREASES — a soft notch at each CAP boundary (the notches in the
+      // reference). The head lobes are left to MERGE smoothly (no crease there).
       for (int i = 3; i < N; i++){
         float t    = float(i) / float(N-1);
         float cut  = cx[i] + cr[i] * (-1.20 + 2.15 * pow(t, 0.62));
