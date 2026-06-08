@@ -76,12 +76,12 @@ export const backdropFragment = /* glsl */ `
     col += vec3(0.02,0.025,0.06) * smoothstep(1.1,0.0,length(P-vec2(1.4,0.85)));
 
     // ---- FIREWALL -------------------------------------------------------
-    // Two parts. (1) The HEAD: discs 0-2 fused with a smooth-min into one lumpy
-    // metaball blob (smallest lobe on the left melts into the bigger two), like
-    // the orbs' merged pair. (2) The CHAIN: discs 3-6 as masked caps, each showing
-    // LESS than half a circle — bigger discs to the right but you see less of them —
-    // drawn LEFT->RIGHT so the right cap sits ON TOP of the one to its left.
-    // Radii grow left->right; colour ramps orange -> coral -> pink -> purple -> blue.
+    // Two parts driven by ONE reveal curve. (1) The HEAD: discs 0-2 as overlapping
+    // MASKED circles — disc0 a full circle (the round nose), disc1 ~3/4, disc2 ~half —
+    // drawn back-to-front so the nose sits on top; they overlap into one warm bulb.
+    // (2) The CHAIN: discs 3-6 as masked caps (less than half), drawn left->right so the
+    // right cap sits on top. A dark CREASE is then drawn at every section boundary (the
+    // notches in the reference). Radii grow left->right; colour orange->...->blue.
     {
       const int N = 7;
       vec2  head  = vec2(0.150, 0.195);
@@ -94,44 +94,42 @@ export const backdropFragment = /* glsl */ `
       for (int i = 0; i < N; i++){
         float t = float(i) / float(N-1);
         float r = mix(0.090, 0.140, t) * breathe;        // SMALL on the left -> BIG on the right
-        // HEAD lobes: explicit, clearly STEPPED sizes so they read as distinct bumps
-        // (smallest -> medium -> biggest) yet fuse into one fat teardrop mass.
-        if (i == 0) r = 0.044 * breathe;                 // small -> pointed teardrop nose
+        // HEAD lobes: explicit, clearly STEPPED sizes (smallest -> medium -> biggest).
+        if (i == 0) r = 0.044 * breathe;                 // small -> round nose
         if (i == 1) r = 0.074 * breathe;
-        if (i == 2) r = 0.108 * breathe;                 // biggest of the trio; the head is the tallest mass
-        float sf = (i <= 2) ? 0.60 : mix(0.38, 0.64, (t - 0.5) / 0.5); // head steps; caps tight->widening
+        if (i == 2) r = 0.108 * breathe;                 // biggest of the trio; head is the tallest mass
+        float sf = (i <= 2) ? 0.60 : mix(0.38, 0.52, (t - 0.5) / 0.5); // head steps; caps tighter cadence
         if (i > 0) xacc += (prevR + r) * sf;
         prevR = r;
         cx[i] = head.x + xacc;
         cr[i] = r;
       }
 
-      // (1) METABALL HEAD — smooth-union of discs 0,1,2 into one fused blob.
-      {
-        float bob0 = 0.006*sin(uTime*0.7 + 0.0);
-        float bob1 = 0.006*sin(uTime*0.7 + 1.7);
-        float bob2 = 0.006*sin(uTime*0.7 + 3.4);
-        float dn0 = length(P - vec2(cx[0], head.y+bob0)) / cr[0];
-        float dn1 = length(P - vec2(cx[1], head.y+bob1)) / cr[1];
-        float dn2 = length(P - vec2(cx[2], head.y+bob2)) / cr[2];
-        float dh  = smin(smin(dn0, dn1, 0.36), dn2, 0.36); // fused into one teardrop, steps still read
-        dh += wob * 0.12;                                  // lumpy cloud edge
+      // (1) HEAD — discs 2,1,0 drawn back-to-front so the FULL nose ends on top. The
+      // reveal curve gives disc0 a full circle, disc1 ~3/4, disc2 ~half.
+      for (int p = 0; p < 3; p++){
+        int   i = 2 - p;
+        float t = float(i) / float(N-1);
+        vec2  c = vec2(cx[i], head.y + 0.006*sin(uTime*0.7 + float(i)*1.7));
+        float r = cr[i];
+        float d = length(P - c) / r;
+        d += wob * 0.10;                                   // lumpy cloud edge
+        float cut = c.x + r * (-1.20 + 2.15 * pow(t, 0.62)); // full -> 3/4 -> half
+        float vis = smoothstep(cut, cut + 0.014, P.x);
 
-        // colour stays WARM across the blob: orange(left) -> coral(right), pink only as a
-        // faint rim. Keeping the head warm stops the whole piece skewing cold/purple.
+        // warm colour by horizontal position across the head: orange -> coral.
         float hx    = clamp((P.x - head.x) / max(cx[2]-head.x, 0.001), 0.0, 1.0);
         float headT = hx * 0.24;
         vec3  hcore = flameRamp(headT);
         vec3  hedge = flameRamp(min(headT + 0.22, 1.0));
-        vec3  hcol  = mix(hcore, hedge, smoothstep(0.46, 1.10, dh)); // orange core dominates; coral only at rim
+        vec3  base  = mix(hcore, hedge, smoothstep(0.46, 1.10, d)); // orange core; coral at rim
 
-        float hbody = 1.0 - smoothstep(0.62, 1.20, dh);   // soft, diffuse blob edge
-        float hglow = exp(-dh*dh*0.95);
-        col = mix(col, hcol * 1.18, clamp(hbody, 0.0, 1.0));
-        col += hcol * 1.18 * 0.6 * hglow * (1.0 - hbody);
-        // subtle blue rim cupping the blob's outer edge
-        float hrim = smoothstep(0.84, 1.08, dh) * (1.0 - smoothstep(1.08, 1.34, dh));
-        col += vec3(0.04, 0.12, 1.10) * hrim * 0.40;
+        float body = 1.0 - smoothstep(0.62, 1.20, d);
+        float glow = exp(-d*d*0.95);
+        col = mix(col, base * 1.18, clamp(body * vis, 0.0, 1.0));
+        col += base * 1.18 * 0.55 * glow * (1.0 - body) * vis;
+        float rim = smoothstep(0.84, 1.08, d) * (1.0 - smoothstep(1.08, 1.34, d));
+        col += vec3(0.04, 0.12, 1.10) * rim * vis * 0.40;
       }
 
       // (2) CAP CHAIN — discs 3..6 drawn LEFT->RIGHT so the RIGHT one is on top.
@@ -143,9 +141,8 @@ export const backdropFragment = /* glsl */ `
         float d  = length(P - c) / r;
         d += wob * 0.04;
 
-        // mask: cut well past centre -> clearly LESS than half a circle, thinning to a
-        // sliver. disc 3 already shows under half; the tail caps become thin arcs.
-        float cut = c.x + r * mix(0.30, 0.96, ct);        // deeper cut down-chain -> shorter, thinner arcs
+        // same reveal curve -> clearly less than half, thinning to a sliver.
+        float cut = c.x + r * (-1.20 + 2.15 * pow(t, 0.62));
         float vis = smoothstep(cut, cut + 0.016, P.x);
 
         // colour: stretch the PURPLE band (pow ease) so the mid-chain stays magenta/
@@ -167,6 +164,26 @@ export const backdropFragment = /* glsl */ `
         // blue leading rim on the convex right edge — dims down the chain with the body
         float rim = smoothstep(0.70, 1.02, d) * (1.0 - smoothstep(1.02, 1.26, d));
         col += vec3(0.04, 0.12, 1.10) * rim * vis * mix(0.85, 1.05, ct) * tail;
+      }
+
+      // (3) DARK CREASES — a soft shadow at each section boundary (the notches in the
+      // reference). The line always rides the edge of whichever disc is ON TOP:
+      //  - HEAD lobes 0,1 sit on top -> a CURVED notch along their right RIM, so each
+      //    front lobe reads as a circle proud in front of the one behind.
+      //  - CAPS 3..6 sit on top of their left neighbour -> a notch at their cut (left) edge.
+      for (int i = 0; i < 2; i++){
+        float d    = length(P - vec2(cx[i], head.y)) / cr[i];
+        float ring = exp(-pow((d - 1.0) / 0.07, 2.0));        // band hugging the rim
+        float side = smoothstep(cx[i] - 0.25*cr[i], cx[i] + 0.10*cr[i], P.x); // right rim only
+        col *= 1.0 - 0.40 * ring * side;
+      }
+      for (int i = 3; i < N; i++){
+        float t    = float(i) / float(N-1);
+        float cut  = cx[i] + cr[i] * (-1.20 + 2.15 * pow(t, 0.62));
+        float d    = length(P - vec2(cx[i], head.y)) / cr[i];
+        float line = exp(-pow((P.x - cut) / 0.009, 2.0));     // thin shadow at the cut edge
+        float span = 1.0 - smoothstep(0.74, 1.04, d);         // only across that disc's height
+        col *= 1.0 - 0.38 * line * span;
       }
 
       // magenta-pink halo ringing the head — sits OUTSIDE the orange core so it
