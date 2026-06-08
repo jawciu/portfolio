@@ -97,8 +97,16 @@ export const backdropFragment = /* glsl */ `
         // HEAD lobes: explicit, clearly STEPPED sizes (smallest -> medium -> biggest).
         if (i == 0) r = 0.044 * breathe;                 // small -> round nose
         if (i == 1) r = 0.074 * breathe;
-        if (i == 2) r = 0.108 * breathe;                 // biggest of the trio; head is the tallest mass
-        float sf = (i <= 2) ? 0.60 : mix(0.38, 0.52, (t - 0.5) / 0.5); // head steps; caps tighter cadence
+        if (i == 2) r = 0.098 * breathe;                 // 3rd shape: smaller than the 4th, bigger than the 2nd
+        if (i == 3) r = 0.108 * breathe;                 // 4th shape: the tallest mass
+        // per-gap spacing (sf = gap before disc i, as a fraction of the two radii):
+        //  i==1: nose stands ALONE (>1 => no overlap with the 2nd circle)
+        //  i==2: 2nd circle pulled in RIGHT, close to the 3rd
+        //  i>=3: early chain caps overlap MORE, easing to a looser tail
+        float sf;
+        if (i == 1)      sf = 0.72;
+        else if (i == 2) sf = 0.29;
+        else             sf = mix(0.30, 0.50, (t - 0.5) / 0.5);
         if (i > 0) xacc += (prevR + r) * sf;
         prevR = r;
         cx[i] = head.x + xacc;
@@ -115,9 +123,12 @@ export const backdropFragment = /* glsl */ `
         float d = length(P - c) / r;
         d += wob * 0.10;                                   // lumpy cloud edge
         float cut = c.x + r * (-1.20 + 2.15 * pow(t, 0.62)); // full -> 3/4 -> half
-        // the nose (disc 0) is never cut -> a full round circle; the cut ramp would
-        // otherwise clip its own left edge.
-        float vis = (i == 0) ? 1.0 : smoothstep(cut, cut + 0.014, P.x);
+        // the nose (disc 0) AND the 2nd circle (disc 1) are cut on their RIGHT (round left
+        // edge, flat right) so each reads as its own circle and touches its right neighbour
+        // at that flat edge; the chain caps (i>=2) use the left reveal cut instead.
+        float vis = (i <= 1)
+          ? 1.0 - smoothstep(c.x + r * 0.55, c.x + r * 0.55 + 0.018, P.x)
+          : smoothstep(cut, cut + 0.014, P.x);
 
         // warm colour by horizontal position across the head: orange -> coral.
         float hx    = clamp((P.x - head.x) / max(cx[2]-head.x, 0.001), 0.0, 1.0);
