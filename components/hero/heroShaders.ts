@@ -115,7 +115,9 @@ export const backdropFragment = /* glsl */ `
         float d = length(P - c) / r;
         d += wob * 0.10;                                   // lumpy cloud edge
         float cut = c.x + r * (-1.20 + 2.15 * pow(t, 0.62)); // full -> 3/4 -> half
-        float vis = smoothstep(cut, cut + 0.014, P.x);
+        // the nose (disc 0) is never cut -> a full round circle; the cut ramp would
+        // otherwise clip its own left edge.
+        float vis = (i == 0) ? 1.0 : smoothstep(cut, cut + 0.014, P.x);
 
         // warm colour by horizontal position across the head: orange -> coral.
         float hx    = clamp((P.x - head.x) / max(cx[2]-head.x, 0.001), 0.0, 1.0);
@@ -167,16 +169,9 @@ export const backdropFragment = /* glsl */ `
       }
 
       // (3) DARK CREASES — a soft shadow at each section boundary (the notches in the
-      // reference). The line always rides the edge of whichever disc is ON TOP:
-      //  - HEAD lobes 0,1 sit on top -> a CURVED notch along their right RIM, so each
-      //    front lobe reads as a circle proud in front of the one behind.
-      //  - CAPS 3..6 sit on top of their left neighbour -> a notch at their cut (left) edge.
-      for (int i = 0; i < 2; i++){
-        float d    = length(P - vec2(cx[i], head.y)) / cr[i];
-        float ring = exp(-pow((d - 1.0) / 0.07, 2.0));        // band hugging the rim
-        float side = smoothstep(cx[i] - 0.25*cr[i], cx[i] + 0.10*cr[i], P.x); // right rim only
-        col *= 1.0 - 0.40 * ring * side;
-      }
+      // reference). Only the CAPS 3..6 get one (each sits on top of its left neighbour ->
+      // a notch at their cut/left edge). The HEAD lobes are left CLEAN — no rim notch —
+      // so the nose and front lobes read as smooth gradients, not dark-outlined discs.
       for (int i = 3; i < N; i++){
         float t    = float(i) / float(N-1);
         float cut  = cx[i] + cr[i] * (-1.20 + 2.15 * pow(t, 0.62));
