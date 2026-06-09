@@ -103,6 +103,15 @@ Read the matching skill BEFORE working in its area:
 
 Newest first. Record *why*, not just *what*.
 
+- **2026-06-09** — **About is now a glass sheet** (Caroline: the solid black plate after the
+  hero was "too harsh" — wants Apple-glass so the orbs show through). Dropped `bg-bg` from
+  the below-hero plate wrapper in `page.tsx`; `About.tsx` got the glass: `backdrop-blur-2xl
+  backdrop-saturate-150`, translucent gradient `rgba(5,5,7,0.38) → 0.66 → #050507` (lands
+  on solid bg so the opaque sections below join with no seam — they sit in their own
+  `bg-bg` wrapper), `rounded-t-[2.5rem]` + `border-t border-fg/15` + inset top highlight
+  for the sheet look. The fixed hero canvas (z-0) frosts through; verified bio text stays
+  legible over the brightest orb glow. Sections after About (marquee/work/toolkit) remain
+  fully opaque on purpose.
 - **2026-06-09** — **bento2 reworked to true hero language** (round 3, per Caroline: "each
   folder has very soft diffused edges, no hard lines — like the orbs/fireball edges — and
   only hero fonts + hero colours"). Killed every box: no borders, no panel rects, no

@@ -12,11 +12,20 @@ export function About() {
   const { ref, inView } = useInView<HTMLDivElement>(0.35);
 
   return (
+    // Glass sheet over the fixed hero canvas: backdrop blur frosts the orbs
+    // behind it, the gradient starts translucent (orbs glow through) and lands
+    // on solid bg by the bottom edge so the next section joins seamlessly.
     <section
       id="about"
       ref={ref}
-      className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-10 px-8 py-28 md:grid-cols-[minmax(0,420px)_1fr] md:gap-16 md:px-12 md:py-40"
+      className="relative overflow-hidden rounded-t-[2.5rem] border-t border-fg/15 backdrop-blur-2xl backdrop-saturate-150"
+      style={{
+        background:
+          "linear-gradient(180deg, rgba(5,5,7,0.38) 0%, rgba(5,5,7,0.66) 55%, #050507 100%)",
+        boxShadow: "inset 0 1px 0 rgba(245,245,245,0.10)",
+      }}
     >
+      <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-10 px-8 py-28 md:grid-cols-[minmax(0,420px)_1fr] md:gap-16 md:px-12 md:py-40">
       {/* Photo — placeholder until the real asset drops into /public/assets.
           Replace this block with a next/image <Image> at the same aspect. */}
       <div className="relative aspect-square w-full max-w-[420px] overflow-hidden rounded-[2rem] border border-fg/10">
@@ -41,6 +50,7 @@ export function About() {
           active={inView}
           className="font-body text-lg leading-relaxed text-fg/90 md:text-xl"
         />
+      </div>
       </div>
     </section>
   );

@@ -63,17 +63,20 @@ export default function Home() {
       {/* Telemetry strip, right edge — live render facts about THIS visitor's session */}
       <TelemetryRail />
 
-      {/* Everything below the hero rides on a solid plate so the fixed WebGL canvas
-          (Hero, z-0) doesn't bleed through the content. */}
-      <div className="relative z-10 bg-bg">
+      {/* Below the hero: About is a glass sheet — the fixed WebGL canvas (z-0)
+          glows through its backdrop blur, and its background gradient lands on
+          solid bg so the opaque sections after it join seamlessly. */}
+      <div className="relative z-10">
         <About />
-        <ProjectsMarquee />
-        <section id="work" className="px-8 py-12 md:px-12 md:py-20">
-          <Suspense fallback={<ProjectCarousel />}>
-            <ProjectShowcasePrototype />
-          </Suspense>
-        </section>
-        <Toolkit />
+        <div className="bg-bg">
+          <ProjectsMarquee />
+          <section id="work" className="px-8 py-12 md:px-12 md:py-20">
+            <Suspense fallback={<ProjectCarousel />}>
+              <ProjectShowcasePrototype />
+            </Suspense>
+          </section>
+          <Toolkit />
+        </div>
       </div>
     </>
   );
