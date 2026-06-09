@@ -103,6 +103,33 @@ Read the matching skill BEFORE working in its area:
 
 Newest first. Record *why*, not just *what*.
 
+- **2026-06-09** — **Real portrait in About** (`public/assets/portrait.png`, from
+  `~/Downloads/portfolio ideas/me.png`): a circular cut-out PNG with transparent corners,
+  so the old rounded-square card + border was dropped. Caroline then asked to drop the
+  radial pool behind it too (read as a "square placeholder"), and to make the photo itself
+  **look glass**: it now sits under a circular glass lens — diagonal sheen
+  (`mix-blend-screen`), glare arc near the top-left rim, hairline ring + top glint, and an
+  inset bottom shadow so the disc reads curved. Same specular language as the About sheet.
+  Plus a **blur vignette**: a second blurred copy of the image (`blur(20px)`) masked to the
+  rim with a radial `maskImage` (transparent ≤32%, opaque ≥76% — Caroline asked for the
+  melt spread further inward), and a **dark vignette** on top (radial, transparent 52% →
+  rgba(5,5,7,0.55) at the rim) to seat the disc into the dark page. Then "clear ring"
+  feedback → removed the hairline ring/glint layer entirely and masked the WHOLE disc with
+  a 4-stop radial alpha fade (black 42% → 0.62 @64% → 0.22 @82% → transparent 95%), so the
+  photo dissolves into the page with no clipped edge — orb-style.
+- **2026-06-09** — **Fixed the long-standing `disableNormalPass` error** in
+  `hero/Effects.tsx`: `@react-three/postprocessing` v3 removed the NormalPass entirely, so
+  the prop no longer exists — deleted it (no behaviour change; the normal pass never ran).
+  `tsc --noEmit` is now fully clean. The scary runtime crash Caroline saw alongside it
+  (`EffectComposer.addPass → null.alpha`) was a transient dev/HMR lost-WebGL-context
+  artifact — gone on fresh load, 0 console errors.
+- **2026-06-09** — **Glass shine pass** (Caroline: glass felt matte). Replaced the flat 1px
+  `border-t` + inset shadow with a three-layer specular story in `About.tsx`: (1) gradient
+  rim hairline that peaks bright (0.55 white) at ~18% from the left — a glint, not a line;
+  (2) a soft light pool bleeding ~11rem down from under the glint (radial, 0.10 white);
+  (3) a 115° diagonal sheen sweep across the whole sheet (`mix-blend-screen`, 0.085 → 0
+  → 0.04) — the Apple-glass move. All `aria-hidden` overlay divs clipped by the section's
+  rounded corners.
 - **2026-06-09** — **About is now a glass sheet** (Caroline: the solid black plate after the
   hero was "too harsh" — wants Apple-glass so the orbs show through). Dropped `bg-bg` from
   the below-hero plate wrapper in `page.tsx`; `About.tsx` got the glass: `backdrop-blur-2xl

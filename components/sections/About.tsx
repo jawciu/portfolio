@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useInView } from "@/lib/useInView";
 import { StreamingText } from "./StreamingText";
 
@@ -18,26 +19,106 @@ export function About() {
     <section
       id="about"
       ref={ref}
-      className="relative overflow-hidden rounded-t-[2.5rem] border-t border-fg/15 backdrop-blur-2xl backdrop-saturate-150"
+      className="relative overflow-hidden rounded-t-[2.5rem] backdrop-blur-2xl backdrop-saturate-150"
       style={{
         background:
           "linear-gradient(180deg, rgba(5,5,7,0.38) 0%, rgba(5,5,7,0.66) 55%, #050507 100%)",
-        boxShadow: "inset 0 1px 0 rgba(245,245,245,0.10)",
       }}
     >
+      {/* Specular rim — the top hairline brightens where the "light" hits
+          (left third), like a glint running along a glass edge. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 h-px"
+        style={{
+          background:
+            "linear-gradient(90deg, rgba(245,245,245,0.06), rgba(255,255,255,0.55) 18%, rgba(245,245,245,0.18) 42%, rgba(245,245,245,0.08) 70%, rgba(245,245,245,0.03))",
+        }}
+      />
+      {/* Light pool bleeding down from the rim under the glint. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 h-44"
+        style={{
+          background:
+            "radial-gradient(42% 100% at 18% 0%, rgba(255,255,255,0.10), transparent 70%)",
+        }}
+      />
+      {/* Diagonal sheen sweeping across the surface — the Apple-glass move. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 mix-blend-screen"
+        style={{
+          background:
+            "linear-gradient(115deg, rgba(255,255,255,0.085) 0%, rgba(255,255,255,0.035) 16%, transparent 30%, transparent 72%, rgba(255,255,255,0.04) 100%)",
+        }}
+      />
       <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-10 px-8 py-28 md:grid-cols-[minmax(0,420px)_1fr] md:gap-16 md:px-12 md:py-40">
-      {/* Photo — placeholder until the real asset drops into /public/assets.
-          Replace this block with a next/image <Image> at the same aspect. */}
-      <div className="relative aspect-square w-full max-w-[420px] overflow-hidden rounded-[2rem] border border-fg/10">
+      {/* Photo — circular cut-out set under a glass lens: rim glint, diagonal
+          sheen and glare arc (same specular language as the About sheet),
+          shaded inner edge so the disc reads curved. */}
+      <div className="relative aspect-square w-full max-w-[420px]">
+        {/* whole disc dissolves to transparent at the edge — no clipped rim */}
         <div
-          className="absolute inset-0"
+          className="relative h-full w-full overflow-hidden rounded-full"
           style={{
-            background:
-              "radial-gradient(120% 120% at 30% 20%, rgba(255,122,42,0.35), transparent 55%), radial-gradient(120% 120% at 80% 90%, rgba(122,59,255,0.4), transparent 55%), #0a0a0d",
+            maskImage:
+              "radial-gradient(circle at 50% 50%, black 42%, rgba(0,0,0,0.62) 64%, rgba(0,0,0,0.22) 82%, transparent 95%)",
+            WebkitMaskImage:
+              "radial-gradient(circle at 50% 50%, black 42%, rgba(0,0,0,0.62) 64%, rgba(0,0,0,0.22) 82%, transparent 95%)",
           }}
-        />
-        <div className="absolute inset-0 grid place-items-center font-mono text-xs uppercase tracking-[0.3em] text-fg/40">
-          [ portrait ]
+        >
+          <Image
+            src="/assets/portrait.png"
+            alt="Caroline Jaworsky — profile portrait with a pink bougainvillea tucked behind her ear"
+            fill
+            sizes="(min-width: 768px) 420px, 90vw"
+            className="object-cover"
+          />
+          {/* blur vignette — a blurred copy masked to the rim, so the centre
+              stays sharp and the edges melt into the glass */}
+          <Image
+            src="/assets/portrait.png"
+            alt=""
+            aria-hidden
+            fill
+            sizes="(min-width: 768px) 420px, 90vw"
+            className="object-cover"
+            style={{
+              filter: "blur(20px) saturate(1.15)",
+              maskImage:
+                "radial-gradient(circle at 50% 50%, transparent 32%, black 76%)",
+              WebkitMaskImage:
+                "radial-gradient(circle at 50% 50%, transparent 32%, black 76%)",
+            }}
+          />
+          {/* dark vignette — classic edge darkening over the blur */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0"
+            style={{
+              background:
+                "radial-gradient(circle at 50% 50%, transparent 52%, rgba(5,5,7,0.55) 100%)",
+            }}
+          />
+          {/* diagonal sheen across the lens */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 mix-blend-screen"
+            style={{
+              background:
+                "linear-gradient(115deg, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0.05) 22%, transparent 38%, transparent 72%, rgba(255,255,255,0.06) 100%)",
+            }}
+          />
+          {/* glare arc near the top-left rim */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0"
+            style={{
+              background:
+                "radial-gradient(42% 30% at 30% 10%, rgba(255,255,255,0.22), transparent 70%)",
+            }}
+          />
         </div>
       </div>
 
