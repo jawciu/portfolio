@@ -103,6 +103,31 @@ Read the matching skill BEFORE working in its area:
 
 Newest first. Record *why*, not just *what*.
 
+- **2026-06-09** — **bento2 reworked to true hero language** (round 3, per Caroline: "each
+  folder has very soft diffused edges, no hard lines — like the orbs/fireball edges — and
+  only hero fonts + hero colours"). Killed every box: no borders, no panel rects, no
+  scrims, no box-shadows. Each folder is now radial colour pools that die to transparent
+  *inside* the cell (gaussian-ish stops at ~65–68%), so the panel's rectangular extent is
+  never readable — collapsed folders are narrow floating wisps (reads like the fireball
+  chain), the open one blooms into 2–3 offset blobs. Type: `font-hero` (Iosevka) for
+  company/title/description — title styled like the hero H1, company like the "Hi I'm
+  Caroline," intro line, meta rows like the hero role line (square + bullet, mono).
+  Palettes lifted verbatim from the hero shaders: fireball flameRamp (#FF8858 #F56267
+  #E560FA #793CEA #2835A8) + DistortedOrb consts (#ff2f7e #ff8526 #ffcf52 #3fc4ad
+  #bdeed9). Key learning: first pass had pools sized ~55–110% of the cell which read as
+  hazy rectangles/bars — shrinking to ~30–48% with dark breathing room is what makes the
+  blob-in-dark orb feel.
+- **2026-06-09** — Round-2 showcase remixes from Caroline's feedback (she loves bento +
+  shell; committed round 1 as `627699e` and pushed): **bento2** "Diffused grain mosaic" —
+  bento read too *sharp* against the diffuse hero, so hard linear gradients became soft
+  radial colour pools dying into dark, plus film grain, hairline borders, glow (not
+  scanlines) on the open panel. **shell2** "Soft shell + pixel sprites" — the CLI had tag
+  soup and could confuse non-terminal visitors, so: airy rows, human names (no
+  `drwxr-xr-x`), ONE quiet meta line, and her idea of a per-project "image" à la Claude
+  Code's boot logo → a deterministic slug-seeded **pixel sprite** (mirrored like a space
+  invader, sharp grid + blurred glow copy = pixel-y AND diffused). Shared helpers in
+  `prototype/softBits.tsx` (Grain overlay, PixelSprite; sprites are deterministic so
+  SSR/client match). Both verified rendering, 0 console errors.
 - **2026-06-09** — On branch `project-showcase-experiment`, prototyped **3 alternative
   ways to showcase the projects** (Caroline wanted something edgier/funner but still
   dead-simple). UI prototype, sub-shape A: variants render on the existing `#work` route

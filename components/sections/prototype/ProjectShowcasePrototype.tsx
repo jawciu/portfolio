@@ -8,14 +8,18 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { ProjectCarousel } from "@/components/sections/ProjectCarousel";
 import { PrototypeSwitcher, type VariantDef } from "./PrototypeSwitcher";
 import { VariantShell } from "./VariantShell";
+import { VariantShellSoft } from "./VariantShellSoft";
 import { VariantDeck } from "./VariantDeck";
 import { VariantBento } from "./VariantBento";
+import { VariantBentoSoft } from "./VariantBentoSoft";
 
 const VARIANTS: VariantDef[] = [
   { key: "current", name: "Center carousel (baseline)" },
   { key: "shell", name: "~/work terminal listing" },
+  { key: "shell2", name: "Soft shell + pixel sprites" },
   { key: "deck", name: "Holographic card deck" },
   { key: "bento", name: "Reflowing spotlight mosaic" },
+  { key: "bento2", name: "Diffused grain mosaic" },
 ];
 
 export function ProjectShowcasePrototype() {
@@ -34,8 +38,10 @@ export function ProjectShowcasePrototype() {
     <>
       {current === "current" && <ProjectCarousel />}
       {current === "shell" && <VariantShell />}
+      {current === "shell2" && <VariantShellSoft />}
       {current === "deck" && <VariantDeck />}
       {current === "bento" && <VariantBento />}
+      {current === "bento2" && <VariantBentoSoft />}
 
       <PrototypeSwitcher variants={VARIANTS} current={current} onChange={setVariant} />
     </>
