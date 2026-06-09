@@ -103,6 +103,20 @@ Read the matching skill BEFORE working in its area:
 
 Newest first. Record *why*, not just *what*.
 
+- **2026-06-09** — On branch `project-showcase-experiment`, prototyped **3 alternative
+  ways to showcase the projects** (Caroline wanted something edgier/funner but still
+  dead-simple). UI prototype, sub-shape A: variants render on the existing `#work` route
+  via `?variant=`, flipped by a floating dev-only switcher bar (← / → keys). Kept the
+  current carousel as `?variant=current` baseline. Variants (all on-brand, structurally
+  distinct): **shell** (`~/work` terminal directory listing, ↑↓/↵/esc — a designer's work
+  as a CLI, plays off the existing path-label + telemetry HUD), **deck** (holographic
+  draggable card stack, drag/flick to throw the top card), **bento** (reflowing spotlight
+  mosaic — all projects visible, hover expands one with a glitch-scan). Lives in
+  `components/sections/prototype/` (throwaway; `NOTES.md` there has the verdict template +
+  cleanup steps). Extra per-project metadata (year/role/stack/status) in
+  `prototype/projectMeta.ts` so variants aren't empty — fold survivors into
+  `lib/projects.ts` when one wins. Verified all 4 render, 0 console errors. **Awaiting
+  Caroline's pick** before folding the winner in and deleting the rest.
 - **2026-06-09** — Scaffolded the four below-the-hero sections from the Figma comp
   (`figma.com/design/1crZakXfGsPCpxdXIrcjHo`, node 2-2): **About** (placeholder portrait left + fast
   streaming bio right, triggered by `useInView`), **ProjectsMarquee** (filled + outline "PROJECTS" strips),
