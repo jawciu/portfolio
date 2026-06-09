@@ -96,6 +96,31 @@ Newest first. Record *why*, not just *what*.
 - **2026-06-09** — Established this `CLAUDE.md` as the persistent project brain + adopted the
   `session-journal` workflow (ongoing logging + end-of-session handoffs). Reason: Caroline wants new agent
   sessions to pick up seamlessly without her re-explaining context.
+- **2026-06-09** — Fireball **nose + parallax separation + orb smoothing**: (a) nose (disc0) forced fully
+  shown (`vis = 1` for i==0) so it's the only un-cut shape; its blue leading-edge **rim is kept** (Caroline
+  wanted it) — on a guaranteed full circle it reads as a rim around a ball, not a left "cut". (b)
+  **Separated** the fireball hover-reveal from the orb parallax: gated `hoverReveal` by a vertical `zone =
+  1 - smoothstep(0.58, 0.82, 1.0 - uMouse.y)` so it only reacts in the UPPER screen (fireball) and holds
+  baseline when the cursor is over the orb row (lower screen). (c) **Smoothed the orb cursor** in
+  `DistortedOrb.tsx` — a shared `smoothMouse` ref lerped `0.25`/frame, passed to the orbs instead of the raw
+  ref (which jumped between irregular `pointermove` events = stutter/glitch). Kept snappy so it doesn't feel
+  laggy; independent of the fireball's own `uMouse` smoothing, so the two parallaxes stay fully separate.
+- **2026-06-09** — Firewall **head unified into caps** (fixes the disc1↔disc2 blend lens + layering):
+  reworked the head pass so ALL discs (0,1,2) use the same flat-LEFT reveal cut and are drawn FRONT-to-BACK
+  (`i = p`: nose = bottom, disc2 = top) — each cap sits over the previous, which pokes out on the left, just
+  like the chain. Removed disc0/disc1's old flat-RIGHT cut (the two facing flat edges were what stacked
+  additive glow into a magenta blend lens between the 2nd & 3rd circles). disc0 (t=0) stays a full round
+  nose; disc1 is now a flat-left cap that opens on hover; tightened `sf` for i==1 `0.72→0.44` so the nose
+  tucks under disc1. Reason: Caroline wanted the 2nd↔3rd overlap to read like the clean 3rd↔4th ("one under
+  the other"), disc1 to get the hover-reveal, and the nose layered beneath disc1 with a straight left edge.
+- **2026-06-09** — Fireball **hover-reveal** (mirrors the orbs): wired `uMouse` into the firewall reveal
+  `cut` in `backdropFragment` so the cursor moving toward the fireball (screen LEFT) unmasks more of each
+  circle — `hoverReveal = max(0.5 - uMouse.x, 0.0) * 0.40`, subtracted from the cut coefficient (disc2 +
+  chain 3–6 left cut; disc1's right cut slides out; disc0 nose stays full). One-sided so it only ever
+  exposes MORE than baseline (discs grow into each other, never gap). Bumped `Backdrop.tsx` mouse lerp
+  `0.05→0.12` so the reveal tracks the cursor responsively. Reason: Caroline clarified the orbs' "parallax"
+  is really a mouse-driven unmask, and wanted the same hover-to-reveal on the fireball (NOT positional
+  drift — the earlier `par` magnitude bump was reverted to the original `0.03`).
 - **Firewall tuning** (commits through `da30e07`) — rebuilt the firewall backdrop as masked discs matching
   the reference; iterated head spacing, per-shape sizing, full-circle nose, removed chain crease lines so
   caps blend at overlaps. See `git log` + `orb-firewall-tuning` skill.

@@ -41,7 +41,7 @@ export function Backdrop({
     // reduced motion: hold a posed frame (no time advance), keep scroll fade
     if (!reduced) {
       u.uTime.value += dt;
-      u.uMouse.value.lerp(mouse.current, 0.05);
+      u.uMouse.value.lerp(mouse.current, 0.12); // snappier so the hover-reveal tracks the cursor
     }
     u.uResolution.value.set(size.width, size.height);
     u.uFade.value = THREE.MathUtils.clamp(1 - progress.current * 1.1, 0, 1);

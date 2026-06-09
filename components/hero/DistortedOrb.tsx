@@ -388,17 +388,23 @@ export function DistortedOrb({
   reduced?: boolean;
 }) {
   const groupRef = useRef<THREE.Group>(null);
+  // Smoothed cursor shared by the orbs. `pointermove` fires irregularly, so reading the
+  // raw ref every frame makes the parallax JUMP between events (reads as stutter/glitch).
+  // Lerp it per-frame for fluid motion — kept snappy (0.25) so it doesn't feel laggy.
+  // Independent of the fireball's own smoothing, so the two parallaxes stay separate.
+  const smoothMouse = useRef(new THREE.Vector2(0.5, 0.5));
   useFrame(() => {
     if (groupRef.current) {
       groupRef.current.position.y = ORB_BASE_Y + (progress.current ?? 0) * ORB_RISE;
     }
+    smoothMouse.current.lerp(mouse.current, 0.25);
   });
   return (
     <group ref={groupRef} position={[-0.12, ORB_BASE_Y, 0]}>
       {LEFT_ORBS.map((def, i) => (
-        <Orb key={i} def={def} order={i} mouse={mouse} reduced={reduced} />
+        <Orb key={i} def={def} order={i} mouse={smoothMouse} reduced={reduced} />
       ))}
-      <MergedOrbs mouse={mouse} reduced={reduced} order={3} />
+      <MergedOrbs mouse={smoothMouse} reduced={reduced} order={3} />
     </group>
   );
 }
