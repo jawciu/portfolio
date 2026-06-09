@@ -9,7 +9,7 @@ export function HeroPoster() {
       className="absolute inset-0"
       style={{
         background:
-          "radial-gradient(ellipse at 30% 30%, rgba(0,212,255,0.10), transparent 55%), radial-gradient(ellipse at 70% 70%, rgba(255,0,110,0.08), transparent 55%), #050507",
+          "radial-gradient(ellipse 32% 22% at 22% 18%, rgba(139,92,255,0.18), transparent 60%), radial-gradient(ellipse 40% 55% at 78% 56%, rgba(255,120,60,0.12), transparent 60%), radial-gradient(ellipse 30% 45% at 88% 58%, rgba(120,230,255,0.12), transparent 55%), #070709",
       }}
     />
   );
