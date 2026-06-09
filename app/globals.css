@@ -53,3 +53,43 @@ body {
 html {
   scrollbar-width: none;
 }
+
+/* Infinite marquee (see components/Marquee.tsx). The track holds two copies of
+   the content; sliding -50% lands exactly on the second copy → seamless loop. */
+.marquee {
+  width: 100%;
+  overflow: hidden;
+}
+.marquee__track {
+  display: flex;
+  width: max-content;
+  animation: marquee-x linear infinite;
+  will-change: transform;
+}
+.marquee__group {
+  display: flex;
+  flex: none;
+}
+.marquee[data-pause="true"]:hover .marquee__track {
+  animation-play-state: paused;
+}
+@keyframes marquee-x {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Outlined display type for the lower "PROJECTS" strip. */
+.text-outline {
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--color-fg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee__track {
+    animation: none;
+  }
+}

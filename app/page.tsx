@@ -1,5 +1,10 @@
 import Hero from "@/components/Hero";
 import { HeroCopy } from "@/components/HeroCopy";
+import { TelemetryRail } from "@/components/TelemetryRail";
+import { About } from "@/components/sections/About";
+import { ProjectsMarquee } from "@/components/sections/ProjectsMarquee";
+import { ProjectCarousel } from "@/components/sections/ProjectCarousel";
+import { Toolkit } from "@/components/sections/Toolkit";
 
 export default function Home() {
   return (
@@ -50,27 +55,19 @@ export default function Home() {
         </section>
       </main>
 
-      {/* Vertical run label, right edge */}
-      <div
-        aria-hidden
-        className="fixed right-3 top-1/2 z-10 -translate-y-1/2 font-mono text-[10px] md:text-xs tracking-[0.35em] uppercase text-fg/45 pointer-events-none"
-        style={{ writingMode: "vertical-rl" }}
-      >
-        Portfolio // 2026 // Selected_Works
-      </div>
+      {/* Telemetry strip, right edge — live render facts about THIS visitor's session */}
+      <TelemetryRail />
 
-      {/* Spacer so there's something to scroll to and the smooth-scroll wiring is alive */}
-      <section
-        id="work"
-        className="relative z-10 min-h-screen px-8 md:px-12 py-24"
-      >
-        <h2 className="font-body font-bold uppercase text-4xl md:text-6xl tracking-tight max-w-3xl">
-          Selected Work
-        </h2>
-        <p className="mt-6 max-w-xl text-fg-muted">
-          Case studies coming soon. This space is reserved for the work.
-        </p>
-      </section>
+      {/* Everything below the hero rides on a solid plate so the fixed WebGL canvas
+          (Hero, z-0) doesn't bleed through the content. */}
+      <div className="relative z-10 bg-bg">
+        <About />
+        <ProjectsMarquee />
+        <section id="work" className="px-8 py-12 md:px-12 md:py-20">
+          <ProjectCarousel />
+        </section>
+        <Toolkit />
+      </div>
     </>
   );
 }

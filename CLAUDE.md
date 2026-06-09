@@ -43,7 +43,9 @@ app/
 components/
   Hero.tsx        # hero entry
   HeroCopy.tsx    # lower-left headline with type-on intro
+  TelemetryRail.tsx # right-edge live "render telemetry" HUD (WEBGL2 · TIER · DPR · raw FPS)
   SmoothScroll.tsx# Lenis wrapper
+  Marquee.tsx     # reusable seamless infinite marquee (2 copies + -50% keyframe)
   hero/
     Scene.tsx       # R3F canvas + scene graph
     DistortedOrb.tsx# the "watercolour metaball" orb (gaussian colour bands, value noise, smooth-union)
@@ -52,9 +54,17 @@ components/
     GlassRail.tsx   # left-rail glass (sphere + pill)
     HeroPoster.tsx  # static poster fallback
     heroShaders.ts  # GLSL for the hero
+  sections/         # below-the-hero page sections (scaffolded 2026-06-09)
+    About.tsx         # photo (placeholder) left + StreamingText bio right, fires on scroll-in
+    StreamingText.tsx # rAF char-stream reveal (cps-paced, reduced-motion safe)
+    ProjectsMarquee.tsx # giant "PROJECTS ✳" strips — filled row + outline row
+    ProjectCarousel.tsx # center-focus carousel; hover-zones step ±1, click/dots/arrows
+    Toolkit.tsx       # marquee of placeholder program-icon tiles
 lib/
   useGPUTier.ts            # detect-gpu wrapper for fallbacks
   usePrefersReducedMotion.ts
+  useInView.ts             # one-shot IntersectionObserver (triggers About stream)
+  projects.ts              # typed carousel data: 1 real (Nest) + 4 placeholders
 scripts/          # Playwright screenshot harnesses (shoot*.mjs)
 research/         # tech-stack research notes
 mapping.md        # firewall reference shape/composition mapping notes
@@ -93,9 +103,31 @@ Read the matching skill BEFORE working in its area:
 
 Newest first. Record *why*, not just *what*.
 
+- **2026-06-09** — Scaffolded the four below-the-hero sections from the Figma comp
+  (`figma.com/design/1crZakXfGsPCpxdXIrcjHo`, node 2-2): **About** (placeholder portrait left + fast
+  streaming bio right, triggered by `useInView`), **ProjectsMarquee** (filled + outline "PROJECTS" strips),
+  **ProjectCarousel** (center-focus, hover-zones step one project at a time, click/dots/arrow-key nav), and
+  **Toolkit** (icon-tile marquee). Built a reusable `Marquee` primitive for both loops. Decisions:
+  (a) both marquee rows scroll right-to-left per Caroline's spec — flip via `reverse` prop (opposite
+  directions is the common alt). (b) Only the Nest card is real (`lib/projects.ts` index 0); the rest are
+  `placeholder: true` → "Project NN". Imagery + portrait + real toolkit icons are gradient/text placeholders
+  awaiting assets (clear swap-points commented in each file). (c) Post-hero sections live on a
+  `relative z-10 bg-bg` plate so the fixed WebGL canvas (Hero, z-0) doesn't bleed through.
+- **2026-06-09** — Installed the official **Playwright MCP** server (`@playwright/mcp`) at user scope for
+  later interactive usability/a11y audits. Needs a Claude Code restart to surface the browser tools.
 - **2026-06-09** — Established this `CLAUDE.md` as the persistent project brain + adopted the
   `session-journal` workflow (ongoing logging + end-of-session handoffs). Reason: Caroline wants new agent
   sessions to pick up seamlessly without her re-explaining context.
+- **2026-06-09** — Replaced the right-edge vertical label (`Portfolio // 2026 // Selected_Works`) with a
+  **telemetry strip** (`components/TelemetryRail.tsx`): `WEBGL2 · TIER n · DPR n · n FPS` (font `text-fg/70`,
+  matched to the top-left `~/caro/portfolio/2026` path label).
+  Every token is a real fact about the visitor's session — WebGL context, their detect-gpu `useGPUTier`,
+  effective DPR (mirrors Scene's `[1,2]`/`[1,1.5]` clamp), and **raw live FPS** (Caroline chose raw over
+  capped — she wants the number visibly changing). FPS is counted per ~⅓s window and written straight to the
+  DOM via a ref (NO setState 60×/sec — same rule as the parallax). Reduced motion → render loop is on-demand,
+  so it swaps to `STATIC`. WebGL/DPR use `useSyncExternalStore` (SSR-safe, no setState-in-effect, matches
+  `usePrefersReducedMotion`). Reason: the old label was dead wayfinding (header nav already orients); the HUD
+  is on-brand and audience-layered — casual visitors see cool mono chrome, technical ones clock it's live.
 - **2026-06-09** — Fireball **nose + parallax separation + orb smoothing**: (a) nose (disc0) forced fully
   shown (`vis = 1` for i==0) so it's the only un-cut shape; its blue leading-edge **rim is kept** (Caroline
   wanted it) — on a guaranteed full circle it reads as a rim around a ball, not a left "cut". (b)
@@ -138,7 +170,11 @@ Newest first. Record *why*, not just *what*.
 - **Done:** Created this file; documented stack, architecture, tokens, skills, commands. Set up the
   `session-journal` global skill + global `~/.claude/CLAUDE.md` so every project session maintains its own
   CLAUDE.md automatically.
-- **State:** Repo clean on branch `firewall-prev`. Firewall/orb work is the active visual thread.
-- **Next:** Continue firewall/orb tuning via the screenshot loop, or move on to case-study sections under
-  `#work` (currently a placeholder in `app/page.tsx`).
+- **State:** On branch `firewall-prev`. Below-hero sections now scaffolded (About / ProjectsMarquee /
+  ProjectCarousel / Toolkit) and rendering — lint/typecheck clean for the new files (a pre-existing
+  `setState`-in-effect lint warning in `HeroCopy.tsx` and a `disableNormalPass` type error in
+  `hero/Effects.tsx` are untouched/unrelated). Nothing committed yet.
+- **Next (design iteration):** drop in the real assets — portrait (`About.tsx`), per-project imagery +
+  remaining real project cards (`lib/projects.ts`), program icons (`Toolkit.tsx`); tune carousel `SPREAD`
+  /`SIDE_SCALE` and marquee speeds/directions. Then case-study routes under `#work`.
 - **Open intent:** none recorded yet.
