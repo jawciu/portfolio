@@ -123,8 +123,11 @@ Newest first. Record *why*, not just *what*.
   crown (~44° core span), and gave both remaining arcs ASYMMETRIC edges — long soft ramp
   from the inside (light dispersing into glass) to a peak, then a hard cut at the outer
   radius (the crisp specular line). No blur filter on arcs — softness lives in the
-  gradient stops; a blur would kill the crisp outer line. Rotation ranges widened
-  (crown -30→30, lower-right 42→-18) so they visibly travel around the circle.
+  gradient stops; a blur would kill the crisp outer line. **Motion-visibility fix**
+  (Caroline couldn't see it; transforms verified changing — the rotation was just spread
+  over the section's whole viewport transit, so little played while the disc was
+  on-screen): ranges widened to crown -75→75, lower-right 95→-50, ring -60→60 (commit
+  `eccbf3c`). If still too subtle/strong, these ranges are the dial.
 - **2026-06-09** — **Real portrait in About** (`public/assets/portrait.png`, from
   `~/Downloads/portfolio ideas/me.png`): a circular cut-out PNG with transparent corners,
   so the old rounded-square card + border was dropped. Caroline then asked to drop the
