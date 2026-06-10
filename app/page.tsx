@@ -31,7 +31,7 @@ export default function Home() {
       <main className="relative z-10 min-h-screen flex flex-col">
         {/* Top bar */}
         <header className="flex items-center justify-between px-8 py-6 md:px-12">
-          <div className="font-mono text-[11px] md:text-xs tracking-[0.2em] text-fg/70">
+          <div className="font-mono text-xs md:text-sm tracking-[0.2em] text-fg/70">
             ~/caro/portfolio/2026
           </div>
           <nav className="flex gap-6 md:gap-10 font-mono text-xs md:text-sm tracking-[0.25em] text-fg">
@@ -48,7 +48,7 @@ export default function Home() {
         <section className="flex-1 flex flex-col justify-end px-8 md:px-12 pb-[calc(18vh+100px)]">
           <div className="max-w-3xl flex flex-col gap-4">
             {/* role line */}
-            <div className="flex items-center gap-4 mb-7 font-mono text-xs md:text-sm tracking-[0.25em] uppercase text-fg/85">
+            <div className="flex items-center gap-4 mb-7 font-mono text-sm md:text-base tracking-[0.25em] uppercase text-fg/85">
               <span aria-hidden className="inline-block w-3.5 h-3.5 bg-fg/90" />
               <span>Product Designer</span>
               <span aria-hidden className="text-fg/40">•</span>
@@ -68,7 +68,10 @@ export default function Home() {
           solid bg so the opaque sections after it join seamlessly. */}
       <div className="relative z-10">
         <About />
-        <div className="bg-bg">
+        {/* -mt-px: overlap About by 1px — at fractional DPRs a sub-pixel gap
+            opens between the two sections and the bright fixed canvas behind
+            shines through as a hairline. */}
+        <div className="-mt-px bg-bg">
           <ProjectsMarquee />
           <section id="work" className="px-8 py-12 md:px-12 md:py-20">
             <Suspense fallback={<ProjectCarousel />}>

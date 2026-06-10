@@ -105,6 +105,35 @@ Read the matching skill BEFORE working in its area:
 
 Newest first. Record *why*, not just *what*.
 
+- **2026-06-10** — **About bio replaced with Caroline's own copy** (4 paragraphs, decorative
+  unicode sprinkles ˚⊹✧♡❀☆⋆✦✿, lowercase sentence starts — ALL intentional, don't "fix").
+  `BIO` in `About.tsx` is now a template literal with `\n\n` breaks; paragraph breaks
+  survive via `whitespace-pre-line` on the StreamingText className (StreamingText renders
+  plain text into one `<p>`, so without it newlines collapse). Stream verified end-to-end.
+- **2026-06-10** — **Glass projects band tried, then REVERTED — Caroline prefers the black
+  plate.** She'd seen a straight line scrolling into the marquee (the orb glow through the
+  About glass cut dead by the opaque `bg-bg` wrapper's top edge — confirmed via Playwright
+  screenshot). Experiment: marquee moved out of `bg-bg`, About's gradient ending translucent
+  (0.66), the band continuing the frost and easing to solid. It worked (no line), but
+  Caroline judged the original black background better and asked to go back — current state
+  is the ORIGINAL layering: `ProjectsMarquee` inside the `bg-bg` div, no glass on the band.
+  Caroline then still wanted the sharp EDGE itself gone (just blurred, black plate kept).
+  Three-part fix, each verified by screenshot + a pixel-row luminance scan (rows now fade
+  monotonically to rgb(5,5,7), zero step): (1) About's gradient eases into solid with
+  closely-spaced stops, landing at 97% (`0.66 @55% → 0.82 @72% → 0.93 @84% → 0.98 @92% →
+  #050507 @97%`) — a linear ramp ending at the edge reads as a Mach band against the orb
+  glow; (2) the diagonal sheen overlay (mix-blend-screen, ~4% white at bottom-right) was
+  silently ending in a hard cut at the section edge — THE main visible line — now masked
+  out vertically (`black 78% → transparent 96%`); (3) `-mt-px` on the `bg-bg` div — at
+  fractional DPRs a sub-pixel gap opened between the sections and the bright fixed canvas
+  shone through as a warm hairline.
+  Same session, **"directory" type language extended** (kept): marquee text is lowercase
+  `projects` with a magenta `/` separator (was `PROJECTS ✳`); About's label is `/about`
+  (was `// ABOUT`), styled identically to the top-left `~/caro/portfolio/2026` path label.
+  All the small mono labels were bumped to `text-xs md:text-sm` (12/14px — Caroline found
+  11/12px too small; path label + `/about` must stay the SAME size, per Caroline), and the
+  hero role line ("Product Designer • AI Builder") to `text-sm md:text-base` (14/16px).
+
 - **2026-06-10** — **Scroll-driven liquid-glass motion on the About portrait** (Caroline:
   "shine that moves when you scroll"; researched Apple Liquid Glass first — its signature
   is specular highlights that MOVE with device motion, so scroll stands in for tilt).

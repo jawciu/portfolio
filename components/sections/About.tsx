@@ -10,10 +10,16 @@ import { StreamingText } from "./StreamingText";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
-// Caroline's voice — kept casual on purpose. Swap freely; the streaming reveal
-// is length-agnostic.
-const BIO =
-  "I'm a multi-skilled product designer. I solve problems fast and focus on listening to users through qualitative methods and looking at the data. With a background in fashion and graphics I bring attention to detail and an eye for design. I don't believe in pixel-perfect — I ship fast and learn, and because of my range I can do good design quickly. I'm forever learning, always on the new side quest, building skills and finding tools while working on personal projects. Currently vibing with Claude and digging into code architecture. Also learning 3D :) and trying to land a handstand. Current sport quests: calisthenics, yoga, ultimate frisbee and squash.";
+// Caroline's voice — kept casual on purpose (lowercase starts + unicode
+// sprinkles are intentional). Paragraph breaks survive via whitespace-pre-line
+// on the StreamingText element; the streaming reveal is length-agnostic.
+const BIO = `I'm a multi-skilled product designer. I solve problems fast and focus on listening to users via qualitative methods and looking at data. ˚ ⊹ ｡ ·
+
+✧ With my background in fashion and graphics I have attention to detail and an eye for design. I don't believe in pixel perfect but ship fast and learn, though because of my skills I can do good design fast.
+
+♡ ❀ I'm forever learning. always on the new side quest building new skills and finding tools whilst working on yet another project. ° ◦
+
+☆⋆✦ currently vibing with Claude and learning more about code architecture in the meantime. Also learning 3d :) Also trying to get to do a handstand. current sport quests: calisthenics, yoga, ultimate frisbee and squash. ✿`;
 
 // Rim reflections, Apple-icon style (refs: Caroline's glass sphere + the
 // Liquid Glass Podcasts icon; Icon Composer docs — "crisp specular highlights
@@ -38,8 +44,9 @@ const ARCS = [
       "conic-gradient(from 75deg, transparent 0deg, black 22deg, black 60deg, transparent 82deg, transparent 360deg)",
     fromDeg: 95,
     toDeg: -50,
-    // sparkle hotspot, offset right of the arc's centre (~105° around the rim)
-    glint: { left: "91.5%", top: "61%", w: "11%", h: "4.5%", rot: 105, peak: 0.75 },
+    // sparkle hotspot, offset right of the arc's centre (~105° around the
+    // rim): tapered "window reflection" whose long edges bow with the circle.
+    glint: { left: "91.5%", top: "61%", w: "12%", h: "6%", rot: 105, peak: 0.75 },
   },
 ];
 
@@ -70,8 +77,8 @@ export function About() {
         });
         gsap.fromTo(
           ringRef.current,
-          { rotate: -60 },
-          { rotate: 60, ease: "none", scrollTrigger: st },
+          { rotate: -130 },
+          { rotate: 130, ease: "none", scrollTrigger: st },
         );
       });
     },
@@ -81,14 +88,17 @@ export function About() {
   return (
     // Glass sheet over the fixed hero canvas: backdrop blur frosts the orbs
     // behind it, the gradient starts translucent (orbs glow through) and lands
-    // on solid bg by the bottom edge so the next section joins seamlessly.
+    // on solid bg BEFORE the bottom edge so the black plate below joins with
+    // no visible line. The closely-spaced stops ease the landing — a linear
+    // ramp straight into solid reads as a sharp edge (Mach band) where it
+    // cuts the orb glow.
     <section
       id="about"
       ref={ref}
       className="relative overflow-hidden rounded-t-[2.5rem] backdrop-blur-2xl backdrop-saturate-150"
       style={{
         background:
-          "linear-gradient(180deg, rgba(5,5,7,0.38) 0%, rgba(5,5,7,0.66) 55%, #050507 100%)",
+          "linear-gradient(180deg, rgba(5,5,7,0.38) 0%, rgba(5,5,7,0.66) 55%, rgba(5,5,7,0.82) 72%, rgba(5,5,7,0.93) 84%, rgba(5,5,7,0.98) 92%, #050507 97%)",
       }}
     >
       {/* Specular rim — the top hairline brightens where the "light" hits
@@ -110,16 +120,23 @@ export function About() {
             "radial-gradient(42% 100% at 18% 0%, rgba(255,255,255,0.10), transparent 70%)",
         }}
       />
-      {/* Diagonal sheen sweeping across the surface — the Apple-glass move. */}
+      {/* Diagonal sheen sweeping across the surface — the Apple-glass move.
+          Masked out before the section's bottom edge: its white wash would
+          otherwise end in a hard cut against the black plate below (this was
+          the visible straight line when scrolling past About). */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 mix-blend-screen"
         style={{
           background:
             "linear-gradient(115deg, rgba(255,255,255,0.085) 0%, rgba(255,255,255,0.035) 16%, transparent 30%, transparent 72%, rgba(255,255,255,0.04) 100%)",
+          maskImage:
+            "linear-gradient(180deg, black 0%, black 78%, transparent 96%)",
+          WebkitMaskImage:
+            "linear-gradient(180deg, black 0%, black 78%, transparent 96%)",
         }}
       />
-      <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-10 px-8 py-28 md:grid-cols-[minmax(0,420px)_1fr] md:gap-16 md:px-12 md:py-40">
+      <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-10 px-8 py-28 md:grid-cols-[minmax(0,420px)_1fr] md:gap-16 md:px-12 md:py-40">
       {/* Photo — circular cut-out set under a glass lens: rim glint, diagonal
           sheen and glare arc (same specular language as the About sheet),
           shaded inner edge so the disc reads curved. */}
@@ -201,9 +218,14 @@ export function About() {
               willChange: "transform",
             }}
           >
-            {/* glint hotspot — child of the arc, so it orbits with it */}
+            {/* glint hotspot — child of the arc, so it orbits with it.
+                Tapered "window reflection" (wide trailing end, narrowing
+                forward) drawn as an SVG path so its long edges BOW with the
+                circle's curvature ("up" in local space = outward after the
+                rotate). Radial gradient fill + slight blur keep it soft. */}
             {a.glint && (
-              <div
+              <svg
+                aria-hidden
                 className="absolute mix-blend-screen"
                 style={{
                   left: a.glint.left,
@@ -211,10 +233,24 @@ export function About() {
                   width: a.glint.w,
                   height: a.glint.h,
                   transform: `translate(-50%, -50%) rotate(${a.glint.rot}deg)`,
-                  borderRadius: "50%",
-                  background: `radial-gradient(50% 50% at 50% 50%, rgba(255,255,255,${a.glint.peak}), rgba(255,255,255,${a.glint.peak * 0.35}) 45%, transparent 72%)`,
+                  filter: "blur(1.5px)",
+                  overflow: "visible",
                 }}
-              />
+                viewBox="0 0 100 50"
+                preserveAspectRatio="none"
+              >
+                <defs>
+                  <radialGradient id="glint-grad" cx="58%" cy="50%" r="62%">
+                    <stop offset="0%" stopColor={`rgba(255,255,255,${a.glint.peak})`} />
+                    <stop offset="55%" stopColor={`rgba(255,255,255,${a.glint.peak * 0.4})`} />
+                    <stop offset="100%" stopColor="rgba(255,255,255,0)" />
+                  </radialGradient>
+                </defs>
+                <path
+                  d="M 0,34 Q 55,10 100,8 L 100,42 Q 55,36 0,46 Z"
+                  fill="url(#glint-grad)"
+                />
+              </svg>
             )}
           </div>
         ))}
@@ -226,8 +262,11 @@ export function About() {
           aria-hidden
           className="pointer-events-none absolute inset-7 rounded-full"
           style={{
+            // tight bright "comet" + a dim counter-glint opposite, deep dark
+            // between — concentrated segments make the scroll rotation READ
+            // (a broad gradient slid invisibly along a 1px line)
             background:
-              "conic-gradient(from 180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.02) 30%, rgba(255,255,255,0.90) 62%, rgba(255,255,255,0.04) 85%, rgba(255,255,255,0.10))",
+              "conic-gradient(from 180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.03) 40%, rgba(255,255,255,0.30) 56%, rgba(255,255,255,0.92) 62%, rgba(255,255,255,0.30) 68%, rgba(255,255,255,0.03) 82%, rgba(255,255,255,0.16) 92%, rgba(255,255,255,0.04))",
             willChange: "transform",
             maskImage:
               "radial-gradient(circle closest-side at 50% 50%, transparent 99.0%, black 99.3%, black 99.8%, transparent 100%)",
@@ -237,14 +276,16 @@ export function About() {
         />
       </div>
 
-      <div className="max-w-2xl">
-        <div className="mb-6 font-mono text-xs uppercase tracking-[0.3em] text-fg-muted">
-          {"// about"}
+      <div className="max-w-3xl">
+        {/* Section label — same type treatment as the top-left path label
+            (~/caro/portfolio/2026 in page.tsx). */}
+        <div className="mb-6 font-mono text-xs md:text-sm tracking-[0.2em] text-fg/70">
+          /about
         </div>
         <StreamingText
           text={BIO}
           active={inView}
-          className="font-body text-lg leading-relaxed text-fg/90 md:text-xl"
+          className="whitespace-pre-line font-body text-lg leading-relaxed text-fg/90 md:text-xl"
         />
       </div>
       </div>

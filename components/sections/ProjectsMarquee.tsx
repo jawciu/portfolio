@@ -11,14 +11,14 @@ function Row({ outline = false }: { outline?: boolean }) {
       {UNITS.map((_, i) => (
         <span
           key={i}
-          className={`flex items-center pr-8 font-display font-black uppercase leading-none tracking-tight md:pr-14 ${
+          className={`flex items-center pr-8 font-display font-black lowercase leading-none tracking-tight md:pr-14 ${
             outline ? "text-outline" : "text-fg"
           }`}
           style={{ fontSize: "clamp(2.75rem, 11vw, 9rem)" }}
         >
-          Projects
+          projects
           <span aria-hidden className="px-6 text-accent-magenta md:px-10">
-            ✳
+            /
           </span>
         </span>
       ))}
