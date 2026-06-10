@@ -20,9 +20,9 @@ DPR clamped `[1,2]` (tier ≥ 3) or `[1,1.5]`. Background `#070709`.
 |---|---|---|---|
 | Fireball + substrate | `Backdrop.tsx` → `heroShaders.ts` | one frustum-filling plane, `renderOrder -1` | `z=-3`, auto-scaled to fill frustum |
 | Orb row | `DistortedOrb.tsx` | 4 billboard quads, `renderOrder 0–3` | group at `y=-1.15`, rises on scroll |
-| Glass sphere + pill | `GlassRail.tsx` | real 3D transmission meshes | left rail |
+| ~~Glass sphere + pill~~ | `GlassRail.tsx` | **REMOVED 2026-06-10** (see Glass rail below) | — |
 | Postprocessing | `Effects.tsx` | EffectComposer | — |
-| `Environment` | drei Lightformers (orange/mint/violet/pink) | 256px env map for the glass | — |
+| `Environment` | drei Lightformers (orange/mint/violet/pink) | 256px env map (was for the glass; still mounted) | — |
 
 Shared interaction state (refs, never setState — mutated in `useFrame`):
 
@@ -85,13 +85,19 @@ core — over a value-noise-wobbled radius, alpha-feathered (`uEdge`/`uFeather`)
 - **Parallax** — smoothed cursor adds small `uShift` offsets (`0.08/0.05` left orbs,
   `0.047/0.029` merged pair). It's a mouse-driven *unmask*, not positional drift.
 
-## Glass rail (`GlassRail.tsx`)
+## Glass rail (`GlassRail.tsx`) — REMOVED from the site 2026-06-10
 
-Left-rail glass sphere + vertical pill (real 3D): `MeshTransmissionMaterial` shell over
-an **iridescent core** — a shader plane sampling the Silvaday artwork as a vertical
-gradient, domain-warped by time + scroll so colours slide/stretch/bleed, then refracted
-again by the shell. Scroll also drifts the shapes vertically. `lowQuality` (tier < 3)
-drops transmission samples/resolution instead of removing the glass.
+The two glass elements that scrolled with the page — the left-rail sphere + tall pill
+(the "pill with the orb") and the bottom-right accent pill — were removed per Caroline.
+ONLY `<GlassRail>` was unmounted from `Scene.tsx`; postprocessing, the `Environment`,
+GPU tiering and reduced motion are all untouched (an earlier broader removal was
+reverted — see CLAUDE.md decision log). File kept on disk; restore = re-import.
+
+What it was: `MeshTransmissionMaterial` shell over an **iridescent core** — a shader
+plane sampling the Silvaday artwork as a vertical gradient, domain-warped by time +
+scroll so colours slide/stretch/bleed, then refracted again by the shell; the shapes
+drifted vertically with scroll (that drift is what Caroline disliked). `lowQuality`
+(tier < 3) dropped transmission samples/resolution.
 
 ## Postprocessing (`Effects.tsx`)
 

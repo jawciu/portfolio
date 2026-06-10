@@ -51,7 +51,7 @@ components/
     DistortedOrb.tsx# the "watercolour metaball" orb (gaussian colour bands, value noise, smooth-union)
     Backdrop.tsx    # the Firewall / fireball backdrop (sibling of the orb, same primitives)
     Effects.tsx     # postprocessing pipeline (bloom / chromatic aberration / glitch)
-    GlassRail.tsx   # left-rail glass (sphere + pill)
+    GlassRail.tsx   # UNMOUNTED 2026-06-10 — the scroll-drifting glass pills Caroline cut (only this; Effects/Env stay)
     HeroPoster.tsx  # static poster fallback
     heroShaders.ts  # GLSL for the hero
   sections/         # below-the-hero page sections (scaffolded 2026-06-09)
@@ -105,12 +105,18 @@ Read the matching skill BEFORE working in its area:
 
 Newest first. Record *why*, not just *what*.
 
-- **2026-06-10** — **Hero slim-down tried and FULLY REVERTED same session.** Caroline
-  briefly asked to remove the glass rail, postprocessing and GPU-tier fallbacks as
-  "overkill", then changed her mind ("omg no!") — everything is back exactly as before:
-  `GlassRail` + `Environment` + `Effects` mounted in `Scene.tsx`, tiered DPR clamp,
-  TelemetryRail tier-mirrored DPR, mapping.md + skill docs restored. All of it is
-  WANTED — don't remove again without asking.
+- **2026-06-10** — **GlassRail (and ONLY GlassRail) unmounted from the hero.** What
+  Caroline actually wanted gone was the two glass elements that scroll with the page:
+  the left sphere+tall-pill pair and the right accent pill — i.e. exactly `<GlassRail>`.
+  Removed just that import/mount from `Scene.tsx`; `Effects`, `Environment`, GPU
+  tiering, TelemetryRail and reduced motion are ALL still in place and wanted.
+  (Context: an earlier broader slim-down — glass + postprocessing + tier fallbacks —
+  was fully reverted same session at her "omg no!"; don't remove those without asking.)
+  `GlassRail.tsx` kept on disk unimported; `mapping.md` records the removal. Verified:
+  tsc clean, 0 console errors, hero mid-scroll screenshot shows no glass, bloom intact.
+  Possible later cleanup if this sticks: `GlassRail.tsx` + its `public/assets`
+  textures (iridescent-sphere/pill-1/pill-2) + the `Environment` block (its only
+  consumer was the glass).
 
 - **2026-06-10** — **TESTING: `--color-bg` unified to `#070709`** (the hero canvas clear
   colour / `uBg`) so the hero base and the page plate are the same near-black — Caroline

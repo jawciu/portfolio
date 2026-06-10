@@ -6,7 +6,6 @@ import { Suspense, useEffect, useRef } from "react";
 import * as THREE from "three";
 import { Backdrop } from "./Backdrop";
 import { DistortedOrb } from "./DistortedOrb";
-import { GlassRail } from "./GlassRail";
 import { Effects } from "./Effects";
 import { useGPUTier } from "@/lib/useGPUTier";
 import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
@@ -59,9 +58,9 @@ export function Scene() {
         </Environment>
         <Backdrop mouse={mouse} progress={progress} reduced={reduced} />
         <DistortedOrb mouse={mouse} progress={progress} reduced={reduced} />
-        {/* Glass is core to the look — keep it, but drop transmission cost
-            (samples/resolution) on lower-tier GPUs rather than removing it. */}
-        <GlassRail progress={progress} reduced={reduced} lowQuality={tier < 3} />
+        {/* GlassRail (left sphere+pill, right accent pill — the elements that
+            scrolled with the page) unmounted 2026-06-10 per Caroline. ONLY that:
+            Effects/Environment/tiering all stay. Re-import to restore. */}
         <Effects />
       </Suspense>
     </Canvas>
