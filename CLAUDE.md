@@ -116,7 +116,26 @@ Newest first. Record *why*, not just *what*.
   rgba(5,5,7,0.55) at the rim) to seat the disc into the dark page. Then "clear ring"
   feedback → removed the hairline ring/glint layer entirely and masked the WHOLE disc with
   a 4-stop radial alpha fade (black 42% → 0.62 @64% → 0.22 @82% → transparent 95%), so the
-  photo dissolves into the page with no clipped edge — orb-style.
+  photo dissolves into the page with no clipped edge — orb-style. Final pass (after commit
+  `95467ce`): **true orb edges** — photo inset with `p-7` inside its box and the
+  `overflow-hidden rounded-full` clip removed (the PNG's own transparency is the circle),
+  so the rim copy's blur SMEARS content outward past the photo edge into the margin before
+  the outer mask dissolves it; disc nudged left (`md:-ml-10`). Caroline's final calibration
+  after a too-blurry detour: photo stays sharp, blur is rim-only — `blur(24px)` masked
+  `transparent 60% → black 88%` (closest-side). Lesson: she wants "no sharp edge", not
+  "dreamy soft-focus" — keep the subject crisp. Then a **glass edge** on top: a crisp ~2px
+  glassmorphism ring (conic gradient so it reads lit — 0.60 white peak top-left, ~0.1–0.2
+  around) rendered as a SIBLING of the masked disc at `inset-7 rounded-full` — outside the
+  dissolve mask so the fade can't eat it. First attempt was a 7px feathered band → "why so
+  thick?"; she wanted a thin crisp glass-design border, no blur. Final: hairline ~1px
+  (annulus stops 99.0→99.3→99.8→100%) with strong glint contrast — 0.90 white peak
+  top-left vs 0.02–0.10 base around the rest. Key insight: alpha fade alone reads as a
+  soft ring; orbs need the content itself bleeding outward, which requires unclipped room
+  around the image. Second key gotcha: radial gradients/masks default to **farthest-corner**
+  sizing, so square overlay layers (sheen/glare/vignette) kept partial opacity into the
+  box corners and ghosted a *square* around the disc — fixed by sizing the container mask
+  and vignette with `circle closest-side` (nothing can render outside the inscribed
+  circle).
 - **2026-06-09** — **Fixed the long-standing `disableNormalPass` error** in
   `hero/Effects.tsx`: `@react-three/postprocessing` v3 removed the NormalPass entirely, so
   the prop no longer exists — deleted it (no behaviour change; the normal pass never ran).

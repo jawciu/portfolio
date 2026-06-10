@@ -57,15 +57,18 @@ export function About() {
       {/* Photo — circular cut-out set under a glass lens: rim glint, diagonal
           sheen and glare arc (same specular language as the About sheet),
           shaded inner edge so the disc reads curved. */}
-      <div className="relative aspect-square w-full max-w-[420px]">
-        {/* whole disc dissolves to transparent at the edge — no clipped rim */}
+      <div className="relative aspect-square w-full max-w-[420px] md:-ml-10">
+        {/* Orb-edge treatment: the photo is inset (p-7) so the rim blur has
+            room to SMEAR outward past the photo's edge — content bleeding
+            into the dark like the orbs — before the outer mask dissolves it.
+            No overflow clip; the PNG's own transparency is the circle. */}
         <div
-          className="relative h-full w-full overflow-hidden rounded-full"
+          className="relative h-full w-full"
           style={{
             maskImage:
-              "radial-gradient(circle at 50% 50%, black 42%, rgba(0,0,0,0.62) 64%, rgba(0,0,0,0.22) 82%, transparent 95%)",
+              "radial-gradient(circle closest-side at 50% 50%, black 40%, rgba(0,0,0,0.6) 62%, rgba(0,0,0,0.2) 84%, transparent 99%)",
             WebkitMaskImage:
-              "radial-gradient(circle at 50% 50%, black 42%, rgba(0,0,0,0.62) 64%, rgba(0,0,0,0.22) 82%, transparent 95%)",
+              "radial-gradient(circle closest-side at 50% 50%, black 40%, rgba(0,0,0,0.6) 62%, rgba(0,0,0,0.2) 84%, transparent 99%)",
           }}
         >
           <Image
@@ -73,23 +76,23 @@ export function About() {
             alt="Caroline Jaworsky — profile portrait with a pink bougainvillea tucked behind her ear"
             fill
             sizes="(min-width: 768px) 420px, 90vw"
-            className="object-cover"
+            className="object-contain p-7"
           />
-          {/* blur vignette — a blurred copy masked to the rim, so the centre
-              stays sharp and the edges melt into the glass */}
+          {/* heavy rim smear — blurred copy whose blur bleeds outward past
+              the photo edge into the padding margin */}
           <Image
             src="/assets/portrait.png"
             alt=""
             aria-hidden
             fill
             sizes="(min-width: 768px) 420px, 90vw"
-            className="object-cover"
+            className="object-contain p-7"
             style={{
-              filter: "blur(20px) saturate(1.15)",
+              filter: "blur(24px) saturate(1.2)",
               maskImage:
-                "radial-gradient(circle at 50% 50%, transparent 32%, black 76%)",
+                "radial-gradient(circle closest-side at 50% 50%, transparent 60%, black 88%)",
               WebkitMaskImage:
-                "radial-gradient(circle at 50% 50%, transparent 32%, black 76%)",
+                "radial-gradient(circle closest-side at 50% 50%, transparent 60%, black 88%)",
             }}
           />
           {/* dark vignette — classic edge darkening over the blur */}
@@ -98,7 +101,7 @@ export function About() {
             className="pointer-events-none absolute inset-0"
             style={{
               background:
-                "radial-gradient(circle at 50% 50%, transparent 52%, rgba(5,5,7,0.55) 100%)",
+                "radial-gradient(circle closest-side at 50% 50%, transparent 52%, rgba(5,5,7,0.55) 100%)",
             }}
           />
           {/* diagonal sheen across the lens */}
@@ -120,6 +123,21 @@ export function About() {
             }}
           />
         </div>
+        {/* Glass edge — crisp ~2px glassmorphism ring OUTSIDE the dissolve
+            mask (a sibling, so the fade can't eat it). Conic gradient so the
+            border reads lit: brightest top-left, dimmer around. */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-7 rounded-full"
+          style={{
+            background:
+              "conic-gradient(from 90deg, rgba(255,255,255,0.10), rgba(255,255,255,0.02) 30%, rgba(255,255,255,0.90) 62%, rgba(255,255,255,0.04) 85%, rgba(255,255,255,0.10))",
+            maskImage:
+              "radial-gradient(circle closest-side at 50% 50%, transparent 99.0%, black 99.3%, black 99.8%, transparent 100%)",
+            WebkitMaskImage:
+              "radial-gradient(circle closest-side at 50% 50%, transparent 99.0%, black 99.3%, black 99.8%, transparent 100%)",
+          }}
+        />
       </div>
 
       <div className="max-w-2xl">
