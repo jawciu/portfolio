@@ -28,16 +28,16 @@ const ARCS = [
     band: "radial-gradient(circle closest-side at 50% 50%, transparent 62%, rgba(255,255,255,0.05) 76%, rgba(255,255,255,0.17) 89%, rgba(255,255,255,0.22) 92%, transparent 93.5%)",
     sweep:
       "conic-gradient(from 300deg, transparent 0deg, black 38deg, black 82deg, transparent 120deg, transparent 360deg)",
-    fromDeg: -30,
-    toDeg: 30,
+    fromDeg: -75,
+    toDeg: 75,
   },
   {
     // crisp bright arc near the lower-right edge
     band: "radial-gradient(circle closest-side at 50% 50%, transparent 76%, rgba(255,255,255,0.06) 85%, rgba(255,255,255,0.28) 93%, rgba(255,255,255,0.34) 95%, transparent 96%)",
     sweep:
       "conic-gradient(from 75deg, transparent 0deg, black 22deg, black 60deg, transparent 82deg, transparent 360deg)",
-    fromDeg: 42,
-    toDeg: -18,
+    fromDeg: 95,
+    toDeg: -50,
   },
 ];
 
@@ -68,8 +68,8 @@ export function About() {
         });
         gsap.fromTo(
           ringRef.current,
-          { rotate: -30 },
-          { rotate: 30, ease: "none", scrollTrigger: st },
+          { rotate: -60 },
+          { rotate: 60, ease: "none", scrollTrigger: st },
         );
       });
     },
