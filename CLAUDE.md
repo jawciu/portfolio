@@ -127,7 +127,12 @@ Newest first. Record *why*, not just *what*.
   (Caroline couldn't see it; transforms verified changing — the rotation was just spread
   over the section's whole viewport transit, so little played while the disc was
   on-screen): ranges widened to crown -75→75, lower-right 95→-50, ring -60→60 (commit
-  `eccbf3c`). If still too subtle/strong, these ranges are the dial.
+  `eccbf3c`). If still too subtle/strong, these ranges are the dial. Polish round: outer
+  edges of both arcs softened a touch (fade ~doubled — still the "sharp" edge, just not
+  knife-cut), and ONE glint hotspot added — a small bright oval nested INSIDE the
+  lower-right arc layer (so it orbits with it on scroll, no extra animation), offset
+  right of the arc's centre (~105° around the rim). Caroline explicitly wanted a single
+  glint, bottom arc only, off-centre — tried top + both first.
 - **2026-06-09** — **Real portrait in About** (`public/assets/portrait.png`, from
   `~/Downloads/portfolio ideas/me.png`): a circular cut-out PNG with transparent corners,
   so the old rounded-square card + border was dropped. Caroline then asked to drop the

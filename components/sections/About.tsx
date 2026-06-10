@@ -25,7 +25,7 @@ const BIO =
 const ARCS = [
   {
     // crown highlight — compact arc at the top
-    band: "radial-gradient(circle closest-side at 50% 50%, transparent 62%, rgba(255,255,255,0.05) 76%, rgba(255,255,255,0.17) 89%, rgba(255,255,255,0.22) 92%, transparent 93.5%)",
+    band: "radial-gradient(circle closest-side at 50% 50%, transparent 62%, rgba(255,255,255,0.05) 76%, rgba(255,255,255,0.17) 89%, rgba(255,255,255,0.22) 92%, transparent 95.5%)",
     sweep:
       "conic-gradient(from 300deg, transparent 0deg, black 38deg, black 82deg, transparent 120deg, transparent 360deg)",
     fromDeg: -75,
@@ -33,11 +33,13 @@ const ARCS = [
   },
   {
     // crisp bright arc near the lower-right edge
-    band: "radial-gradient(circle closest-side at 50% 50%, transparent 76%, rgba(255,255,255,0.06) 85%, rgba(255,255,255,0.28) 93%, rgba(255,255,255,0.34) 95%, transparent 96%)",
+    band: "radial-gradient(circle closest-side at 50% 50%, transparent 76%, rgba(255,255,255,0.06) 85%, rgba(255,255,255,0.28) 93%, rgba(255,255,255,0.34) 95%, transparent 97.5%)",
     sweep:
       "conic-gradient(from 75deg, transparent 0deg, black 22deg, black 60deg, transparent 82deg, transparent 360deg)",
     fromDeg: 95,
     toDeg: -50,
+    // sparkle hotspot, offset right of the arc's centre (~105° around the rim)
+    glint: { left: "91.5%", top: "61%", w: "11%", h: "4.5%", rot: 105, peak: 0.75 },
   },
 ];
 
@@ -198,7 +200,23 @@ export function About() {
               // stops; blurring would kill the crisp outer specular line
               willChange: "transform",
             }}
-          />
+          >
+            {/* glint hotspot — child of the arc, so it orbits with it */}
+            {a.glint && (
+              <div
+                className="absolute mix-blend-screen"
+                style={{
+                  left: a.glint.left,
+                  top: a.glint.top,
+                  width: a.glint.w,
+                  height: a.glint.h,
+                  transform: `translate(-50%, -50%) rotate(${a.glint.rot}deg)`,
+                  borderRadius: "50%",
+                  background: `radial-gradient(50% 50% at 50% 50%, rgba(255,255,255,${a.glint.peak}), rgba(255,255,255,${a.glint.peak * 0.35}) 45%, transparent 72%)`,
+                }}
+              />
+            )}
+          </div>
         ))}
         {/* Glass edge — crisp ~2px glassmorphism ring OUTSIDE the dissolve
             mask (a sibling, so the fade can't eat it). Conic gradient so the
