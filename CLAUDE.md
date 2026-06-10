@@ -85,6 +85,8 @@ screenshots/      # iteration-loop output (gitignored output dir per label)
 Read the matching skill BEFORE working in its area:
 
 - **orb-firewall-tuning** — tune the orb + firewall visuals; the screenshot iteration loop
+- **glass-design** — liquid-glass surfaces: frosted sheets over the hero, glass-lens images
+  with dissolving orb edges, rim reflection arcs + glints, scroll-driven specular motion
 - **glsl-shader-effects** — authoring GLSL for the holographic/glitch aesthetic
 - **r3f-hero-scene** — R3F scene scaffolding, SSR/dynamic loading, postprocessing, mobile fallbacks
 - **scroll-choreography** — GSAP ScrollTrigger, Lenis, Motion transitions, scroll-driven uniforms
