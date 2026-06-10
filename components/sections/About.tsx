@@ -98,7 +98,7 @@ export function About() {
       className="relative overflow-hidden rounded-t-[2.5rem] backdrop-blur-2xl backdrop-saturate-150"
       style={{
         background:
-          "linear-gradient(180deg, rgba(5,5,7,0.38) 0%, rgba(5,5,7,0.66) 55%, rgba(5,5,7,0.82) 72%, rgba(5,5,7,0.93) 84%, rgba(5,5,7,0.98) 92%, #050507 97%)",
+          "linear-gradient(180deg, rgba(7,7,9,0.38) 0%, rgba(7,7,9,0.66) 55%, rgba(7,7,9,0.82) 72%, rgba(7,7,9,0.93) 84%, rgba(7,7,9,0.98) 92%, #070709 97%)",
       }}
     >
       {/* Specular rim — the top hairline brightens where the "light" hits
@@ -184,7 +184,7 @@ export function About() {
             className="pointer-events-none absolute inset-0"
             style={{
               background:
-                "radial-gradient(circle closest-side at 50% 50%, transparent 52%, rgba(5,5,7,0.55) 100%)",
+                "radial-gradient(circle closest-side at 50% 50%, transparent 52%, rgba(7,7,9,0.55) 100%)",
             }}
           />
           {/* diagonal sheen across the lens */}

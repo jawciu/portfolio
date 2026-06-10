@@ -3,7 +3,6 @@ import Hero from "@/components/Hero";
 import { HeroCopy } from "@/components/HeroCopy";
 import { TelemetryRail } from "@/components/TelemetryRail";
 import { About } from "@/components/sections/About";
-import { ProjectsMarquee } from "@/components/sections/ProjectsMarquee";
 import { ProjectCarousel } from "@/components/sections/ProjectCarousel";
 // PROTOTYPE — alternative project-showcase variants (?variant=shell|deck|bento).
 // Remove this import + the Suspense block below and restore <ProjectCarousel />
@@ -72,13 +71,12 @@ export default function Home() {
             opens between the two sections and the bright fixed canvas behind
             shines through as a hairline. */}
         <div className="-mt-px bg-bg">
-          <ProjectsMarquee />
+          <Toolkit />
           <section id="work" className="px-8 py-12 md:px-12 md:py-20">
             <Suspense fallback={<ProjectCarousel />}>
               <ProjectShowcasePrototype />
             </Suspense>
           </section>
-          <Toolkit />
         </div>
       </div>
     </>

@@ -67,7 +67,7 @@ lib/
   projects.ts              # typed carousel data: 1 real (Nest) + 4 placeholders
 scripts/          # Playwright screenshot harnesses (shoot*.mjs)
 research/         # tech-stack research notes
-mapping.md        # firewall reference shape/composition mapping notes
+mapping.md        # hero scene map AS BUILT (fireball/orbs/glass) — rewritten 2026-06-10
 screenshots/      # iteration-loop output (gitignored output dir per label)
 ```
 
@@ -105,6 +105,30 @@ Read the matching skill BEFORE working in its area:
 
 Newest first. Record *why*, not just *what*.
 
+- **2026-06-10** — **Hero slim-down tried and FULLY REVERTED same session.** Caroline
+  briefly asked to remove the glass rail, postprocessing and GPU-tier fallbacks as
+  "overkill", then changed her mind ("omg no!") — everything is back exactly as before:
+  `GlassRail` + `Environment` + `Effects` mounted in `Scene.tsx`, tiered DPR clamp,
+  TelemetryRail tier-mirrored DPR, mapping.md + skill docs restored. All of it is
+  WANTED — don't remove again without asking.
+
+- **2026-06-10** — **TESTING: `--color-bg` unified to `#070709`** (the hero canvas clear
+  colour / `uBg`) so the hero base and the page plate are the same near-black — Caroline
+  asked to try it; verdict pending. Changed: `globals.css` token (was `#050507`), plus the
+  hardcoded `rgba(5,5,7,…)` → `rgba(7,7,9,…)` in About's sheet gradient + portrait vignette
+  (they must always match the token or a seam line appears at About's bottom edge). To
+  revert: flip those three spots back. `--color-bg-elev #0a0a0d` untouched.
+  **Gotcha discovered:** editing the `@theme` block in `globals.css` did NOT hot-reload —
+  the browser kept serving `--color-bg: #050507` while About's inline-style gradient updated
+  to `#070709`, creating a 2-point luminance step (Caroline saw a harsh line) at the About →
+  Toolkit junction. Fix was just `touch app/globals.css` to force the Tailwind recompile.
+  After ANY token edit, verify with `getComputedStyle(document.documentElement)
+  .getPropertyValue('--color-bg')` in the browser — don't trust the source file.
+- **2026-06-10** — **ProjectsMarquee bands removed from the page; Toolkit moved into their
+  slot** (Caroline's call). `page.tsx` order is now About → Toolkit → `#work` showcase, all
+  on the opaque `bg-bg` plate. `ProjectsMarquee.tsx` is kept on disk but unimported — delete
+  it if the direction sticks. Toolkit tiles are still numbered placeholders awaiting real
+  program icons; its `// toolkit` label predates the `/about`-style directory language.
 - **2026-06-10** — **About bio replaced with Caroline's own copy** (4 paragraphs, decorative
   unicode sprinkles ˚⊹✧♡❀☆⋆✦✿, lowercase sentence starts — ALL intentional, don't "fix").
   `BIO` in `About.tsx` is now a template literal with `\n\n` breaks; paragraph breaks
