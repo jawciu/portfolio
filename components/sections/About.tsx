@@ -1,16 +1,80 @@
 "use client";
 
 import Image from "next/image";
+import { useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
 import { useInView } from "@/lib/useInView";
 import { StreamingText } from "./StreamingText";
+
+gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 // Caroline's voice — kept casual on purpose. Swap freely; the streaming reveal
 // is length-agnostic.
 const BIO =
   "I'm a multi-skilled product designer. I solve problems fast and focus on listening to users through qualitative methods and looking at the data. With a background in fashion and graphics I bring attention to detail and an eye for design. I don't believe in pixel-perfect — I ship fast and learn, and because of my range I can do good design quickly. I'm forever learning, always on the new side quest, building skills and finding tools while working on personal projects. Currently vibing with Claude and digging into code architecture. Also learning 3D :) and trying to land a handstand. Current sport quests: calisthenics, yoga, ultimate frisbee and squash.";
 
+// Rim reflections, Apple-icon style (refs: Caroline's glass sphere + the
+// Liquid Glass Podcasts icon; Icon Composer docs — "crisp specular highlights
+// preserve contrast at the edges", lit from above). Each arc is an annular
+// band with ASYMMETRIC edges: a long soft ramp from the inside (light
+// dispersing into the glass) up to a peak, then a hard cut at the outer
+// radius (the crisp specular line at the rim). Conic mask sets the arc span;
+// scroll rotates each around the circle at its own rate.
+const ARCS = [
+  {
+    // crown highlight — compact arc at the top
+    band: "radial-gradient(circle closest-side at 50% 50%, transparent 62%, rgba(255,255,255,0.05) 76%, rgba(255,255,255,0.17) 89%, rgba(255,255,255,0.22) 92%, transparent 93.5%)",
+    sweep:
+      "conic-gradient(from 300deg, transparent 0deg, black 38deg, black 82deg, transparent 120deg, transparent 360deg)",
+    fromDeg: -30,
+    toDeg: 30,
+  },
+  {
+    // crisp bright arc near the lower-right edge
+    band: "radial-gradient(circle closest-side at 50% 50%, transparent 76%, rgba(255,255,255,0.06) 85%, rgba(255,255,255,0.28) 93%, rgba(255,255,255,0.34) 95%, transparent 96%)",
+    sweep:
+      "conic-gradient(from 75deg, transparent 0deg, black 22deg, black 60deg, transparent 82deg, transparent 360deg)",
+    fromDeg: 42,
+    toDeg: -18,
+  },
+];
+
 export function About() {
   const { ref, inView } = useInView<HTMLDivElement>(0.35);
+  const arcRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const ringRef = useRef<HTMLDivElement>(null);
+
+  // Liquid-glass motion (research: Apple's glass reads "alive" because its
+  // specular highlights MOVE with device motion — here scroll is the motion):
+  // the rim arcs rotate around the disc as the section transits the viewport.
+  useGSAP(
+    () => {
+      const mm = gsap.matchMedia();
+      mm.add("(prefers-reduced-motion: no-preference)", () => {
+        const st = {
+          trigger: ref.current,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 0.6,
+        };
+        ARCS.forEach((a, i) => {
+          gsap.fromTo(
+            arcRefs.current[i],
+            { rotate: a.fromDeg },
+            { rotate: a.toDeg, ease: "none", scrollTrigger: st },
+          );
+        });
+        gsap.fromTo(
+          ringRef.current,
+          { rotate: -30 },
+          { rotate: 30, ease: "none", scrollTrigger: st },
+        );
+      });
+    },
+    { scope: ref },
+  );
 
   return (
     // Glass sheet over the fixed hero canvas: backdrop blur frosts the orbs
@@ -113,25 +177,40 @@ export function About() {
                 "linear-gradient(115deg, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0.05) 22%, transparent 38%, transparent 72%, rgba(255,255,255,0.06) 100%)",
             }}
           />
-          {/* glare arc near the top-left rim */}
+        </div>
+        {/* sphere reflections — light/shadow arcs hugging the rim, rotated by
+            scroll (see ARCS above). Siblings of the masked disc so the
+            dissolve doesn't dim them; their ring gradients are radially
+            bounded, so nothing square can show. */}
+        {ARCS.map((a, i) => (
           <div
+            key={i}
+            ref={(el) => {
+              arcRefs.current[i] = el;
+            }}
             aria-hidden
-            className="pointer-events-none absolute inset-0"
+            className="pointer-events-none absolute inset-7 rounded-full"
             style={{
-              background:
-                "radial-gradient(42% 30% at 30% 10%, rgba(255,255,255,0.22), transparent 70%)",
+              background: a.band,
+              maskImage: a.sweep,
+              WebkitMaskImage: a.sweep,
+              // no blur filter — the soft inner falloff lives in the gradient
+              // stops; blurring would kill the crisp outer specular line
+              willChange: "transform",
             }}
           />
-        </div>
+        ))}
         {/* Glass edge — crisp ~2px glassmorphism ring OUTSIDE the dissolve
             mask (a sibling, so the fade can't eat it). Conic gradient so the
             border reads lit: brightest top-left, dimmer around. */}
         <div
+          ref={ringRef}
           aria-hidden
           className="pointer-events-none absolute inset-7 rounded-full"
           style={{
             background:
-              "conic-gradient(from 90deg, rgba(255,255,255,0.10), rgba(255,255,255,0.02) 30%, rgba(255,255,255,0.90) 62%, rgba(255,255,255,0.04) 85%, rgba(255,255,255,0.10))",
+              "conic-gradient(from 180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.02) 30%, rgba(255,255,255,0.90) 62%, rgba(255,255,255,0.04) 85%, rgba(255,255,255,0.10))",
+            willChange: "transform",
             maskImage:
               "radial-gradient(circle closest-side at 50% 50%, transparent 99.0%, black 99.3%, black 99.8%, transparent 100%)",
             WebkitMaskImage:

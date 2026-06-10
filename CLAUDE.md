@@ -103,6 +103,28 @@ Read the matching skill BEFORE working in its area:
 
 Newest first. Record *why*, not just *what*.
 
+- **2026-06-10** — **Scroll-driven liquid-glass motion on the About portrait** (Caroline:
+  "shine that moves when you scroll"; researched Apple Liquid Glass first — its signature
+  is specular highlights that MOVE with device motion, so scroll stands in for tilt).
+  V1 was a straight diagonal streak sweeping the photo — Caroline redirected with a glass
+  sphere reference: reflections must be **curved arcs hugging the rim, light AND dark,
+  following the circle**. Final build (`ARCS` const in `About.tsx`): three annular bands —
+  each a `closest-side` radial ring gradient cut to an arc by a conic-gradient mask,
+  `blur(3px)` — (1) broad crown highlight across the top (0.13 white, wide), (2) crisp
+  bright arc lower-right (0.30 white, thin, hugging 84–96% radius), (3) shadow arc
+  lower-left (0.50 black). They're SIBLINGS of the masked disc (the dissolve would dim
+  rim-radius content to ~0.2–0.3 alpha — same reason the glass ring lives outside), and
+  scroll ROTATES each at a different rate/direction via scrubbed ScrollTriggers
+  (`useGSAP`, scope = section ref, `scrub: 0.6`) — reflections slide around the rim like
+  the sphere is turning. Reduced-motion-safe via `gsap.matchMedia`. Rim glint stays
+  light-right/shadow-left (`from 180deg`). **Round 2 (Apple Podcasts Liquid Glass icon
+  ref + Icon Composer research — "crisp specular highlights preserve contrast at the
+  edges", lit from above):** dropped the lower-left shadow arc (too much), shrank the
+  crown (~44° core span), and gave both remaining arcs ASYMMETRIC edges — long soft ramp
+  from the inside (light dispersing into glass) to a peak, then a hard cut at the outer
+  radius (the crisp specular line). No blur filter on arcs — softness lives in the
+  gradient stops; a blur would kill the crisp outer line. Rotation ranges widened
+  (crown -30→30, lower-right 42→-18) so they visibly travel around the circle.
 - **2026-06-09** — **Real portrait in About** (`public/assets/portrait.png`, from
   `~/Downloads/portfolio ideas/me.png`): a circular cut-out PNG with transparent corners,
   so the old rounded-square card + border was dropped. Caroline then asked to drop the
