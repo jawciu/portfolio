@@ -105,6 +105,71 @@ Read the matching skill BEFORE working in its area:
 
 Newest first. Record *why*, not just *what*.
 
+- **2026-06-15** — **Glass pass on bento2 cards + Toolkit turned into a glass dock**
+  (Caroline: make bento2 cards glassy + make the toolkit icons glass like an OS dock).
+  No reference image was actually attached — used the project's own glass language
+  (About recipe: frost + specular sheen + rim glint). **bento2** (`VariantBentoSoft`):
+  each cell is now a distinct frosted glass card (`rounded-3xl`, `overflow-hidden`,
+  `backdrop-blur-xl`, translucent gradient, hairline rim glint + 115° sheen + white/10
+  border) with the colour pool glowing BEHIND/through it (pools moved from `-inset-4`
+  bleed to contained `inset-0`; gap-0 → gap-2/3 so cards read as separate panels). The
+  grow/spine hover interaction is unchanged. NOTE: this reverses bento2's original
+  "no boxes/borders" concept on purpose — she now wants visible glass cards.
+  **Toolkit** rewritten as a glass dock STRIP (`components/sections/Toolkit.tsx`):
+  full-bleed glass band (translucent gradient + `backdrop-blur`, lit top + dimmer
+  bottom hairline = the two "glass edges") carrying a `Marquee` (reverse = travels
+  left→right, NO pauseOnHover, 70s — slow) of squircle icon tiles, each with a glossy
+  top-sheen coating + inset rim light. NO hover effect (Caroline cut it). The strip's
+  bg, edges AND icons all dissolve into the dark at both screen ends via ONE horizontal
+  `maskImage` on the wrapper. **Loop-gap fix:** with only ~15 icons one marquee copy is
+  narrower than wide viewports → the row "started halfway"/left a gap; fixed by
+  rendering `LOOP = [...APPS, ...APPS, ...APPS]` so one copy always exceeds the
+  viewport. Label `/toolkit` (one slash, lowercase, matched to `/about`:
+  `text-xs md:text-sm tracking-[0.2em] text-fg/70`). Tiles use plain `<img>` (so SVG +
+  png/webp/jpeg all work without next.config). Icons in `public/assets/toolkit/`. Set
+  now design→build→AI: figma, illustrator, PS, miro, asana, obsidian, cursor, **github,
+  vercel, supabase** (added 2026-06-15 from `cdn.simpleicons.org` — bare brand glyphs,
+  `contain:true` = object-contain + padding on the dark tile, vs object-cover for full
+  app-icon art), iterm, claude, claude code, midjourney, whispr flow (`images.png`).
+  Some source art is low-quality; Caroline will swap better versions later. Decided WITH
+  her: keep dev tools (Vercel/Supabase/GitHub) under "toolkit" not "tech stack" — the
+  blend signals design+build range for the product-engineer applications she's targeting.
+  Later same day: +7 "product-journey" tools inserted between asana and the dev cluster
+  (NotebookLM, Mixpanel `contain`, Marvin, Spline, ChatGPT, Miniti, Google AI Studio
+  `contain`) → 22 icons total. Caroline grouped them as product-journey, not dev.
+  **Quality note:** NotebookLM / Marvin / Spline source art has WHITE backgrounds → they
+  render as bright tiles in the dark dock (flagged; she'll swap transparent/dark versions).
+  Unused extras still in root `assets/`: `surreal.svg` (SurrealDB?) + `images.jpeg` —
+  not added, awaiting her word. Then +Framer (design cluster) +Raycast (dev cluster),
+  both `cdn.simpleicons.org` glyphs (`contain`, framer white, raycast brand-red) → 24
+  icons. (Discussed more: she'll look at Rive; skipped Linear — her work uses Jira; and
+  v0 — she "Claude Codes everything" now.) Then +SurrealDB (`surreal.svg` from assets →
+  `surrealdb.svg`, full squircle app icon = object-cover) +Opik (LLM eval; simpleicons
+  has none — pulled the wordmark SVG from the comet-ml/opik GitHub readme, cropped it to
+  just the orange→red icon mark: stripped white rect + wordmark paths, viewBox
+  `36 35 290 290`, `contain`). → 26 icons.
+- **2026-06-15** — **Icon glass reworked to Apple liquid-glass (`Toolkit.tsx`).** Per
+  Caroline + her macOS-dock ref: each tile now has (1) a soft face sheen (radial, upper-
+  left) and (2) a RIM shine = a `conic-gradient` (`RIM_SHINE`) with two bright arcs at
+  OPPOSITE corners (~135° bottom-right, ~315° top-left) so the top and bottom edges are
+  each half-lit, in opposite halves. The rim is a masked border ring (`RING_MASK` =
+  content-box/border-box mask-composite exclude → only the 1.5px padding band shows) with
+  the conic as an oversized child rotated by `transform: rotate(var(--shine))`. **Scroll-
+  driven:** one rAF-throttled scroll handler in Toolkit sets `--shine` (= `scrollY*0.16`
+  deg) on the section; all rims inherit it (cheap — one var, GPU rotate; reduced-motion
+  bails). Verified the var moves (233°→314° over a scroll) and the highlights sweep.
+  Dial knobs: `RIM_SHINE` stops/peaks (0.55/0.7), `RING_MASK` padding (ring thickness),
+  the `*0.16` scroll→deg factor.
+  **Card width** (Caroline wanted bigger cards / less side whitespace on laptops): was
+  `max-w-6xl` (1152px); now `max-w-7xl` (1280px) → `2xl:max-w-[88rem]` (1408px ≥1536px
+  viewports), height clamp `400→560px`.
+- **2026-06-15** — **Project showcase locked to bento2** (`VariantBentoSoft`, the
+  "Diffused grain mosaic") to iterate on it. Caroline picked it as the direction.
+  `ProjectShowcasePrototype.tsx` now just `return <VariantBentoSoft />` — the variant
+  switcher, `?variant=` URL routing, and the other 5 variants (current carousel, shell,
+  shell2, deck, bento) are **commented out, NOT deleted** (restore by uncommenting). The
+  floating switcher bar is gone from `#work`. Other variant files + `PrototypeSwitcher`
+  untouched on disk. Next: iterate on bento2 + the apps view. tsc/eslint clean.
 - **2026-06-10** — **GlassRail (and ONLY GlassRail) unmounted from the hero.** What
   Caroline actually wanted gone was the two glass elements that scroll with the page:
   the left sphere+tall-pill pair and the right accent pill — i.e. exactly `<GlassRail>`.

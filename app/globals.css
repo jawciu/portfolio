@@ -88,8 +88,65 @@ html {
   -webkit-text-stroke: 1.5px var(--color-fg);
 }
 
+/* Toolkit glass-strip edges (see components/sections/Toolkit.tsx). A bright
+   specular glint (::before) sweeps along each hairline over a soft base line, so
+   the top and bottom of the dock read as lit glass edges that are alive. Uses a
+   transform animation (like .marquee) — a background-position shorthand tripped
+   up Tailwind v4's Lightning CSS parser. */
+.toolkit-edge {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  overflow: hidden;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.06),
+    rgba(255, 255, 255, 0.34) 50%,
+    rgba(255, 255, 255, 0.06)
+  );
+}
+.toolkit-edge::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 40%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.95),
+    transparent
+  );
+  animation: toolkit-edge-glint 7s linear infinite;
+  will-change: transform;
+}
+.toolkit-edge--top {
+  top: 0;
+}
+.toolkit-edge--bottom {
+  bottom: 0;
+  opacity: 0.7;
+}
+.toolkit-edge--bottom::before {
+  animation-direction: reverse;
+  animation-delay: -3.5s; /* out of phase with the top edge */
+}
+@keyframes toolkit-edge-glint {
+  from {
+    transform: translateX(-120%);
+  }
+  to {
+    transform: translateX(300%);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .marquee__track {
+    animation: none;
+  }
+  .toolkit-edge {
     animation: none;
   }
 }

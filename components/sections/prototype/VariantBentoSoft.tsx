@@ -43,13 +43,13 @@ export function VariantBentoSoft() {
   const [hot, setHot] = useState(0);
 
   return (
-    <div className="mx-auto w-full max-w-6xl">
+    <div className="mx-auto w-full max-w-7xl 2xl:max-w-[88rem]">
       <p className="mb-5 flex items-center gap-3 font-mono text-xs uppercase tracking-[0.25em] text-fg-muted">
         <span aria-hidden className="inline-block h-2 w-2 bg-fg/60" />
         hover to expand · click to open
       </p>
 
-      <div className="flex h-[clamp(380px,46vw,480px)] flex-col gap-0 md:flex-row">
+      <div className="flex h-[clamp(400px,48vw,560px)] flex-col gap-2 md:flex-row md:gap-3">
         {items.map((p, i) => {
           const open = i === hot;
           const pool = POOLS[i % POOLS.length];
@@ -59,21 +59,54 @@ export function VariantBentoSoft() {
               type="button"
               onMouseEnter={() => setHot(i)}
               onFocus={() => setHot(i)}
-              className="group relative min-h-0 text-left outline-none transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
+              className="group relative min-h-0 overflow-hidden rounded-3xl text-left outline-none transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
               style={{ flexGrow: open ? 6 : 1, flexBasis: 0 }}
             >
-              {/* the colour pool — crossfade between spine wisp and open bloom */}
+              {/* the colour pool — glows BEHIND the glass (gets frosted through
+                  it like the orbs glow through the About sheet). Crossfades
+                  between the collapsed spine wisp and the open bloom. */}
               <div
                 aria-hidden
-                className="absolute -inset-4 transition-opacity duration-700"
+                className="absolute inset-0 transition-opacity duration-700"
                 style={{ background: openWash(pool), opacity: open ? 1 : 0 }}
               />
               <div
                 aria-hidden
-                className="absolute -inset-4 transition-opacity duration-700"
+                className="absolute inset-0 transition-opacity duration-700"
                 style={{
                   background: spineWash(pool),
                   opacity: open ? 0 : undefined,
+                }}
+              />
+
+              {/* GLASS surface — frosts the pool behind it; translucent so the
+                  colour still reads. Hairline lit rim + diagonal sheen give the
+                  specular story (same language as About). */}
+              <div
+                aria-hidden
+                className="absolute inset-0 rounded-3xl border border-white/10 backdrop-blur-xl backdrop-saturate-150"
+                style={{
+                  background:
+                    "linear-gradient(155deg, rgba(255,255,255,0.06) 0%, rgba(10,10,13,0.18) 30%, rgba(10,10,13,0.34) 100%)",
+                  boxShadow: "inset 0 1px 0 rgba(255,255,255,0.18)",
+                }}
+              />
+              {/* rim glint — peaks toward the top-left, like light on an edge */}
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-x-0 top-0 h-px"
+                style={{
+                  background:
+                    "linear-gradient(90deg, rgba(245,245,245,0.05), rgba(255,255,255,0.55) 22%, rgba(245,245,245,0.12) 55%, rgba(245,245,245,0.04))",
+                }}
+              />
+              {/* diagonal sheen sweep */}
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-0 mix-blend-screen"
+                style={{
+                  background:
+                    "linear-gradient(115deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.03) 18%, transparent 34%, transparent 74%, rgba(255,255,255,0.05) 100%)",
                 }}
               />
               <Grain opacity={0.06} />
