@@ -88,11 +88,12 @@ html {
   -webkit-text-stroke: 1.5px var(--color-fg);
 }
 
-/* Toolkit glass-strip edges (see components/sections/Toolkit.tsx). A bright
-   specular glint (::before) sweeps along each hairline over a soft base line, so
-   the top and bottom of the dock read as lit glass edges that are alive. Uses a
-   transform animation (like .marquee) — a background-position shorthand tripped
-   up Tailwind v4's Lightning CSS parser. */
+/* Toolkit glass-strip edges (see components/sections/Toolkit.tsx). A soft
+   specular glint (::before) glides along each hairline over a faint base line, so
+   the top and bottom of the dock read as lit glass edges. The glint is driven by
+   scroll position, not a time loop — the `--edge-shift` var is set on the section
+   by the scroll handler in Toolkit.tsx, so the highlight tracks scroll like the
+   icon rims do (bottom edge mirrors it). */
 .toolkit-edge {
   position: absolute;
   left: 0;
@@ -101,9 +102,9 @@ html {
   overflow: hidden;
   background: linear-gradient(
     90deg,
-    rgba(255, 255, 255, 0.06),
-    rgba(255, 255, 255, 0.34) 50%,
-    rgba(255, 255, 255, 0.06)
+    rgba(255, 255, 255, 0.03),
+    rgba(255, 255, 255, 0.16) 50%,
+    rgba(255, 255, 255, 0.03)
   );
 }
 .toolkit-edge::before {
@@ -116,10 +117,10 @@ html {
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(255, 255, 255, 0.95),
+    rgba(255, 255, 255, 0.4),
     transparent
   );
-  animation: toolkit-edge-glint 7s linear infinite;
+  transform: translateX(var(--edge-shift, -120%));
   will-change: transform;
 }
 .toolkit-edge--top {
@@ -127,26 +128,17 @@ html {
 }
 .toolkit-edge--bottom {
   bottom: 0;
-  opacity: 0.7;
+  opacity: 0.6;
 }
 .toolkit-edge--bottom::before {
-  animation-direction: reverse;
-  animation-delay: -3.5s; /* out of phase with the top edge */
-}
-@keyframes toolkit-edge-glint {
-  from {
-    transform: translateX(-120%);
-  }
-  to {
-    transform: translateX(300%);
-  }
+  /* own scroll-mapped var: opposite direction + phase-offset from the top, so it
+     reliably sweeps through view too (a pure negation could park it off-screen
+     for the whole on-screen window) */
+  transform: translateX(var(--edge-shift-b, -120%));
 }
 
 @media (prefers-reduced-motion: reduce) {
   .marquee__track {
-    animation: none;
-  }
-  .toolkit-edge {
     animation: none;
   }
 }

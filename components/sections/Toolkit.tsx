@@ -80,13 +80,23 @@ export function Toolkit() {
   const rootRef = useRef<HTMLElement>(null);
 
   // Drive the rim shine from scroll: one rAF-throttled handler sets `--shine`
-  // on the section; every icon rim inherits it (cheap — one var, GPU rotate).
+  // (icon-rim rotation) and `--edge-shift` (top/bottom edge glint travel) on the
+  // section; every rim + edge inherits them (cheap — two vars, GPU transforms).
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     let raf = 0;
     const update = () => {
       raf = 0;
-      rootRef.current?.style.setProperty("--shine", `${window.scrollY * 0.16}deg`);
+      const el = rootRef.current;
+      if (!el) return;
+      el.style.setProperty("--shine", `${window.scrollY * 0.16}deg`);
+      // edge glints glide along the hairlines as you scroll. Each wraps into the
+      // -120%→300% travel range; the bottom runs the opposite direction and is
+      // phase-offset (≈half a cycle) so both reliably pass through view.
+      const t = window.scrollY * 0.18;
+      const wrap = (v: number) => (((v % 420) + 420) % 420) - 120;
+      el.style.setProperty("--edge-shift", `${wrap(t)}%`);
+      el.style.setProperty("--edge-shift-b", `${wrap(-t + 210)}%`);
     };
     const onScroll = () => {
       if (!raf) raf = requestAnimationFrame(update);
