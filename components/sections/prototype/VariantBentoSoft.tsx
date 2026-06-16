@@ -38,6 +38,25 @@ function spineWash([c0, c1]: [string, string, string]) {
   ].join(", ");
 }
 
+// Project 01 (E.ON Next) — one big blurred circle whose centre sits just OUTSIDE
+// the card's bottom-right corner, so only a quarter of it blooms into the card
+// (per Caroline's Figma direction). Gradient runs from a warm coral core
+// (#C05846) out to purple (#9400FF), then diffuses into the dark background. The
+// product screenshot floats on top of it; the blob is frosted behind the glass.
+function eonBlob() {
+  return "radial-gradient(circle 820px at 98% 112%, #C05846 0%, #6D1B76 48%, rgba(109,27,118,0) 80%)";
+}
+
+// Collapsed state for project 01 — mirrors the other cards' spine wisp (dim,
+// centred, vertical) but in the new coral→purple palette, so the wisp matches
+// siblings yet still crossfades cleanly into the expanded blob.
+function eonSpine() {
+  return [
+    `radial-gradient(30% 70% at 50% 35%, #C0584699, transparent 66%)`,
+    `radial-gradient(38% 85% at 50% 70%, #6D1B7688, transparent 68%)`,
+  ].join(", ");
+}
+
 export function VariantBentoSoft() {
   const items = enriched;
   const [hot, setHot] = useState(0);
@@ -68,14 +87,20 @@ export function VariantBentoSoft() {
               <div
                 aria-hidden
                 className="absolute inset-0 transition-opacity duration-700"
-                style={{ background: openWash(pool), opacity: open ? 1 : 0 }}
+                style={{
+                  background: i === 0 ? eonBlob() : openWash(pool),
+                  opacity: open ? 1 : 0,
+                }}
               />
               <div
                 aria-hidden
                 className="absolute inset-0 transition-opacity duration-700"
                 style={{
-                  background: spineWash(pool),
-                  opacity: open ? 0 : undefined,
+                  // collapsed wisp — project 01 uses its own spine in the new
+                  // coral→purple palette; others use their pool's spine. Dimmed
+                  // (0.95) so the open card still pops, but clearly visible.
+                  background: i === 0 ? eonSpine() : spineWash(pool),
+                  opacity: open ? 0 : 0.95,
                 }}
               />
 
@@ -123,39 +148,102 @@ export function VariantBentoSoft() {
                 </div>
               )}
 
-              {/* expanded — hero type only */}
-              <div
-                className={`absolute inset-0 flex flex-col justify-between p-6 transition-opacity duration-500 md:p-9 ${
-                  open ? "opacity-100 delay-200" : "pointer-events-none opacity-0"
-                }`}
-              >
-                <div className="flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.25em] text-fg/60">
-                  <span>{String(i + 1).padStart(2, "0")}</span>
-                  <span>{p.status} · {p.year}</span>
-                </div>
-                <div>
-                  {/* company — like the "Hi I'm Caroline," intro line */}
-                  <p className="font-hero text-xl font-black lowercase text-fg/90">
-                    {p.company},
-                  </p>
-                  {/* title — same voice as the hero headline */}
-                  <h3 className="mt-2 max-w-lg font-hero text-2xl font-bold uppercase leading-[1.02] tracking-tight text-fg md:text-4xl">
-                    {p.title}
-                  </h3>
-                  {p.description && (
-                    <p className="mt-4 max-w-sm font-hero text-sm leading-relaxed text-fg/70 md:text-base">
-                      {p.description}
+              {/* expanded — project 01 gets the Figma layout: text copy left,
+                  gradient blob (behind glass) + product imagery floating right */}
+              {i === 0 ? (
+                <div
+                  className={`absolute inset-0 flex transition-opacity ${
+                    open
+                      ? "opacity-100 delay-200 duration-500"
+                      : "pointer-events-none opacity-0 duration-200"
+                  }`}
+                >
+                  {/* LEFT — copy sits a bit above the vertical centre; year in
+                      the top-left corner, tags pinned bottom-left */}
+                  <div className="relative flex w-[50%] flex-none flex-col justify-center p-6 md:p-9">
+                    {/* year — top-left corner */}
+                    <p className="absolute left-6 top-6 font-mono text-[10px] uppercase tracking-[0.25em] text-fg/60 md:left-9 md:top-9">
+                      {p.year}
                     </p>
-                  )}
-                  {/* meta — styled like the hero role line (square + mono) */}
-                  <p className="mt-6 flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.25em] text-fg/60">
-                    <span aria-hidden className="inline-block h-2 w-2 bg-fg/70" />
-                    {p.role}
-                    <span aria-hidden className="text-fg/30">•</span>
+                    {/* main copy — nudged just above centre, then 16px higher */}
+                    <div className="-mt-[5%] -translate-y-4">
+                      {/* e·on next logo + /e.on_next label */}
+                      <div className="flex items-center gap-3">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src="/assets/e_on_next.png"
+                          alt="E.ON Next"
+                          className="h-[27px] w-auto md:h-[33px]"
+                        />
+                        <span className="font-mono text-xs lowercase tracking-[0.2em] text-fg/70 md:text-sm">
+                          /e.on_next
+                        </span>
+                      </div>
+                      <h3 className="mt-5 max-w-none font-hero text-xl font-bold uppercase leading-[1.05] tracking-tight text-fg md:text-[1.75rem]">
+                        {p.title}
+                      </h3>
+                      {p.description && (
+                        /* subtitle — Geist Mono, lowercase, same colour as heading */
+                        <p className="mt-5 max-w-xs font-mono text-xs lowercase leading-relaxed text-fg md:text-sm">
+                          {p.description}
+                        </p>
+                      )}
+                    </div>
+                    {/* tags — pinned bottom-left, one line, tight dot spacing */}
+                    <p className="absolute inset-x-6 bottom-6 flex items-center gap-x-2 whitespace-nowrap font-mono text-[11px] uppercase tracking-[0.1em] text-fg/55 md:inset-x-9 md:bottom-9 md:text-xs">
+                      <span aria-hidden className="mr-1 inline-block h-2 w-2 bg-fg/60" />
+                      {p.tags.join(" · ")}
+                    </p>
+                  </div>
+                  {/* RIGHT — product imagery on top of the blob. Transparent
+                      artwork (frosted chat panel + white text), so the gradient
+                      reads straight through it — no frame/border/shadow. */}
+                  <div className="relative flex-1">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src="/assets/nest-chat.png?v=2"
+                      alt="Nest agentic-RAG chat answering a tariff question"
+                      className="pointer-events-none absolute right-[-6%] top-1/2 h-[88%] w-auto -translate-y-1/2 object-contain object-left"
+                    />
+                  </div>
+                </div>
+              ) : (
+                /* expanded — hero type only */
+                <div
+                  className={`absolute inset-0 flex flex-col justify-between p-6 transition-opacity md:p-9 ${
+                    open
+                      ? "opacity-100 delay-200 duration-500"
+                      : "pointer-events-none opacity-0 duration-200"
+                  }`}
+                >
+                  {/* year, top-left (replaces the old number + status row) */}
+                  <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-fg/60">
                     {p.year}
                   </p>
+                  <div>
+                    {/* company — like the "Hi I'm Caroline," intro line */}
+                    <p className="font-hero text-xl font-black lowercase text-fg/90">
+                      {p.company},
+                    </p>
+                    {/* title — same voice as the hero headline */}
+                    <h3 className="mt-2 max-w-lg font-hero text-2xl font-bold uppercase leading-[1.02] tracking-tight text-fg md:text-4xl">
+                      {p.title}
+                    </h3>
+                    {p.description && (
+                      <p className="mt-4 max-w-sm font-hero text-sm leading-relaxed text-fg/70 md:text-base">
+                        {p.description}
+                      </p>
+                    )}
+                    {/* meta — styled like the hero role line (square + mono) */}
+                    <p className="mt-6 flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.25em] text-fg/60">
+                      <span aria-hidden className="inline-block h-2 w-2 bg-fg/70" />
+                      {p.role}
+                      <span aria-hidden className="text-fg/30">•</span>
+                      {p.year}
+                    </p>
+                  </div>
                 </div>
-              </div>
+              )}
             </button>
           );
         })}

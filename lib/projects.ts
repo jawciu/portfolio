@@ -17,7 +17,7 @@ export type Project = {
 export const projects: Project[] = [
   {
     slug: "nest-agentic-rag",
-    company: "Nest",
+    company: "EON Next",
     title: "Designing agentic RAG to help with cognitive load",
     description:
       "Improved cognitive load by giving users agentic RAG that answers their questions.",

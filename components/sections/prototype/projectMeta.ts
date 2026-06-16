@@ -15,7 +15,7 @@ export type ProjectMeta = {
 
 const META: Record<string, ProjectMeta> = {
   "nest-agentic-rag": {
-    year: "2025",
+    year: "2026",
     role: "Lead Product Designer",
     stack: ["Figma", "Agentic RAG", "React", "User Research"],
     status: "Shipped",
