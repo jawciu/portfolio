@@ -98,6 +98,17 @@ components:
     rounded: "{rounded.card}"
     borderColor: rgba(255, 255, 255, 0.1)
     backdropFilter: blur(24px) saturate(1.5)
+  project-card:           # showcase project card — glass-card + split layout + corner blob
+    surface: glass-card           # built on the glass-card stack (rim glint + 115° sheen)
+    rounded: "{rounded.card}"
+    padding: 2.25rem              # p-9 desktop / p-6 mobile
+    splitRatio: "50/50"           # copy column / product-visual column (when an image is present)
+    kicker: "{typography.label-sm}"        # mono directory label, e.g. /e.on_next
+    titleSize: 28px               # project-title voice (Iosevka, uppercase) sized to two lines
+    subtitle: "{typography.caption-mono}"  # lowercase mono, full-fg colour
+    tags: "{typography.caption-mono}"      # one line, dot-separated
+    blob: "radial-gradient(circle 820px at 98% 112%, <core> 0%, <edge> 48%, <edge>00 80%)"
+    blobCollapsedOpacity: 0.95    # the dim vertical spine wisp when the card is collapsed
   label:                  # /about, ~/caro/portfolio/2026, role line
     textColor: rgba(245, 245, 245, 0.7)
     typography: "{typography.label-sm}"
@@ -233,6 +244,38 @@ specular rim (glint hairline → light pool → diagonal sheen). The About secti
 a single sheet that frosts the hero; showcase cards are discrete glass panels
 with the colour-pool glowing behind. Verify body text stays legible over the
 *brightest* part of the orb glow.
+
+### Project card (`project-card`)
+
+The reusable showcase card (`components/sections/prototype/ProjectCard.tsx`) — one
+flex cell in the bento row, built on the `glass-card` stack. It has two states and,
+when expanded, one split layout, so every real project reads as one authored piece:
+
+- **Collapsed:** a narrow cell showing a dim, centred **vertical spine** of the
+  card's blob colours (`blobCollapsedOpacity` 0.95) with a rotated mono label
+  (`company · year`). On hover/focus it expands (`flex-grow`, 700ms ease-out).
+- **Expanded — split layout:** copy on the **left**, an optional product visual on
+  the **right**, over a **corner gradient blob**. The blob is one big blurred circle
+  whose centre sits just *outside* the bottom-right corner, so only a quarter blooms
+  in — a warm `<core>` diffusing to a cool `<edge>` and then to transparent before
+  any rectangle reads (same "dissolving edge" rule as the hero). Each card supplies
+  its own `{core, edge}` pair; draw them from the spectrum where possible. The E.ON
+  Next card uses coral `#C05846` → purple `#6D1B76`.
+- **Copy column:** `year` in the top-left corner; a centred block (nudged a touch
+  above middle) of optional brand logo + mono kicker (`/e.on_next`), the
+  `project-title` (Iosevka, uppercase, sized to land in two lines), and a lowercase
+  **mono** subtitle at full `fg`; tags pinned bottom-left as one dot-separated mono
+  line. The subtitle is the one place mono carries a sentence — kept short.
+- **Product visual:** transparent artwork (e.g. a frosted UI panel) floating over
+  the blob, bleeding slightly off the right edge — no frame, border, or shadow, so
+  the gradient reads straight through it.
+- The card's shine is **static** here (rim glint + diagonal sheen) — the scroll-
+  driven specular motion lives on the toolkit dock and the About portrait, not the
+  cards.
+
+Placeholder cells (projects without a story/visual yet) use a simpler centred
+layout on the same glass + pool blob; migrate each to `ProjectCard` as it gets real
+content and a product visual.
 
 ### Mono labels (`label`, `caption-mono`)
 

@@ -107,6 +107,27 @@ Read the matching skill BEFORE working in its area:
 
 Newest first. Record *why*, not just *what*.
 
+- **2026-06-16** — **Extracted the E.ON Next showcase card into a reusable
+  `ProjectCard` component** (`components/sections/prototype/ProjectCard.tsx`) —
+  Caroline: "the /e.on_next card is looking good, make it a component we can reuse
+  for other cards (spacing, fonts, gradient blob, etc.)." It owns the whole card:
+  collapsed spine wisp ↔ open corner-blob crossfade, the glass stack (rim glint +
+  static 115° sheen + grain), and the split expanded layout (year top-left; logo +
+  mono kicker `/e.on_next`; Iosevka title sized to two lines; lowercase **mono**
+  subtitle at full fg; tags pinned bottom-left; transparent product visual floating
+  off the right edge over the blob). Props are explicit (`label`, `logo?`, `image?`,
+  `tags?`, `blob {core,edge}`, …) so a new project = one `<ProjectCard>` call. The
+  blob recipe is generalised (`circle 820px at 98% 112%`, core→edge→`edge`+`00`
+  transparent); the E.ON card passes coral `#C05846` → purple `#6D1B76`. Project 01
+  now renders via it (verified pixel-identical). The 4 placeholder cells keep the
+  older centred layout inline in `VariantBentoSoft` (no story/visual yet) — migrate
+  each to `ProjectCard` when it gets real content. Documented as `project-card` in
+  DESIGN.md (front-matter token + Components prose). Product visual swapped earlier
+  this session to the transparent SVG (`/assets/eon-next-product.svg`, node 67_2764
+  = conversation + "Ask anything" input); removed the now-orphaned
+  `e.on.next_product_asset.svg` (conversation-only) and `nest-chat.png` (the baked
+  grey PNG that read awful). The card shine is **static** (Caroline cut the moving
+  versions — both the scroll-driven diagonal sheen and a conic border-orbit).
 - **2026-06-16** — **Added `DESIGN.md` (design-token source of truth) + a `design-md` skill**
   (Caroline's ask: document design decisions in the structure of
   `github.com/google-labs-code/design.md`). `DESIGN.md` at the repo root follows
