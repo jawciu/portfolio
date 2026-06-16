@@ -8,6 +8,7 @@ description: >
 colors:
   # Surfaces — the page is near-black; bg matches the hero canvas clear colour
   # so the fixed WebGL layer and the DOM plate read as one continuous dark.
+  # (settled 2026-06-16; superseded #050507)
   bg: "#070709"
   bg-elev: "#0a0a0d"
   # Foreground

@@ -125,7 +125,7 @@ export function VariantBentoSoft() {
                     "linear-gradient(90deg, rgba(245,245,245,0.05), rgba(255,255,255,0.55) 22%, rgba(245,245,245,0.12) 55%, rgba(245,245,245,0.04))",
                 }}
               />
-              {/* diagonal sheen sweep */}
+              {/* diagonal sheen sweep — static */}
               <div
                 aria-hidden
                 className="pointer-events-none absolute inset-0 mix-blend-screen"
@@ -201,7 +201,7 @@ export function VariantBentoSoft() {
                   <div className="relative flex-1">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                      src="/assets/nest-chat.png?v=2"
+                      src="/assets/eon-next-product.svg?v=3"
                       alt="Nest agentic-RAG chat answering a tariff question"
                       className="pointer-events-none absolute right-[-6%] top-1/2 h-[88%] w-auto -translate-y-1/2 object-contain object-left"
                     />

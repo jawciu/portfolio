@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bg: #070709; /* testing: match the hero canvas clear colour (was #050507) */
+  --color-bg: #070709; /* matches the hero canvas clear colour so the fixed WebGL layer and the DOM plate read as one continuous dark (was #050507) */
   --color-bg-elev: #0a0a0d;
   --color-fg: #f5f5f5;
   --color-fg-muted: #8a8a92;

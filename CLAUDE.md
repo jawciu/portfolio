@@ -84,6 +84,8 @@ screenshots/      # iteration-loop output (gitignored output dir per label)
 
 Read the matching skill BEFORE working in its area:
 
+- **design-md** — read/maintain `DESIGN.md` (the design-token + rationale source of truth); read before
+  ANY visual/styling work, update when a decision changes a token or rule
 - **orb-firewall-tuning** — tune the orb + firewall visuals; the screenshot iteration loop
 - **glass-design** — liquid-glass surfaces: frosted sheets over the hero, glass-lens images
   with dissolving orb edges, rim reflection arcs + glints, scroll-driven specular motion
@@ -105,6 +107,26 @@ Read the matching skill BEFORE working in its area:
 
 Newest first. Record *why*, not just *what*.
 
+- **2026-06-16** — **Added `DESIGN.md` (design-token source of truth) + a `design-md` skill**
+  (Caroline's ask: document design decisions in the structure of
+  `github.com/google-labs-code/design.md`). `DESIGN.md` at the repo root follows
+  that format: YAML front matter = machine-readable tokens (`colors` incl. the
+  near-black surfaces, fg, accents, and the `flame-*`/`orb-*` holographic
+  spectrum lifted from the shaders; `typography` for the 3 live families;
+  `rounded`; `spacing`; `components` for glass-sheet/glass-card/labels), then the
+  canonical markdown sections (Brand & Style → Colors → Typography → Layout →
+  Elevation & Depth → Shapes → Components → Do's & Don'ts) holding the rationale
+  + guardrails. Tokens were read from the actual code (`globals.css @theme`,
+  `layout.tsx` fonts, `VariantBentoSoft`/About class lists) so doc = build. The
+  `.claude/skills/design-md/` skill tells agents to READ DESIGN.md before any
+  visual work and UPDATE it when a decision changes a token/rule (vs CLAUDE.md =
+  the narrative of *how* we got there); it documents the format rules + the
+  token⇄codebase mapping. NOTE recorded in the doc: Bricolage Grotesque
+  (`font-display`) is loaded but DORMANT — only in archived/commented showcase
+  variants — so the live system is 3 fonts (Iosevka/Geist/Geist Mono).
+  **`bg` `#070709` is now FINAL** (Caroline confirmed 2026-06-16 — resolves the
+  2026-06-10 "TESTING/verdict pending" unification); "testing" framing stripped
+  from `globals.css` + DESIGN.md.
 - **2026-06-15** — **Glass pass on bento2 cards + Toolkit turned into a glass dock**
   (Caroline: make bento2 cards glassy + make the toolkit icons glass like an OS dock).
   No reference image was actually attached — used the project's own glass language
