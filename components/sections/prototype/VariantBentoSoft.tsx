@@ -42,10 +42,10 @@ export function VariantBentoSoft() {
 
   return (
     <div className="mx-auto w-full max-w-7xl 2xl:max-w-[88rem]">
-      <p className="mb-5 flex items-center gap-3 font-mono text-xs uppercase tracking-[0.25em] text-fg-muted">
-        <span aria-hidden className="inline-block h-2 w-2 bg-fg/60" />
-        hover to expand · click to open
-      </p>
+      {/* directory-style section label, matched to /about & /toolkit */}
+      <div className="mb-5 pl-2 font-mono text-xs md:text-sm tracking-[0.2em] text-fg/70">
+        /projects
+      </div>
 
       <div className="flex h-[clamp(400px,48vw,560px)] flex-col gap-2 md:flex-row md:gap-3">
         {items.map((p, i) => {

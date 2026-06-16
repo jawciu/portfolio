@@ -101,6 +101,28 @@ Read the matching skill BEFORE working in its area:
   through "3d bro" + "creative director" personas (see `orb-firewall-tuning` skill).
 - Branch per workstream (current: `firewall-prev`). Commit/push only when Caroline asks.
 
+### When to launch Playwright (visual verification)
+
+Don't reflexively screenshot every change — assess whether the visual outcome is
+uncertain enough to need eyes. Always run `tsc`/`lint` regardless; Playwright is
+only for *seeing* the result. Clean up temp screenshots after.
+
+**Launch Playwright when:**
+- Caroline gives a **screenshot / design to match** — render the result and compare against it.
+- A **batch of design requests**, or any **substantive visual/layout work** (new component, glass/gradient/blob, spacing, alignment, responsive behaviour, motion).
+- The outcome is **hard to predict from the code** — positioning, overflow, clipping, z-order, colour/contrast, things that "look right in code" but may not render right.
+- Fixing a **visual bug** she reported (confirm it's actually fixed).
+
+**Skip Playwright when:**
+- **Copy/text edits** — headings, labels, body text, renames.
+- **Single obvious tweaks** whose result is clear from the code (e.g. a font-size bump, a one-token colour change) — she'll eyeball it in her own browser.
+- **Logic/refactor with no visual change**, or doc/config edits.
+- She **explicitly says not to** ("don't run playwright") — that always overrides.
+
+When unsure, lean on the size of the change: one-line/trivial → skip; multi-part
+or spatial → verify. State briefly that you're skipping verification so she knows
+it's a deliberate call.
+
 ---
 
 ## Decision Log

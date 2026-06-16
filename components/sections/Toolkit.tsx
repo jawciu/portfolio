@@ -111,10 +111,14 @@ export function Toolkit() {
 
   return (
     <section ref={rootRef} aria-label="Toolkit" className="py-24 md:py-32">
-      <div className="mx-auto mb-8 max-w-6xl px-8 md:px-12">
-        {/* directory-style label, matched to /about */}
-        <div className="font-mono text-xs md:text-sm tracking-[0.2em] text-fg/70">
-          /toolkit
+      {/* identical column geometry to the #work /projects label (full-width px
+          box → centred max-w-7xl/88rem → pl-2) so the two line up at every width */}
+      <div className="mb-8 px-8 md:px-12">
+        <div className="mx-auto w-full max-w-7xl 2xl:max-w-[88rem]">
+          {/* directory-style label, matched to /about & /projects */}
+          <div className="pl-2 font-mono text-xs md:text-sm tracking-[0.2em] text-fg/70">
+            /toolkit
+          </div>
         </div>
       </div>
 

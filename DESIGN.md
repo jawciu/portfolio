@@ -86,6 +86,7 @@ spacing:
   card-gap: 0.75rem     # gap-3 — separation between showcase glass panels
   content-max: 80rem    # max-w-7xl — main content column
   content-max-wide: 88rem  # 2xl:max-w-[88rem]
+  label-inset: 0.5rem   # pl-2 — directory section labels' nudge inside the column
 components:
   glass-sheet:            # the About surface — frosts the hero through it
     backgroundColor: rgba(7, 7, 9, 0.5)
@@ -192,6 +193,13 @@ A single centred content column over a full-bleed dark canvas.
 - **Rhythm:** 8px base. Sections breathe with large vertical padding
   (`~11rem`); the hero is full-viewport with the live canvas fixed behind.
 - **Column:** `max-w-7xl` (80rem), widening to `88rem` on very large screens.
+- **Section labels share the column:** the directory-style section labels
+  (`/about`, `/toolkit`, `/projects`) all sit in the *same* content-column
+  geometry — a full-bleed `px-8 md:px-12` box → centred `max-w-7xl` (→ `88rem` at
+  `2xl`) → `label-inset` (`pl-2`) — so they share one left edge and line up
+  vertically down the page at every width. Each label stays above its own content
+  (e.g. `/projects` flush with the project cards). Don't give one a different
+  `max-w` or breakpoint, or the column drifts and the labels stop aligning.
 - **Stacking:** The WebGL hero is a *fixed* layer at `z-0`. All DOM sections sit
   on a `relative z-10` plate above it. Glass surfaces (About) let the fixed
   canvas frost through; opaque sections sit on a `bg-bg` plate. Mind the seam:
