@@ -1,111 +1,114 @@
-# Hero Rebuild — Element Mapping & Build Spec
+# Hero Scene Map — fireball, orbs, glass (as built)
 
-Agreed plan for rebuilding the hero so the color-distorted shapes, layout, and motion
-match Caroline's mockup (`Screenshot_2026-05-30_at_23.04.21`). Source assets live in
-`.cursor/projects/Users-caro-Code-portfolio/assets/`.
+What's actually on the hero canvas and where each piece lives. This replaces the original
+pre-build spec (the "real-3D carousel" plan — the build went procedural instead). For
+*tuning recipes* (palette knobs, reveal curves, band radii) read
+`.claude/skills/orb-firewall-tuning/SKILL.md`; this doc is the composition map.
 
----
-
-## Glossary — Asset → Element
-
-| Element | Source asset | What it is |
-|---|---|---|
-| **Flame chain** | `3D_Models_Pin_2` | Top-left warm→violet→blue chain of blobs (the "echo / pulse") |
-| **Distorted orb** | `3D_Models_Pin_1` | The real-3D row: chrome sphere necking into a backlit orb + receding rim-slices |
-| **Iridescent sphere** | `Silvaday_Pin_4` | Standalone rainbow glass ball (left rail) |
-| **Rainbow pills** | `Silvaday_Pin_2`, `Silvaday_Pin_3` | Two vertical iridescent glass capsules (left rail + bottom-right accent) |
+Review loop: `node scripts/shoot.mjs <label>` (dev server running) → PNGs in
+`screenshots/<label>/`. Look references: `public/assets/flame-chain.png` (fireball),
+`public/assets/distorted-orb.png` (orbs).
 
 ---
 
-## Approach
+## Scene graph (`components/hero/Scene.tsx`)
 
-Hybrid:
-- **Real 3D** where the magic is — distorted orb, glass sphere, glass pills.
-- **Procedural 2D** where it's cheaper/better — flame chain.
-- **Assets as look/color reference**, not flat textures — except as the iridescent
-  **core** seen inside the glass elements.
-- Text / nav / vertical label stay as the **existing DOM overlay**; the canvas is purely
-  the visual behind them. Existing left-weighted darkening plate keeps the headline legible.
+Fixed full-viewport `<Canvas>` (z-0 behind the DOM), perspective camera at `z=5`, fov 35.
+DPR clamped `[1,2]` (tier ≥ 3) or `[1,1.5]`. Background `#070709`.
 
----
+| Layer (back → front) | Component | Render | Position |
+|---|---|---|---|
+| Fireball + substrate | `Backdrop.tsx` → `heroShaders.ts` | one frustum-filling plane, `renderOrder -1` | `z=-3`, auto-scaled to fill frustum |
+| Orb row | `DistortedOrb.tsx` | 4 billboard quads, `renderOrder 0–3` | group at `y=-1.15`, rises on scroll |
+| ~~Glass sphere + pill~~ | `GlassRail.tsx` | **REMOVED 2026-06-10** (see Glass rail below) | — |
+| Postprocessing | `Effects.tsx` | EffectComposer | — |
+| `Environment` | drei Lightformers (orange/mint/violet/pink) | 256px env map (was for the glass; still mounted) | — |
 
-## Elements & Behaviour
+Shared interaction state (refs, never setState — mutated in `useFrame`):
 
-### Flame chain — procedural 2D metaballs (fragment shader)
-- Blobs are **born** at the warm head (left) → travel right, **shrink and cool**
-  (warm → violet → blue) → **merge/split** via metaball necks → **dissolve** at the tip.
-- Idle **breathe** (slow swell/shrink) + **noise wobble** (organic, non-mechanical).
-- **Head pulses brightest** (the "source").
-- Driver: **time** + cursor parallax.
-
-### Distorted orb — REAL 3D (centerpiece)
-- **5 spheres** on a gentle arc, shared iridescent **backlit-rim** material, perspective camera.
-- Motion = **carousel**: arc rotates slowly around a vertical axis; spheres swing
-  forward/back and **reorder in depth**; front pair **necks** like a metaball.
-- **Per-sphere variation**: different brightness/exposure, saturation, and **thickness of
-  the red-yellow glow ring** (front = thick hot-orange halo + near-white core; rear =
-  thinner, cooler, dimmer, fading to a faint pink sliver).
-- Driver: **time** + cursor tilt.
-
-### Iridescent sphere — REAL 3D glass (true refraction)
-- Floating glass orb on the left rail. **No merge** with the pill (dropped by choice).
-- Drifts **vertically on scroll**; **thin-film iridescence** hue-shifts as it moves.
-- Driver: **scroll** + time.
-
-### Rainbow pills — REAL 3D glass (true refraction)
-- **Clear glass shell + animated iridescent core** inside.
-- True **see-through refraction** of the scene behind; inner core carries the `Silvaday`
-  rainbow and **warps/morphs on scroll** (colors slide, stretch, bleed into new colors).
-- Vertical drift on scroll; thin-film sheen.
-- Placement: **left rail** (below the sphere) + a **bottom-right** accent pill.
-- Driver: **scroll** + time.
+- `mouse` — pointer 0..1, y flipped. The orbs smooth it themselves (lerp 0.25/frame);
+  the fireball smooths its own copy (lerp 0.12/frame). Two independent parallaxes.
+- `progress` — `scrollY / innerHeight` clamped 0..1 (first viewport only). Drives the
+  orb-row rise, the backdrop fade (`uFade = 1 - progress*1.1`), and the glass drift/warp.
 
 ---
 
-## Camera & Interaction
-- **Perspective** camera so the carousel depth reads.
-- **Cursor parallax** across all layers (different rates = depth) + soft cursor-follow glow.
-  Tuned subtle.
+## Fireball (`heroShaders.ts` → `backdropFragment`)
 
-## Scroll Model (Option B — fixed reacts, then leaves)
-- Fixed canvas reacts to the **first viewport** of scroll (pills drift + color-morph,
-  orb tilts), then the whole canvas **gently fades / parallaxes away** as you pass the hero.
-- **No scroll-hijacking / no pin.** Wired via Lenis + GSAP ScrollTrigger driving uniforms.
+A comet of **7 masked discs** in one fragment loop, drawn into the backdrop colour
+(no alpha — everything is `col` math over `uBg`). Coordinate space: origin top-left,
+y-down, 1 unit = viewport height; head at `(0.150, 0.195)`.
 
-## Lighting
-- Add a synthetic **`Environment`** (gradient HDRI built from the scene's own palette) so
-  the glass has something on-brand to refract/reflect.
+- **Head (discs 0–2)** — drawn nose-first so each later disc sits ON TOP and the earlier
+  one pokes out left. Disc 0 is the only full circle (the round nose, `r=0.044`, with a
+  cool blue rim); disc 1 (`0.074`) ≈ ¾ cap; disc 2 (`0.098`) ≈ half. Warm orange→coral
+  colour by horizontal position.
+- **Chain (discs 3–6)** — caps drawn left→right (right on top), radii growing
+  `0.108 → 0.140`. One shared reveal curve `cut = c.x + r*(-1.20 + 2.15*pow(t,0.62))`
+  thins every cap progressively to a sliver. Purple band stretched
+  (`capColorT = 0.5 + 0.5*pow(ct,1.5)`) so blue only arrives at the last sliver; `tail`
+  dims to near-black down the chain. **No creases** — overlaps blend by reveal order.
+- **Palette** — `flameRamp`, 5 stops in LINEAR RGB (pre-converted from sRGB hex —
+  convert before pasting new stops or they wash out): `#FF8858 → #F56267 → #E560FA →
+  #793CEA → #2835A8`.
+- **Halos** — magenta-pink annulus around the head + broad deep-blue wrap along the chain.
+- **Motion** — `breathe = 1 + 0.030*sin(t*0.6)` swell, shared `fbm` edge wobble
+  (`*0.10` head / `*0.04` caps), tiny per-disc y bob.
+- **Hover reveal** — cursor toward screen LEFT opens every cap a little more
+  (`hoverReveal = max(0.5-mouse.x,0)*0.40`), **gated to the upper screen**
+  (`zone = 1-smoothstep(0.58,0.82,mY)`) so cursor over the orb row doesn't drive it.
+  One-sided: discs only ever grow into each other, never gap.
+- Plus: faint warm bloom hugging the head, cool fill bottom-right, vignette + animated
+  grain, `uFade` scroll fade-out.
 
-## Post-processing
-- **Tune Bloom** — glow on rims/energy only, not the near-black substrate.
-- **Keep chromatic aberration** — whisper-low, for holographic edge shimmer.
-- **Drop scanlines.**
-- **Drop glitch.**
-- **Keep grain + vignette.**
-- Net: clean & dreamy, matching the mockup.
+## Orb row (`DistortedOrb.tsx`)
 
-## Fallbacks & Guardrails
-- **Mobile / low GPU:** simplify later — cut transmission (most expensive pass), drop
-  postprocessing, lower DPR, fall back toward the static poster. Gated via existing
-  `useGPUTier`.
-- **Reduced motion:** freeze to a posed static frame; gentlest scroll response only.
-- **Hygiene:** deterministic seeding (no hydration mismatch), `useFrame` uniform discipline
-  (no setState in frame loop), correct color space on the core texture (sRGB).
+Five apparent orbs, actually **4 quads** sharing one material language: a radial
+gaussian band ramp `bandColour()` — magenta glow → orange rim → yellow → jade → mint
+core — over a value-noise-wobbled radius, alpha-feathered (`uEdge`/`uFeather`).
 
----
+- **Left three (quads 0–2)** — each a big disc revealed as a thin crescent by a fixed
+  one-sided cut (`uMaskX`); the disc slides behind the cut (`uShift`) so the sliver
+  waxes/wanes in place. Per-orb `amp/speed/phase/bias` in the `LEFT_ORBS` array.
+  **Orb 1 vanishes**: a gaussian "hide pulse" (32s cycle) slides it fully past its cut
+  for ~0.5s, ramp-rate-matched to its neighbours. **Choreography**: orb 2 shares the 32s
+  period, phased so its widest wax meets orb 1 just as it fades.
+- **Merged pair (quad 3, rightmost)** — one quad, two disc fields fused by polynomial
+  `smin`; every colour band wraps the combined iso-contour (true metaball neck).
+  Breathes between full merge (concentric for a beat, `uK=0.42`) and full separation
+  (`uK→0.05`, satellite slides right off-screen) on a `sin(t*0.28)` cycle. Core is light
+  mint `#bdeed9`, not white, with its own band radii (`RM`).
+- **Palette** (plain sRGB `THREE.Color`, no linear conversion): `#ff2f7e` magenta,
+  `#ff8526` orange, `#ffcf52` yellow, `#3fc4ad` jade, cores `#54c2a8` / `#bdeed9`.
+- **Scroll** — the whole group rests at `y=-1.15` (only top halves visible above the
+  fold) and rises `+1.5` to centred as `progress` 0→1.
+- **Parallax** — smoothed cursor adds small `uShift` offsets (`0.08/0.05` left orbs,
+  `0.047/0.029` merged pair). It's a mouse-driven *unmask*, not positional drift.
 
-## Build Order
-1. Scaffold the layered scene (perspective camera, environment, fixed-canvas + scroll wiring).
-2. **Distorted orb** (real 3D carousel + per-sphere rim material) — the centerpiece.
-3. **Flame chain** (procedural 2D metaball pulse).
-4. **Glass sphere + pills** (transmission + animated core + scroll morph).
-5. Post-processing tune + cursor parallax.
-6. Reduced-motion + mobile fallback pass.
+## Glass rail (`GlassRail.tsx`) — REMOVED from the site 2026-06-10
 
----
+The two glass elements that scrolled with the page — the left-rail sphere + tall pill
+(the "pill with the orb") and the bottom-right accent pill — were removed per Caroline.
+ONLY `<GlassRail>` was unmounted from `Scene.tsx`; postprocessing, the `Environment`,
+GPU tiering and reduced motion are all untouched (an earlier broader removal was
+reverted — see CLAUDE.md decision log). File kept on disk; restore = re-import.
 
-## Stack Notes (from `research/tech-stack-recommendation.md`)
-- R3F v9 + drei (`MeshTransmissionMaterial`, `MeshPhysicalMaterial.iridescence`,
-  `Environment`) + `@react-three/postprocessing`.
-- GSAP 3.13 ScrollTrigger + Lenis for scroll-driven uniforms.
-- Existing: `dynamic(..., { ssr:false })` + `HeroPoster` LCP placeholder, `useGPUTier`.
+What it was: `MeshTransmissionMaterial` shell over an **iridescent core** — a shader
+plane sampling the Silvaday artwork as a vertical gradient, domain-warped by time +
+scroll so colours slide/stretch/bleed, then refracted again by the shell; the shapes
+drifted vertically with scroll (that drift is what Caroline disliked). `lowQuality`
+(tier < 3) dropped transmission samples/resolution.
+
+## Postprocessing (`Effects.tsx`)
+
+Tier ≥ 2 only: Bloom (threshold 0.55 — the orbs' `toneMapped={false}` brights are what
+bloom), whisper chromatic aberration, overlay grain 0.045, vignette. No scanlines, no
+glitch (dropped on purpose — photographic mood).
+
+## Fallbacks
+
+- **Reduced motion** — canvas `frameloop="demand"`; fireball holds a posed frame (no
+  time advance, scroll fade still works); orbs pin to their `bias` pose; TelemetryRail
+  shows `STATIC`.
+- **GPU tier** — `useGPUTier`: postprocessing bails < 2, DPR + transmission quality drop
+  < 3. `HeroPoster.tsx` is the static LCP fallback while the canvas loads.

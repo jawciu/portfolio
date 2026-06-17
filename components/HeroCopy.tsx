@@ -80,7 +80,7 @@ export function HeroCopy() {
       </p>
 
       <div aria-hidden className="flex flex-col gap-4">
-        <p className="text-2xl md:text-4xl text-fg/80 font-black">
+        <p className="text-2xl md:text-4xl text-fg font-black">
           {INTRO.slice(0, introLen)}
           {caretOnIntro && <Caret blink={!introTyping} />}
         </p>

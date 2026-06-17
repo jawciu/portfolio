@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bg: #050507;
+  --color-bg: #070709; /* matches the hero canvas clear colour so the fixed WebGL layer and the DOM plate read as one continuous dark (was #050507) */
   --color-bg-elev: #0a0a0d;
   --color-fg: #f5f5f5;
   --color-fg-muted: #8a8a92;
@@ -52,4 +52,93 @@ body {
 
 html {
   scrollbar-width: none;
+}
+
+/* Infinite marquee (see components/Marquee.tsx). The track holds two copies of
+   the content; sliding -50% lands exactly on the second copy → seamless loop. */
+.marquee {
+  width: 100%;
+  overflow: hidden;
+}
+.marquee__track {
+  display: flex;
+  width: max-content;
+  animation: marquee-x linear infinite;
+  will-change: transform;
+}
+.marquee__group {
+  display: flex;
+  flex: none;
+}
+.marquee[data-pause="true"]:hover .marquee__track {
+  animation-play-state: paused;
+}
+@keyframes marquee-x {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Outlined display type for the lower "PROJECTS" strip. */
+.text-outline {
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--color-fg);
+}
+
+/* Toolkit glass-strip edges (see components/sections/Toolkit.tsx). A soft
+   specular glint (::before) glides along each hairline over a faint base line, so
+   the top and bottom of the dock read as lit glass edges. The glint is driven by
+   scroll position, not a time loop — the `--edge-shift` var is set on the section
+   by the scroll handler in Toolkit.tsx, so the highlight tracks scroll like the
+   icon rims do (bottom edge mirrors it). */
+.toolkit-edge {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  overflow: hidden;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.03),
+    rgba(255, 255, 255, 0.16) 50%,
+    rgba(255, 255, 255, 0.03)
+  );
+}
+.toolkit-edge::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 40%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  transform: translateX(var(--edge-shift, -120%));
+  will-change: transform;
+}
+.toolkit-edge--top {
+  top: 0;
+}
+.toolkit-edge--bottom {
+  bottom: 0;
+  opacity: 0.6;
+}
+.toolkit-edge--bottom::before {
+  /* own scroll-mapped var: opposite direction + phase-offset from the top, so it
+     reliably sweeps through view too (a pure negation could park it off-screen
+     for the whole on-screen window) */
+  transform: translateX(var(--edge-shift-b, -120%));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee__track {
+    animation: none;
+  }
 }

@@ -67,8 +67,20 @@ export const backdropFragment = /* glsl */ `
   void main(){
     vec2 uv = vUv;
     float aspect = uResolution.x / uResolution.y;
-    vec2 par = (uMouse - 0.5) * 0.03;
+    vec2 par = (uMouse - 0.5) * 0.03;        // subtle positional drift (unchanged)
     vec2 P = vec2(uv.x*aspect, 1.0 - uv.y) + vec2(par.x, -par.y);
+
+    // mouse-driven REVEAL — same feel as hovering the orbs: as the cursor moves toward
+    // the fireball (screen LEFT) each circle unmasks a little more. 0 at centre/right
+    // (baseline), opening up to ~0.20 of extra reveal at the far-left edge. One-sided so
+    // it only ever exposes MORE than baseline (discs grow into each other, never gap).
+    // SEPARATED from the orb parallax: gated to the UPPER screen (where the fireball
+    // lives) so moving the cursor over the orb row (lower screen) does NOT drive the
+    // fireball — the two interactions stay independent (orbs were feeling laggy when the
+    // fireball reacted to the same motion). mY is the cursor in the fireball's y-down space.
+    float mY   = 1.0 - uMouse.y;
+    float zone = 1.0 - smoothstep(0.58, 0.82, mY); // 1 near the fireball (top) -> 0 over the orbs (bottom)
+    float hoverReveal = max(0.5 - uMouse.x, 0.0) * 0.40 * zone;
 
     vec3 col = uBg;
     // faint warm bloom hugging the fireball head + cool fill bottom-right (mood)
@@ -100,11 +112,11 @@ export const backdropFragment = /* glsl */ `
         if (i == 2) r = 0.098 * breathe;                 // 3rd shape: smaller than the 4th, bigger than the 2nd
         if (i == 3) r = 0.108 * breathe;                 // 4th shape: the tallest mass
         // per-gap spacing (sf = gap before disc i, as a fraction of the two radii):
-        //  i==1: nose stands ALONE (>1 => no overlap with the 2nd circle)
+        //  i==1: disc1 overlaps the nose (nose tucks under it, pokes out left)
         //  i==2: 2nd circle pulled in RIGHT, close to the 3rd
         //  i>=3: early chain caps overlap MORE, easing to a looser tail
         float sf;
-        if (i == 1)      sf = 0.72;
+        if (i == 1)      sf = 0.44;   // disc1 overlaps the nose so the nose tucks UNDER it (pokes out left)
         else if (i == 2) sf = 0.29;
         else             sf = mix(0.30, 0.50, (t - 0.5) / 0.5);
         if (i > 0) xacc += (prevR + r) * sf;
@@ -113,22 +125,23 @@ export const backdropFragment = /* glsl */ `
         cr[i] = r;
       }
 
-      // (1) HEAD — discs 2,1,0 drawn back-to-front so the FULL nose ends on top. The
-      // reveal curve gives disc0 a full circle, disc1 ~3/4, disc2 ~half.
+      // (1) HEAD — discs 0,1,2 drawn FRONT-to-BACK as 0(BOTTOM) -> 2(TOP) so each sits
+      // OVER the previous and the earlier disc pokes out on the LEFT: one cleanly under
+      // the other, exactly like the chain. EVERY disc now uses the same flat-LEFT reveal
+      // cut (no more flat-right circles) so there are no facing flat edges and therefore
+      // no additive blend lens at the disc0<->1 or disc1<->2 junctions. disc0 (t=0) puts
+      // the cut left of the whole disc so the nose stays a full round circle; disc1 -> fat
+      // cap; disc2 -> ~half. Hover opens each cap a little more (cut slides LEFT).
       for (int p = 0; p < 3; p++){
-        int   i = 2 - p;
+        int   i = p;                                       // 0 = nose (bottom) ... 2 = top
         float t = float(i) / float(N-1);
         vec2  c = vec2(cx[i], head.y + 0.006*sin(uTime*0.7 + float(i)*1.7));
         float r = cr[i];
         float d = length(P - c) / r;
         d += wob * 0.10;                                   // lumpy cloud edge
-        float cut = c.x + r * (-1.20 + 2.15 * pow(t, 0.62)); // full -> 3/4 -> half
-        // the nose (disc 0) AND the 2nd circle (disc 1) are cut on their RIGHT (round left
-        // edge, flat right) so each reads as its own circle and touches its right neighbour
-        // at that flat edge; the chain caps (i>=2) use the left reveal cut instead.
-        float vis = (i <= 1)
-          ? 1.0 - smoothstep(c.x + r * 0.55, c.x + r * 0.55 + 0.018, P.x)
-          : smoothstep(cut, cut + 0.014, P.x);
+        float cut = c.x + r * (-1.20 + 2.15 * pow(t, 0.62) - hoverReveal); // full -> cap -> half (+hover)
+        // the nose (disc 0) is the ONLY shape never cut on the left — force it fully shown.
+        float vis = (i == 0) ? 1.0 : smoothstep(cut, cut + 0.014, P.x);
 
         // warm colour by horizontal position across the head: orange -> coral.
         float hx    = clamp((P.x - head.x) / max(cx[2]-head.x, 0.001), 0.0, 1.0);
@@ -141,6 +154,8 @@ export const backdropFragment = /* glsl */ `
         float glow = exp(-d*d*0.95);
         col = mix(col, base * 1.18, clamp(body * vis, 0.0, 1.0));
         col += base * 1.18 * 0.55 * glow * (1.0 - body) * vis;
+        // cool leading-edge rim — kept on the nose too (wanted), now wrapping a guaranteed
+        // FULL circle (vis==1) so it reads as a rim around a round ball, not a left "cut".
         float rim = smoothstep(0.84, 1.08, d) * (1.0 - smoothstep(1.08, 1.34, d));
         col += vec3(0.04, 0.12, 1.10) * rim * vis * 0.40;
       }
@@ -154,8 +169,9 @@ export const backdropFragment = /* glsl */ `
         float d  = length(P - c) / r;
         d += wob * 0.04;
 
-        // same reveal curve -> clearly less than half, thinning to a sliver.
-        float cut = c.x + r * (-1.20 + 2.15 * pow(t, 0.62));
+        // same reveal curve -> clearly less than half, thinning to a sliver; hover opens
+        // each cap a little more (cut slides LEFT toward more exposure).
+        float cut = c.x + r * (-1.20 + 2.15 * pow(t, 0.62) - hoverReveal);
         float vis = smoothstep(cut, cut + 0.016, P.x);
 
         // colour: stretch the PURPLE band (pow ease) so the mid-chain stays magenta/

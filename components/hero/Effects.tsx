@@ -18,7 +18,7 @@ export function Effects() {
   if (tier < 2) return null;
 
   return (
-    <EffectComposer multisampling={0} disableNormalPass>
+    <EffectComposer multisampling={0}>
       <Bloom
         luminanceThreshold={0.55}
         luminanceSmoothing={0.3}

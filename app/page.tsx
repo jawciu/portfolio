@@ -1,5 +1,14 @@
+import { Suspense } from "react";
 import Hero from "@/components/Hero";
 import { HeroCopy } from "@/components/HeroCopy";
+import { TelemetryRail } from "@/components/TelemetryRail";
+import { About } from "@/components/sections/About";
+import { ProjectCarousel } from "@/components/sections/ProjectCarousel";
+// PROTOTYPE — alternative project-showcase variants (?variant=shell|deck|bento).
+// Remove this import + the Suspense block below and restore <ProjectCarousel />
+// once a direction is chosen.
+import { ProjectShowcasePrototype } from "@/components/sections/prototype/ProjectShowcasePrototype";
+import { Toolkit } from "@/components/sections/Toolkit";
 
 export default function Home() {
   return (
@@ -21,8 +30,8 @@ export default function Home() {
       <main className="relative z-10 min-h-screen flex flex-col">
         {/* Top bar */}
         <header className="flex items-center justify-between px-8 py-6 md:px-12">
-          <div className="font-mono text-[11px] md:text-xs tracking-[0.2em] uppercase text-fg/70">
-            C:\CAROLINE\PORTFOLIO\2026.EXE
+          <div className="font-mono text-xs md:text-sm tracking-[0.2em] text-fg/70">
+            ~/caro/portfolio/2026
           </div>
           <nav className="flex gap-6 md:gap-10 font-mono text-xs md:text-sm tracking-[0.25em] text-fg">
             <a href="#work" className="hover:text-fg/60 transition-colors">
@@ -38,7 +47,7 @@ export default function Home() {
         <section className="flex-1 flex flex-col justify-end px-8 md:px-12 pb-[calc(18vh+100px)]">
           <div className="max-w-3xl flex flex-col gap-4">
             {/* role line */}
-            <div className="flex items-center gap-4 mb-7 font-mono text-xs md:text-sm tracking-[0.25em] uppercase text-fg/85">
+            <div className="flex items-center gap-4 mb-7 font-mono text-sm md:text-base tracking-[0.25em] uppercase text-fg/85">
               <span aria-hidden className="inline-block w-3.5 h-3.5 bg-fg/90" />
               <span>Product Designer</span>
               <span aria-hidden className="text-fg/40">•</span>
@@ -50,27 +59,26 @@ export default function Home() {
         </section>
       </main>
 
-      {/* Vertical run label, right edge */}
-      <div
-        aria-hidden
-        className="fixed right-3 top-1/2 z-10 -translate-y-1/2 font-mono text-[10px] md:text-xs tracking-[0.35em] uppercase text-fg/45 pointer-events-none"
-        style={{ writingMode: "vertical-rl" }}
-      >
-        Portfolio // 2026 // Selected_Works
-      </div>
+      {/* Telemetry strip, right edge — live render facts about THIS visitor's session */}
+      <TelemetryRail />
 
-      {/* Spacer so there's something to scroll to and the smooth-scroll wiring is alive */}
-      <section
-        id="work"
-        className="relative z-10 min-h-screen px-8 md:px-12 py-24"
-      >
-        <h2 className="font-body font-bold uppercase text-4xl md:text-6xl tracking-tight max-w-3xl">
-          Selected Work
-        </h2>
-        <p className="mt-6 max-w-xl text-fg-muted">
-          Case studies coming soon. This space is reserved for the work.
-        </p>
-      </section>
+      {/* Below the hero: About is a glass sheet — the fixed WebGL canvas (z-0)
+          glows through its backdrop blur, and its background gradient lands on
+          solid bg so the opaque sections after it join seamlessly. */}
+      <div className="relative z-10">
+        <About />
+        {/* -mt-px: overlap About by 1px — at fractional DPRs a sub-pixel gap
+            opens between the two sections and the bright fixed canvas behind
+            shines through as a hairline. */}
+        <div className="-mt-px bg-bg">
+          <Toolkit />
+          <section id="work" className="px-8 py-12 md:px-12 md:py-20">
+            <Suspense fallback={<ProjectCarousel />}>
+              <ProjectShowcasePrototype />
+            </Suspense>
+          </section>
+        </div>
+      </div>
     </>
   );
 }
