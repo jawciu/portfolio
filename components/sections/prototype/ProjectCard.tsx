@@ -13,13 +13,16 @@
 import { useRouter } from "next/navigation";
 import { Grain } from "./softBits";
 
-// Gradient-blob colours: a warm core diffusing out to a cool edge.
-export type CardBlob = { core: string; edge: string };
+// Gradient-blob colours: a warm core diffusing out to a cool edge. Optional stops
+// tune how far the core holds before the edge takes over — bump `coreStop` to keep
+// more of the warm core visible in the bloom (defaults reproduce the original ramp).
+export type CardBlob = { core: string; edge: string; coreStop?: number; edgeStop?: number };
 
 export type ProjectCardProps = {
   open: boolean;
   onActivate: () => void;
-  /** collapsed-state vertical label, e.g. "EON Next · 2026" */
+  /** collapsed-state vertical label — the company name only, e.g. "E.ON Next";
+      the year is appended (dimmed) from the `year` prop. */
   collapsedLabel: string;
   year: string;
   /** mono kicker shown above the title, e.g. "/e.on_next" */
@@ -43,8 +46,8 @@ export type ProjectCardProps = {
 // Expanded bloom — one big blurred circle whose centre sits just OUTSIDE the
 // card's bottom-right corner, so only a quarter blooms in. Warm core → cool edge
 // → diffuse to transparent (the edge hex + "00" alpha) before any edge reads.
-function bloom({ core, edge }: CardBlob) {
-  return `radial-gradient(circle 820px at 98% 112%, ${core} 0%, ${edge} 48%, ${edge}00 80%)`;
+function bloom({ core, edge, coreStop = 0, edgeStop = 48 }: CardBlob) {
+  return `radial-gradient(circle 820px at 98% 112%, ${core} 0%, ${core} ${coreStop}%, ${edge} ${edgeStop}%, ${edge}00 80%)`;
 }
 
 // Collapsed wisp — dim, centred, vertical spine in the same palette, so it
