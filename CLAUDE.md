@@ -260,6 +260,15 @@ Newest first. Record *why*, not just *what*.
   transition (Caroline: "make the transition area bigger, not the amber"). Key insight:
   the `edge00` fade is always at 80% so the blob's OUTER size never changes — widen the
   transition with `edgeStop`, grow amber with `coreStop`; they're independent.
+  **Round 5 (Caroline):** "make the green→black more diffused — black should leach to
+  green for longer." Added a 3rd optional stop `fadeStop` (default 80 = the old
+  hardcoded transparent point) and set cog_adhd to `96`, so the green fades to
+  transparent over a longer outer band = softer step. BUT pushing `fadeStop` to 96
+  GREW the blob (Caroline: "I wanted the same size, just more dark going in"). Correct
+  approach: keep `fadeStop 80` (original outer size) and pull `edgeStop` INWARD (66→50)
+  so the green recedes and the green→transparent fade spans a longer band inside the
+  same footprint — dark leaches further in, softer step, same size. Final cog_adhd
+  blob: `coreStop 30 / edgeStop 50 / fadeStop 80` (Caroline's final nudge). E.ON omits all three → unchanged.
   (Earlier card work through `79f288c` is committed + pushed; this amber tweak is
   uncommitted pending Caroline.)
 - **2026-06-16** — **Extracted the E.ON Next showcase card into a reusable
@@ -613,6 +622,66 @@ Newest first. Record *why*, not just *what*.
 > Latest handoff lives at the top. At the end of a session, append a new entry with: what changed, current
 > state (working / broken / in-progress), and explicit next steps for the next agent. Capture stated intent
 > ("tomorrow we do X") and long absences here too.
+
+### 2026-06-24 — Cog ADHD case study page + shared NavBar (this agent)
+- **Done this session** (alongside a separate "another cakes" agent tuning the
+  `/cog_adhd` CARD — see the entry below this one):
+  1. **Built the Cog ADHD case study** at `/project/cog-adhd` — a faithful LIGHT-theme
+     rebuild of Caroline's old Framer "Cog Clinic — Research & Strategy" page, via a
+     divide-and-conquer agent team (15 builders one-per-section; 15 evaluators
+     Playwright-comparing each section to the PDF; 2 fixers). Details in the two
+     Decision Log entries dated 2026-06-24. **COMMITTED + PUSHED** (commit `1332537`).
+  2. **Wired the card → page**: added an optional `href` to `ProjectCard`; the Cog card
+     passes `/project/cog-adhd`. (Already in HEAD via the other agent's commit sweep.)
+  3. **Shared sticky glass NavBar** (`components/NavBar.tsx`, mounted in
+     `app/layout.tsx`) — WORK→PROJECTS, links back to home sections from any page,
+     theme-aware (dark site / light case study), transparent-at-top → frosts on scroll,
+     hover tuned (dark: dim default→bright; light: keep tone→darken). See its Decision
+     Log entry.
+- **State: WORKING.** tsc + eslint clean, 0 console errors. Both navbar themes + the
+  card→page navigation verified via Playwright. Case study renders end-to-end, close to
+  the PDF.
+- **UNCOMMITTED (shared working tree — careful, some is the OTHER agent's in-flight
+  work):** `M NavBar.tsx` (MY latest hover/transparency tweaks — mine, safe to commit),
+  `M CLAUDE.md` (journal). The `M DESIGN.md` / `M ProjectCard.tsx` / `M VariantBentoSoft.tsx`
+  are the other cakes' card blob-tuning — **leave for them**. A ready-to-use **NavBar
+  commit message is in the chat** (Caroline asked for it, said don't commit yet).
+- **Next steps:**
+  1. **Commit the NavBar work** when Caroline's ready (NavBar.tsx + already-applied
+     layout/page edits; message in chat). Don't sweep the card files (other agent's).
+  2. **Polish the case study** — the stated next focus. Flagged candidates: Hero
+     confetti-band crop, Solution bubble scatter, spacing/rhythm. Re-screenshot via a
+     `[data-cog]` Playwright harness (temp `scripts/_cogshots.mjs` was deleted —
+     recreate from the Decision Log notes or use the Playwright MCP). PDF bands + asset
+     catalog + `SPEC.md` are in the session scratchpad `cog-pdf/`.
+- **Open intent:** Caroline wants to keep iterating on the Cog case study page next session.
+
+### 2026-06-24 — cog_adhd showcase card (project 02) build + polish
+- **Done:** Built the second `/cog_adhd` showcase card via the reusable `ProjectCard`
+  (full story in the Decision Log, 2026-06-24 entries). This session: cleaned the
+  two-phone product art (stripped black corners, filled phone-2's bottom-right);
+  positioning `right-[-10%] bottom-0 h-[65%] object-left` (phones on the right,
+  ~65% tall, clear of the copy, right phone cut by the card edge); real subtitle
+  copy; and a long iteration on the amber→green corner blob — added `coreStop`/
+  `edgeStop`/`fadeStop` knobs to `bloom()`/`CardBlob` in `ProjectCard.tsx`.
+- **State (WORKING):** tsc + lint clean. The initial card + cleaned asset are
+  **committed & pushed** (`79f288c` on `project-showcase-experiment`). **Uncommitted**
+  in the working tree: the gradient-knob work — `ProjectCard.tsx` (the 3 stops) +
+  `VariantBentoSoft.tsx` (cog_adhd `blob={{ core:#F2922E, edge:#189E71, coreStop:30,
+  edgeStop:50, fadeStop:80 }}`) + `DESIGN.md`/`CLAUDE.md` doc updates. Caroline last
+  nudged `coreStop` to 30 herself and was happy with the look.
+- **Next steps:** (1) **Commit & push the gradient work** when Caroline confirms —
+  stage only `ProjectCard.tsx VariantBentoSoft.tsx DESIGN.md CLAUDE.md` (NOT
+  `components/NavBar.tsx` or the `app/project/` `components/project/` `public/projects/`
+  trees — those belong to the *separate* case-study-page agent; leave them out).
+  (2) The other 3 cells (`project-03/04/05`) are still the old centred placeholder
+  layout — migrate each to `<ProjectCard>` when it gets real content + a product visual.
+- **Gotcha for next agent:** MCP Playwright screenshots time out (5s) on this
+  live-WebGL page. Capture via a throwaway `@playwright/test` script in the project
+  root (real `.hover()` to trip React's `onMouseEnter`, then inject
+  `*{transition:none}` + hide the `<canvas>`, then element-screenshot). Two agents are
+  on this branch — `git add` specific files only, never `-A`.
+- **Open intent:** none stated for next session.
 
 ### 2026-06-09 — CLAUDE.md bootstrap
 - **Done:** Created this file; documented stack, architecture, tokens, skills, commands. Set up the

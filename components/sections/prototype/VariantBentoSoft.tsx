@@ -94,7 +94,7 @@ export function VariantBentoSoft() {
                   alt: "cog_adhd check-in history — weekly ADHD scores and daily highs/lows",
                 }}
                 imageClassName="pointer-events-none absolute right-[-10%] bottom-0 h-[65%] w-auto max-w-none object-contain object-left"
-                blob={{ core: "#F2922E", edge: "#189E71", coreStop: 20, edgeStop: 66 }}
+                blob={{ core: "#F2922E", edge: "#189E71", coreStop: 30, edgeStop: 50, fadeStop: 80 }}
                 href="/project/cog-adhd"
               />
             );

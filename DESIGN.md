@@ -274,8 +274,13 @@ when expanded, one split layout, so every real project reads as one authored pie
   takes over — cog_adhd uses `coreStop 20 / edgeStop 66`: amber holds to ~20% then
   blends across a WIDE 20→66 band for a soft amber→green transition. The blob's outer
   silhouette is unchanged (the `edge00` fade always completes at 80%); widen the
-  transition by raising `edgeStop`, grow the amber by raising `coreStop`. Omit both
-  and the original `0 / 48` ramp applies (E.ON).
+  transition by raising `edgeStop`, grow the amber by raising `coreStop`. A third
+  optional stop, `fadeStop` (default 80), is where the green finishes fading to
+  transparent — keep it at 80 to hold the blob's outer size; to make the green→black
+  step softer WITHOUT growing the blob, pull `edgeStop` inward (the green→transparent
+  fade then spans a longer band inside the same 80% footprint, so the dark leaches in
+  further). cog_adhd uses `coreStop 30 / edgeStop 50 / fadeStop 80`. Omit all three
+  and the original `0 / 48 / 80` ramp applies (E.ON).
 - **Copy column:** `year` in the top-left corner; a centred block (nudged a touch
   above middle) of optional brand logo + mono kicker (`/e.on_next`), the
   `project-title` (Iosevka, uppercase, sized to land in two lines), and a lowercase

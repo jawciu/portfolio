@@ -16,7 +16,7 @@ import { Grain } from "./softBits";
 // Gradient-blob colours: a warm core diffusing out to a cool edge. Optional stops
 // tune how far the core holds before the edge takes over — bump `coreStop` to keep
 // more of the warm core visible in the bloom (defaults reproduce the original ramp).
-export type CardBlob = { core: string; edge: string; coreStop?: number; edgeStop?: number };
+export type CardBlob = { core: string; edge: string; coreStop?: number; edgeStop?: number; fadeStop?: number };
 
 export type ProjectCardProps = {
   open: boolean;
@@ -46,8 +46,8 @@ export type ProjectCardProps = {
 // Expanded bloom — one big blurred circle whose centre sits just OUTSIDE the
 // card's bottom-right corner, so only a quarter blooms in. Warm core → cool edge
 // → diffuse to transparent (the edge hex + "00" alpha) before any edge reads.
-function bloom({ core, edge, coreStop = 0, edgeStop = 48 }: CardBlob) {
-  return `radial-gradient(circle 820px at 98% 112%, ${core} 0%, ${core} ${coreStop}%, ${edge} ${edgeStop}%, ${edge}00 80%)`;
+function bloom({ core, edge, coreStop = 0, edgeStop = 48, fadeStop = 80 }: CardBlob) {
+  return `radial-gradient(circle 820px at 98% 112%, ${core} 0%, ${core} ${coreStop}%, ${edge} ${edgeStop}%, ${edge}00 ${fadeStop}%)`;
 }
 
 // Collapsed wisp — dim, centred, vertical spine in the same palette, so it
