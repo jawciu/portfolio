@@ -28,20 +28,7 @@ export default function Home() {
       />
 
       <main className="relative z-10 min-h-screen flex flex-col">
-        {/* Top bar */}
-        <header className="flex items-center justify-between px-8 py-6 md:px-12">
-          <div className="font-mono text-xs md:text-sm tracking-[0.2em] text-fg/70">
-            ~/caro/portfolio/2026
-          </div>
-          <nav className="flex gap-6 md:gap-10 font-mono text-xs md:text-sm tracking-[0.25em] text-fg">
-            <a href="#work" className="hover:text-fg/60 transition-colors">
-              [ WORK ]
-            </a>
-            <a href="#about" className="hover:text-fg/60 transition-colors">
-              [ ABOUT ]
-            </a>
-          </nav>
-        </header>
+        {/* Top bar lives in the shared sticky <NavBar /> (root layout) now. */}
 
         {/* Hero copy — sits lower-left, like the comp */}
         <section className="flex-1 flex flex-col justify-end px-8 md:px-12 pb-[calc(18vh+100px)]">

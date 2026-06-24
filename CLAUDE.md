@@ -129,6 +129,24 @@ it's a deliberate call.
 
 Newest first. Record *why*, not just *what*.
 
+- **2026-06-24** — **Shared sticky glass NavBar across all pages**
+  (`components/NavBar.tsx`, mounted once in `app/layout.tsx` inside `<Providers>`).
+  Caroline: make the home top-bar row a sticky glass navbar shown on every page;
+  rename `[ WORK ]` → `[ PROJECTS ]`; it must always link back to the HOME sections
+  so you can navigate out of a case study. Left = `~/caro/portfolio/2026` → `/`
+  (home/hero); right = `[ PROJECTS ]` → `/#work`, `[ ABOUT ]` → `/#about`.
+  **Theme-aware:** `usePathname()` → light routes (`startsWith("/project")`) get
+  dark text + cream glass `rgba(245,244,239,0.62)`; everything else (dark site) gets
+  light text + dark glass `rgba(7,7,9,0.5)`; both `backdrop-blur-md saturate-150`
+  with a hairline bottom border, `transition-colors`. **Smooth nav:** on the home
+  page a click handler intercepts same-page anchors (`scrollIntoView`/`scrollTo top`,
+  smooth); from another page the Next `<Link>` navigates to `/` + hash natively
+  (Lenis has no anchor handler, so cross-page hash lands via native scroll). Removed
+  the old inline `<header>` from `app/page.tsx` (now `<NavBar/>`'s job) and the
+  case-study's own `Nav` section (deleted `sections/Nav.tsx`, removed the
+  `data-cog="Nav"` wrapper); added `pt-14 md:pt-16` to the cog-root `<main>` so the
+  confetti hero clears the fixed bar. Verified both themes + cross-page nav via
+  Playwright (PROJECTS from the case study → `/#work`), tsc + eslint clean.
 - **2026-06-24** — **Started the Cog ADHD CASE STUDY page** (the page that opens
   when you click the `/cog_adhd` showcase card; a *separate* "another cakes" agent
   owns the card itself — don't touch `VariantBentoSoft`/`ProjectCard`). Caroline:
@@ -231,10 +249,19 @@ Newest first. Record *why*, not just *what*.
   **Round 4 (Caroline):** "more amber visible in the gradient." The bloom centres at
   the bottom-right corner with amber at `0%` → green by `48%`, so amber barely
   reached the visible card. Added optional `coreStop`/`edgeStop` (radius %) to
-  `CardBlob`/`bloom()` — E.ON defaults (`0/48`) reproduce the old ramp exactly;
-  cog_adhd now uses `coreStop 30 / edgeStop 64` so the amber core holds further out
-  and washes up behind the phones before easing to green. (Earlier card work through
-  `79f288c` is committed + pushed; this amber tweak is uncommitted pending Caroline.)
+  `CardBlob`/`bloom()` — E.ON defaults (`0/48`) reproduce the old ramp exactly.
+  FIRST try (`coreStop 30 / edgeStop 64`) was wrong — moving edgeStop GREW the
+  bloom's footprint, which Caroline didn't want. Corrected to `coreStop 34` with
+  edgeStop left at the default 48, so the amber holds further into the visible inner
+  bloom but the green stop + 80% fade (the blob's size/spread) are UNCHANGED.
+  Then `coreStop 34` read too HARD (defined amber→green edge); `coreStop 12` softened
+  it but pulled the amber back too far. Landed on `coreStop 20 / edgeStop 66`: amber a
+  little bigger AND the amber→green blend band much WIDER (20→66) for a soft
+  transition (Caroline: "make the transition area bigger, not the amber"). Key insight:
+  the `edge00` fade is always at 80% so the blob's OUTER size never changes — widen the
+  transition with `edgeStop`, grow amber with `coreStop`; they're independent.
+  (Earlier card work through `79f288c` is committed + pushed; this amber tweak is
+  uncommitted pending Caroline.)
 - **2026-06-16** — **Extracted the E.ON Next showcase card into a reusable
   `ProjectCard` component** (`components/sections/prototype/ProjectCard.tsx`) —
   Caroline: "the /e.on_next card is looking good, make it a component we can reuse

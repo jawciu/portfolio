@@ -269,7 +269,13 @@ when expanded, one split layout, so every real project reads as one authored pie
   any rectangle reads (same "dissolving edge" rule as the hero). Each card supplies
   its own `{core, edge}` pair; draw them from the spectrum where possible. The E.ON
   Next card uses coral `#C05846` → purple `#6D1B76`; the cog_adhd card uses amber
-  `#F2922E` → green `#189E71` (the warm-to-green echoes that app's own UI).
+  `#F2922E` → green `#189E71` (the warm-to-green echoes that app's own UI). Optional
+  `coreStop`/`edgeStop` (radius %) tune how far the warm core holds before the edge
+  takes over — cog_adhd uses `coreStop 20 / edgeStop 66`: amber holds to ~20% then
+  blends across a WIDE 20→66 band for a soft amber→green transition. The blob's outer
+  silhouette is unchanged (the `edge00` fade always completes at 80%); widen the
+  transition by raising `edgeStop`, grow the amber by raising `coreStop`. Omit both
+  and the original `0 / 48` ramp applies (E.ON).
 - **Copy column:** `year` in the top-left corner; a centred block (nudged a touch
   above middle) of optional brand logo + mono kicker (`/e.on_next`), the
   `project-title` (Iosevka, uppercase, sized to land in two lines), and a lowercase

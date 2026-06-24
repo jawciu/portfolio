@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import "../../../components/project/cog-adhd/theme.css";
-import { Nav } from "../../../components/project/cog-adhd/sections/Nav";
 import { Hero } from "../../../components/project/cog-adhd/sections/Hero";
 import { MyRole } from "../../../components/project/cog-adhd/sections/MyRole";
 import { Interviews } from "../../../components/project/cog-adhd/sections/Interviews";
@@ -24,8 +23,7 @@ export const metadata: Metadata = {
 
 export default function CogAdhdCaseStudy() {
   return (
-    <main className="cog-root min-h-screen w-full overflow-x-hidden">
-      <div data-cog="Nav"><Nav /></div>
+    <main className="cog-root min-h-screen w-full overflow-x-hidden pt-14 md:pt-16">
       <div data-cog="Hero"><Hero /></div>
       <div data-cog="MyRole"><MyRole /></div>
       <div data-cog="Interviews"><Interviews /></div>
