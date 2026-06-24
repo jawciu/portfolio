@@ -685,6 +685,35 @@ Newest first. Record *why*, not just *what*.
 > state (working / broken / in-progress), and explicit next steps for the next agent. Capture stated intent
 > ("tomorrow we do X") and long absences here too.
 
+### 2026-06-24 (late) — Case-study TYPE TEMPLATE kicked off (this agent)
+- **Done this session:** Started a reusable case-study type template, tuned on the
+  Cog ADHD page (`components/project/cog-adhd/`). Two commits, both **pushed** to
+  `project-showcase-experiment`:
+  1. `df234b3` — renamed cog-specific heading classes to generic reusable ones:
+     `.cog-page-title` → **`.case-study-title`** (page H1) and `.cog-title` →
+     **`.case-study-section-header`**. Title = Iosevka, uppercase, **48px desktop /
+     22px mobile** (`@media max-width:640px`), manual `<br/>` after "Opportunities"
+     (2 lines desktop, 3 ok mobile), **extra-bold via `-webkit-text-stroke`** (0.6px
+     desktop / 0.35px mobile) because Charon ships no 800/900 cut.
+  2. `b3fea07` — hero meta labels (brand/summary/setting the stage/role/time/tools)
+     → new **`.case-study-hero-label`** (16px, **true** weight-800 — Geist Mono is a
+     variable font). Left the shared `.cog-label` (used across many sections) alone.
+  Both saved to `DESIGN.md` (typography tokens + "Case-study template" prose) and
+  logged in the Decision Log.
+- **Also:** added a global rule to `~/.claude/CLAUDE.md` — when Caroline asks a
+  QUESTION, answer it and change nothing; only act on explicit instructions.
+- **State: WORKING + pushed.** tsc + eslint clean, all sizes/weights verified via
+  Playwright. Nothing in progress, no broken state.
+- **Shared working tree note:** the "another cakes" agent's synapse card work was
+  uncommitted while I worked — I deliberately staged ONLY my own files
+  (cog-adhd theme/sections + DESIGN.md + CLAUDE.md). `git add` specific files only
+  on this branch.
+- **Next steps (open):** continue the case-study template top-down — likely next:
+  body copy / `.cog-body`, section headers in context, callouts/statements, spacing
+  rhythm. Fold each agreed decision into the `.case-study-*` classes + DESIGN.md.
+- **Open intent:** keep iterating on the Cog case study + growing the case-study
+  template next session.
+
 ### 2026-06-24 (eve) — Built showcase card #3 (/synapse) + tuned its product image
 - **Done this session:**
   1. **Two earlier commits**: `4db7d79` added the `fadeStop` blob knob + softened the
