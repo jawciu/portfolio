@@ -129,6 +129,31 @@ it's a deliberate call.
 
 Newest first. Record *why*, not just *what*.
 
+- **2026-06-24** — **Started the CASE-STUDY TYPE TEMPLATE** (reusable type tokens
+  across every case study, beginning with Cog ADHD). Caroline is tuning the case
+  study and wants the type decisions (size/boldness of titles + section headers)
+  saved so future case studies repeat them. Renamed the cog-specific heading classes
+  to generic, reusable ones in `components/project/cog-adhd/theme.css`:
+  `.cog-page-title` → **`.case-study-title`** (the page H1) and `.cog-title` →
+  **`.case-study-section-header`** (per-section headings; updated all consumers —
+  `ui.tsx`'s `Title`, `Hero.tsx`, `NextProject.tsx`). **Title spec (Caroline's
+  numbers):** Iosevka, uppercase, **48px desktop / 22px mobile** (`@media max-width
+  640px`), **2 lines on desktop** via a manual `<br/>` after "Opportunities" (3 lines
+  fine on mobile). **Extra-bold:** Iosevka *Charon* only ships 300/400/500/700 on
+  fontsource (probed the CDN — no 600/800/900), so true extra-bold isn't available;
+  faked it by stroking the 700 glyphs in the text colour — `-webkit-text-stroke
+  0.6px currentColor` desktop / `0.35px` mobile. Section headers keep the
+  `clamp(1.5rem→2.1rem)` ramp at 700. **Saved to the template:** added
+  `case-study-title` + `case-study-section-header` typography tokens to `DESIGN.md`
+  (front matter + a "Case-study template" prose note documenting the faux-extrabold
+  rule). Earlier this session I briefly matched the title to the home hero scale
+  (68px) — Caroline reverted that; the home hero and case-study title are NOT the
+  same size (hero 68 / case-study 48). **Also (Caroline's global rule, added to
+  `~/.claude/CLAUDE.md`):** when she asks a *question*, answer it and change nothing;
+  only act on explicit instructions. Verified title sizes/line-counts + the
+  faux-bold render via Playwright. tsc + eslint clean. **Committed + pushed**
+  this session (cog-adhd theme/sections + DESIGN.md + CLAUDE.md only; left the
+  other agent's synapse card files alone).
 - **2026-06-24** — **Populated showcase card #3 (`/synapse`) via the reusable
   `ProjectCard`** — from the Figma frame (`figma.com/design/1crZakXfGsPCpxdXIrcjHo`,
   node `95-807`). It's **synapse**, a memory-first reflection agent built at the

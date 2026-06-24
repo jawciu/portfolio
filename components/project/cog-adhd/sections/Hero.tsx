@@ -1,4 +1,4 @@
-import { A, Container, Title, Body } from "../ui";
+import { A, Container, Body } from "../ui";
 
 export function Hero() {
   return (
@@ -14,10 +14,12 @@ export function Hero() {
       </div>
 
       <Container className="pt-10 pb-16 md:pt-14 md:pb-24">
-        {/* Title */}
-        <Title className="max-w-[18ch]">
-          Gaps and Opportunities in ADHD Therapy Processes
-        </Title>
+        {/* Page title — main H1. See `.case-study-title` (template token). */}
+        <h1 className="case-study-title">
+          Gaps and Opportunities
+          <br />
+          in ADHD Therapy Processes
+        </h1>
 
         {/* Meta block: two columns */}
         <div className="mt-10 grid grid-cols-1 gap-10 md:grid-cols-2 md:gap-16">

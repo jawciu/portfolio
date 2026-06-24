@@ -28,7 +28,7 @@ export function Title({
   children: ReactNode;
   className?: string;
 }) {
-  return <h2 className={`cog-title ${className}`}>{children}</h2>;
+  return <h2 className={`case-study-section-header ${className}`}>{children}</h2>;
 }
 
 export function Body({

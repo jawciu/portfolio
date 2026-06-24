@@ -50,6 +50,22 @@ typography:
     fontWeight: "700"
     lineHeight: 1.02
     letterSpacing: -0.01em
+  # Case-study template — reusable across EVERY case-study page (a light sub-theme,
+  # scoped to the `.case-study-*` classes in components/project/<slug>/theme.css).
+  # Iosevka, uppercase. Charon ships no 800/900, so "extra bold" is faked by
+  # stroking the 700 glyphs in the text colour (text-stroke). Manual line breaks.
+  case-study-title:            # the page H1 at the top of a case study
+    fontFamily: Iosevka Charon
+    fontSize: 48px      # desktop; 22px at ≤640px (mobile)
+    fontWeight: "700"   # + -webkit-text-stroke 0.6px (0.35px mobile) = faux extra-bold
+    lineHeight: 1.08
+    letterSpacing: -0.02em
+  case-study-section-header:   # each section's heading (MY ROLE, INTERVIEWS, …)
+    fontFamily: Iosevka Charon
+    fontSize: 33.6px    # clamp(1.5rem, 1.1rem + 1.6vw, 2.1rem)
+    fontWeight: "700"
+    lineHeight: 1.08
+    letterSpacing: -0.01em
   # Geist — body copy. The only sans on the page; calm against the noise.
   body-lg:
     fontFamily: Geist
@@ -185,6 +201,17 @@ Three families, each with a clear job. Never reach past these.
 Bricolage Grotesque (`font-display`) is loaded but currently dormant — it only
 appears in archived/commented showcase variants. Treat the live system as three
 families.
+
+**Case-study template** (`case-study-title`, `case-study-section-header`): case
+studies are a light sub-theme but keep the same display voice — Iosevka, uppercase.
+The page H1 is **48px desktop / 22px mobile** (≤640px); section headers use the
+`clamp(1.5rem→2.1rem)` ramp. Both are set at weight 700 and pushed to "extra bold"
+by stroking the glyphs in the text colour (`-webkit-text-stroke`, 0.6px desktop /
+0.35px mobile on the title) — Charon ships no 800/900 cut, so this is how we get a
+heavier display weight without swapping the typeface. Title line breaks are placed
+manually in markup (kept to 2 lines on desktop; 3 is fine on mobile). These live in
+each case study's `theme.css` as `.case-study-*` classes so they're reused verbatim
+across every case-study page.
 
 ## Layout & Spacing
 

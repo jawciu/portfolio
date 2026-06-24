@@ -46,8 +46,32 @@
   color: var(--cog-green);
 }
 
-/* big bold uppercase section title (Iosevka) */
-.cog-title {
+/* CASE-STUDY PAGE TITLE — the main H1 at the top of a case study. Reusable across
+   ALL case studies. TEMPLATE font sizes: 48px desktop / 22px mobile (≤640px).
+   Line breaks are placed manually in the markup (e.g. <br/> after "Opportunities"). */
+.case-study-title {
+  font-family: var(--font-hero), monospace;
+  font-weight: 700; /* 700 is the heaviest REAL Iosevka Charon cut we ship */
+  /* Charon has no 800/900, so we fake "extra bold" by stroking the 700 glyphs in
+     the text colour — thickens every stroke without a heavier font file. */
+  -webkit-text-stroke: 0.6px currentColor;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  line-height: 1.08;
+  color: var(--cog-ink);
+  font-size: 48px; /* desktop */
+}
+
+@media (max-width: 640px) {
+  .case-study-title {
+    font-size: 22px; /* mobile — 3 lines is fine here */
+    -webkit-text-stroke: 0.35px currentColor; /* lighter stroke at small size */
+  }
+}
+
+/* CASE-STUDY SECTION HEADER — the bold uppercase heading for each section
+   (MY ROLE, INTERVIEWS, …). Reusable across ALL case studies. TEMPLATE token. */
+.case-study-section-header {
   font-family: var(--font-hero), monospace;
   font-weight: 700;
   text-transform: uppercase;

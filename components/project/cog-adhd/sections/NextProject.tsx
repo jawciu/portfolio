@@ -6,10 +6,10 @@ export function NextProject() {
       {/* ── View next project band ───────────────────────────────────────── */}
       <div className="relative overflow-hidden bg-[var(--cog-bg)]">
         <Container className="relative z-10 pt-16 md:pt-24">
-          <p className="cog-title text-[var(--cog-ink)]">View Next Project</p>
+          <p className="case-study-section-header text-[var(--cog-ink)]">View Next Project</p>
 
           <div className="mt-10 max-w-[640px]">
-            <h3 className="cog-title text-[clamp(1.6rem,1.1rem+2vw,2.4rem)] leading-[1.1]">
+            <h3 className="case-study-section-header text-[clamp(1.6rem,1.1rem+2vw,2.4rem)] leading-[1.1]">
               Building Marketing Website
               <br />
               For A Dual Audience
