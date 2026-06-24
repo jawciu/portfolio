@@ -228,6 +228,13 @@ Newest first. Record *why*, not just *what*.
   (Caroline bumped 56%→65% — "slightly bigger"; still clears the copy).
   KEY LESSON for these device cards: pick a height % low enough that
   `height%·cardH·aspect ≤ 50%·cardW`, else the artwork overflows the copy column.
+  **Round 4 (Caroline):** "more amber visible in the gradient." The bloom centres at
+  the bottom-right corner with amber at `0%` → green by `48%`, so amber barely
+  reached the visible card. Added optional `coreStop`/`edgeStop` (radius %) to
+  `CardBlob`/`bloom()` — E.ON defaults (`0/48`) reproduce the old ramp exactly;
+  cog_adhd now uses `coreStop 30 / edgeStop 64` so the amber core holds further out
+  and washes up behind the phones before easing to green. (Earlier card work through
+  `79f288c` is committed + pushed; this amber tweak is uncommitted pending Caroline.)
 - **2026-06-16** — **Extracted the E.ON Next showcase card into a reusable
   `ProjectCard` component** (`components/sections/prototype/ProjectCard.tsx`) —
   Caroline: "the /e.on_next card is looking good, make it a component we can reuse

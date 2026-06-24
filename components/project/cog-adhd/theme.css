@@ -1,0 +1,93 @@
+/* Cog ADHD case study — LIGHT theme, scoped to .cog-root so it never leaks into
+   the dark portfolio. Palette + type lifted from the Framer case study, mapped
+   onto the portfolio's own font stack (Iosevka `--font-hero`, Geist `--font-body`,
+   Geist Mono `--font-mono`). See SPEC + DESIGN.md › Cog ADHD case study. */
+
+.cog-root {
+  --cog-bg: #f5f4ef; /* page cream */
+  --cog-bg-alt: #faf9f5; /* slightly lighter band */
+  --cog-bg-warm: #f6efe2; /* hero confetti band */
+  --cog-ink: #1a1a1a; /* near-black text */
+  --cog-ink-soft: #4a4a4a;
+  --cog-muted: #767670; /* secondary copy */
+  --cog-line: #e2ded3; /* hairlines / card borders */
+  --cog-card: #ffffff;
+
+  --cog-green: #1e7a4d; /* dark green — bars, headers, links */
+  --cog-green-deep: #15633d;
+  --cog-mint: #b3e0c6; /* thought bubbles, journey headers */
+  --cog-mint-soft: #d6efe0;
+  --cog-orange: #e5851e; /* mascots, accent bars */
+  --cog-purple: #9588c9; /* clouds */
+  --cog-purple-deep: #3d2b6e; /* footer / next-project band */
+
+  background: var(--cog-bg);
+  color: var(--cog-ink);
+  font-family: var(--font-body), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---- shared type / layout helpers (builders reuse these for consistency) ---- */
+
+.cog-container {
+  width: 100%;
+  max-width: 1080px;
+  margin-inline: auto;
+  padding-inline: 24px;
+}
+
+/* small uppercase mono section label, e.g. "INTERVIEWS", "COMPETITIVE ANALYSIS" */
+.cog-kicker {
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--cog-green);
+}
+
+/* big bold uppercase section title (Iosevka) */
+.cog-title {
+  font-family: var(--font-hero), monospace;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  line-height: 1.08;
+  color: var(--cog-ink);
+  font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.1rem);
+}
+
+/* mono kicker used for the tiny inline labels (brand / role / time / tools) */
+.cog-label {
+  font-family: var(--font-mono), monospace;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--cog-ink);
+}
+
+/* body copy */
+.cog-body {
+  font-family: var(--font-body), sans-serif;
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--cog-ink-soft);
+}
+
+/* the framed monospace pull-quote callouts (left-bordered, typewriter feel) */
+.cog-callout {
+  font-family: var(--font-mono), monospace;
+  font-size: clamp(0.95rem, 0.85rem + 0.5vw, 1.15rem);
+  line-height: 1.6;
+  color: var(--cog-ink);
+  border-left: 2px solid var(--cog-ink);
+  padding: 4px 0 4px 24px;
+}
+
+/* the heavy emphasised section sub-quotes (e.g. SESSION BOOKING DROP-OFF) — bold */
+.cog-statement {
+  font-family: var(--font-mono), monospace;
+  font-size: clamp(1.05rem, 0.9rem + 0.7vw, 1.3rem);
+  line-height: 1.55;
+  color: var(--cog-ink);
+}
