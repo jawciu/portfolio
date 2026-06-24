@@ -685,6 +685,37 @@ Newest first. Record *why*, not just *what*.
 > state (working / broken / in-progress), and explicit next steps for the next agent. Capture stated intent
 > ("tomorrow we do X") and long absences here too.
 
+### 2026-06-24 (eve) — Built showcase card #3 (/synapse) + tuned its product image
+- **Done this session:**
+  1. **Two earlier commits**: `4db7d79` added the `fadeStop` blob knob + softened the
+     cog_adhd green→black; `1cb0b2c` tuned NavBar link hover states (dim default →
+     brighten/darken on hover). Both **committed + pushed**.
+  2. **Built the `/synapse` showcase card** (project #3) via the reusable `ProjectCard`
+     — copy/assets/colours from the Figma frame (node `95-807`). It's the LangChain ×
+     SurrealDB hackathon reflection agent. See the full Decision Log entry. **Committed +
+     pushed** as `ee6405f` (lib/projects.ts, projectMeta.ts, VariantBentoSoft.tsx,
+     synapse-logo.png, synapse-product.png).
+  3. **Iterated the synapse product visual** with Caroline (several rounds): swapped to
+     her tighter "Map your mind" crop, then sized/positioned it — final
+     `right-[-12%] top-[55%] h-[53%]`, cut off at the card's right edge (matches the
+     Figma). She also nudged the blob colours to `core #C24F83 / edge #734A8E`.
+     **Committed + pushed** as `8832486`.
+- **State: WORKING.** tsc + eslint clean, 0 console errors throughout. Card verified
+  open via the standalone-Playwright trick at each step.
+- **Gotcha:** on this live-WebGL page `page.goto(..., {waitUntil:'networkidle'})` TIMES
+  OUT (the canvas never goes idle). Use `waitUntil:'domcontentloaded'` + a fixed
+  `waitForTimeout`. MCP Playwright also times out (5s) — use a throwaway
+  `playwright` script run from the PROJECT ROOT (so it resolves the dep), real
+  `.hover()` to open the card, then freeze transitions + element-screenshot.
+- **Untracked, left out of git on purpose:** `assets/synapse-product-imagery.png`
+  (Caroline's source crop — the live asset lives in `public/assets/`). Commit it only
+  if she asks.
+- **Next steps:** (1) cards `project-04` / `project-05` (index 3/4) are still the old
+  centred placeholder layout — migrate each to `<ProjectCard>` when it has real content
+  + a product visual. (2) Possible synapse polish: cut amount on the right / blob mix —
+  eyeball in browser.
+- **Open intent:** none stated for next session.
+
 ### 2026-06-24 — Cog ADHD case study page + shared NavBar (this agent)
 - **Done this session** (alongside a separate "another cakes" agent tuning the
   `/cog_adhd` CARD — see the entry below this one):
