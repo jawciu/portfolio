@@ -66,6 +66,11 @@ typography:
     fontWeight: "700"
     lineHeight: 1.08
     letterSpacing: -0.01em
+  case-study-hero-label:       # mono labels in the hero meta block (brand / role / …)
+    fontFamily: Geist Mono
+    fontSize: 16px
+    fontWeight: "800"   # true extra-bold — Geist Mono is a variable font (no stroke)
+    letterSpacing: 0.02em
   # Geist — body copy. The only sans on the page; calm against the noise.
   body-lg:
     fontFamily: Geist
@@ -209,9 +214,11 @@ The page H1 is **48px desktop / 22px mobile** (≤640px); section headers use th
 by stroking the glyphs in the text colour (`-webkit-text-stroke`, 0.6px desktop /
 0.35px mobile on the title) — Charon ships no 800/900 cut, so this is how we get a
 heavier display weight without swapping the typeface. Title line breaks are placed
-manually in markup (kept to 2 lines on desktop; 3 is fine on mobile). These live in
-each case study's `theme.css` as `.case-study-*` classes so they're reused verbatim
-across every case-study page.
+manually in markup (kept to 2 lines on desktop; 3 is fine on mobile). The hero meta
+labels (brand / summary / setting the stage / role / time / tools) use
+`case-study-hero-label` — **16px, weight 800** (a *true* extra-bold here, since Geist
+Mono is a variable font, unlike Charon). These live in each case study's `theme.css`
+as `.case-study-*` classes so they're reused verbatim across every case-study page.
 
 ## Layout & Spacing
 

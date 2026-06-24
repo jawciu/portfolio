@@ -90,6 +90,17 @@
   color: var(--cog-ink);
 }
 
+/* CASE-STUDY HERO LABELS — the mono labels in the hero meta block (brand /
+   summary / setting the stage / role / time / tools). 16px, true extra-bold
+   (Geist Mono is a variable font). Reusable across every case study. TEMPLATE. */
+.case-study-hero-label {
+  font-family: var(--font-mono), monospace;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  color: var(--cog-ink);
+}
+
 /* body copy */
 .cog-body {
   font-family: var(--font-body), sans-serif;

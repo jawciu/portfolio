@@ -129,6 +129,15 @@ it's a deliberate call.
 
 Newest first. Record *why*, not just *what*.
 
+- **2026-06-24** — **Case-study template: hero meta labels → `.case-study-hero-label`
+  (16px, extra-bold 800).** Caroline wanted the hero meta labels (brand / summary /
+  setting the stage / role / time / tools) at 16px extra-bold. `.cog-label` is shared
+  across many sections (Findings/Methodology/JourneyMap/…), so I did NOT resize it —
+  added a dedicated reusable `.case-study-hero-label` in `theme.css` and swapped only
+  the six hero labels in `Hero.tsx`. Geist Mono is a *variable* font (no `weight` pin
+  in `layout.tsx`), so `font-weight: 800` is a TRUE extra-bold here — no text-stroke
+  trick needed (unlike Iosevka Charon for the title). Saved to DESIGN.md (token +
+  prose). Verified 16px/800 on all six via Playwright. **Committed + pushed.**
 - **2026-06-24** — **Started the CASE-STUDY TYPE TEMPLATE** (reusable type tokens
   across every case study, beginning with Cog ADHD). Caroline is tuning the case
   study and wants the type decisions (size/boldness of titles + section headers)

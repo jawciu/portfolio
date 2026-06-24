@@ -25,7 +25,7 @@ export function Hero() {
         <div className="mt-10 grid grid-cols-1 gap-10 md:grid-cols-2 md:gap-16">
           {/* LEFT: brand + mini role/time/tools table */}
           <div>
-            <p className="cog-label">brand</p>
+            <p className="case-study-hero-label">brand</p>
             <div className="mt-3 flex items-center gap-2">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -40,7 +40,7 @@ export function Hero() {
 
             <div className="mt-8 grid grid-cols-3 gap-6 max-w-md">
               <div>
-                <p className="cog-label">role</p>
+                <p className="case-study-hero-label">role</p>
                 <p className="cog-body mt-2 text-sm leading-relaxed">
                   Research
                   <br />
@@ -50,11 +50,11 @@ export function Hero() {
                 </p>
               </div>
               <div>
-                <p className="cog-label">time</p>
+                <p className="case-study-hero-label">time</p>
                 <p className="cog-body mt-2 text-sm leading-relaxed">2 months</p>
               </div>
               <div>
-                <p className="cog-label">tools</p>
+                <p className="case-study-hero-label">tools</p>
                 <p className="cog-body mt-2 text-sm leading-relaxed">
                   Figma
                   <br />
@@ -71,7 +71,7 @@ export function Hero() {
           {/* RIGHT: summary + setting the stage */}
           <div className="space-y-6">
             <div>
-              <p className="cog-label">summary</p>
+              <p className="case-study-hero-label">summary</p>
               <Body className="mt-2 text-sm leading-relaxed">
                 As the Founding Designer at a pre-seed mental health startup, I led
                 product discovery, uncovered key user needs, and turned insights into
@@ -80,7 +80,7 @@ export function Hero() {
               </Body>
             </div>
             <div>
-              <p className="cog-label">setting the stage</p>
+              <p className="case-study-hero-label">setting the stage</p>
               <Body className="mt-2 text-sm leading-relaxed">
                 Cog is a mobile app designed to support people with ADHD. A significant
                 part of its offering is online therapy delivered through Cog Clinic. My
