@@ -115,11 +115,11 @@ export function VariantBentoSoft() {
                 subtitle={p.description}
                 tags={p.tags}
                 image={{
-                  src: "/assets/synapse-product.png",
+                  src: "/assets/synapse-product.png?v=3",
                   alt: "synapse reflection agent — map your mind journaling view",
                 }}
-                imageClassName="pointer-events-none absolute right-[-16%] top-1/2 h-[58%] w-auto -translate-y-1/2 rounded-2xl object-contain shadow-[0_20px_60px_rgba(0,0,0,0.45)]"
-                blob={{ core: "#C24E86", edge: "#6D1B76", coreStop: 8, edgeStop: 52 }}
+                imageClassName="pointer-events-none absolute right-[-12%] top-[55%] h-[53%] w-auto max-w-none -translate-y-1/2 rounded-2xl object-contain shadow-[0_20px_60px_rgba(0,0,0,0.45)]"
+                blob={{ core: "#C24F83", edge: "#734A8E", coreStop: 8, edgeStop: 52 }}
               />
             );
           }
