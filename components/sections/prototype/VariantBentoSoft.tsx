@@ -100,6 +100,30 @@ export function VariantBentoSoft() {
             );
           }
 
+          // Project 03 (synapse) — reusable card; purple→magenta blob, app screenshot.
+          if (i === 2) {
+            return (
+              <ProjectCard
+                key={p.slug}
+                open={open}
+                onActivate={onActivate}
+                collapsedLabel={p.company}
+                year={p.year}
+                label="/synapse"
+                logo={{ src: "/assets/synapse-logo.png", alt: "synapse" }}
+                title={p.title}
+                subtitle={p.description}
+                tags={p.tags}
+                image={{
+                  src: "/assets/synapse-product.png",
+                  alt: "synapse reflection agent — map your mind journaling view",
+                }}
+                imageClassName="pointer-events-none absolute right-[-16%] top-1/2 h-[58%] w-auto -translate-y-1/2 rounded-2xl object-contain shadow-[0_20px_60px_rgba(0,0,0,0.45)]"
+                blob={{ core: "#C24E86", edge: "#6D1B76", coreStop: 8, edgeStop: 52 }}
+              />
+            );
+          }
+
           // Placeholder cells — centred layout, pool blob. Swap to <ProjectCard>
           // once the project has a real story + product visual.
           const pool = POOLS[i % POOLS.length];

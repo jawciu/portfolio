@@ -33,7 +33,15 @@ export const projects: Project[] = [
     tags: ["Research", "UX/UI", "Testing", "Launch"],
     accent: "linear-gradient(120deg, #F2922E 0%, #189E71 100%)",
   },
-  { slug: "project-03", company: "Project 03", title: "Project 03", description: "", tags: [], placeholder: true },
+  {
+    slug: "synapse",
+    company: "synapse",
+    title: "Compounding memory with knowledge graphs and agentic RAG",
+    description:
+      "built a memory-first reflection agent for the london langchain x surrealdb hackathon",
+    tags: ["Product", "AI Architecture", "Backend"],
+    accent: "linear-gradient(120deg, #C24E86 0%, #6D1B76 100%)",
+  },
   { slug: "project-04", company: "Project 04", title: "Project 04", description: "", tags: [], placeholder: true },
   { slug: "project-05", company: "Project 05", title: "Project 05", description: "", tags: [], placeholder: true },
 ];

@@ -129,6 +129,34 @@ it's a deliberate call.
 
 Newest first. Record *why*, not just *what*.
 
+- **2026-06-24** — **Populated showcase card #3 (`/synapse`) via the reusable
+  `ProjectCard`** — from the Figma frame (`figma.com/design/1crZakXfGsPCpxdXIrcjHo`,
+  node `95-807`). It's **synapse**, a memory-first reflection agent built at the
+  London LangChain × SurrealDB hackathon. Wired into `VariantBentoSoft` as the
+  `i === 2` branch (mirrors E.ON `i===0` / cog `i===1`). Copy lifted from the Figma:
+  kicker `/synapse`, title "Compounding memory with knowledge graphs and agentic
+  RAG", subtitle (Geist Mono lowercase) "built a memory-first reflection agent for
+  the london langchain x surrealdb hackathon", tags Product · AI Architecture ·
+  Backend. **Year `2026`** (Caroline's call — matches the app screenshot's date).
+  **Blob = magenta `#C24E86` → purple `#6D1B76`** (core/edge sampled from the Figma
+  glow: bottom-right reads `#C04E82` magenta-pink, outer reads deep purple; edge is
+  the same `#6D1B76` E.ON uses), with `coreStop:8 / edgeStop:52`. Updated
+  `lib/projects.ts` index 2 (was `project-03` placeholder → real `slug:"synapse"`,
+  removed `placeholder`) and added the `synapse` key to `projectMeta.ts` (2026,
+  Product & AI Engineer, LangChain/SurrealDB/Agentic RAG/Knowledge Graphs, Concept).
+  **Assets** (`public/assets/`): `synapse-logo.png` (the flower-mascot favicon, Figma
+  node `103:1380` — re-exported @4× then black bg knocked out in Pillow so the white
+  mark floats on the dark card) and `synapse-product.png` (the clean 1488×1022 app
+  screenshot raw image — "Map your mind" journaling view; used as-is, opaque). Unlike
+  E.ON's transparent SVG / cog's two-phone PNG, this is an opaque screenshot, so the
+  `imageClassName` gives it **rounded corners + a drop shadow** and bleeds it off the
+  RIGHT edge (`right-[-16%] top-1/2 h-[58%] -translate-y-1/2 rounded-2xl object-contain
+  shadow-[0_20px_60px_rgba(0,0,0,0.45)]`) — h-58% keeps its width inside the right 50%
+  column so it never overlaps the copy (same overflow rule as the cog card). No `href`
+  yet (no case study built — like E.ON). Verified via the standalone-Playwright trick
+  (1440 + 1600@2×, card open): tsc + eslint clean, 0 console errors, screenshot clears
+  the copy and matches the Figma. The 2 remaining cells (`project-04/05`) still use the
+  old centred placeholder layout. **UNCOMMITTED** pending Caroline.
 - **2026-06-24** — **Shared sticky glass NavBar across all pages**
   (`components/NavBar.tsx`, mounted once in `app/layout.tsx` inside `<Providers>`).
   Caroline: make the home top-bar row a sticky glass navbar shown on every page;
