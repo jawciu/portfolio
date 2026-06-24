@@ -49,9 +49,11 @@ export function NavBar() {
         light ? "bg-[rgba(245,244,239,0.3)]" : "bg-[rgba(7,7,9,0.28)]"
       } backdrop-blur-md backdrop-saturate-150`
     : "bg-transparent";
+  // dark site: dim by default, brighten on hover. light pages: keep the default
+  // tone, deepen toward black on hover.
   const pathColor = light ? "text-[#1a1a1a]/65" : "text-fg/70";
-  const navColor = light ? "text-[#1a1a1a]" : "text-fg";
-  const hover = light ? "hover:text-[#1a1a1a]/55" : "hover:text-fg/60";
+  const navColor = light ? "text-[#1a1a1a]/65" : "text-fg/60";
+  const hover = light ? "hover:text-black" : "hover:text-fg";
 
   return (
     <header
