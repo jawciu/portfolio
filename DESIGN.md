@@ -268,7 +268,8 @@ when expanded, one split layout, so every real project reads as one authored pie
   in — a warm `<core>` diffusing to a cool `<edge>` and then to transparent before
   any rectangle reads (same "dissolving edge" rule as the hero). Each card supplies
   its own `{core, edge}` pair; draw them from the spectrum where possible. The E.ON
-  Next card uses coral `#C05846` → purple `#6D1B76`.
+  Next card uses coral `#C05846` → purple `#6D1B76`; the cog_adhd card uses amber
+  `#F2922E` → green `#189E71` (the warm-to-green echoes that app's own UI).
 - **Copy column:** `year` in the top-left corner; a centred block (nudged a touch
   above middle) of optional brand logo + mono kicker (`/e.on_next`), the
   `project-title` (Iosevka, uppercase, sized to land in two lines), and a lowercase

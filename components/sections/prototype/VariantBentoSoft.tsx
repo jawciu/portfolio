@@ -75,6 +75,29 @@ export function VariantBentoSoft() {
             );
           }
 
+          // Project 02 (cog_adhd) — reusable card; amber→green blob, two-phone visual.
+          if (i === 1) {
+            return (
+              <ProjectCard
+                key={p.slug}
+                open={open}
+                onActivate={onActivate}
+                collapsedLabel={`${p.company} · ${p.year}`}
+                year={p.year}
+                label="/cog_adhd"
+                logo={{ src: "/assets/cog-adhd-logo.png", alt: "cog_adhd" }}
+                title={p.title}
+                subtitle={p.description}
+                tags={p.tags}
+                image={{
+                  src: "/assets/cog-adhd-product.png",
+                  alt: "cog_adhd check-in history — weekly ADHD scores and daily highs/lows",
+                }}
+                blob={{ core: "#F2922E", edge: "#189E71" }}
+              />
+            );
+          }
+
           // Placeholder cells — centred layout, pool blob. Swap to <ProjectCard>
           // once the project has a real story + product visual.
           const pool = POOLS[i % POOLS.length];

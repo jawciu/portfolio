@@ -24,7 +24,15 @@ export const projects: Project[] = [
     tags: ["Research", "UX/UI", "Testing", "Launch"],
     accent: "linear-gradient(120deg, #ff7a2a 0%, #ff006e 52%, #7a3bff 100%)",
   },
-  { slug: "project-02", company: "Project 02", title: "Project 02", description: "", tags: [], placeholder: true },
+  {
+    slug: "cog-adhd",
+    company: "cog_adhd",
+    title: "Gaps and opportunities in ADHD therapy processes",
+    description:
+      "improved cognitive load by giving users agentic rag that answers their questions",
+    tags: ["Research", "UX/UI", "Testing", "Launch"],
+    accent: "linear-gradient(120deg, #F2922E 0%, #189E71 100%)",
+  },
   { slug: "project-03", company: "Project 03", title: "Project 03", description: "", tags: [], placeholder: true },
   { slug: "project-04", company: "Project 04", title: "Project 04", description: "", tags: [], placeholder: true },
   { slug: "project-05", company: "Project 05", title: "Project 05", description: "", tags: [], placeholder: true },

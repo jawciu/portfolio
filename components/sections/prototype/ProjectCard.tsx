@@ -154,18 +154,18 @@ export function ProjectCard({
                 {label}
               </span>
             </div>
-            <h3 className="mt-5 max-w-none font-hero text-xl font-bold uppercase leading-[1.05] tracking-tight text-fg md:text-[1.75rem]">
+            <h3 className="mt-[1.8rem] max-w-none font-hero text-xl font-bold uppercase leading-[1.05] tracking-tight text-fg md:text-[1.75rem]">
               {title}
             </h3>
             {subtitle && (
               /* subtitle — Geist Mono, lowercase, same colour as the heading */
-              <p className="mt-5 max-w-xs font-mono text-xs lowercase leading-relaxed text-fg md:text-sm">
+              <p className="mt-[1.875rem] max-w-xs font-mono text-xs lowercase leading-relaxed text-fg md:text-sm">
                 {subtitle}
               </p>
             )}
           </div>
           {tags && tags.length > 0 && (
-            <p className="absolute inset-x-6 bottom-6 flex items-center gap-x-2 whitespace-nowrap font-mono text-[11px] uppercase tracking-[0.1em] text-fg/55 md:inset-x-9 md:bottom-9 md:text-xs">
+            <p className="absolute inset-x-6 bottom-6 flex items-center gap-x-2 whitespace-nowrap font-mono text-xs uppercase tracking-[0.1em] text-fg md:inset-x-9 md:bottom-9 md:text-sm">
               <span aria-hidden className="mr-1 inline-block h-2 w-2 bg-fg/60" />
               {tags.join(" · ")}
             </p>

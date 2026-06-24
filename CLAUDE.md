@@ -129,6 +129,29 @@ it's a deliberate call.
 
 Newest first. Record *why*, not just *what*.
 
+- **2026-06-24** — **Populated showcase card #2 (`/cog_adhd`) via the reusable
+  `ProjectCard`** — Caroline: "create another project card… following the component
+  we built, but card 2 with different copy/assets" from a Figma frame
+  (`figma.com/design/1crZakXfGsPCpxdXIrcjHo`, node `65-1214`). It's an ADHD
+  therapy/check-in app. Wired into `VariantBentoSoft` as a new `i === 1` branch
+  (mirrors the `i === 0` E.ON branch). Copy from the Figma: kicker `/cog_adhd`,
+  title "GAPS AND OPPORTUNITIES IN ADHD THERAPY PROCESSES", tags Research · UX/UI ·
+  Testing · Launch. **Brand `cog_adhd` + year `2025`** (Caroline's call — the Figma
+  shows neither; app screens reference 2023 & 2025). **Blob = amber `#F2922E` →
+  green `#189E71`** (she asked amber→green; green sampled from the app's own chart
+  UI — vs E.ON's coral→purple). Updated `lib/projects.ts` index 1 (was the
+  `project-02` placeholder → real `slug: "cog-adhd"`, removed `placeholder`) and the
+  `projectMeta.ts` key (`cog-adhd`, 2025, Shipped). **Assets** (in `public/assets/`):
+  `cog-adhd-logo.png` (the orange-mascot app icon, Figma node `65:2246`) and
+  `cog-adhd-product.png` — a transparent two-phone composite I built in Pillow from
+  the two "Check in history" screens (Figma `65:1820` + `65:1885`, exported @3×,
+  placed at their frame-relative offset 259px), so the glow stays a CSS blob like
+  E.ON rather than baked in. Verified in Playwright (1440×900, expanded + collapsed,
+  0 console errors); tsc/eslint clean. **FLAG for Caroline:** the Figma's subtitle
+  ("improved cognitive load by giving users agentic rag that answers their
+  questions") is *identical* to the E.ON card's — looks like placeholder copy left
+  in the design; rendered faithfully for now, swap when she has real copy. The 3
+  remaining cells (`project-03/04/05`) still use the older centred placeholder layout.
 - **2026-06-16** — **Extracted the E.ON Next showcase card into a reusable
   `ProjectCard` component** (`components/sections/prototype/ProjectCard.tsx`) —
   Caroline: "the /e.on_next card is looking good, make it a component we can reuse
