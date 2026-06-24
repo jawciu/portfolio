@@ -59,7 +59,7 @@ export function VariantBentoSoft() {
                 key={p.slug}
                 open={open}
                 onActivate={onActivate}
-                collapsedLabel={`${p.company} · ${p.year}`}
+                collapsedLabel={p.company}
                 year={p.year}
                 label="/e.on_next"
                 logo={{ src: "/assets/e_on_next.png", alt: "E.ON Next" }}
@@ -82,7 +82,7 @@ export function VariantBentoSoft() {
                 key={p.slug}
                 open={open}
                 onActivate={onActivate}
-                collapsedLabel={`${p.company} · ${p.year}`}
+                collapsedLabel={p.company}
                 year={p.year}
                 label="/cog_adhd"
                 logo={{ src: "/assets/cog-adhd-logo.png", alt: "cog_adhd" }}
@@ -90,10 +90,12 @@ export function VariantBentoSoft() {
                 subtitle={p.description}
                 tags={p.tags}
                 image={{
-                  src: "/assets/cog-adhd-product.png",
+                  src: "/assets/cog-adhd-product.png?v=3",
                   alt: "cog_adhd check-in history — weekly ADHD scores and daily highs/lows",
                 }}
+                imageClassName="pointer-events-none absolute right-[-10%] bottom-0 h-[65%] w-auto max-w-none object-contain object-left"
                 blob={{ core: "#F2922E", edge: "#189E71" }}
+                href="/project/cog-adhd"
               />
             );
           }
@@ -152,10 +154,11 @@ export function VariantBentoSoft() {
               {!open && (
                 <div className="absolute inset-0 flex items-center justify-center">
                   <span
-                    className="whitespace-nowrap font-mono text-xs uppercase tracking-[0.35em] text-fg/55 transition-colors duration-300 group-hover:text-fg/90"
+                    className="whitespace-nowrap font-mono text-sm uppercase tracking-[0.3em] text-fg md:text-base"
                     style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}
                   >
-                    {p.company} · {p.year}
+                    {p.company}
+                    <span className="text-fg/55"> · {p.year}</span>
                   </span>
                 </div>
               )}

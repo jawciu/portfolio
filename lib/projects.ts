@@ -17,7 +17,7 @@ export type Project = {
 export const projects: Project[] = [
   {
     slug: "nest-agentic-rag",
-    company: "EON Next",
+    company: "E.ON Next",
     title: "Designing agentic RAG to help with cognitive load",
     description:
       "Improved cognitive load by giving users agentic RAG that answers their questions.",
@@ -26,10 +26,10 @@ export const projects: Project[] = [
   },
   {
     slug: "cog-adhd",
-    company: "cog_adhd",
+    company: "cog adhd",
     title: "Gaps and opportunities in ADHD therapy processes",
     description:
-      "improved cognitive load by giving users agentic rag that answers their questions",
+      "drove bookings and engagement through flow optimisation and a check-in history feature",
     tags: ["Research", "UX/UI", "Testing", "Launch"],
     accent: "linear-gradient(120deg, #F2922E 0%, #189E71 100%)",
   },

@@ -10,6 +10,7 @@
 //     project copy on the LEFT and an optional product visual floating on the
 //     RIGHT (split layout). Copy: year (top-left), logo + mono kicker, title,
 //     subtitle, tags (pinned bottom-left).
+import { useRouter } from "next/navigation";
 import { Grain } from "./softBits";
 
 // Gradient-blob colours: a warm core diffusing out to a cool edge.
@@ -30,8 +31,13 @@ export type ProjectCardProps = {
   logo?: { src: string; alt: string };
   /** optional product visual; when present the card uses the split layout */
   image?: { src: string; alt: string };
+  /** override the product-visual positioning classes (default: floats centred off
+      the right edge). e.g. pass a bottom/right-anchored variant for device shots. */
+  imageClassName?: string;
   /** the corner gradient blob colours */
   blob: CardBlob;
+  /** optional case-study route — clicking the OPEN card navigates here */
+  href?: string;
 };
 
 // Expanded bloom — one big blurred circle whose centre sits just OUTSIDE the
@@ -61,14 +67,30 @@ export function ProjectCard({
   tags,
   logo,
   image,
+  imageClassName,
   blob,
+  href,
 }: ProjectCardProps) {
+  const router = useRouter();
+  // Default: artwork floats centred, bleeding slightly off the right edge.
+  const imgClass =
+    imageClassName ??
+    "pointer-events-none absolute right-[-6%] top-1/2 h-[88%] w-auto -translate-y-1/2 object-contain object-left";
+  // Collapsed click → open the card; open click (with a case study) → navigate.
+  const onClick = () => {
+    if (open && href) router.push(href);
+    else onActivate();
+  };
   return (
     <button
       type="button"
       onMouseEnter={onActivate}
       onFocus={onActivate}
-      className="group relative min-h-0 overflow-hidden rounded-3xl text-left outline-none transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
+      onClick={onClick}
+      aria-label={open && href ? `Open ${title} case study` : undefined}
+      className={`group relative min-h-0 overflow-hidden rounded-3xl text-left outline-none transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+        open && href ? "cursor-pointer" : ""
+      }`}
       style={{ flexGrow: open ? 6 : 1, flexBasis: 0 }}
     >
       {/* colour blob BEHIND the glass — bloom (open) crossfades with spine
@@ -118,10 +140,11 @@ export function ProjectCard({
       {!open && (
         <div className="absolute inset-0 flex items-center justify-center">
           <span
-            className="whitespace-nowrap font-mono text-xs uppercase tracking-[0.35em] text-fg/55 transition-colors duration-300 group-hover:text-fg/90"
+            className="whitespace-nowrap font-mono text-sm uppercase tracking-[0.3em] text-fg md:text-base"
             style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}
           >
             {collapsedLabel}
+            <span className="text-fg/55"> · {year}</span>
           </span>
         </div>
       )}
@@ -177,11 +200,7 @@ export function ProjectCard({
         {image && (
           <div className="relative flex-1">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={image.src}
-              alt={image.alt}
-              className="pointer-events-none absolute right-[-6%] top-1/2 h-[88%] w-auto -translate-y-1/2 object-contain object-left"
-            />
+            <img src={image.src} alt={image.alt} className={imgClass} />
           </div>
         )}
       </div>

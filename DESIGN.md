@@ -277,7 +277,10 @@ when expanded, one split layout, so every real project reads as one authored pie
   line. The subtitle is the one place mono carries a sentence — kept short.
 - **Product visual:** transparent artwork (e.g. a frosted UI panel) floating over
   the blob, bleeding slightly off the right edge — no frame, border, or shadow, so
-  the gradient reads straight through it.
+  the gradient reads straight through it. Positioning is overridable per card via
+  `imageClassName` (default: centred float off the right edge; the cog_adhd card uses
+  a bottom/right-anchored variant so the two phone shots sit flush to the bottom edge
+  with the right phone touching the card's right edge).
 - The card's shine is **static** here (rim glint + diagonal sheen) — the scroll-
   driven specular motion lives on the toolkit dock and the About portrait, not the
   cards.

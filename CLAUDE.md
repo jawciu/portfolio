@@ -129,6 +129,49 @@ it's a deliberate call.
 
 Newest first. Record *why*, not just *what*.
 
+- **2026-06-24** — **Started the Cog ADHD CASE STUDY page** (the page that opens
+  when you click the `/cog_adhd` showcase card; a *separate* "another cakes" agent
+  owns the card itself — don't touch `VariantBentoSoft`/`ProjectCard`). Caroline:
+  reconstruct her old Framer case study (`carolinejaworsky/cog-clinic-research-and-
+  strategy`) "as close as possible… match the pdf exactly", using a divide-and-
+  conquer team of builders + evaluators (Playwright vs the PDF). Source: the Framer
+  PDF export + 59 exported assets in `~/Documents/Framer website/Cog clinic research
+  assets/`. **DECISIONS (Caroline):** (1) **Route `/project/cog-adhd`** (singular
+  "project", per her pick) → `app/project/cog-adhd/page.tsx`. (2) **LIGHT theme,
+  match the PDF exactly** — the dark portfolio card opens into a light cream case
+  study (each case study keeps its own identity). Scoped via `.cog-root` in
+  `components/project/cog-adhd/theme.css` so the light palette NEVER leaks into the
+  dark site. (3) **Fonts:** product-visual mockups keep their baked-in fonts (they're
+  images); all page copy uses the homepage stack — Iosevka `--font-hero` for titles,
+  Geist Mono for mono labels/pull-quotes, Geist body — "won't 100% align, evaluate
+  later." **Build structure:** page = 15 section components under
+  `components/project/cog-adhd/sections/` (Nav, Hero, MyRole, Interviews, Competitive,
+  Findings, BookingDropoff, JourneyMap, Strategy, Methodology, Challenges, Solution,
+  Results, Takeaways, NextProject), each owned by one builder (no file conflicts);
+  shared read-only primitives in `ui.tsx` (`A()` asset helper, `Container/Kicker/
+  Title/Body/Callout/Statement`) + helper classes in `theme.css`. Assets copied to
+  `public/projects/cog-adhd/` with clean names (`Image(10).png`→`image-10.png`;
+  `_namemap.json` records the map; the big journey map kept its name
+  `cog-clinic-current-journey-map.svg`). Build spec (per-section copy + PDF reference
+  crop + asset hints) is in the session scratchpad `SPEC.md`. PDF rendered to readable
+  bands + a labeled asset catalog via poppler+sharp+playwright (installed poppler).
+  **DONE (v1):** 15 builders built all sections in parallel; 15 evaluators scored
+  each vs the PDF (most 82–95/100), 2 fixers patched the misses — **Competitive**
+  (asset filenames were off-by-one: `image-11.png` is the mood-picker screen, not the
+  Agave logo; logos are `image-12..16` = Agave/inflow/HelloSelf/shimmer/bloom) and
+  **Methodology** (the 9 hand-drawn wireframes are the composite PNGs
+  `image-29/28/30.png`, NOT `image-32..39` which are portraits/illustrations/finished
+  dashboards). tsc + eslint clean, 0 console errors. Page renders end-to-end and
+  closely matches the PDF. Reachable directly at `/project/cog-adhd`. **CARD WIRED
+  (2026-06-24):** added an optional `href` prop to `ProjectCard` — clicking the OPEN
+  card `router.push(href)`s (collapsed click still just opens it, preserving the
+  hover-to-expand UX; `cursor-pointer` + `aria-label` only when open+href). The Cog
+  card (`VariantBentoSoft` i===1) passes `href="/project/cog-adhd"`. Verified via
+  Playwright: click open Cog card → navigates. (E.ON card has no href yet — its case
+  study isn't built.) Verification
+  harness `scripts/_cogshots.mjs` (untracked) screenshots each `[data-cog]` wrapper in
+  page.tsx → scratchpad/cog-shots/. Possible polish later: Hero confetti-band crop,
+  Solution bubble scatter, exact spacing — evaluate in-browser.
 - **2026-06-24** — **Populated showcase card #2 (`/cog_adhd`) via the reusable
   `ProjectCard`** — Caroline: "create another project card… following the component
   we built, but card 2 with different copy/assets" from a Figma frame
@@ -152,6 +195,39 @@ Newest first. Record *why*, not just *what*.
   questions") is *identical* to the E.ON card's — looks like placeholder copy left
   in the design; rendered faithfully for now, swap when she has real copy. The 3
   remaining cells (`project-03/04/05`) still use the older centred placeholder layout.
+  **Fixes same day (Caroline review):** (1) the phone exports had opaque near-black
+  (`#0F0F0F`) filling the rounded-corner triangles + phone-2's bottom-right cutout —
+  stripped via an edge **flood-fill** in Pillow (BFS from the border removing
+  connected dark pixels, leaving interior black TEXT untouched since it's ringed by
+  the cream screen), re-composited (`?v=2`). (2) Product visuals now sit **flush to
+  the card's bottom edge** with the **right phone touching the right edge** — added an
+  optional `imageClassName` prop to `ProjectCard` (default stays E.ON's centred float)
+  and passed `absolute bottom-0 right-0 h-[90%] object-bottom` for cog_adhd; verified
+  in Playwright (img box gapRight/gapBottom = 0). **Round 2 (Caroline):** that
+  bottom/right-anchored treatment made the phones read too big + the left phone
+  crowded the title, and the right phone's bottom-right showed a transparent notch
+  (the former black cutout) instead of being clipped by the card. Fix: kept the
+  ORIGINAL size/horizontal placement and only changed the vertical anchor →
+  `right-[-6%] bottom-0 h-[88%] object-left` (phones bleed off the RIGHT edge, cut
+  by the card, now dropped flush to the bottom). And **filled phone-2's bottom-right
+  cutout with the screen cream** in Pillow (`?v=3`) so the phone reads solid there —
+  the card's `rounded-3xl` corner does the rounding (Caroline: the corner "was
+  rounded because it was cut by the card edges and it should stay like this").
+  Note: MCP Playwright screenshots kept timing out (5s) on the live-WebGL page;
+  captured via a throwaway standalone `@playwright/test` script (real `.hover()` to
+  trip React's `onMouseEnter`, then freeze + element screenshot) — keep that trick
+  for this page. Caroline also replaced the subtitle copy herself in
+  `lib/projects.ts` (real copy now — the earlier "identical to E.ON" flag is closed).
+  **Round 3 (Caroline, with the Figma open):** phones STILL too big + overlapping
+  the title. Root cause: the img height is `%` of the CARD height, but on the wide
+  expanded card (flex-grow 6 ≈ 60% of the row → ~768px wide × 560 tall) an 88%-tall
+  image is ~542px WIDE, which overflows the 50% copy column and spills left over the
+  text. Fix = shrink to `h-[56%]` so the image width (~357px) stays inside the right
+  half → phones sit fully on the right, clear of the copy, ~55% height (matches the
+  Figma `node 65-1214`). Final class: `right-[-10%] bottom-0 h-[65%] object-left`
+  (Caroline bumped 56%→65% — "slightly bigger"; still clears the copy).
+  KEY LESSON for these device cards: pick a height % low enough that
+  `height%·cardH·aspect ≤ 50%·cardW`, else the artwork overflows the copy column.
 - **2026-06-16** — **Extracted the E.ON Next showcase card into a reusable
   `ProjectCard` component** (`components/sections/prototype/ProjectCard.tsx`) —
   Caroline: "the /e.on_next card is looking good, make it a component we can reuse
