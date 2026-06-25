@@ -183,6 +183,23 @@ Newest first. Record *why*, not just *what*.
   **Uncommitted** pending Caroline. *Note:* planned via plan-mode (greedy-chasing-
   fountain.md) — approved approach was `sticky bottom-0`, corrected to measured sticky-
   top during impl because bottom-0 didn't pin.
+- **2026-06-25** — **Interviews bubbles v3 — text VISUALLY centred per bubble (by eye).**
+  Caroline: the centroid/lobe math can't work — the cloud TAILS add to the bounding box
+  so true-centre still LOOKS off; each bubble must be nudged by eye until the text looks
+  centred in the puff. Did exactly that: a screenshot loop (isolated throwaway route
+  `app/bubtest`, since deleted, to dodge the heavy `/project/cog-adhd` route) capturing
+  all 5 bubbles into one composite grid via Playwright + sharp, then nudged each
+  per-bubble `box` 1–4% at a time over 2 rounds. Key insight: the text is **left-aligned
+  + ragged-right**, so it optically leans LEFT, and the green clouds' dots sit
+  bottom-LEFT — both pull the *perceived* centre, so most boxes needed shifting RIGHT and
+  DOWN of the pixel centre. I got close over 2 rounds, then **Caroline fine-tuned the
+  final values herself** (she has the line map). Final per-bubble boxes (in
+  Interviews.tsx): stack `left-[16] right-[16] top-[10] bottom-[21]`, stack-1 `left-[13]
+  right-[19] top-[10] bottom-[23]`, stack-2 `left-[28] right-[17] top-[16] bottom-[26]`,
+  stack-3 `left-[23] right-[18] top-[23] bottom-[23]`, stack-4 `left-[26] right-[21]
+  top-[11] bottom-[25]`. Caroline confirmed "perf". tsc + eslint clean. **Committed.**
+  *Lesson for future cloud text: don't compute it — screenshot + nudge by eye, the tails
+  + ragged-left text fool any centroid. The per-bubble `box` lines are the dial.*
 - **2026-06-25** — **Interviews bubbles v2 + callout 28→ (kept 28).** Follow-up fixes
   after Caroline's review: **(1)** callout already at 28px (kept). **(2)** All 5 bubbles
   now render at **one size** (`w-[300px]`, was per-row 350/290). **(3)** The 3 green

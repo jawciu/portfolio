@@ -42,9 +42,9 @@ type Bubble = {
 // row 2 = [2,3,4]. All five render at the SAME size.
 const BUBBLES: Bubble[] = [
   {
-    img: "stack.png", // purple, tail bottom-right — lobe centre ~49%
+    img: "stack.png", // purple, tail bottom-right — visual-centred by eye
     alt: "Purple thought bubble",
-    box: "left-[19%] right-[21%] top-[12%] bottom-[24%]",
+    box: "left-[16%] right-[16%] top-[10%] bottom-[21%]",
     text: (
       <>
         What <b>processes</b> in mental healthcare clinics influence the therapy
@@ -53,9 +53,9 @@ const BUBBLES: Bubble[] = [
     ),
   },
   {
-    img: "stack-1.png", // green, tail bottom-left (single dot) — lobe centre ~43%
+    img: "stack-1.png", // green, tail bottom-left (single dot) — visual-centred by eye
     alt: "Green thought bubble",
-    box: "left-[13%] right-[27%] top-[12%] bottom-[24%]",
+    box: "left-[13%] right-[19%] top-[10%] bottom-[23%]",
     text: (
       <>
         What factors contribute to a <b>successful therapy</b>?
@@ -63,9 +63,9 @@ const BUBBLES: Bubble[] = [
     ),
   },
   {
-    img: "stack-2.png", // green, tail bottom-left — lobe centre ~53%
+    img: "stack-2.png", // green, tail bottom-left — visual-centred by eye
     alt: "Green thought bubble",
-    box: "left-[23%] right-[17%] top-[12%] bottom-[24%]",
+    box: "left-[28%] right-[17%] top-[16%] bottom-[26%]",
     text: (
       <>
         What <b>challenges</b> do therapists face?
@@ -73,9 +73,9 @@ const BUBBLES: Bubble[] = [
     ),
   },
   {
-    img: "stack-3.png", // purple, tail bottom-right — lobe centre ~50%
+    img: "stack-3.png", // purple, tail bottom-right — visual-centred by eye
     alt: "Purple thought bubble",
-    box: "left-[20%] right-[20%] top-[12%] bottom-[24%]",
+    box: "left-[23%] right-[18%] top-[23%] bottom-[23%]",
     text: (
       <>
         What are our customers&apos; <b>needs</b> when starting ADHD therapy?
@@ -83,9 +83,9 @@ const BUBBLES: Bubble[] = [
     ),
   },
   {
-    img: "stack-4.png", // green, tail bottom-left — lobe centre ~49%
+    img: "stack-4.png", // green, tail bottom-left — visual-centred by eye
     alt: "Green thought bubble",
-    box: "left-[19%] right-[21%] top-[12%] bottom-[24%]",
+    box: "left-[26%] right-[21%] top-[11%] bottom-[25%]",
     text: (
       <>
         Which parts of the <b>current process</b> are challenging, and what
