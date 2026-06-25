@@ -129,6 +129,32 @@ it's a deliberate call.
 
 Newest first. Record *why*, not just *what*.
 
+- **2026-06-25** — **Cog case study: Competitive layout reflow + `.case-study-callout`,
+  and Findings affinity board → full-bleed cropped with overlapping post-its.** Three
+  asks (all match her Framer screenshots): **(1) Competitive** — the small 120px
+  side-by-side screenshots became **two full rows** in `Competitive.tsx`: row 1 = two
+  BIG self-help screenshots (`image-11`+`image-10`) on the LEFT, text on the RIGHT;
+  row 2 = text on the LEFT, two BIG therapy-platform screenshots (`image-17`+`image-18`)
+  on the RIGHT (each row a vertically-centred `md:grid-cols-2`; image pairs are a `flex`
+  of two `w-1/2 max-w-[220px] object-contain`, justified start/end; row-2 uses
+  `md:order-1/2` to keep text-left/images-right). Dropped the `rounded-xl border` (the
+  reference shows clean borderless screens). **(2)** the gap line ("This gap in
+  therapy-support tools…") swapped from `<Callout>` (`.cog-callout`) → **`<CaseStudyCallout>`**
+  (`.case-study-callout` — Geist Mono 28px, green left rule), the reusable template token.
+  **(3) Findings** affinity board (`image-19`) is now **full-bleed** (`w-full`, dropped
+  the old `max-w-[1400px]` + `border`/`rounded`) and **cropped in height** via
+  `h-[clamp(240px,34vw,400px)] object-cover object-top`; the three quote **post-its are
+  pulled UP over the board's lower edge** (`-mt-20 md:-mt-28`, inside a `Container` so
+  they stay centred). Post-its restyled to the original: **square** (`aspect-square`,
+  removed `rounded-2xl`), **slight shadow** (`shadow-[0_8px_24px_rgba(0,0,0,0.12)]`),
+  **NEW post-it colours** — added `--cog-postit-mint:#afddc9` + `--cog-postit-orange:#ffbd87`
+  tokens to `theme.css` (kept the global `--cog-mint/--cog-orange` untouched since those
+  drive mascots/journey headers); quote is **italic Geist** dark ink (was mono; orange
+  post-it text was white → now dark ink since the new peach is light), attribution
+  **bottom-right** grey. tsc + eslint clean; verified both sections via standalone
+  Playwright at 1440@2× against her screenshots. **Uncommitted** pending Caroline.
+  *(Dev-server note: a wedged Turbopack `.next` cache hung the cog-page compile for
+  minutes — `rm -rf .next` + restart fixed it instantly.)*
 - **2026-06-25** — **Glass seam: reveal the device mockups in full BEFORE the glass
   rises (measured sticky-top pin) + confirmed it's separate from the home glass.**
   Caroline on the pinned glass reveal: she likes the movement ("nice one!") but **"you

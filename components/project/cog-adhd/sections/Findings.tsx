@@ -53,52 +53,43 @@ export function Findings() {
         </Title>
       </Container>
 
-      {/* Affinity map — wide board, full bleed, scrollable on small screens */}
-      <div className="overflow-x-auto">
-        <div className="mx-auto w-full max-w-[1400px] px-4 md:px-8">
+      {/* Affinity map — full-bleed board cropped in height; the quote post-its
+          overlap its lower edge (matches the original Framer layout). */}
+      <div className="relative mt-10 md:mt-14">
+        <div className="w-full overflow-hidden">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={A("image-19.png")}
             alt="Affinity map grouping research observations into themes such as establishing core needs, accountability, measuring progress, admin work, and risk assessment"
-            className="w-full min-w-[900px] rounded-md border border-[var(--cog-line)]"
+            className="h-[clamp(240px,34vw,400px)] w-full object-cover object-top"
           />
         </div>
+
+        <Container>
+          {/* Quote post-its — pulled up to sit over the board */}
+          <div className="-mt-20 grid gap-5 md:-mt-28 md:grid-cols-3">
+            {QUOTES.map((q, i) => (
+              <figure
+                key={i}
+                className={`flex aspect-square flex-col justify-between p-7 shadow-[0_8px_24px_rgba(0,0,0,0.12)] md:p-8 ${
+                  q.tone === "green"
+                    ? "bg-[var(--cog-postit-mint)]"
+                    : "bg-[var(--cog-postit-orange)]"
+                }`}
+              >
+                <blockquote className="font-[family-name:var(--font-body)] text-[15px] italic leading-[1.5] text-[var(--cog-ink)] md:text-[17px]">
+                  &ldquo;{q.text}&rdquo;
+                </blockquote>
+                <figcaption className="mt-6 text-right text-sm text-[var(--cog-ink-soft)]">
+                  {q.by}
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        </Container>
       </div>
 
       <Container>
-        {/* Three quote cards */}
-        <div className="mt-14 grid gap-5 md:grid-cols-3">
-          {QUOTES.map((q, i) => (
-            <figure
-              key={i}
-              className={`flex flex-col justify-between rounded-2xl p-6 ${
-                q.tone === "green"
-                  ? "bg-[var(--cog-mint)]"
-                  : "bg-[var(--cog-orange)]"
-              }`}
-            >
-              <blockquote
-                className={`cog-callout border-0 pl-0 text-sm md:text-base ${
-                  q.tone === "orange"
-                    ? "text-white"
-                    : "text-[var(--cog-ink)]"
-                }`}
-              >
-                &ldquo;{q.text}&rdquo;
-              </blockquote>
-              <figcaption
-                className={`cog-label mt-5 ${
-                  q.tone === "orange"
-                    ? "text-white/90"
-                    : "text-[var(--cog-ink-soft)]"
-                }`}
-              >
-                {q.by}
-              </figcaption>
-            </figure>
-          ))}
-        </div>
-
         {/* 4 insight cards — 2×2 grid */}
         <div className="mt-16 grid gap-x-12 gap-y-12 md:grid-cols-2">
           {INSIGHTS.map((ins) => (
