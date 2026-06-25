@@ -33,6 +33,14 @@ export default function CogAdhdCaseStudy() {
           device assets are always seen in full before the glass starts covering. */}
       <StickyHero><Hero /></StickyHero>
 
+      {/* BUFFER — a transparent spacer so the glass rises a bit LATER: once the
+          hero pins (mockups fully visible), the visitor keeps scrolling past it
+          for ~half a viewport BEFORE the glass plate climbs in. Delays the glass
+          ("scroll more → glass appears") instead of it rising the instant the
+          hero pins. It's transparent + behind the pinned hero, so it just adds
+          scroll distance. Tune the height to taste. */}
+      <div aria-hidden className="h-[45vh]" />
+
       {/* GLASS SEAM — ties the case study to the homepage: everything after the
           hero rides a frosted cream-glass plate that slides UP over the pinned
           hero (mirrors how About glides over the home WebGL hero). No -mt overlap
