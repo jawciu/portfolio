@@ -60,17 +60,44 @@ typography:
     fontWeight: "700"   # + -webkit-text-stroke 0.6px (0.35px mobile) = faux extra-bold
     lineHeight: 1.08
     letterSpacing: -0.02em
-  case-study-section-header:   # each section's heading (MY ROLE, INTERVIEWS, …)
+  case-study-eyebrows-heading: # small eyebrow ABOVE each section heading (INTERVIEWS, …)
+    fontFamily: Geist        # sans (was Geist Mono)
+    fontSize: 13px
+    fontWeight: "700"   # bolder than the old 600
+    letterSpacing: 0.18em
+    textTransform: uppercase   # always all-caps regardless of markup casing
+    color: var(--cog-ink)   # same ink as the heading; reads as one stacked unit
+    marginBottom: 0.75rem   # BAKES the consistent eyebrow→heading gap (12px) into the template
+  case-study-section-heading:  # each section's heading (MY ROLE, INTERVIEWS, …)
     fontFamily: Iosevka Charon
-    fontSize: 33.6px    # clamp(1.5rem, 1.1rem + 1.6vw, 2.1rem)
-    fontWeight: "700"
+    fontSize: 36px      # clamp(1.5rem, 1rem + 2vw, 2.25rem); 24px floor
+    fontWeight: "700"   # + -webkit-text-stroke 0.6px (0.4px ≤640px) = SAME faux extra-bold as the title
     lineHeight: 1.08
-    letterSpacing: -0.01em
+    letterSpacing: -0.01em   # max 2 lines via manual <br/> in the markup
+    marginBottom: 3rem  # BAKES the consistent heading→content gap (48px) into the template
   case-study-hero-label:       # mono labels in the hero meta block (brand / role / …)
     fontFamily: Geist Mono
     fontSize: 16px
     fontWeight: "800"   # true extra-bold — Geist Mono is a variable font (no stroke)
     letterSpacing: 0.02em
+  case-study-label:            # bold inline content label (MY ROLE steps: research / synthesis / …)
+    fontFamily: Geist Mono
+    fontSize: 16px      # same size + weight as case-study-hero-label
+    fontWeight: "800"
+    letterSpacing: 0.02em
+    textTransform: lowercase   # ALWAYS lower-case, no caps
+    color: var(--cog-ink)
+  case-study-body-md:          # default reading size for case-study body copy
+    fontFamily: Geist
+    fontSize: 16px
+    lineHeight: 1.4
+    color: var(--soft-ink)   # #4a4a4a — soft body ink (template token)
+  case-study-callout:          # left-ruled statement / pull-quote
+    fontFamily: Geist Mono
+    fontSize: 28px      # 22px at ≤640px (mobile)
+    lineHeight: 1.2
+    color: var(--soft-ink)   # #4a4a4a — light ink
+    borderLeft: 2px solid #19a072   # green rule
   # Geist — body copy. The only sans on the page; calm against the noise.
   body-lg:
     fontFamily: Geist
@@ -139,6 +166,21 @@ components:
     size: 8px
   separator:              # the magenta "/" between directory-style words
     textColor: "{colors.accent-magenta}"
+  case-study-glass-seam:  # ties a case study to the homepage — content plate RISES over a pinned hero
+    heroPin: "sticky, top = -(heroHeight - viewportHeight)"  # measured in StickyHero.tsx; the hero (taller than the viewport) scrolls up until the device mockups are FULLY visible, THEN pins, so the plate rises over it only after the assets are seen
+    overlap: 0                    # plate sits just below the hero (no -mt) so it enters AFTER the mockups are fully shown, then rises on scroll
+    rounded: "{rounded.sheet}"    # rounded-t-[2.5rem], echoes the About sheet
+    backdropFilter: blur(40px) saturate(1.5)   # backdrop-blur-2xl backdrop-saturate-150
+    shadow: "0 -24px 60px -20px rgba(40,34,20,0.18)"  # soft shadow UNDER the plate's top edge — floating-glass depth
+    background: "linear-gradient(180deg, rgba(206,201,186,0.62) 0px, rgba(222,217,204,0.7) 60px, rgba(238,235,227,0.9) 125px, rgba(245,244,239,0.98) 165px, #f5f4ef 185px)"  # frosted top tinted DARKER than cream (visible glass edge), FAST fade to solid cream (~185px) so copy never reads over frost
+    rimGlint: "linear-gradient(90deg, transparent, rgba(255,255,255,0.85) 22%, rgba(255,255,255,0.35) 50%, rgba(255,255,255,0.7) 78%, transparent)"  # soft bright hairline along the top edge
+  footer:                 # global site footer — dark plate closing every route (home + case studies)
+    backgroundColor: "{colors.bg}"     # always dark, even on light case studies (mounted outside .cog-root)
+    borderTop: rgba(245, 245, 245, 0.1)
+    heading: "Let's Connect"           # font-mono uppercase bold, 36px desktop / text-2xl mobile
+    body: "{typography.case-study-body-md}"  # --soft-ink overridden to rgba(245,245,245,0.72) for the dark surface
+    reachLabel: { fontFamily: Geist, fontSize: 16px, fontWeight: "700" }
+    icons: linkedin + email           # white marks (LinkedIn "in" knocked out via evenodd), no bg/border, hover:bg-fg/10
 ---
 
 # Holographic Dark — Portfolio Design System
@@ -207,18 +249,53 @@ Bricolage Grotesque (`font-display`) is loaded but currently dormant — it only
 appears in archived/commented showcase variants. Treat the live system as three
 families.
 
-**Case-study template** (`case-study-title`, `case-study-section-header`): case
+**Case-study template** (`case-study-title`, `case-study-section-heading`): case
 studies are a light sub-theme but keep the same display voice — Iosevka, uppercase.
-The page H1 is **48px desktop / 22px mobile** (≤640px); section headers use the
-`clamp(1.5rem→2.1rem)` ramp. Both are set at weight 700 and pushed to "extra bold"
-by stroking the glyphs in the text colour (`-webkit-text-stroke`, 0.6px desktop /
-0.35px mobile on the title) — Charon ships no 800/900 cut, so this is how we get a
-heavier display weight without swapping the typeface. Title line breaks are placed
-manually in markup (kept to 2 lines on desktop; 3 is fine on mobile). The hero meta
-labels (brand / summary / setting the stage / role / time / tools) use
-`case-study-hero-label` — **16px, weight 800** (a *true* extra-bold here, since Geist
-Mono is a variable font, unlike Charon). These live in each case study's `theme.css`
-as `.case-study-*` classes so they're reused verbatim across every case-study page.
+The page H1 is **48px desktop / 22px mobile** (≤640px); section headings use the
+`clamp(1.5rem→2.25rem)` ramp (**36px** desktop, 24px floor). Both are set at weight
+700 and pushed to "extra bold" by stroking the glyphs in the text colour
+(`-webkit-text-stroke`: title 0.6px / 0.35px mobile, section heading 0.6px / 0.4px
+mobile — the SAME faux-bold treatment) — Charon ships no 800/900 cut, so this is how
+we get a heavier display weight without swapping the typeface. Both the title and
+section headings break to a **max of 2 lines via manual `<br/>`** in the markup (3 is
+fine on mobile). The small all-caps **eyebrow** above each section heading
+(`case-study-eyebrows-heading`: **Geist** sans, **13px, weight 700**, letter-spacing
+0.18em, `text-transform: uppercase`) is coloured with the heading ink `--cog-ink` (NOT
+the green accent) so eyebrow + heading read as one stacked unit; it carries a
+**`margin-bottom: 0.75rem` (12px)** that BAKES the eyebrow→heading gap into the
+template — sections must NOT add their own top margin to the heading, so every gap
+stays consistent. The section heading mirrors this with a **`margin-bottom: 3rem`
+(48px)** that BAKES the heading→content gap into the template: it collapses with the
+following block's top margin (so the gap is a uniform **48px** below every section
+heading, regardless of each section's own `mt-*`). Two caveats: (1) sections must not
+add a *larger* top margin to their first block (it would win the collapse); (2) when
+the class is reused mid-component next to a NON-collapsing sibling (e.g. an
+`inline-flex` button, which doesn't margin-collapse), neutralise the baked gap with
+`mb-0!` so it doesn't add 48px there (see `NextProject`'s inner h3).
+For **Interviews** specifically, the persona mascots overhang the card top by ~32px,
+so its card grid uses `mt-20` (80px) to keep a *visible* 48px clear below the heading.
+The hero meta labels (brand / summary / setting the stage / role /
+time / tools) use `case-study-hero-label` — **16px, weight 800** (a *true* extra-bold
+here, since Geist Mono is a variable font, unlike Charon). For **bold inline content
+labels** (the MY ROLE steps — research / synthesis / strategy / design) use
+`case-study-label` — same Geist Mono 16px/800 as the hero label but **always
+lower-case** (`text-transform: lowercase`). All body copy uses `case-study-body-md` —
+**Geist, 16px, line-height 1.4**, coloured with the `--soft-ink` template token
+(`#4a4a4a`). It's self-contained: don't stack Tailwind `text-*`/`leading-*`/colour
+utilities on it (that was the old `cog-body`+`text-sm` clash that silently rendered
+15px — `cog-body` has since been DELETED) — apply the class alone so nothing overrides
+it. **`case-study-body-md` + `--soft-ink` now live in `app/globals.css` (site-wide
+template tokens), not just the cog theme** — so the homepage footer reuses them too.
+To re-theme the text on a *dark* surface, override the `--soft-ink` token in that
+scope (e.g. the footer sets `--soft-ink: rgba(245,245,245,0.72)`) rather than stacking
+a colour utility, keeping the class self-contained. Left-ruled **statements / pull-quotes** use
+`case-study-callout` (component `CaseStudyCallout`) — **Geist Mono, 28px / line-height 1.2**
+(22px ≤640px), light `--soft-ink`, with a **2px green rule** (`#19a072`) on the left. Like the
+other type tokens it's self-contained (apply alone). The older `cog-callout`/`cog-statement`
+stay for the dark near-black mono quotes used elsewhere. Genuinely-small captions (thought-bubble text, legends) use explicit `text-[13px]`
+/`text-sm` utilities directly (Geist is inherited from `.cog-root`). These live in each case
+study's `theme.css` as `.case-study-*` classes so they're reused verbatim across
+every case-study page.
 
 ## Layout & Spacing
 

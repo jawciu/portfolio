@@ -9,6 +9,7 @@
   --cog-bg-warm: #f6efe2; /* hero confetti band */
   --cog-ink: #1a1a1a; /* near-black text */
   --cog-ink-soft: #4a4a4a;
+  --soft-ink: #4a4a4a; /* TEMPLATE: soft body-copy ink, reusable across case studies */
   --cog-muted: #767670; /* secondary copy */
   --cog-line: #e2ded3; /* hairlines / card borders */
   --cog-card: #ffffff;
@@ -36,14 +37,20 @@
   padding-inline: 24px;
 }
 
-/* small uppercase mono section label, e.g. "INTERVIEWS", "COMPETITIVE ANALYSIS" */
-.cog-kicker {
-  font-family: var(--font-mono), monospace;
-  font-size: 11px;
-  font-weight: 600;
+/* CASE-STUDY EYEBROW HEADING — the small uppercase mono label sitting directly
+   above a section heading (INTERVIEWS, COMPETITIVE ANALYSIS, …). Reusable across
+   ALL case studies. TEMPLATE token. Same ink as the heading so the pair reads as
+   one stacked unit; the 0.75rem (12px) margin-bottom BAKES the eyebrow→heading
+   gap into the template, so sections must NOT add their own top margin to the
+   heading (keeps every gap consistent — matches the Interviews/HOLISTIC spacing). */
+.case-study-eyebrows-heading {
+  font-family: var(--font-body), sans-serif; /* Geist (was Geist Mono) */
+  font-size: 13px; /* +2px (was 11px) */
+  font-weight: 700; /* bolder (was 600) */
   letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--cog-green);
+  text-transform: uppercase; /* always all-caps regardless of markup casing */
+  color: var(--cog-ink); /* match the section headings (was --cog-green) */
+  margin-bottom: 0.75rem; /* the ONE consistent eyebrow→heading gap (= old mt-3) */
 }
 
 /* CASE-STUDY PAGE TITLE — the main H1 at the top of a case study. Reusable across
@@ -69,16 +76,31 @@
   }
 }
 
-/* CASE-STUDY SECTION HEADER — the bold uppercase heading for each section
-   (MY ROLE, INTERVIEWS, …). Reusable across ALL case studies. TEMPLATE token. */
-.case-study-section-header {
+/* CASE-STUDY SECTION HEADING — the bold uppercase heading for each section
+   (MY ROLE, INTERVIEWS, …). Reusable across ALL case studies. TEMPLATE token.
+   36px desktop (2.25rem), floors at 24px on narrow screens. Max 2 lines via a
+   manual <br/> in the markup. The 3rem (48px) margin-bottom BAKES the consistent
+   heading→content gap into the template (mirrors the eyebrow→heading gap above):
+   it collapses with the following content's top margin, so sections must NOT add
+   their own larger top margin to the first block (keeps every gap a uniform 48px). */
+.case-study-section-heading {
   font-family: var(--font-hero), monospace;
   font-weight: 700;
+  /* SAME faux extra-bold as `.case-study-title`: Charon ships no 800/900, so we
+     thicken the 700 glyphs by stroking them in the text colour. */
+  -webkit-text-stroke: 0.6px currentColor;
   text-transform: uppercase;
   letter-spacing: -0.01em;
   line-height: 1.08;
   color: var(--cog-ink);
-  font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.1rem);
+  font-size: clamp(1.5rem, 1rem + 2vw, 2.25rem); /* 24px → 36px */
+  margin-bottom: 3rem; /* the ONE consistent heading→content gap (48px) */
+}
+
+@media (max-width: 640px) {
+  .case-study-section-heading {
+    -webkit-text-stroke: 0.4px currentColor; /* lighter stroke at the smaller size */
+  }
 }
 
 /* mono kicker used for the tiny inline labels (brand / role / time / tools) */
@@ -101,12 +123,47 @@
   color: var(--cog-ink);
 }
 
-/* body copy */
-.cog-body {
+/* CASE-STUDY LABEL — reusable bold inline label (same size + weight as
+   `.case-study-hero-label`: Geist Mono, 16px, 800) for in-content labels like the
+   MY ROLE steps (research / synthesis / strategy / design). ALWAYS lowercase,
+   regardless of the markup's casing. Reusable across every case study — TEMPLATE. */
+.case-study-label {
+  font-family: var(--font-mono), monospace;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-transform: lowercase; /* always lower-case, no caps */
+  color: var(--cog-ink);
+}
+
+/* CASE-STUDY BODY (MD) — the default reading size for case-study body copy
+   (Geist). 16px, line-height 1.4, soft ink. Reusable across every case study —
+   TEMPLATE token. Self-contained: don't stack Tailwind size/line-height/colour
+   utilities on top of it (no `text-sm`, no `leading-*`) so nothing overrides it. */
+.case-study-body-md {
   font-family: var(--font-body), sans-serif;
-  font-size: 15px;
-  line-height: 1.65;
-  color: var(--cog-ink-soft);
+  font-size: 16px;
+  line-height: 1.4;
+  color: var(--soft-ink);
+}
+
+/* CASE-STUDY CALLOUT — a left-ruled statement / pull-quote. Reusable across ALL
+   case studies — TEMPLATE token. Geist Mono, 32px / line-height 1.2, light soft ink,
+   with a 2px GREEN rule (#19a072) on the left. Self-contained: apply it ALONE, don't
+   stack size/colour utilities on it. 22px on mobile (≤640px) so it doesn't overflow. */
+.case-study-callout {
+  font-family: var(--font-mono), monospace;
+  font-size: 28px;
+  line-height: 1.2;
+  color: var(--soft-ink);
+  border-left: 2px solid #19a072;
+  padding: 4px 0 4px 24px;
+}
+
+@media (max-width: 640px) {
+  .case-study-callout {
+    font-size: 22px;
+  }
 }
 
 /* the framed monospace pull-quote callouts (left-bordered, typewriter feel) */

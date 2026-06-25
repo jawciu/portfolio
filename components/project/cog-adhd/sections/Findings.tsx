@@ -54,7 +54,7 @@ export function Findings() {
       </Container>
 
       {/* Affinity map — wide board, full bleed, scrollable on small screens */}
-      <div className="mt-12 md:mt-16 overflow-x-auto">
+      <div className="overflow-x-auto">
         <div className="mx-auto w-full max-w-[1400px] px-4 md:px-8">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img

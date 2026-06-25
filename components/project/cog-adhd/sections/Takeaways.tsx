@@ -23,9 +23,9 @@ export function Takeaways() {
     <section data-section="Takeaways" className="py-16 md:py-24">
       <Container>
         <Kicker>KEY TAKEAWAYS</Kicker>
-        <Title className="mt-3 max-w-3xl">DESIGN IS COMPLEX AND CONTEXT-DRIVEN</Title>
+        <Title className="max-w-3xl">DESIGN IS COMPLEX AND CONTEXT-DRIVEN</Title>
 
-        <div className="mt-12 grid grid-cols-1 gap-x-10 gap-y-12 md:mt-16 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-x-10 gap-y-12 md:grid-cols-3">
           {TAKEAWAYS.map((item, i) => (
             <div key={i}>
               <div className="flex h-20 items-end">

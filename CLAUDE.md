@@ -129,6 +129,278 @@ it's a deliberate call.
 
 Newest first. Record *why*, not just *what*.
 
+- **2026-06-25** — **Glass seam: reveal the device mockups in full BEFORE the glass
+  rises (measured sticky-top pin) + confirmed it's separate from the home glass.**
+  Caroline on the pinned glass reveal: she likes the movement ("nice one!") but **"you
+  never see the phone and tablets in full"** — the cog hero is ~1196px (TALLER than the
+  viewport), so pinning it at `sticky top-0` showed its top (confetti/title/meta) and
+  hid the device mockups (at the hero's bottom) below the fold; the rising plate then
+  covered them before they were ever seen. **Fix:** new client component
+  `components/project/cog-adhd/StickyHero.tsx` pins the hero at a **measured `top:
+  -(heroHeight - viewportHeight)`** (ResizeObserver + resize listener, clamped to ≤0):
+  the hero scrolls UP first so the mockups slide into FULL view, and only then does it
+  stick (showing the mockups) while the glass plate rises over it. Also dropped the
+  plate's `-mt-[160px]` overlap so the plate sits just below the hero — it enters only
+  AFTER the mockups are fully shown. **GOTCHA (dead end):** first tried `sticky bottom-0`
+  — does NOT pin here, because bottom-sticky only holds an element exiting through the
+  *bottom*; our top-anchored hero exits through the *top*, so it just scrolled away
+  (verified via probe: heroTop 0→-150→-900, never stuck). The measured negative-`top`
+  sticky is the right mechanism (verified: hero scrolls to -296 as the tablet bottom
+  comes from 1148→852 into full view, then PINS at -296 while plateTop climbs
+  900→746→546→296 = glass rising; overflowX 0 throughout). **Separation confirmed (her
+  Q):** home glass = `components/sections/About.tsx` (only on `/`); case-study glass =
+  inline in `app/project/cog-adhd/page.tsx` (only on `/project/cog-adhd`) wrapping its
+  own Hero. Neither imports the other (the page only *mentions* About in a comment) —
+  different routes, no shared DOM/component/backdrop, cannot affect each other. Updated
+  `case-study-glass-seam` in DESIGN.md (heroPin → measured sticky-top, overlap → 0). tsc
+  + eslint clean; verified pin + reveal + 0 overflow + screenshots at 3 depths.
+  **Uncommitted** pending Caroline. *Note:* planned via plan-mode (greedy-chasing-
+  fountain.md) — approved approach was `sticky bottom-0`, corrected to measured sticky-
+  top during impl because bottom-0 didn't pin.
+- **2026-06-25** — **Interviews: 48px card gap, new `.case-study-callout` template,
+  speech bubbles rebuilt into 2 tidy rows.** Three of Caroline's asks: **(1)** persona
+  cards "a bit closer — 48px gap": swapped the grid for **flex** (`mt-20 flex flex-col
+  items-center gap-6 sm:flex-row sm:justify-center sm:gap-12`) so the three 260px cards
+  sit with a literal **48px** (`gap-12`) gutter instead of the wide grid-column slack.
+  **(2)** NEW reusable **`.case-study-callout`** template class + `CaseStudyCallout`
+  component (in `ui.tsx`) for left-ruled statements — **Geist Mono, 28px / line-height
+  1.2** (Caroline dropped 32→28), light `--soft-ink` (#4a4a4a), **2px green rule
+  `#19a072`** on the left (22px on ≤640px so it doesn't overflow). Applied to the "My goal was to gain a deeper
+  understanding…" callout (was the dark near-black `Callout`/`.cog-callout`). Left
+  `.cog-callout`/`Callout` UNTOUCHED — it's used in 4 other sections (Findings/Strategy/
+  Competitive/Methodology). **(3)** Rebuilt the **thought-bubble cluster** (was a
+  flex-wrap mess of per-bubble `translate`/`mt` hacks that overlapped) into **two clean
+  rows, no overlap**: row 1 = purple (processes) · green (successful therapy); row 2 =
+  green (challenges) · purple (needs) · green (current process) — matches Caroline's
+  reference. Each cloud renders via a small `Bubble` helper that puts the question in a
+  **narrow centred column over the main lobe**, biased away from the cloud's trailing
+  dots (purple `stack.png`/`stack-3.png` = tail bottom-RIGHT → box `left-[16%]
+  right-[24%]`, x-centre ~46%; green `stack-4.png` = tail bottom-LEFT → `left-[24%]
+  right-[16%]`, x-centre ~54%; both `top-[12%] bottom-[24%]`, y-centre ~44%), text
+  **left-aligned** (`text-left`) at 15px. **KEY tuning gotcha:** the span fills the box
+  width (text wraps to the box), so the box must be NARROW (~60% of the bubble) AND
+  centred on the lobe — a wide box made the text hug the left edge edge-to-edge (her
+  first "still fucked up" screenshot); over-biasing pushed green text too far right
+  (56%). Landed on a ~60%-wide box, gentle ±5% tail bias. Row 1 bubbles `w-[300px]
+  md:w-[350px]`, row 2 `w-[260px] md:w-[290px]`. Saved `.case-study-callout` to DESIGN.md
+  (token + prose). tsc + eslint clean; verified via Playwright (card gap 48px; callout
+  Geist-Mono/28px/1.2/#4a4a4a/#19a072-rule; 5 bubbles in 2 rows, text centred over lobes,
+  no overlap). **Uncommitted** pending Caroline. *Note:* "light ink" read as `--soft-ink`
+  #4a4a4a — easy to lighten if she wants it greyer.
+- **2026-06-25** — **Case-study template: BAKED the heading→content gap (48px) +
+  Interviews persona cards reworked.** Caroline: (1) the heading→cards gap (she
+  pointed at Interviews/HOLISTIC INSIGHTS) is too small — make it **48px and
+  consistent across ALL sections**; (2) the Interviews persona labels → `.case-study-label`,
+  card body to **3 lines**, cards **less wide** (match her original screenshot). **(1)**
+  Mirrored the eyebrow→heading pattern: added **`margin-bottom: 3rem` (48px)** to
+  `.case-study-section-heading` in `theme.css`, so the gap is now baked template-wide
+  and **collapses** with each section's existing content top-margin → a uniform 48px
+  below every heading with only ONE edit (most sections had `mt-6/8/10/12` ≤ 48, so
+  they collapse to 48 untouched). Fixed the 2 sections whose content margin EXCEEDED 48
+  on `md` (would win the collapse): dropped `md:mt-16` from **Takeaways** + **Findings**
+  (now rely on the baked 48). **Caveat discovered + fixed:** the class is reused
+  mid-component in **NextProject** next to an `inline-flex` button (which does NOT
+  margin-collapse), so the baked 48 floated its button 48px lower — neutralised with
+  **`mb-0!`** on that one h3 (Tailwind important beats the class, since `.case-study-*`
+  loads after Tailwind). **(2)** Interviews: labels `cog-label text-[15px]` →
+  **`.case-study-label`** (Geist Mono 16px/800, lowercase → "therapy clients" etc.);
+  body `mt-2 text-[13px]` → `mt-3` (the dead `text-[13px]` removed — `.case-study-body-md`
+  already wins at 16px); cards `max-w-[260px] mx-auto` → body wraps to **3 lines**.
+  Because the mascots **overhang the card top by ~32px**, the Interviews card grid uses
+  **`mt-20` (80px)** so the *visible* clear gap below the heading is still 48px (others
+  have no overhang, so `mt`-collapse to the card top = 48px = the visible gap). Saved
+  to DESIGN.md (section-heading `marginBottom` token + the bake/collapse/`mb-0!`/overhang
+  caveats). tsc + eslint clean; verified via Playwright — every section heading→content
+  gap = 48px (Interviews 49px visible to mascots / 80px to box), 3-line body, 260px
+  cards, label 16px/800/lowercase, NextProject button gap restored to 28px. **Touched
+  only my files** (theme.css + Interviews/Takeaways/Findings/NextProject sections +
+  DESIGN.md) — left other agent's section alone. **Uncommitted** pending Caroline.
+- **2026-06-25** — **Case-study GLASS SEAM — ties the case study to the homepage
+  (PINNED reveal with movement).** Caroline wants the case study to echo home, where
+  `About` (a frosted glass sheet) glides up over the fixed WebGL hero. Wrapped
+  everything after the Hero (MyRole→NextProject, 13 sections) in a **cream glass plate**
+  in `app/project/cog-adhd/page.tsx` — `relative z-10 -mt-[160px]`, `rounded-t-[2.5rem]`,
+  `backdrop-blur-2xl backdrop-saturate-150` (`blur(40px)`), a top rim-glint hairline,
+  a soft top shadow (floating-glass depth), and a gradient whose frosted top is tinted
+  **darker** than the cream → lands on solid `#f5f4ef` FAST (~185px). **IMPORTANT
+  REVERSAL:** I first built the *static* "glass seam" (hero scrolls normally, plate just
+  overlaps its bottom) — Caroline had picked that over a pinned reveal when I asked, BUT
+  on seeing it **rejected it: "noo i don't like it should be more like homepage, this
+  has no movement."** So the hero is now **`sticky top-0 z-0`** (pins like home's fixed
+  hero) and the plate scrolls UP over it = real movement (verified: heroTop stays 0
+  while plateTop goes 1036→786→536 as you scroll). She also asked to **darken the glass
+  at the overlap so it's more visible** → frosted top tint changed from light cream to a
+  greige `rgba(206,201,186,0.62)`. **GOTCHA:** sticky breaks if an ancestor has
+  `overflow-x-hidden` (makes the ancestor a scroll container, so sticky pins to it, not
+  the viewport) — so I **removed `overflow-x-hidden` from `<main>`** and re-verified
+  `overflowX === 0` at 1440 (no h-scroll without it). The case-study hero ≈ one viewport
+  tall (after the earlier `pb-16/24 → pb-10/12` padding trim) so all of it
+  (confetti/title/meta/devices) shows at rest, then the cream rises over it bottom-up.
+  **Dials:** `-mt-[160px]` (overlap), gradient stops (darkness + fade speed),
+  `backdrop-blur-2xl` (frost), the `shadow-[…]` (depth). Saved as `case-study-glass-seam`
+  in DESIGN.md. tsc + eslint clean; verified pinning + movement + 0 overflow + screenshots
+  at 3 scroll depths. **Uncommitted** pending Caroline.
+- **2026-06-25** — **Footer promoted to GLOBAL + icon rework.** Caroline: use the
+  footer across all case studies, drop the name, and restyle the icons. Changes:
+  (1) **Mounted `<Footer />` in `app/layout.tsx`** (after `{children}`, inside
+  `<Providers>`, beside `<NavBar />`) and **removed it from `app/page.tsx`** — so the
+  one dark footer now closes EVERY route (home + case studies). It sits outside the
+  case-study `.cog-root` scope, so it stays dark on the light cog page (no leak).
+  (2) **Removed "Caroline Jaworsky"** from the footer; the connect block is now a
+  single left-aligned column (dropped the 2-col `justify-between`). (3) **LinkedIn
+  icon:** removed the white badge background — the **mark itself is now white with the
+  "in" knocked out** (`fillRule/clipRule="evenodd"` on the Simple-Icons-style path,
+  which has rounded corners baked in). (4) **Email icon:** removed the border ring.
+  (5) **Both icons** now share a subtle **hover highlight** (`hover:bg-fg/10` on the
+  44px rounded-md hit box) instead of opacity/border changes. (6) **Removed the cog
+  case study's OWN footer** — `components/project/cog-adhd/sections/NextProject.tsx`
+  had an inline purple `<footer>` (name + Let's Connect + old white-badge icons) that
+  now duplicated the global one; deleted just that `<footer>` block (kept the "View
+  Next Project" band). **Caroline explicitly authorised touching that file** (the
+  other agent's area, but she okayed it via the duplicate-footer prompt). Verified:
+  `tsc` + eslint clean, **1 footer per page** (home + cog), 0 console errors, icon
+  fill computes to `rgb(245,245,245)` (true white — the grey look in a zoomed crop was
+  just AA), LinkedIn `target=_blank`/correct href. **Uncommitted** pending Caroline.
+- **2026-06-25** — **New `.case-study-label` token + eyebrow → Geist caps + Interviews
+  persona images fixed.** Three asks: (1) **`.case-study-label`** — a NEW reusable
+  template class (Caroline asked for the name so she can reference it later) for bold
+  inline content labels. Same size + weight as `.case-study-hero-label` (Geist Mono,
+  **16px, weight 800**) but **`text-transform: lowercase`** so it's ALWAYS lower-case
+  regardless of markup casing. Applied to the **MY ROLE** step labels
+  (research / synthesis / strategy / design — were `.cog-label` 12px/700 + utilities;
+  the `>` chevron stays). (2) **Eyebrow font swap** — `.case-study-eyebrows-heading`
+  changed from **Geist Mono → Geist (sans)** and given `text-transform: uppercase`
+  (Caroline: "try eyebrow in geist all caps"). Everything else (13px, weight 700, ink,
+  0.18em tracking, 12px margin-bottom gap) unchanged. (3) **Interviews persona images
+  were mis-assigned** — re-mapped per Caroline: therapy clients `image-6→image-7`,
+  therapists `image-7→image-8`, clinic staff `image-8→image-9` (the new
+  `Image(9).svg`). Note: `image-9.svg` was ALREADY in `public/projects/cog-adhd/` and
+  byte-identical to her source `~/Documents/Framer website/Cog clinic research
+  assets/Image(9).svg`, so no copy was needed — just referenced it. `image-6.svg` is
+  now unused. Simplified the persona alts to neutral "Mascot representing {role}" to
+  avoid a visual-description mismatch after the swap. Saved `.case-study-label` + the
+  eyebrow font change to DESIGN.md (front-matter tokens + prose). tsc + eslint clean;
+  verified via Playwright (label 16px/800/lowercase/Geist-Mono ×4; eyebrow
+  13px/700/uppercase/Geist; personas → image-7/8/9) + eyeballed MyRole + Interviews via
+  the standalone-Playwright trick. **Uncommitted** pending Caroline.
+- **2026-06-25** — **Homepage FOOTER built** (`components/Footer.tsx`, mounted at the
+  bottom of `app/page.tsx` inside the dark `bg-bg` plate, after `#work`). Caroline's
+  asks: (1) **bg = homepage bg** (`bg-bg` #070709, hairline `border-t border-fg/10`);
+  **"Let's Connect" = 36px desktop** (`text-2xl md:text-[36px]`, font-mono uppercase
+  bold — echoes the homepage HUD/label language; flag-able to Iosevka if she prefers).
+  (2) the joy paragraph uses **`.case-study-body-md`** (16px / lh 1.4 / Geist). (3)
+  **"Reach me here" → Geist 16px bold** (`font-body text-base font-bold`, was mono 11px
+  in the cog footer). (4) **LinkedIn + email icons matched to her reference** — LinkedIn
+  is the Simple-Icons mark filled white in a `rounded-md` badge (the glyph IS a rounded
+  square + "in", so white-on-bg reads as the dark "in"); email is an outlined envelope
+  in a matching bordered square. **Links:** LinkedIn → `https://www.linkedin.com/in/
+  carolinejaworsky/` `target="_blank"`; email → `mailto:jaworskycaroline@gmail.com`.
+  **KEY decision — promoted the template tokens site-wide:** `.case-study-body-md` and
+  `--soft-ink` previously lived ONLY in the cog `theme.css` (imported just on the case-
+  study page), so they didn't exist on the homepage. Copied them into `app/globals.css`
+  (`:root --soft-ink: #4a4a4a` + the class) so they're genuine site-wide template tokens
+  — an identical mirror of the cog copy (harmless duplicate; I deliberately did NOT edit
+  the in-flight cog `theme.css`, which the other agent has modified). The footer is dark,
+  so instead of stacking a colour utility on the class (which DESIGN.md forbids — it must
+  stay self-contained), the `<footer>` **overrides `--soft-ink` in its own scope** to
+  `rgba(245,245,245,0.72)` → the body reads light without touching the class. **GOTCHA
+  (re-confirmed):** Turbopack serves STALE compiled CSS after a `globals.css` edit and a
+  bare `touch` did NOT bust it — only a real *content* change forced the recompile (the
+  new class was absent from the served stylesheet until then). After any globals.css
+  edit, verify the rule is actually in `document.styleSheets`, not just the source file.
+  Verified via standalone Playwright: heading 36px/700/Geist-Mono, body 16px/22.4px-lh
+  /`rgba(245,245,245,0.72)`/Geist, "Reach me here" 16px/700/Geist, LinkedIn `target=
+  _blank` + correct href, footer bg `rgb(7,7,9)`, 0 console errors; screenshot matches
+  her reference. tsc + eslint clean. Saved to DESIGN.md (the body-md token note now
+  records it's global + the dark-scope `--soft-ink` override pattern). **Did NOT touch**
+  the cog case-study footer (`sections/NextProject.tsx`) — separate, other agent's area.
+  **Uncommitted** pending Caroline.
+- **2026-06-25** — **Case-study type template hardened: section-heading + eyebrow
+  renamed/reusable, unified eyebrow→heading gap, 36px headings, body-md everywhere
+  (cog-body deleted).** Five of Caroline's asks: (1) **`.case-study-section-header` →
+  `.case-study-section-heading`** (her preferred name; renamed across theme.css +
+  `ui.tsx` `Title` + `NextProject.tsx`). (2) **Eyebrow `.cog-kicker` →
+  `.case-study-eyebrows-heading`** (her name), and made **bolder: weight 600 → 700**.
+  (3) **Unified the eyebrow→heading gap** — it was per-section (`mt-3`/`mt-4`/none, so
+  Findings/Strategy/Methodology had a 0 gap that read too tight). Baked a single
+  **`margin-bottom: 0.75rem` (12px, = the Interviews/HOLISTIC spacing)** onto the
+  eyebrow class and stripped the `mt-*` off every `<Title>` that follows a `<Kicker>`
+  (Results/Takeaways/Competitive/Interviews/Challenges/Solution). Verified all **9
+  eyebrow→heading gaps == 12px**. Rule: sections must NOT add their own heading top
+  margin. (4) **Stripped the two heading SIZE overrides** (JourneyMap `md:text-3xl`,
+  BookingDropoff `clamp(1.25→1.6rem)`) so every section heading is uniform, and bumped
+  the token from the old **33.6px (`2.1rem`, "random") → 36px** (`clamp(1.5rem, 1rem +
+  2vw, 2.25rem)`, 24px floor). (5) **`.case-study-body-md` is now used for ALL body
+  copy** — changed `ui.tsx`'s `Body` component to render it (migrated **41 paragraphs**
+  16px/1.4/soft-ink), migrated the Hero meta table (role/time/tools), and for the three
+  genuinely-small captions (Interviews thought-bubbles, Results italic caption,
+  JourneyMap legend) DROPPED `cog-body` so they render their intended **13px/14px**
+  (they carry explicit `text-[13px]`/`text-sm` + colour and inherit Geist from
+  `.cog-root`) instead of the botched 15px. With no consumers left, **`.cog-body` was
+  deleted** from theme.css — the root cause of the silent-15px-override is gone. KEY
+  GOTCHA confirmed: `.case-study-*` classes (in theme.css, loaded AFTER Tailwind) BEAT
+  Tailwind utilities, so these classes are self-contained — never stack `text-*`/
+  `leading-*`/colour utilities on them. Saved all to DESIGN.md (renamed tokens, 36px,
+  eyebrow weight/gap, body-md-everywhere + cog-body-deleted note). tsc + eslint clean;
+  every value verified via Playwright (heading 36px/0.6px-stroke, eyebrow 13px/700/ink,
+  gaps 12px, body 16px/1.4, captions 13px) + eyeballed Interviews/Findings via the
+  standalone-Playwright trick (MCP screenshots still time out on this live page).
+  **Uncommitted** pending Caroline. *Possible follow-up:* body line-height is **1.4**
+  across all 41 paragraphs — fine on short insight paragraphs; eyeball the longer ones
+  in-browser and loosen toward 1.5–1.6 if any read tight.
+- **2026-06-25** — **Cog Hero confetti + case-study heading/eyebrow template
+  tuning.** Three of Caroline's asks: (1) **Confetti band flush to the top edge,
+  no background, 80% opacity.** The orange-streamer SVG (`image-5.svg`, transparent —
+  `fill="none"`, no bg rect) previously sat on a warm `bg-[var(--cog-bg-warm)]` band
+  *below* the navbar (the `pt-14 md:pt-16` on the cog-root `<main>` cleared the fixed
+  bar). Caroline wanted it tucked flush under the navbar: removed that top padding so
+  the confetti starts at viewport y=0, dropped the warm bg (now transparent — the
+  cream page shows through the streamers), and added `opacity-80`. Works because the
+  NavBar is `bg-transparent` at the top (only frosts on scroll), so the dark nav text
+  overlays the streamers cleanly. Verified `confettiTop=0`, opacity 0.8, parent bg
+  transparent. (2) **Section headings → SAME faux extra-bold as the page title.**
+  Added `-webkit-text-stroke: 0.6px currentColor` to `.case-study-section-header`
+  (+ 0.4px ≤640px), mirroring `.case-study-title` — Charon has no 800/900 cut so we
+  stroke the 700 glyphs. **Size is unchanged: 33.6px desktop** (`clamp(1.5rem,
+  1.1rem+1.6vw, 2.1rem)`, 24px floor). Also enforced **max 2 lines via manual
+  `<br/>`**: added breaks to **Interviews** ("HOLISTIC INSIGHTS" / "THROUGH 360°
+  INTERVIEWS WITH…" — and removed its `max-w-[20ch]` so line 2 fits) and **JourneyMap**
+  ("CURRENT THERAPY PROCESS -" / "CLIENT JOURNEY MAP"); the other long headings already
+  had breaks. **FLAGGED to Caroline:** two sections still override the heading size
+  smaller — **JourneyMap** (`md:text-3xl` = 30px) and **BookingDropoff**
+  (`clamp(1.25rem→1.6rem)` ≈ 20–25.6px) — so headings aren't 100% uniform in size;
+  awaiting her call on unifying them to 33.6px. (3) **Eyebrows** (`.cog-kicker` —
+  INTERVIEWS / COMPETITIVE ANALYSIS / …) recoloured from the green accent
+  `--cog-green` → heading ink `--cog-ink`, and bumped **11px → 13px** (+2px) so the
+  eyebrow + heading read as one stacked unit. Saved all three to DESIGN.md (section-
+  header stroke + 2-line rule + eyebrow token). tsc + eslint clean; verified every
+  value via Playwright (header 33.6px/0.6px-stroke/ink, eyebrow 13px/ink, both target
+  headings = 2 lines). **Uncommitted** pending Caroline.
+- **2026-06-25** — **Case-study template: body copy → `.case-study-body-md`
+  (16px / line-height 1.4 / `--soft-ink`); killed the silent `cog-body`+`text-sm`
+  override.** Caroline noticed the Hero summary paragraph ("As the Founding
+  Designer…") was rendering at 15px even though the markup said `text-sm` (14px) —
+  `.cog-body` (15px, in `theme.css`) and Tailwind's `.text-sm` are equal-specificity
+  single-class selectors, so source order won and `.cog-body` quietly clobbered the
+  utility. She wanted it tidied (no fighting rules), bumped to **16px / line-height
+  1.4**, and the colour pulled into a **named token `--soft-ink`** (`#4a4a4a`, the
+  same value as the existing `--cog-ink-soft` but a clean, non-`cog`-prefixed
+  *template* token for reuse across case studies). Added the reusable
+  **`.case-study-body-md`** class to `components/project/cog-adhd/theme.css`
+  (Geist `--font-body`, 16px, line-height 1.4, `var(--soft-ink)`) — it's
+  **self-contained**: the rule is to apply it ALONE, never stack `text-*`/`leading-*`
+  /colour utilities on it (that stacking is exactly what caused the override). Swapped
+  the two Hero meta paragraphs (`summary` + `setting the stage`) from
+  `<Body className="… text-sm leading-relaxed">` to `<p className="case-study-body-md
+  mt-2">`, and dropped the now-unused `Body` import from `Hero.tsx`. Scope kept tight:
+  did NOT touch the role/time/tools mini-table (intentionally small) or the many other
+  `.cog-body`/`<Body>` usages across the page — `.cog-body` stays as the generic body;
+  `.case-study-body-md` is the new template default to migrate sections onto over time.
+  Saved both to DESIGN.md (front-matter `case-study-body-md` token + `--soft-ink`, and
+  a prose note documenting the don't-stack-utilities rule). Verified via Playwright:
+  computed 16px / 22.4px line-height (=1.40) / `rgb(74,74,74)` / Geist, classes
+  `case-study-body-md mt-2` (no override). tsc + eslint clean. **Uncommitted**
+  pending Caroline.
 - **2026-06-24** — **Case-study template: hero meta labels → `.case-study-hero-label`
   (16px, extra-bold 800).** Caroline wanted the hero meta labels (brand / summary /
   setting the stage / role / time / tools) at 16px extra-bold. `.cog-label` is shared
