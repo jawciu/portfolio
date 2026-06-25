@@ -183,6 +183,26 @@ Newest first. Record *why*, not just *what*.
   **Uncommitted** pending Caroline. *Note:* planned via plan-mode (greedy-chasing-
   fountain.md) — approved approach was `sticky bottom-0`, corrected to measured sticky-
   top during impl because bottom-0 didn't pin.
+- **2026-06-25** — **Interviews bubbles v2 + callout 28→ (kept 28).** Follow-up fixes
+  after Caroline's review: **(1)** callout already at 28px (kept). **(2)** All 5 bubbles
+  now render at **one size** (`w-[300px]`, was per-row 350/290). **(3)** The 3 green
+  bubbles were all reusing `stack-4.png` — wrong. Mapped the distinct source clouds:
+  bubble 2 (successful therapy) → **`stack-1.png`** (Stack(1), single tail dot), bubble 3
+  (challenges) → **`stack-2.png`** (Stack(2)), bubble 5 (current process) → `stack-4.png`
+  (Stack(4)). All 5 assets already existed in `public/projects/cog-adhd/`. **(4)** Text
+  centring: replaced the by-tail formula with a **per-bubble `box`** tuned to each cloud's
+  REAL lobe centre, computed objectively with sharp (alpha centroid over the body band
+  y∈[6%,66%], excluding tail dots): stack **49%**, stack-1 **43%**, stack-2 **53%**,
+  stack-3 **50%**, stack-4 **49%** (x-centres; all y-centre ~44 via `top-[12%]
+  bottom-[24%]`). Bubble 4 (`stack-3`, "needs") was the one Caroline flagged — its lobe
+  centre is **50%**, but I'd biased it to 43% (wrong way); now centred. Processes is 4
+  lines (she okayed that). Verified via a throwaway **isolated route** (`app/bubtest`,
+  since deleted) because the full `/project/cog-adhd` route briefly **wedged Turbopack on
+  compile** during a dev-server restart (transient — recovered, served 200 after; the
+  heavy route pulls in Hero + the other agent's in-flight `StickyHero`/`page.tsx`). Final
+  cx measured 49/43/53/50/49, all bubbles 300px, 3 distinct greens confirmed on the real
+  page. tsc + eslint clean. **Uncommitted** pending Caroline (prior bubble v1 is already
+  committed in `7723eff`).
 - **2026-06-25** — **Interviews: 48px card gap, new `.case-study-callout` template,
   speech bubbles rebuilt into 2 tidy rows.** Three of Caroline's asks: **(1)** persona
   cards "a bit closer — 48px gap": swapped the grid for **flex** (`mt-20 flex flex-col

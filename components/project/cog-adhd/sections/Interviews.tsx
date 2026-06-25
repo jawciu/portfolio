@@ -32,16 +32,19 @@ type Bubble = {
   img: string;
   alt: string;
   text: React.ReactNode;
-  /** which corner the cloud's trailing dots sit in — text is biased away from it */
-  tail: "left" | "right";
+  /** absolute-inset utilities framing the cloud's main lobe — the text column is
+      centred inside this box, so it's tuned per cloud (each has a different shape
+      + trailing-dot corner). */
+  box: string;
 };
 
-// Laid out as two rows (see render): row 1 = [0,1], row 2 = [2,3,4].
+// Five distinct clouds. Laid out as two rows (see render): row 1 = [0,1],
+// row 2 = [2,3,4]. All five render at the SAME size.
 const BUBBLES: Bubble[] = [
   {
-    img: "stack.png", // purple, tail bottom-right
+    img: "stack.png", // purple, tail bottom-right — lobe centre ~49%
     alt: "Purple thought bubble",
-    tail: "right",
+    box: "left-[19%] right-[21%] top-[12%] bottom-[24%]",
     text: (
       <>
         What <b>processes</b> in mental healthcare clinics influence the therapy
@@ -50,9 +53,9 @@ const BUBBLES: Bubble[] = [
     ),
   },
   {
-    img: "stack-4.png", // green, tail bottom-left
+    img: "stack-1.png", // green, tail bottom-left (single dot) — lobe centre ~43%
     alt: "Green thought bubble",
-    tail: "left",
+    box: "left-[13%] right-[27%] top-[12%] bottom-[24%]",
     text: (
       <>
         What factors contribute to a <b>successful therapy</b>?
@@ -60,9 +63,9 @@ const BUBBLES: Bubble[] = [
     ),
   },
   {
-    img: "stack-4.png", // green, tail bottom-left
+    img: "stack-2.png", // green, tail bottom-left — lobe centre ~53%
     alt: "Green thought bubble",
-    tail: "left",
+    box: "left-[23%] right-[17%] top-[12%] bottom-[24%]",
     text: (
       <>
         What <b>challenges</b> do therapists face?
@@ -70,9 +73,9 @@ const BUBBLES: Bubble[] = [
     ),
   },
   {
-    img: "stack-3.png", // purple, tail bottom-right
+    img: "stack-3.png", // purple, tail bottom-right — lobe centre ~50%
     alt: "Purple thought bubble",
-    tail: "right",
+    box: "left-[20%] right-[20%] top-[12%] bottom-[24%]",
     text: (
       <>
         What are our customers&apos; <b>needs</b> when starting ADHD therapy?
@@ -80,9 +83,9 @@ const BUBBLES: Bubble[] = [
     ),
   },
   {
-    img: "stack-4.png", // green, tail bottom-left
+    img: "stack-4.png", // green, tail bottom-left — lobe centre ~49%
     alt: "Green thought bubble",
-    tail: "left",
+    box: "left-[19%] right-[21%] top-[12%] bottom-[24%]",
     text: (
       <>
         Which parts of the <b>current process</b> are challenging, and what
@@ -92,25 +95,18 @@ const BUBBLES: Bubble[] = [
   },
 ];
 
-/** one cloud with its question centred over the main lobe (biased away from the
-    trailing dots), text left-aligned. */
-function Bubble({ b, className = "" }: { b: Bubble; className?: string }) {
-  // a NARROW text column centred over the cloud's main lobe, biased away from the
-  // trailing dots (purple = tail bottom-right, green = tail bottom-left) so the
-  // copy reads as a tidy centred block, not spanning edge-to-edge.
-  const box =
-    b.tail === "right"
-      ? "left-[16%] right-[24%] top-[12%] bottom-[24%]"
-      : "left-[24%] right-[16%] top-[12%] bottom-[24%]";
+/** one cloud with its question centred over the main lobe (the per-bubble `box`
+    frames the lobe, biased away from the trailing dots), text left-aligned. */
+function Bubble({ b }: { b: Bubble }) {
   return (
-    <div className={`relative ${className}`}>
+    <div className="relative w-[300px] max-w-full">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={A(b.img)}
         alt={b.alt}
         className="block h-auto w-full select-none"
       />
-      <div className={`absolute flex items-center justify-center ${box}`}>
+      <div className={`absolute flex items-center justify-center ${b.box}`}>
         <span className="text-left text-[15px] leading-[1.4] text-[var(--cog-ink)]">
           {b.text}
         </span>
@@ -161,15 +157,15 @@ export function Interviews() {
 
         {/* thought-bubble cluster — two tidy rows, no overlap:
             row 1 = purple · green, row 2 = green · purple · green. */}
-        <div className="mt-12 flex flex-col items-center gap-y-4 md:mt-16">
-          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-4">
+        <div className="mt-12 flex flex-col items-center gap-y-6 md:mt-16">
+          <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-6">
             {BUBBLES.slice(0, 2).map((b, i) => (
-              <Bubble key={i} b={b} className="w-[300px] max-w-full md:w-[350px]" />
+              <Bubble key={i} b={b} />
             ))}
           </div>
-          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-4">
+          <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-6">
             {BUBBLES.slice(2).map((b, i) => (
-              <Bubble key={i} b={b} className="w-[260px] max-w-full md:w-[290px]" />
+              <Bubble key={i} b={b} />
             ))}
           </div>
         </div>
