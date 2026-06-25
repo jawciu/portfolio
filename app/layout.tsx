@@ -3,6 +3,7 @@ import { Bricolage_Grotesque, Geist, Geist_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import { Providers } from "./providers";
 import { NavBar } from "@/components/NavBar";
+import { Footer } from "@/components/Footer";
 import "./globals.css";
 
 // Iosevka Charon — quasi-proportional, self-hosted. Not in Google's
@@ -65,6 +66,7 @@ export default function RootLayout({
         <Providers>
           <NavBar />
           {children}
+          <Footer />
         </Providers>
       </body>
     </html>

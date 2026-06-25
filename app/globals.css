@@ -82,6 +82,22 @@ html {
   }
 }
 
+/* CASE-STUDY BODY (MD) — reusable TEMPLATE type token, promoted here so it works
+   site-wide (the homepage footer + every case study share one definition; the cog
+   theme.css carries an identical copy scoped alongside its other tokens). 16px /
+   line-height 1.4 / Geist. Self-contained: don't stack Tailwind size/line-height
+   utilities on it. The colour comes from `--soft-ink`; override that token in a
+   given scope (e.g. a dark footer) to re-theme the text without stacking utilities. */
+:root {
+  --soft-ink: #4a4a4a; /* TEMPLATE: soft body-copy ink (light-page default) */
+}
+.case-study-body-md {
+  font-family: var(--font-body), sans-serif;
+  font-size: 16px;
+  line-height: 1.4;
+  color: var(--soft-ink);
+}
+
 /* Outlined display type for the lower "PROJECTS" strip. */
 .text-outline {
   color: transparent;
