@@ -129,6 +129,47 @@ it's a deliberate call.
 
 Newest first. Record *why*, not just *what*.
 
+- **2026-06-25** — **JourneyMap (CURRENT THERAPY PROCESS) restyled + widened to match
+  her design.** Caroline's asks: **(1) section bg → `#F7F7F4`** (was `--cog-bg` cream
+  `#f5f4ef` — slightly lighter; inline `bg-[#f7f7f4]`). **(2) Katherine persona image →
+  `image-20.svg`** (the photo-in-orange-ring-on-tan-slanted-square composite, 274×238;
+  already in `public/projects/cog-adhd/`, byte-identical to her source `Image(20).svg`)
+  — replaced the old plain round chip `image-2.svg`; rendered at `w-[240px] h-auto`,
+  **NOT circle-cropped** (the composite IS the framing). *(First tried `image-32.svg`, a
+  similar but tighter-cropped composite; she swapped it to `image-20.svg`.)* **(3)
+  "Katherine Bell" → bigger + bold + new `--dark-green` token (`#006B4B`)** added to
+  `theme.css` `.cog-root` — rendered as Geist sans `text-xl font-bold` (was the small
+  `cog-label` mono in `--cog-green`). **(4) quote** under the name now **italic + indented right** (`pl-8 italic`).
+  **(5) "scenario" / "expectations" labels → `.case-study-label`** (Geist Mono 16px/800,
+  lowercase — was `cog-label`/muted; consistent with the lowercase template convention,
+  even though her old Framer ref shows caps). **(6) width:** wrapped EVERYTHING below the
+  section heading (persona grid + the journey-map SVG) in a centred
+  **`mx-auto w-[85%] min-[1700px]:w-[75%]`** — so the content is **75% of viewport above
+  1700px, 85% at ≤1700px** (the heading stays in the normal `Container`). Journey-map img
+  keeps `overflow-x-auto` + `min-w-[900px]` for small screens. Verified via Playwright:
+  bg `#f7f7f4`, wrapper measures **75.0% @1920 / 85.0% @1440**, persona block matches her
+  screenshot. tsc + eslint clean. **Uncommitted** pending Caroline.
+- **2026-06-25** — **Findings insight cards rebuilt to match Caroline's design.** The 4
+  "INSIGHT #01–04" cards in the **Findings** section ("Gaps in connection, lack of
+  structure and resources") didn't match her Framer design. Per her spec: (1) card
+  **background `#FAFAFA`** (was transparent) on `rounded-2xl` + a **`#F1F0EA` hairline
+  border** (inline, NOT `--cog-line` — scoped to these cards so the site-wide token is
+  untouched); (2) **fixed size 420×320** (`h-[320px] w-[420px] max-w-full`, `px-9 py-8`), laid out as
+  a centred `flex flex-wrap justify-center gap-9` 2×2 (was a `md:grid-cols-2`); (3) the
+  **"INSIGHT #0n" label → Geist Mono, all caps, bold** (`font-mono`, 15px, `uppercase`,
+  `--cog-ink` — was `cog-label`/muted, not uppercased); (4) **card title →
+  `.case-study-label`** (Geist Mono 16px/800, lowercase) with `leading-[1.25]`; card 03's
+  title carries a manual `<br/>` so it wraps at "dips" to match her design; (5)
+  **divider → green `#19A072`** via a NEW reusable token **`--green: #19a072`** added to
+  `theme.css` `.cog-root` (same hex the `.case-study-callout` rule already hardcodes —
+  now a named template token; divider is `h-px bg-[var(--green)]`). Body copy stays
+  `.case-study-body-md` with soft ink. **Extracted the card into a reusable `InsightCard`
+  component in `ui.tsx`** (`label` / `title` / `children` body) so `Findings.tsx` just
+  maps the data through it — a template primitive for future case studies. tsc clean for
+  these files (the pre-existing
+  `Statement`-undefined error in the other agent's in-flight `BookingDropoff.tsx` is
+  unrelated), eslint clean; verified via standalone Playwright at 1280@2× against her
+  screenshot — close match. **Uncommitted** pending Caroline.
 - **2026-06-25** — **Cog case study: Competitive layout reflow + `.case-study-callout`,
   and Findings affinity board → full-bleed cropped with overlapping post-its.** Three
   asks (all match her Framer screenshots): **(1) Competitive** — the small 120px
@@ -1019,6 +1060,60 @@ Newest first. Record *why*, not just *what*.
 > Latest handoff lives at the top. At the end of a session, append a new entry with: what changed, current
 > state (working / broken / in-progress), and explicit next steps for the next agent. Capture stated intent
 > ("tomorrow we do X") and long absences here too.
+
+### 2026-06-25 — Cog case-study: hero/template polish + homepage-style GLASS REVEAL (this agent)
+- **Context:** worked the `/project/cog-adhd` case study all session, ALONGSIDE a second
+  ("another cakes") agent doing overlapping case-study-template work in the SAME working
+  tree. They committed `fbbbccd` (global Footer) + `7723eff` (48px gaps, `.case-study-
+  callout`, Interviews rework) — those swept in my DESIGN.md/CLAUDE.md doc edits too.
+  **Shared tree → only ever `git add` specific files, never `-A`.**
+- **Done this session (all on branch `project-showcase-experiment`):**
+  1. **Hero polish** (`sections/Hero.tsx`): confetti now flush to the top edge + 80%
+     opacity + no warm bg (and removed the `<main>` `pt-14/16` so it tucks under the
+     transparent navbar); logo+`COG ADHD` label 2×; device row matched-height + ×1.2
+     (`w-[20.3%]/max-w-[210px]` phones, `w-[53.5%]/max-w-[552px]` tablet — width ratio =
+     aspect ratio so heights auto-match); meta/summary → `case-study-body-md`.
+  2. **Type template** (mostly in theme.css, much now committed by the other agent):
+     `.case-study-body-md` used for ALL body copy (Body component + `cog-body` DELETED);
+     new `.case-study-label` (16px/800 Geist Mono, ALWAYS lowercase — the MY ROLE steps);
+     section headings → 36px + faux-bold stroke, renamed `.case-study-section-heading`;
+     eyebrow renamed `.case-study-eyebrows-heading`, now **Geist (sans) all-caps**, 13px/700,
+     with a baked 12px margin-bottom gap; **Interviews persona images fixed** → image-7
+     (clients) / image-8 (therapists) / image-9 (clinic staff).
+  3. **GLASS REVEAL** (the headline feature — `app/project/cog-adhd/page.tsx` +
+     new `components/project/cog-adhd/StickyHero.tsx`): everything after the hero rides a
+     frosted **cream glass plate** that rises UP over the hero (mirrors home's About-over-
+     hero). `StickyHero` pins the hero at a **measured `top: -(heroHeight - viewportHeight)`**
+     (ResizeObserver) so the taller-than-viewport hero scrolls until the device mockups are
+     **fully seen**, THEN pins while the plate rises over it. Plate = rounded-t-[2.5rem],
+     backdrop-blur-2xl, DARKER greige frosted top (visible edge), rim glint + depth shadow,
+     fast fade to solid `#f5f4ef`. Then added a **`h-[45vh]` buffer** between hero and plate
+     so the glass rises LATER ("scroll more → glass appears"). Saved as
+     `case-study-glass-seam` in DESIGN.md.
+- **State: WORKING, committed + pushed.** My commits: `cee5b1a` (glass reveal + hero
+  polish) and `fb25a61` (the 45vh buffer). tsc + eslint clean. The hero polish + earlier
+  template bits were verified via the standalone-Playwright trick throughout (MCP
+  screenshots TIME OUT on this live page — use a throwaway `playwright` script from the
+  project root: `domcontentloaded` + `waitForTimeout`, freeze transitions, element-shoot).
+- **Gotchas / dead ends:** (a) `sticky bottom-0` does NOT pin a top-anchored hero (it only
+  holds elements leaving via the bottom) — measured negative-`top` sticky is the right
+  mechanism. (b) `overflow-x-hidden` on an ancestor BREAKS sticky — removed it from `<main>`
+  (re-checked: 0 h-overflow without it). (c) The shared `Interviews.tsx` briefly broke the
+  build mid-session (other agent's `<Bubble>` refactor) — resolved by them.
+- **Open / next steps:**
+  1. **Glass-reveal timing** — Caroline's last ask was "glass goes over a bit later, viewer
+     first sees MY ROLE then glass." The 45vh buffer delays the glass, BUT during the buffer
+     you see the held *mockups*, then glass + MY ROLE rise TOGETHER (MY ROLE lives on the
+     plate, so its heading and the glass leading edge are physically attached — MY ROLE can't
+     appear strictly *before* the glass in this model). **Flagged this to her; awaiting her
+     call** — either tune the buffer height, or (if she wants MY ROLE truly before any glass)
+     design a different effect. Buffer dial: `h-[45vh]` in `page.tsx`.
+  2. Other glass dials: `StickyHero` pin offset, the plate gradient (darkness + fade speed),
+     `backdrop-blur-2xl`, the depth `shadow-[…]`.
+  3. **Uncommitted in the shared tree** (NOT mine — leave for the other agent): `MyRole/
+     BookingDropoff/Challenges/Competitive/JourneyMap/Results/Solution.tsx`, `ProjectCard.tsx`,
+     `VariantBentoSoft.tsx`, and untracked `assets/synapse-product-imagery.png`.
+- **Open intent:** none stated for next session; Caroline switched windows mid-flow.
 
 ### 2026-06-24 (late) — Case-study TYPE TEMPLATE kicked off (this agent)
 - **Done this session:** Started a reusable case-study type template, tuned on the

@@ -4,28 +4,34 @@ export function JourneyMap() {
   return (
     <section
       data-section="JourneyMap"
-      className="py-16 md:py-24 bg-[var(--cog-bg)]"
+      className="py-16 md:py-24 bg-[#f7f7f4]"
     >
       <Container>
-        <Title className="text-2xl md:text-3xl">
-          CURRENT THERAPY PROCESS - CLIENT JOURNEY MAP
+        <Title>
+          CURRENT THERAPY PROCESS -
+          <br />
+          CLIENT JOURNEY MAP
         </Title>
+      </Container>
 
-        <div className="mt-10 grid gap-10 md:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)_minmax(0,1.4fr)] md:gap-12">
+      {/* Everything below the heading sits at 85% screen width (≤1700px) /
+          75% (>1700px), centred. */}
+      <div className="mx-auto w-[85%] min-[1700px]:w-[75%]">
+        <div className="grid gap-10 md:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)_minmax(0,1.4fr)] md:gap-12">
           {/* Persona chip */}
           <div>
-            <div className="h-28 w-28 overflow-hidden rounded-full">
+            <div className="w-[240px] max-w-full">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={A("image-2.svg")}
+                src={A("image-20.svg")}
                 alt="Portrait of Katherine Bell, the persona for the journey map"
-                className="h-full w-full object-cover"
+                className="h-auto w-full"
               />
             </div>
-            <p className="cog-label mt-4 text-[var(--cog-green)]">
+            <p className="mt-4 font-[family-name:var(--font-body)] text-xl font-bold text-[var(--dark-green)]">
               Katherine Bell
             </p>
-            <Body className="mt-2 text-sm">
+            <Body className="mt-2 pl-8 text-sm italic">
               &ldquo;I need therapy with continuity, clear progress, and
               actionable insights readily available.&rdquo;
             </Body>
@@ -33,7 +39,7 @@ export function JourneyMap() {
 
           {/* Scenario */}
           <div>
-            <p className="cog-label text-[var(--cog-muted)]">scenario</p>
+            <p className="case-study-label">scenario</p>
             <Body className="mt-3 text-sm">
               Katherine is successful at work but struggles to balance it with
               her personal life and mental health, often feeling burnout. She
@@ -45,8 +51,8 @@ export function JourneyMap() {
 
           {/* Expectations */}
           <div>
-            <p className="cog-label text-[var(--cog-muted)]">expectations</p>
-            <ul className="cog-body mt-3 space-y-2 text-sm">
+            <p className="case-study-label">expectations</p>
+            <ul className="mt-3 space-y-2 text-sm text-[var(--soft-ink)]">
               <li className="flex gap-2">
                 <span className="text-[var(--cog-green)]">·</span>
                 <span>
@@ -71,17 +77,17 @@ export function JourneyMap() {
             </ul>
           </div>
         </div>
-      </Container>
 
-      {/* Full-width journey map table (exported image) */}
-      <div className="mt-12 w-full overflow-x-auto md:mt-16">
-        <div className="min-w-[900px] px-4 md:px-8">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={A("cog-clinic-current-journey-map.svg")}
-            alt="Cog Clinic current therapy process journey map: stages, actions, thoughts, touchpoints, emotions and opportunities across choose, prepare, introduce, remember, recall and analyse phases"
-            className="h-auto w-full"
-          />
+        {/* Journey map table (exported image) */}
+        <div className="mt-12 w-full overflow-x-auto md:mt-16">
+          <div className="min-w-[900px]">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={A("cog-clinic-current-journey-map.svg")}
+              alt="Cog Clinic current therapy process journey map: stages, actions, thoughts, touchpoints, emotions and opportunities across choose, prepare, introduce, remember, recall and analyse phases"
+              className="h-auto w-full"
+            />
+          </div>
         </div>
       </div>
     </section>

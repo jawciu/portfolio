@@ -1,4 +1,4 @@
-import { A, Container, Kicker, Title, Body } from "../ui";
+import { A, Container, Kicker, Title, InsightCard } from "../ui";
 
 const QUOTES = [
   {
@@ -31,7 +31,13 @@ const INSIGHTS = [
   },
   {
     n: "03",
-    title: "clients' motivation dips Without Visible Progress",
+    title: (
+      <>
+        clients&apos; motivation dips
+        <br />
+        without visible progress
+      </>
+    ),
     body: "Clients are driven by visible progress, but therapists lack structured tools to track it. Without consistent tracking, clients struggle to see improvements, leading to a lack of motivation.",
   },
   {
@@ -67,20 +73,20 @@ export function Findings() {
 
         <Container>
           {/* Quote post-its — pulled up to sit over the board */}
-          <div className="-mt-20 grid gap-5 md:-mt-28 md:grid-cols-3">
+          <div className="-mt-20 grid justify-items-center gap-5 md:-mt-28 md:grid-cols-3">
             {QUOTES.map((q, i) => (
               <figure
                 key={i}
-                className={`flex aspect-square flex-col justify-between p-7 shadow-[0_8px_24px_rgba(0,0,0,0.12)] md:p-8 ${
+                className={`flex h-[300px] w-[300px] max-w-full flex-col p-7 shadow-[0_8px_24px_rgba(0,0,0,0.12)] ${
                   q.tone === "green"
                     ? "bg-[var(--cog-postit-mint)]"
                     : "bg-[var(--cog-postit-orange)]"
                 }`}
               >
-                <blockquote className="font-[family-name:var(--font-body)] text-[15px] italic leading-[1.5] text-[var(--cog-ink)] md:text-[17px]">
+                <blockquote className="flex flex-1 items-center font-[family-name:var(--font-body)] text-[15px] italic leading-[1.5] text-[var(--cog-ink)]">
                   &ldquo;{q.text}&rdquo;
                 </blockquote>
-                <figcaption className="mt-6 text-right text-sm text-[var(--cog-ink-soft)]">
+                <figcaption className="text-right text-sm text-[var(--cog-ink-soft)]">
                   {q.by}
                 </figcaption>
               </figure>
@@ -90,19 +96,13 @@ export function Findings() {
       </div>
 
       <Container>
-        {/* 4 insight cards — 2×2 grid */}
-        <div className="mt-16 grid gap-x-12 gap-y-12 md:grid-cols-2">
+        {/* 4 insight cards — 2×2 grid of fixed 420×320 cards on #FAFAFA, each with a
+            mono label, a case-study-label title and a green (#19a072) divider. */}
+        <div className="mt-16 flex flex-wrap justify-center gap-9">
           {INSIGHTS.map((ins) => (
-            <div key={ins.n}>
-              <p className="cog-label text-[var(--cog-muted)]">
-                Insight #{ins.n}
-              </p>
-              <h3 className="cog-label mt-3 text-base md:text-lg text-[var(--cog-ink)]">
-                {ins.title}
-              </h3>
-              <div className="mt-3 h-px w-full bg-[var(--cog-line)]" />
-              <Body className="mt-4 text-[var(--cog-ink-soft)]">{ins.body}</Body>
-            </div>
+            <InsightCard key={ins.n} label={`Insight #${ins.n}`} title={ins.title}>
+              {ins.body}
+            </InsightCard>
           ))}
         </div>
       </Container>

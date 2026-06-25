@@ -14,6 +14,8 @@
   --cog-line: #e2ded3; /* hairlines / card borders */
   --cog-card: #ffffff;
 
+  --green: #19a072; /* TEMPLATE green — dividers / rules (matches case-study-callout) */
+  --dark-green: #006b4b; /* TEMPLATE dark green — emphasised labels (e.g. persona name) */
   --cog-green: #1e7a4d; /* dark green — bars, headers, links */
   --cog-green-deep: #15633d;
   --cog-mint: #b3e0c6; /* thought bubbles, journey headers */

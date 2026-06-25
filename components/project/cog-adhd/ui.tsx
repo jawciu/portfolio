@@ -56,3 +56,27 @@ export function CaseStudyCallout({ children }: { children: ReactNode }) {
 export function Statement({ children }: { children: ReactNode }) {
   return <p className="cog-statement">{children}</p>;
 }
+
+/** TEMPLATE insight card — a fixed 420×320 light card (#FAFAFA, #F1F0EA hairline)
+    with a mono ALL-CAPS label, a `.case-study-label` title, a green (#19a072)
+    divider, and `.case-study-body-md` copy. Reusable across case studies. */
+export function InsightCard({
+  label,
+  title,
+  children,
+}: {
+  label: string;
+  title: ReactNode;
+  children: ReactNode;
+}) {
+  return (
+    <div className="flex h-[320px] w-[420px] max-w-full flex-col rounded-2xl border border-[#f1f0ea] bg-[#fafafa] px-9 py-8">
+      <p className="font-[family-name:var(--font-mono)] text-[15px] font-bold uppercase tracking-[0.02em] text-[var(--cog-ink)]">
+        {label}
+      </p>
+      <h3 className="case-study-label mt-3 leading-[1.25]">{title}</h3>
+      <div className="mt-5 h-px w-full bg-[var(--green)]" />
+      <Body className="mt-5 text-[var(--cog-ink-soft)]">{children}</Body>
+    </div>
+  );
+}
