@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "../../../components/project/cog-adhd/theme.css";
+import { StickyHero } from "../../../components/project/cog-adhd/StickyHero";
 import { Hero } from "../../../components/project/cog-adhd/sections/Hero";
 import { MyRole } from "../../../components/project/cog-adhd/sections/MyRole";
 import { Interviews } from "../../../components/project/cog-adhd/sections/Interviews";
@@ -23,21 +24,54 @@ export const metadata: Metadata = {
 
 export default function CogAdhdCaseStudy() {
   return (
-    <main className="cog-root min-h-screen w-full overflow-x-hidden pt-14 md:pt-16">
-      <div data-cog="Hero"><Hero /></div>
-      <div data-cog="MyRole"><MyRole /></div>
-      <div data-cog="Interviews"><Interviews /></div>
-      <div data-cog="Competitive"><Competitive /></div>
-      <div data-cog="Findings"><Findings /></div>
-      <div data-cog="BookingDropoff"><BookingDropoff /></div>
-      <div data-cog="JourneyMap"><JourneyMap /></div>
-      <div data-cog="Strategy"><Strategy /></div>
-      <div data-cog="Methodology"><Methodology /></div>
-      <div data-cog="Challenges"><Challenges /></div>
-      <div data-cog="Solution"><Solution /></div>
-      <div data-cog="Results"><Results /></div>
-      <div data-cog="Takeaways"><Takeaways /></div>
-      <div data-cog="NextProject"><NextProject /></div>
+    <main className="cog-root min-h-screen w-full">
+      {/* PINNED HERO — the hero is taller than the viewport, so it's pinned at a
+          MEASURED `top: -(heroHeight - viewportHeight)` (see StickyHero): the
+          visitor scrolls UP through it first — confetti → title → meta → the
+          phone/tablet mockups slide into FULL view — and only then does it stick
+          (showing the mockups) while the glass plate below rises over it. So the
+          device assets are always seen in full before the glass starts covering. */}
+      <StickyHero><Hero /></StickyHero>
+
+      {/* GLASS SEAM — ties the case study to the homepage: everything after the
+          hero rides a frosted cream-glass plate that slides UP over the pinned
+          hero (mirrors how About glides over the home WebGL hero). No -mt overlap
+          now — the plate sits just below the hero, so it only enters AFTER the
+          mockups are fully shown, then rises over them as you keep scrolling. Its
+          frosted top is tinted slightly DARKER than the cream so the glass edge
+          reads against the cream hero; the gradient then lands on SOLID cream FAST
+          (~185px) so body copy never reads over a busy frost. rounded-t echoes About. */}
+      <div
+        className="relative z-10 rounded-t-[2.5rem] backdrop-blur-2xl backdrop-saturate-150 shadow-[0_-24px_60px_-20px_rgba(40,34,20,0.18)]"
+        style={{
+          background:
+            "linear-gradient(180deg, rgba(206,201,186,0.62) 0px, rgba(222,217,204,0.7) 60px, rgba(238,235,227,0.9) 125px, rgba(245,244,239,0.98) 165px, #f5f4ef 185px)",
+        }}
+      >
+        {/* glass rim glint — a soft bright hairline along the top edge */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 top-0 h-px rounded-t-[2.5rem]"
+          style={{
+            background:
+              "linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,0.85) 22%, rgba(255,255,255,0.35) 50%, rgba(255,255,255,0.7) 78%, rgba(255,255,255,0))",
+          }}
+        />
+
+        <div data-cog="MyRole"><MyRole /></div>
+        <div data-cog="Interviews"><Interviews /></div>
+        <div data-cog="Competitive"><Competitive /></div>
+        <div data-cog="Findings"><Findings /></div>
+        <div data-cog="BookingDropoff"><BookingDropoff /></div>
+        <div data-cog="JourneyMap"><JourneyMap /></div>
+        <div data-cog="Strategy"><Strategy /></div>
+        <div data-cog="Methodology"><Methodology /></div>
+        <div data-cog="Challenges"><Challenges /></div>
+        <div data-cog="Solution"><Solution /></div>
+        <div data-cog="Results"><Results /></div>
+        <div data-cog="Takeaways"><Takeaways /></div>
+        <div data-cog="NextProject"><NextProject /></div>
+      </div>
     </main>
   );
 }
