@@ -59,7 +59,7 @@ export function VariantBentoSoft() {
                 key={p.slug}
                 open={open}
                 onActivate={onActivate}
-                collapsedLabel={`${p.company} · ${p.year}`}
+                collapsedLabel={p.company}
                 year={p.year}
                 label="/e.on_next"
                 logo={{ src: "/assets/e_on_next.png", alt: "E.ON Next" }}
@@ -71,6 +71,56 @@ export function VariantBentoSoft() {
                   alt: "Nest agentic-RAG chat answering a tariff question",
                 }}
                 blob={{ core: "#C05846", edge: "#6D1B76" }}
+              />
+            );
+          }
+
+          // Project 02 (cog_adhd) — reusable card; amber→green blob, two-phone visual.
+          if (i === 1) {
+            return (
+              <ProjectCard
+                key={p.slug}
+                open={open}
+                onActivate={onActivate}
+                collapsedLabel={p.company}
+                year={p.year}
+                label="/cog_adhd"
+                logo={{ src: "/assets/cog-adhd-logo.png", alt: "cog_adhd" }}
+                title={p.title}
+                subtitle={p.description}
+                tags={p.tags}
+                image={{
+                  src: "/assets/cog-adhd-product.png?v=3",
+                  alt: "cog_adhd check-in history — weekly ADHD scores and daily highs/lows",
+                }}
+                imageClassName="pointer-events-none absolute right-[-10%] bottom-0 h-[65%] w-auto max-w-none object-contain object-left"
+                blob={{ core: "#F2922E", edge: "#189E71", coreStop: 30, edgeStop: 50, fadeStop: 80 }}
+                href="/project/cog-adhd"
+              />
+            );
+          }
+
+          // Project 03 (synapse) — reusable card; purple→magenta blob, app screenshot.
+          if (i === 2) {
+            return (
+              <ProjectCard
+                key={p.slug}
+                open={open}
+                onActivate={onActivate}
+                collapsedLabel={p.company}
+                year={p.year}
+                label="/synapse"
+                logo={{ src: "/assets/synapse-logo.png", alt: "synapse" }}
+                title={p.title}
+                subtitle={p.description}
+                tags={p.tags}
+                image={{
+                  src: "/assets/synapse-product.png?v=3",
+                  alt: "synapse reflection agent — map your mind journaling view",
+                }}
+                imageClassName="pointer-events-none absolute right-[-12%] top-[55%] h-[53%] w-auto max-w-none -translate-y-1/2 rounded-2xl object-contain shadow-[0_20px_60px_rgba(0,0,0,0.45)]"
+                blob={{ core: "#C24F83", edge: "#734A8E", coreStop: 8, edgeStop: 52 }}
+                href="https://surrealdb.com/blog/building-compounding-memory-with-knowledge-graphs-and-agentic-rag"
               />
             );
           }
@@ -129,10 +179,11 @@ export function VariantBentoSoft() {
               {!open && (
                 <div className="absolute inset-0 flex items-center justify-center">
                   <span
-                    className="whitespace-nowrap font-mono text-xs uppercase tracking-[0.35em] text-fg/55 transition-colors duration-300 group-hover:text-fg/90"
+                    className="whitespace-nowrap font-mono text-sm uppercase tracking-[0.3em] text-fg md:text-base"
                     style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}
                   >
-                    {p.company} · {p.year}
+                    {p.company}
+                    <span className="text-fg/55"> · {p.year}</span>
                   </span>
                 </div>
               )}

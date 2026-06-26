@@ -17,15 +17,31 @@ export type Project = {
 export const projects: Project[] = [
   {
     slug: "nest-agentic-rag",
-    company: "EON Next",
+    company: "E.ON Next",
     title: "Designing agentic RAG to help with cognitive load",
     description:
       "Improved cognitive load by giving users agentic RAG that answers their questions.",
     tags: ["Research", "UX/UI", "Testing", "Launch"],
     accent: "linear-gradient(120deg, #ff7a2a 0%, #ff006e 52%, #7a3bff 100%)",
   },
-  { slug: "project-02", company: "Project 02", title: "Project 02", description: "", tags: [], placeholder: true },
-  { slug: "project-03", company: "Project 03", title: "Project 03", description: "", tags: [], placeholder: true },
+  {
+    slug: "cog-adhd",
+    company: "cog adhd",
+    title: "Gaps and opportunities in ADHD therapy processes",
+    description:
+      "drove bookings and engagement through flow optimisation and a check-in history feature",
+    tags: ["Research", "UX/UI", "Testing", "Launch"],
+    accent: "linear-gradient(120deg, #F2922E 0%, #189E71 100%)",
+  },
+  {
+    slug: "synapse",
+    company: "synapse",
+    title: "Compounding memory with knowledge graphs and agentic RAG",
+    description:
+      "built a memory-first reflection agent for the london langchain x surrealdb hackathon",
+    tags: ["Product", "AI Architecture", "Backend"],
+    accent: "linear-gradient(120deg, #C24E86 0%, #6D1B76 100%)",
+  },
   { slug: "project-04", company: "Project 04", title: "Project 04", description: "", tags: [], placeholder: true },
   { slug: "project-05", company: "Project 05", title: "Project 05", description: "", tags: [], placeholder: true },
 ];

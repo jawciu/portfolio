@@ -10,15 +10,19 @@
 //     project copy on the LEFT and an optional product visual floating on the
 //     RIGHT (split layout). Copy: year (top-left), logo + mono kicker, title,
 //     subtitle, tags (pinned bottom-left).
+import { useRouter } from "next/navigation";
 import { Grain } from "./softBits";
 
-// Gradient-blob colours: a warm core diffusing out to a cool edge.
-export type CardBlob = { core: string; edge: string };
+// Gradient-blob colours: a warm core diffusing out to a cool edge. Optional stops
+// tune how far the core holds before the edge takes over — bump `coreStop` to keep
+// more of the warm core visible in the bloom (defaults reproduce the original ramp).
+export type CardBlob = { core: string; edge: string; coreStop?: number; edgeStop?: number; fadeStop?: number };
 
 export type ProjectCardProps = {
   open: boolean;
   onActivate: () => void;
-  /** collapsed-state vertical label, e.g. "EON Next · 2026" */
+  /** collapsed-state vertical label — the company name only, e.g. "E.ON Next";
+      the year is appended (dimmed) from the `year` prop. */
   collapsedLabel: string;
   year: string;
   /** mono kicker shown above the title, e.g. "/e.on_next" */
@@ -30,15 +34,21 @@ export type ProjectCardProps = {
   logo?: { src: string; alt: string };
   /** optional product visual; when present the card uses the split layout */
   image?: { src: string; alt: string };
+  /** override the product-visual positioning classes (default: floats centred off
+      the right edge). e.g. pass a bottom/right-anchored variant for device shots. */
+  imageClassName?: string;
   /** the corner gradient blob colours */
   blob: CardBlob;
+  /** optional link — clicking the OPEN card follows it. An absolute http(s) URL
+      opens in a new tab (external); a relative path navigates in-app. */
+  href?: string;
 };
 
 // Expanded bloom — one big blurred circle whose centre sits just OUTSIDE the
 // card's bottom-right corner, so only a quarter blooms in. Warm core → cool edge
 // → diffuse to transparent (the edge hex + "00" alpha) before any edge reads.
-function bloom({ core, edge }: CardBlob) {
-  return `radial-gradient(circle 820px at 98% 112%, ${core} 0%, ${edge} 48%, ${edge}00 80%)`;
+function bloom({ core, edge, coreStop = 0, edgeStop = 48, fadeStop = 80 }: CardBlob) {
+  return `radial-gradient(circle 820px at 98% 112%, ${core} 0%, ${core} ${coreStop}%, ${edge} ${edgeStop}%, ${edge}00 ${fadeStop}%)`;
 }
 
 // Collapsed wisp — dim, centred, vertical spine in the same palette, so it
@@ -61,14 +71,40 @@ export function ProjectCard({
   tags,
   logo,
   image,
+  imageClassName,
   blob,
+  href,
 }: ProjectCardProps) {
+  const router = useRouter();
+  // Default: artwork floats centred, bleeding slightly off the right edge.
+  const imgClass =
+    imageClassName ??
+    "pointer-events-none absolute right-[-6%] top-1/2 h-[88%] w-auto -translate-y-1/2 object-contain object-left";
+  // Collapsed click → open the card; open click (with a link) → follow it.
+  // External http(s) links open in a new tab; relative paths navigate in-app.
+  const isExternal = !!href && /^https?:\/\//.test(href);
+  const onClick = () => {
+    if (open && href) {
+      if (isExternal) window.open(href, "_blank", "noopener,noreferrer");
+      else router.push(href);
+    } else onActivate();
+  };
   return (
     <button
       type="button"
       onMouseEnter={onActivate}
       onFocus={onActivate}
-      className="group relative min-h-0 overflow-hidden rounded-3xl text-left outline-none transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
+      onClick={onClick}
+      aria-label={
+        open && href
+          ? isExternal
+            ? `Read about ${title} (opens in a new tab)`
+            : `Open ${title} case study`
+          : undefined
+      }
+      className={`group relative min-h-0 overflow-hidden rounded-3xl text-left outline-none transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+        open && href ? "cursor-pointer" : ""
+      }`}
       style={{ flexGrow: open ? 6 : 1, flexBasis: 0 }}
     >
       {/* colour blob BEHIND the glass — bloom (open) crossfades with spine
@@ -118,10 +154,11 @@ export function ProjectCard({
       {!open && (
         <div className="absolute inset-0 flex items-center justify-center">
           <span
-            className="whitespace-nowrap font-mono text-xs uppercase tracking-[0.35em] text-fg/55 transition-colors duration-300 group-hover:text-fg/90"
+            className="whitespace-nowrap font-mono text-sm uppercase tracking-[0.3em] text-fg md:text-base"
             style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}
           >
             {collapsedLabel}
+            <span className="text-fg/55"> · {year}</span>
           </span>
         </div>
       )}
@@ -154,18 +191,18 @@ export function ProjectCard({
                 {label}
               </span>
             </div>
-            <h3 className="mt-5 max-w-none font-hero text-xl font-bold uppercase leading-[1.05] tracking-tight text-fg md:text-[1.75rem]">
+            <h3 className="mt-[1.8rem] max-w-none font-hero text-xl font-bold uppercase leading-[1.05] tracking-tight text-fg md:text-[1.75rem]">
               {title}
             </h3>
             {subtitle && (
               /* subtitle — Geist Mono, lowercase, same colour as the heading */
-              <p className="mt-5 max-w-xs font-mono text-xs lowercase leading-relaxed text-fg md:text-sm">
+              <p className="mt-[1.875rem] max-w-xs font-mono text-xs lowercase leading-relaxed text-fg md:text-sm">
                 {subtitle}
               </p>
             )}
           </div>
           {tags && tags.length > 0 && (
-            <p className="absolute inset-x-6 bottom-6 flex items-center gap-x-2 whitespace-nowrap font-mono text-[11px] uppercase tracking-[0.1em] text-fg/55 md:inset-x-9 md:bottom-9 md:text-xs">
+            <p className="absolute inset-x-6 bottom-6 flex items-center gap-x-2 whitespace-nowrap font-mono text-xs uppercase tracking-[0.1em] text-fg md:inset-x-9 md:bottom-9 md:text-sm">
               <span aria-hidden className="mr-1 inline-block h-2 w-2 bg-fg/60" />
               {tags.join(" · ")}
             </p>
@@ -177,11 +214,7 @@ export function ProjectCard({
         {image && (
           <div className="relative flex-1">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={image.src}
-              alt={image.alt}
-              className="pointer-events-none absolute right-[-6%] top-1/2 h-[88%] w-auto -translate-y-1/2 object-contain object-left"
-            />
+            <img src={image.src} alt={image.alt} className={imgClass} />
           </div>
         )}
       </div>

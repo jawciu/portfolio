@@ -21,9 +21,21 @@ const META: Record<string, ProjectMeta> = {
     status: "Shipped",
     oneLiner: "Cut cognitive load with an agent that answers before you ask.",
   },
+  "cog-adhd": {
+    year: "2025",
+    role: "Lead Product Designer",
+    stack: ["Figma", "Agentic RAG", "User Research", "Prototyping"],
+    status: "Shipped",
+    oneLiner: "Cut cognitive load in ADHD therapy with an agent that answers before you ask.",
+  },
+  "synapse": {
+    year: "2026",
+    role: "Product & AI Engineer",
+    stack: ["LangChain", "SurrealDB", "Agentic RAG", "Knowledge Graphs"],
+    status: "Concept",
+    oneLiner: "A memory-first reflection agent built at the LangChain x SurrealDB hackathon.",
+  },
   // Placeholders — swap real content in as each project is ready.
-  "project-02": { year: "2024", role: "Product Designer", stack: ["Figma", "Design System"], status: "In progress", oneLiner: "Placeholder — drop in the real story." },
-  "project-03": { year: "2024", role: "Product Designer", stack: ["Figma", "Prototyping"], status: "Concept", oneLiner: "Placeholder — drop in the real story." },
   "project-04": { year: "2023", role: "Product Designer", stack: ["Figma", "Research"], status: "Concept", oneLiner: "Placeholder — drop in the real story." },
   "project-05": { year: "2023", role: "Product Designer", stack: ["Figma", "Branding"], status: "Concept", oneLiner: "Placeholder — drop in the real story." },
 };
