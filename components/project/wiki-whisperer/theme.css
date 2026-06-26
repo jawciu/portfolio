@@ -1,0 +1,190 @@
+/* Wiki Whisperer V2 case study — LIGHT theme, scoped to .cog-root so it never leaks
+   into the dark portfolio. E.ON Next palette (aubergine ink + magenta/coral accents)
+   mapped onto the portfolio's font stack (Iosevka --font-hero, Geist --font-body,
+   Geist Mono --font-mono). The .case-study-* type rules are the shared TEMPLATE and
+   are byte-identical to the cog case study — only the colour tokens below differ. */
+
+.cog-root {
+  --cog-bg: #f7f5fb; /* page — light lilac white */
+  --cog-bg-alt: #fbfaff; /* slightly lighter band */
+  --cog-bg-warm: #fdf3f8; /* soft pink warm band */
+  --cog-bg-section: #f2eefb; /* shared section bg — a touch more lilac */
+  --cog-ink: #2a1a45; /* deep aubergine — headings/text */
+  --cog-ink-soft: #4c4263;
+  --soft-ink: #4c4263; /* TEMPLATE: soft body-copy ink, reusable across case studies */
+  --cog-muted: #807798; /* secondary copy */
+  --cog-line: #e7e1f1; /* hairlines / card borders */
+  --cog-card: #ffffff;
+
+  --green: #e5007d; /* TEMPLATE accent slot — E.ON Next magenta (dividers / rules / callout) */
+  --dark-green: #b3005f; /* TEMPLATE dark-accent slot — deep magenta (emphasised labels) */
+  --cog-green: #e5007d; /* mapped to the brand magenta */
+  --cog-green-deep: #b3005f;
+
+  /* E.ON Next decorative spectrum (used sparingly for dots / blobs / accents) */
+  --eon-magenta: #e5007d;
+  --eon-coral: #ff4d17; /* the e.on next red-orange */
+  --eon-purple: #6a3fd6;
+  --eon-purple-deep: #3c1d7a;
+  --eon-cyan: #1ec8e0;
+  --eon-lime: #38d39f;
+  --eon-amber: #ffb020;
+
+  background: var(--cog-bg);
+  color: var(--cog-ink);
+  font-family: var(--font-body), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---- shared type / layout helpers (TEMPLATE — identical across case studies) ---- */
+
+.cog-container {
+  width: 100%;
+  max-width: 1080px;
+  margin-inline: auto;
+  padding-inline: 24px;
+}
+
+/* CASE-STUDY EYEBROW HEADING — small uppercase label above a section heading. */
+.case-study-eyebrows-heading {
+  font-family: var(--font-body), sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--cog-ink);
+  margin-bottom: 0.75rem;
+}
+
+/* CASE-STUDY PAGE TITLE — the main H1. 48px desktop / 22px mobile. */
+.case-study-title {
+  font-family: var(--font-hero), monospace;
+  font-weight: 700;
+  -webkit-text-stroke: 0.6px currentColor;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  line-height: 1.08;
+  color: var(--cog-ink);
+  font-size: 48px;
+}
+
+@media (max-width: 640px) {
+  .case-study-title {
+    font-size: 22px;
+    -webkit-text-stroke: 0.35px currentColor;
+  }
+}
+
+/* CASE-STUDY SECTION HEADING — bold uppercase per-section heading. 36px desktop. */
+.case-study-section-heading {
+  font-family: var(--font-hero), monospace;
+  font-weight: 700;
+  -webkit-text-stroke: 0.6px currentColor;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  line-height: 1.08;
+  color: var(--cog-ink);
+  font-size: clamp(1.5rem, 1rem + 2vw, 2.25rem);
+  margin-bottom: 3rem;
+}
+
+@media (max-width: 640px) {
+  .case-study-section-heading {
+    -webkit-text-stroke: 0.4px currentColor;
+  }
+}
+
+/* mono kicker used for the tiny inline labels (brand / role / time / tools) */
+.cog-label {
+  font-family: var(--font-mono), monospace;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--cog-ink);
+}
+
+/* CASE-STUDY HERO LABELS — mono meta labels in the hero. 16px, extra-bold. */
+.case-study-hero-label {
+  font-family: var(--font-mono), monospace;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  color: var(--cog-ink);
+}
+
+/* CASE-STUDY LABEL — reusable bold inline label, ALWAYS lowercase. */
+.case-study-label {
+  font-family: var(--font-mono), monospace;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-transform: lowercase;
+  color: var(--cog-ink);
+}
+
+/* CASE-STUDY BODY (MD) — default reading size. 16px, line-height 1.4, soft ink. */
+.case-study-body-md {
+  font-family: var(--font-body), sans-serif;
+  font-size: 16px;
+  line-height: 1.4;
+  color: var(--soft-ink);
+}
+
+/* CASE-STUDY QUOTE — verbatim quotes: Geist italic, 15px / 1.5, ink. */
+.case-study-quote {
+  font-family: var(--font-body), sans-serif;
+  font-style: italic;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--cog-ink);
+}
+
+/* CASE-STUDY CALLOUT — left-ruled statement. Geist Mono 28px / 1.2, soft ink, magenta rule. */
+.case-study-callout {
+  font-family: var(--font-mono), monospace;
+  font-size: 28px;
+  line-height: 1.2;
+  color: var(--soft-ink);
+  border-left: 2px solid var(--green);
+  padding: 4px 0 4px 24px;
+}
+
+@media (max-width: 640px) {
+  .case-study-callout {
+    font-size: 22px;
+  }
+}
+
+/* the framed monospace pull-quote callouts (left-bordered, typewriter feel) */
+.cog-callout {
+  font-family: var(--font-mono), monospace;
+  font-size: clamp(0.95rem, 0.85rem + 0.5vw, 1.15rem);
+  line-height: 1.6;
+  color: var(--cog-ink);
+  border-left: 2px solid var(--cog-ink);
+  padding: 4px 0 4px 24px;
+}
+
+/* heavy emphasised section sub-quotes */
+.cog-statement {
+  font-family: var(--font-mono), monospace;
+  font-size: clamp(1.05rem, 0.9rem + 0.7vw, 1.3rem);
+  line-height: 1.55;
+  color: var(--cog-ink);
+}
+
+/* StreamingQuote — word-by-word reveal (CSS driven by the StreamingQuote component) */
+.cs-word {
+  display: inline-block;
+}
+[data-stream="armed"] .cs-word {
+  opacity: 0;
+  transform: translateY(0.32em);
+  filter: blur(4px);
+}
+[data-stream="play"] .cs-word {
+  opacity: 1;
+  transform: none;
+  filter: none;
+  transition: opacity 0.5s ease, transform 0.5s ease, filter 0.5s ease;
+}

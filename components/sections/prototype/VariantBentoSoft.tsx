@@ -66,9 +66,10 @@ export function VariantBentoSoft() {
                 title={p.title}
                 subtitle={p.description}
                 tags={p.tags}
+                href="/project/wiki-whisperer"
                 image={{
                   src: "/assets/eon-next-product.svg?v=3",
-                  alt: "Nest agentic-RAG chat answering a tariff question",
+                  alt: "Wiki Whisperer agentic-RAG chat answering an energy query",
                 }}
                 blob={{ core: "#C05846", edge: "#6D1B76" }}
               />

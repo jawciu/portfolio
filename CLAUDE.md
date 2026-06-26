@@ -129,6 +129,41 @@ it's a deliberate call.
 
 Newest first. Record *why*, not just *what*.
 
+- **2026-06-26** — **Built the Wiki Whisperer V2 case study (`/project/wiki-whisperer`)
+  using the `case-study` skill — first study produced by the skill.** E.ON Next project:
+  an **agentic RAG** ("second AI brain") that helps generalist energy specialists answer
+  complex customer queries on live calls; V2 redesign rebuilt trust after V1 (a rigid-
+  prompting RAG with a 25% negative-feedback rate). Caroline's role: Research · UX/UI ·
+  Testing · Launch. **Source material** (in `assets/` + her notes): 2 rendered PDFs
+  (interview insights, pilot telemetry) + 3 exported decks (Ops presentation, 2nd pilot,
+  tech review) + chunking eval + her data-science notes. The `.deck` files are binary
+  Figma bundles (unreadable); Caroline re-exported them as PDFs into `assets/`. Read the
+  Ops deck via `pdftoppm` → JPEGs (the PDF inflates >100MB on direct extract). **Impact
+  framing (locked with Caroline):** lead qualitative + adoption + measurement rigour;
+  quantitative as **directional, tests still running** (do NOT claim proven uplift). Key
+  honest finding: the rigorous **treatment-vs-control analysis (led by a data scientist,
+  Caroline supported)** showed no statistically significant lift; the glossy "9 of 11 /
+  high-vs-low" telemetry (Tom Harris) has selection bias, so it's used only as directional
+  colour. Real headline numbers used: **89.4% adoption**, survey deltas (96.9% would
+  recommend +17% vs V1, 93.8% prevent follow-ups +33.7%, 90.6% rely less on Wiki/Slack
+  +40%), teams **closing support channels**, onboarding/bootcamp ramp (FTE signal). **Hard
+  rules applied:** NO em dashes; British spelling; **all names/emails anonymised** (agents
+  = `@Energy Specialist`, leadership = `@Academy Skills Lead`; the Ops feedback-panel
+  screenshot has real names → must be redacted in the visual pass). **Build:** own light
+  **E.ON Next theme** (`components/project/wiki-whisperer/theme.css` — aubergine ink
+  `#2a1a45`, magenta accent `#e5007d` mapped to the `--green` slot, lilac-white bg; scope
+  class kept as `.cog-root` per build.md, just retinted). Copied the kit (ui/Reveal/
+  Parallax/StreamingQuote/StickyHero), repointed `A()` to `/projects/wiki-whisperer/`.
+  **13 sections** (Hero, MyRole, Problem, Redesign, UnderTheHood, Measuring, Wins, Impact,
+  Feedback, Rollout, WhatsNext, Takeaways, NextProject) assembled in `page.tsx` with the
+  glass seam (gradient retinted lilac). Wired the existing **E.ON Next showcase card**
+  (`VariantBentoSoft` i===0) → `href="/project/wiki-whisperer"`. tsc + eslint clean;
+  verified via standalone Playwright (0 console errors, nothing stuck hidden, glass seam +
+  Reveal working). **STILL PLACEHOLDERS (visual pass):** product screens (pull from the
+  Figma file), the 1-min promo **mp4**, the directional telemetry charts (extract from the
+  Pilot Analysis PDF — earlier `pdftoppm` to `public/` silently failed, retry), the
+  **anonymised** feedback-flag-form screenshot, and palette/spacing polish. The "trust
+  before anything" hero callout wording is mine (Caroline to confirm). **UNCOMMITTED.**
 - **2026-06-26** — **Created the `case-study` project skill** (`.claude/skills/case-study/`)
   so new case studies repeat cog's structure/voice/build from raw material. Caroline has 3
   more case studies to add and wanted a skill encoding her tone of voice, heading structure,
@@ -167,8 +202,20 @@ Newest first. Record *why*, not just *what*.
   research-strategy=cog) as shape references, noting the cross-study frame (`SETTING THE
   STAGE` + 4-step `MY ROLE` open; `KEY LEARNINGS`/`WHAT'S NEXT`/View-next close). **The 2
   pasted studies are likely 2 of the 3 new pages to build** (booking conversions +
-  marketing website; 3rd TBD — maybe synapse). **NEXT:** build the 3 new studies from her
-  assets using the skill. Uncommitted (new skill files + CLAUDE.md only).
+  marketing website; 3rd TBD, maybe synapse). **THREE REFINEMENTS (same session, Caroline):**
+  (1) **NO EM DASHES, EVER** in case-study copy — added as a hard rule in `voice.md` + the
+  voice checklist + `SKILL.md` non-negotiables, and saved as a global **feedback memory**
+  (`no_em_dashes.md`) since it's a durable writing preference (rewrite with full stop / comma
+  / colon / parentheses; en dashes in number ranges are fine). (2) **Impact is the north
+  star** — added a "every case study sells the impact" section to `voice.md` (lead with the
+  outcome, tie every decision to user AND business impact, show product judgement not just
+  craft) + checklist item + `SKILL.md` non-negotiable. Goal: showcase how Caroline as a
+  product designer drives impact for products/companies. (3) **The 4 signature elements are
+  REQUIRED on every page** — added an explicit "Required signature elements" section to
+  `build.md` (Reveal scroll-in, Parallax drift, StreamingQuote/CaseStudyCallout word-reveal,
+  and the glass hero overlay/seam) + `SKILL.md` non-negotiable. All new skill prose written
+  em-dash-free. **NEXT:** build the 3 new studies from her assets using the skill.
+  Uncommitted (new skill files + CLAUDE.md + memory only).
 - **2026-06-26** — **Fun motion round 2: parallax + word-streaming quotes on the EXISTING
   sections** (Caroline's redirect — see next bullet). After the all-sections `Reveal`
   (committed), I first tried an experimental NEW section — `InteractiveWeek`, a playable
