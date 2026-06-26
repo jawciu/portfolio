@@ -1,4 +1,12 @@
-import { A, Container, Kicker, Title, Body, Callout } from "../ui";
+import {
+  A,
+  Container,
+  Kicker,
+  Title,
+  Body,
+  CaseStudyCallout,
+  InsightCard,
+} from "../ui";
 
 const PROBLEMS = [
   {
@@ -29,7 +37,7 @@ const SKETCHES = [
 
 export function Methodology() {
   return (
-    <section data-section="Methodology" className="py-16 md:py-24">
+    <section data-section="Methodology" className="pt-[120px] pb-0 bg-[var(--cog-bg-section)]">
       <Container>
         <Kicker>METHODOLOGY</Kicker>
         <Title>
@@ -44,30 +52,34 @@ export function Methodology() {
           journals) into actionable insights would address key issues identified
           in the research.
         </Body>
+      </Container>
 
-        {/* PROBLEM cards — soft cream panels, generous top padding */}
-        <div className="mt-16 grid grid-cols-1 gap-6 md:grid-cols-3">
-          {PROBLEMS.map((p) => (
-            <div
-              key={p.n}
-              className="rounded-lg bg-[var(--cog-bg-alt)] p-7 md:p-8"
-            >
-              <p className="cog-label text-[var(--cog-muted)]">
-                problem #{p.n}
-              </p>
-              <h3 className="cog-label mt-4 text-[var(--cog-ink)]">{p.title}</h3>
-              <Body className="mt-6 text-[var(--cog-ink-soft)]">{p.body}</Body>
-            </div>
-          ))}
-        </div>
+      {/* PROBLEM cards — wider band (outside the 1080 column) so all 3 fit on
+          one row on desktop; wraps gracefully on narrower screens. */}
+      <div className="mx-auto mt-16 flex max-w-[1280px] flex-wrap justify-center gap-9 px-6">
+        {PROBLEMS.map((p) => (
+          <InsightCard
+            key={p.n}
+            label={`Problem #${p.n}`}
+            title={p.title}
+            width={380}
+            height={260}
+          >
+            {p.body}
+          </InsightCard>
+        ))}
+      </div>
 
+      <Container>
         {/* Firebase callout */}
-        <Callout>
-          Early on, I worked with engineers to figure out what was realistic. Our
-          backend setup in Firebase couldn&apos;t support complex data aggregation
-          without a major restructure, so we went with a lightweight weekly
-          check-in history to launch fast and learn quickly.
-        </Callout>
+        <div className="mt-16">
+          <CaseStudyCallout>
+            Early on, I worked with engineers to figure out what was realistic.
+            Our backend setup in Firebase couldn&apos;t support complex data
+            aggregation without a major restructure, so we went with a
+            lightweight weekly check-in history to launch fast and learn quickly.
+          </CaseStudyCallout>
+        </div>
       </Container>
 
       {/* exploratory sketches — full-bleed horizontal row of hand-drawn
@@ -81,14 +93,18 @@ export function Methodology() {
           <div className="clear-both" />
         </Container>
 
-        <div className="mt-6 flex items-stretch gap-6 overflow-x-auto px-6 pb-2 md:px-10">
+        {/* Above 1200px the frames hold their large (≈1800-width) size and the
+            centred row is CROPPED by the screen edges as it narrows (overflow
+            clipped, both outer frames chopped). Below 1200px they start shrinking
+            to fit (flex-1) so they stay usable on smaller screens. */}
+        <div className="mt-6 flex items-stretch justify-center gap-4 overflow-hidden px-4 pb-2 sm:gap-6 min-[1200px]:px-0">
           {SKETCHES.map((file, i) => (
             // eslint-disable-next-line @next/next/no-img-element
             <img
               key={file}
               src={A(file)}
               alt={`Exploratory wireframe sketches ${i + 1}`}
-              className="h-56 w-auto shrink-0 md:h-72"
+              className="h-auto min-w-0 flex-1 object-contain min-[1200px]:w-[568px] min-[1200px]:flex-none"
             />
           ))}
         </div>

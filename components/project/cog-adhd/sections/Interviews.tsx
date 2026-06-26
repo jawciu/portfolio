@@ -117,7 +117,7 @@ function Bubble({ b }: { b: Bubble }) {
 
 export function Interviews() {
   return (
-    <section data-section="Interviews" className="py-16 md:py-24">
+    <section data-section="Interviews" className="pt-[120px] pb-0">
       <Container>
         <Kicker>INTERVIEWS</Kicker>
         <Title>
@@ -133,7 +133,7 @@ export function Interviews() {
           {PERSONAS.map((p) => (
             <div
               key={p.label}
-              className="w-full max-w-[260px] rounded-xl border border-[var(--cog-line)] bg-[var(--cog-card)] p-6"
+              className="w-full max-w-[260px] rounded-xl border border-[#f1f0ea] bg-[var(--cog-card)] p-6"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
