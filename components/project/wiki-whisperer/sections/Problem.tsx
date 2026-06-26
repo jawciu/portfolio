@@ -1,10 +1,9 @@
-import { Container, Kicker, Title, Body } from "../ui";
+import { A, Container, Kicker, Title, Body } from "../ui";
 import { Reveal } from "../Reveal";
 
-const LINES = [
-  "Energy specialists - support call centre agents at E.ON Next - need to be able to handle any query across hundreds of processes, protocols and tools that never stop changing.",
-  "Recalling the right answer with a customer on the line is genuinely hard, so the cognitive load is constant. The earlier tools did not solve it. Wiki Whisperer V1, the first AI attempt, launched to excitement then lost trust. It returned too many dead ends and forced specialists to phrase prompts in exactly the right way.",
-  "So specialists fell back on the fastest thing they knew, interrupting a colleague. My goal was to design a tool they would reach for first.",
+const REST = [
+  "Recalling the right answer with a customer on the line is genuinely hard, so the cognitive load is constant. The earlier tools did not solve it. Wiki Whisperer V1, the first AI attempt, launched to excitement then lost trust.",
+  "It returned too many dead ends and forced specialists to phrase prompts in exactly the right way. So specialists fell back on the fastest thing they knew, interrupting a colleague. My goal was to design a tool they would reach for first.",
 ];
 
 export function Problem() {
@@ -16,10 +15,33 @@ export function Problem() {
           <Title>A powerful tool no one trusted</Title>
         </Reveal>
 
-        <Reveal stagger={0.1} className="flex max-w-[760px] flex-col gap-5">
-          {LINES.map((line, i) => (
-            <Body key={i}>{line}</Body>
-          ))}
+        {/* intro line — full width */}
+        <Reveal className="max-w-[820px]">
+          <Body>
+            Energy specialists - support call centre agents at E.ON Next - need to be able
+            to handle any query across hundreds of processes, protocols and tools that never
+            stop changing.
+          </Body>
+        </Reveal>
+
+        {/* two columns: product screenshot left, the rest of the copy right */}
+        <Reveal
+          stagger={0.12}
+          className="mt-12 grid items-center gap-10 md:grid-cols-2 md:gap-14"
+        >
+          <div className="rounded-[20px] border border-[#E3E2DA] bg-white p-6 shadow-[1px_1px_10px_2px_rgba(212,210,210,0.25)]">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={A("problem-chat.png")}
+              alt="Wiki Whisperer V2 answering a back-billing question with linked source articles"
+              className="block w-full"
+            />
+          </div>
+          <div className="flex flex-col gap-5">
+            {REST.map((line, i) => (
+              <Body key={i}>{line}</Body>
+            ))}
+          </div>
         </Reveal>
       </Container>
     </section>
