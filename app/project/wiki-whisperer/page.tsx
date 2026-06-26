@@ -42,7 +42,7 @@ export default function WikiWhispererCaseStudy() {
         className="relative z-10 rounded-t-[2.5rem] backdrop-blur-2xl backdrop-saturate-150 shadow-[0_-24px_60px_-20px_rgba(60,29,122,0.18)]"
         style={{
           background:
-            "linear-gradient(180deg, rgba(240,226,252,0.72) 0px, rgba(247,235,255,0.85) 64px, rgba(248,240,255,0.93) 128px, rgba(250,246,254,0.98) 168px, #fefcff 188px)",
+            "linear-gradient(180deg, rgba(247,240,252,0.55) 0px, rgba(250,245,254,0.78) 70px, rgba(252,250,254,0.93) 138px, rgba(253,252,255,0.98) 172px, #fefcff 192px)",
         }}
       >
         {/* glass rim glint */}

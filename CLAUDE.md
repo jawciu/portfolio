@@ -129,6 +129,19 @@ it's a deliberate call.
 
 Newest first. Record *why*, not just *what*.
 
+- **2026-06-26** — **Wiki hero: promo video + gradient-glow shadow + lighter seam.** Wired
+  the E.ON Next promo animation into the hero as the product visual (replaces the
+  device-screens placeholder): `public/projects/wiki-whisperer/promo.mp4` (the "Scriggly"
+  hype clip, **29MB, now tracked in git** — Caroline OK'd), a plain `<video autoPlay loop
+  muted playsInline className="block h-auto w-full">` (1920×1080) in a rounded bordered card.
+  Its "shadow" is a soft **pink→lavender gradient glow** behind the card (`#FFF0F0 → #F7EBFF`,
+  `linear-gradient(135deg…)` on an absolutely-positioned blurred sibling, since box-shadow
+  can't be a gradient); tuned **less diffused** (`blur-lg`, tight offsets) per Caroline.
+  Also **lightened the glass-seam frost** (gradient top stops → fainter lavender, lower
+  alpha) because the `#F7EBFF` band read as a visible "stripe" by the MyRole heading; it's
+  now a subtle clean transition. The making-of story stays in the Rollout section (its video
+  placeholder is still there — Caroline to decide: still / replay / drop). tsc + eslint clean,
+  0 console errors. Committed + pushed.
 - **2026-06-26** — **Wiki case study: theme-scope collision FIX + glass/bg tint polish.**
   **BUG (important gotcha):** the wiki `theme.css` scoped its `--cog-*` tokens to the SAME
   `.cog-root` class as the cog study. Next.js keeps a route's CSS loaded after client-side

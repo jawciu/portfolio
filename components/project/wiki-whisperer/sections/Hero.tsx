@@ -1,4 +1,4 @@
-import { Container } from "../ui";
+import { A, Container } from "../ui";
 
 /* Hero — mirrors the cog hero structure: 2-line title, then a two-column meta block
    (LEFT: brand + logo + role/tools vertical lists; RIGHT: summary + setting the stage),
@@ -89,11 +89,25 @@ export function Hero() {
           </div>
         </div>
 
-        {/* Product-visual row — placeholder until the Figma screens land */}
-        <div className="mt-14 flex h-[320px] w-full items-center justify-center rounded-2xl border border-dashed border-[var(--cog-line)] bg-[var(--cog-bg-alt)] md:h-[420px]">
-          <span className="case-study-label text-[var(--cog-muted)]">
-            v2 product screens (desktop + tablet)
-          </span>
+        {/* Promo video — the hero hook (autoplay, muted, loop). The making-of story
+            lives in the Rollout section. The "shadow" is a soft pink-to-lavender
+            gradient glow behind the card (box-shadow can't take a gradient). */}
+        <div className="relative mt-14">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -bottom-4 left-5 right-5 top-8 rounded-[1.75rem] blur-lg"
+            style={{ background: "linear-gradient(135deg, #FFF0F0, #F7EBFF)" }}
+          />
+          <div className="relative w-full overflow-hidden rounded-2xl border border-[var(--cog-line)]">
+            <video
+              src={A("promo.mp4")}
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="block h-auto w-full"
+            />
+          </div>
         </div>
       </Container>
     </section>
