@@ -1,4 +1,5 @@
 import { A, Container, Title, Body } from "../ui";
+import { Reveal } from "../Reveal";
 
 export function JourneyMap() {
   return (
@@ -7,17 +8,22 @@ export function JourneyMap() {
       className="pt-[120px] pb-0 bg-[var(--cog-bg-section)]"
     >
       <Container>
-        <Title>
-          CURRENT THERAPY PROCESS -
-          <br />
-          CLIENT JOURNEY MAP
-        </Title>
+        <Reveal>
+          <Title>
+            CURRENT THERAPY PROCESS -
+            <br />
+            CLIENT JOURNEY MAP
+          </Title>
+        </Reveal>
       </Container>
 
       {/* Everything below the heading sits at 85% screen width (≤1700px) /
           75% (>1700px), centred. */}
       <div className="mx-auto w-[85%] min-[1700px]:w-[75%]">
-        <div className="grid gap-10 md:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)_minmax(0,1.4fr)] md:gap-12">
+        <Reveal
+          stagger={0.12}
+          className="grid gap-10 md:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)_minmax(0,1.4fr)] md:gap-12"
+        >
           {/* Persona chip */}
           <div>
             <div className="w-[240px] max-w-full">
@@ -76,10 +82,10 @@ export function JourneyMap() {
               </li>
             </ul>
           </div>
-        </div>
+        </Reveal>
 
         {/* Journey map table (exported image) */}
-        <div className="mt-12 w-full overflow-x-auto md:mt-16">
+        <Reveal className="mt-12 w-full overflow-x-auto md:mt-16">
           <div className="min-w-[900px]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -88,7 +94,7 @@ export function JourneyMap() {
               className="h-auto w-full"
             />
           </div>
-        </div>
+        </Reveal>
       </div>
     </section>
   );

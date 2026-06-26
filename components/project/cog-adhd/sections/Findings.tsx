@@ -1,4 +1,5 @@
 import { A, Container, Kicker, Title, InsightCard } from "../ui";
+import { Reveal } from "../Reveal";
 
 const QUOTES = [
   {
@@ -51,29 +52,34 @@ export function Findings() {
   return (
     <section data-section="Findings" className="pt-[120px] pb-0">
       <Container>
-        <Kicker>Key research findings</Kicker>
-        <Title>
-          Gaps in connection,
-          <br />
-          lack of structure and resources
-        </Title>
+        <Reveal stagger={0.08}>
+          <Kicker>Key research findings</Kicker>
+          <Title>
+            Gaps in connection,
+            <br />
+            lack of structure and resources
+          </Title>
+        </Reveal>
       </Container>
 
       {/* Affinity map — full-bleed board cropped in height; the quote post-its
           overlap its lower edge (matches the original Framer layout). */}
       <div className="relative mt-10 md:mt-14">
-        <div className="w-full overflow-hidden">
+        <Reveal className="w-full overflow-hidden">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={A("image-19.png")}
             alt="Affinity map grouping research observations into themes such as establishing core needs, accountability, measuring progress, admin work, and risk assessment"
             className="h-[clamp(240px,34vw,400px)] w-full object-cover object-top"
           />
-        </div>
+        </Reveal>
 
         <Container>
           {/* Quote post-its — pulled up to sit over the board */}
-          <div className="-mt-20 grid justify-items-center gap-5 md:-mt-28 md:grid-cols-3">
+          <Reveal
+            stagger={0.12}
+            className="-mt-20 grid justify-items-center gap-5 md:-mt-28 md:grid-cols-3"
+          >
             {QUOTES.map((q, i) => (
               <figure
                 key={i}
@@ -91,20 +97,23 @@ export function Findings() {
                 </figcaption>
               </figure>
             ))}
-          </div>
+          </Reveal>
         </Container>
       </div>
 
       <Container>
         {/* 4 insight cards — 2×2 grid of fixed 420×320 cards on #FAFAFA, each with a
             mono label, a case-study-label title and a green (#19a072) divider. */}
-        <div className="mt-16 flex flex-wrap justify-center gap-9">
+        <Reveal
+          stagger={0.12}
+          className="mt-16 flex flex-wrap justify-center gap-9"
+        >
           {INSIGHTS.map((ins) => (
             <InsightCard key={ins.n} label={`Insight #${ins.n}`} title={ins.title}>
               {ins.body}
             </InsightCard>
           ))}
-        </div>
+        </Reveal>
       </Container>
     </section>
   );

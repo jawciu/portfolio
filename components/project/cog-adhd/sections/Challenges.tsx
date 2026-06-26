@@ -1,25 +1,31 @@
 import { A, Container, Kicker, Title, Body } from "../ui";
+import { Reveal } from "../Reveal";
 
 export function Challenges() {
   return (
     <section data-section="Challenges" className="pt-[120px] pb-0 bg-[var(--cog-bg-section)]">
       <Container>
-        <Kicker>Challenges</Kicker>
-        <Title>
-          Testing Shows
-          <br />
-          Information Overload
-        </Title>
-        <div className="mt-6 md:mt-8 w-[510px] max-w-full">
+        <Reveal stagger={0.08}>
+          <Kicker>Challenges</Kicker>
+          <Title>
+            Testing Shows
+            <br />
+            Information Overload
+          </Title>
+        </Reveal>
+        <Reveal className="mt-6 md:mt-8 w-[510px] max-w-full">
           <Body>
             I started with a day-by-day layout and colour-coded progress bars to
             help users review their week and spot patterns. But, user testing
             showed that this layout was overwhelming.
           </Body>
-        </div>
+        </Reveal>
 
         {/* Speech bubble + cluttered tracker phone */}
-        <div className="mt-12 md:mt-16 grid grid-cols-1 md:grid-cols-2 items-center gap-10 md:gap-16">
+        <Reveal
+          stagger={0.14}
+          className="mt-12 md:mt-16 grid grid-cols-1 md:grid-cols-2 items-center gap-10 md:gap-16"
+        >
           {/* Quote in a green thought bubble */}
           <div className="order-2 md:order-1 flex justify-center md:justify-start">
             <div className="relative w-full max-w-[400px]">
@@ -47,7 +53,7 @@ export function Challenges() {
               style={{ aspectRatio: "1269 / 1950" }}
             />
           </div>
-        </div>
+        </Reveal>
       </Container>
     </section>
   );

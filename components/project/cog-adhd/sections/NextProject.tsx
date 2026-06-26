@@ -1,4 +1,5 @@
 import { A, Container } from "../ui";
+import { Reveal } from "../Reveal";
 
 export function NextProject() {
   return (
@@ -6,9 +7,11 @@ export function NextProject() {
       {/* ── View next project band ───────────────────────────────────────── */}
       <div className="relative overflow-hidden bg-[var(--cog-bg-section)]">
         <Container className="relative z-10 pt-[120px]">
-          <p className="case-study-section-heading text-[var(--cog-ink)]">View Next Project</p>
+          <Reveal>
+            <p className="case-study-section-heading text-[var(--cog-ink)]">View Next Project</p>
+          </Reveal>
 
-          <div className="mt-10 max-w-[640px]">
+          <Reveal stagger={0.1} className="mt-10 max-w-[640px]">
             <h3 className="case-study-section-heading mb-0! text-[clamp(1.6rem,1.1rem+2vw,2.4rem)] leading-[1.1]">
               Building Marketing Website
               <br />
@@ -20,7 +23,7 @@ export function NextProject() {
             >
               Check it out
             </a>
-          </div>
+          </Reveal>
         </Container>
 
         {/* decorative ribbon / confetti band over a purple stripe */}

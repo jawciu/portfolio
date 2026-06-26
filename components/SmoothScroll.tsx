@@ -20,7 +20,14 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
     gsap.ticker.add(raf);
     gsap.ticker.lagSmoothing(0);
 
+    // Recompute ScrollTrigger start/end positions once fonts (and the initial
+    // load) settle, so reveal triggers fire at the right scroll positions.
+    document.fonts?.ready.then(() => ScrollTrigger.refresh());
+    const onLoad = () => ScrollTrigger.refresh();
+    window.addEventListener("load", onLoad);
+
     return () => {
+      window.removeEventListener("load", onLoad);
       lenis.destroy();
       gsap.ticker.remove(raf);
     };

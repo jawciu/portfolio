@@ -129,6 +129,37 @@ it's a deliberate call.
 
 Newest first. Record *why*, not just *what*.
 
+- **2026-06-26** — **Cog case-study scroll motion: `Reveal` primitive + applied to the
+  first 4 sections (a "play" / direction-finding slice).** Caroline asked to experiment
+  with scroll/loading animations. Built **`components/project/cog-adhd/Reveal.tsx`** — a
+  client wrapper that animates content in on scroll via GSAP ScrollTrigger (the stack
+  already registered globally in `SmoothScroll`). **Motion concept = "coming into
+  focus"**: content resolves from soft→crisp — `autoAlpha 0→1` + `y 28px→0` + `filter
+  blur(6px)→0`, `duration 1`, `ease expo.out`, plays `once`, `start "top 85%"`. Justified
+  (not generic fade-up): ties to the site's diffused-glass aesthetic + the hero glass
+  reveal. Two modes: default animates the wrapper as one block; **`stagger`** animates the
+  wrapper's DIRECT children in sequence (so pass the grid/flex classes to `<Reveal>` itself
+  and its cells cascade — a cluster *assembles* instead of popping). Reduced-motion safe
+  (`gsap.matchMedia('(prefers-reduced-motion: no-preference)')` → does nothing, content
+  sits natural) and runs in useGSAP's layout effect so off-screen content hides before
+  paint (no flash). Also added a global **`document.fonts.ready` + window `load` →
+  `ScrollTrigger.refresh()`** in `SmoothScroll.tsx` so trigger positions are correct after
+  fonts/images settle. **Applied to a contiguous top slice — MyRole, Interviews,
+  Competitive, Findings** (headings stagger eyebrow→title 0.08; card grids / screenshot
+  rows / thought-bubbles / post-its / insight cards stagger 0.06–0.14) so the language is
+  *feel-able* while scrolling before rolling out to the other 9 sections. tsc + eslint
+  clean. Verified via standalone Playwright (run the script from the PROJECT ROOT so
+  `playwright` resolves — scratchpad path fails `ERR_MODULE_NOT_FOUND`): scrolled the whole
+  page → 0 console errors, NO content stuck hidden (the only sub-1.0 opacities are the
+  intentional `opacity-80` competitor logos); reduced-motion context → below-fold content
+  visible immediately, 0 errors. **Dials:** `y` / `blur` / `stagger` / `start` props per
+  call; `expo.out` + `duration 1` in `Reveal.tsx` for global feel. Caroline approved the
+  slice → **rolled `Reveal` out to ALL 13 sections** (BookingDropoff/JourneyMap/Strategy/
+  Methodology/Challenges/Solution/Results/Takeaways/NextProject added — same recipe:
+  heading eyebrow→title stagger 0.08, content grids/rows/clusters stagger 0.1–0.15, single
+  blocks as one Reveal). Re-verified full page: 0 console errors, 0 stuck/hidden across all
+  13. **Committed + pushed.** Next: a more experimental/ambitious interactive moment
+  (Caroline's ask) — researching web-interactivity ideas.
 - **2026-06-26** — **Uniform 120px gap before every case-study section heading.** Caroline
   wanted the space between sections (after one, before the next heading) to be consistent;
   tried **88px**, then bumped to **120px** (88 read too tight). All 12 content sections shared the SAME `py-16 md:py-24` (so the gap was

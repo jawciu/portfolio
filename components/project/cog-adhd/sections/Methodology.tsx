@@ -7,6 +7,7 @@ import {
   CaseStudyCallout,
   InsightCard,
 } from "../ui";
+import { Reveal } from "../Reveal";
 
 const PROBLEMS = [
   {
@@ -39,24 +40,31 @@ export function Methodology() {
   return (
     <section data-section="Methodology" className="pt-[120px] pb-0 bg-[var(--cog-bg-section)]">
       <Container>
-        <Kicker>METHODOLOGY</Kicker>
-        <Title>
-          INVITING ENGINEERS
-          <br />
-          TO DISCUSSIONS EARLY ON
-        </Title>
+        <Reveal stagger={0.08}>
+          <Kicker>METHODOLOGY</Kicker>
+          <Title>
+            INVITING ENGINEERS
+            <br />
+            TO DISCUSSIONS EARLY ON
+          </Title>
+        </Reveal>
 
-        <Body className="mt-6 max-w-2xl text-[var(--cog-muted)]">
-          With this big vision in place, I focused on prioritising ideas.
-          Transforming check in entries (symptoms, emotions, wins, and daily
-          journals) into actionable insights would address key issues identified
-          in the research.
-        </Body>
+        <Reveal>
+          <Body className="mt-6 max-w-2xl text-[var(--cog-muted)]">
+            With this big vision in place, I focused on prioritising ideas.
+            Transforming check in entries (symptoms, emotions, wins, and daily
+            journals) into actionable insights would address key issues
+            identified in the research.
+          </Body>
+        </Reveal>
       </Container>
 
       {/* PROBLEM cards — wider band (outside the 1080 column) so all 3 fit on
           one row on desktop; wraps gracefully on narrower screens. */}
-      <div className="mx-auto mt-16 flex max-w-[1280px] flex-wrap justify-center gap-9 px-6">
+      <Reveal
+        stagger={0.12}
+        className="mx-auto mt-16 flex max-w-[1280px] flex-wrap justify-center gap-9 px-6"
+      >
         {PROBLEMS.map((p) => (
           <InsightCard
             key={p.n}
@@ -68,18 +76,18 @@ export function Methodology() {
             {p.body}
           </InsightCard>
         ))}
-      </div>
+      </Reveal>
 
       <Container>
         {/* Firebase callout */}
-        <div className="mt-16">
+        <Reveal className="mt-16">
           <CaseStudyCallout>
             Early on, I worked with engineers to figure out what was realistic.
             Our backend setup in Firebase couldn&apos;t support complex data
             aggregation without a major restructure, so we went with a
             lightweight weekly check-in history to launch fast and learn quickly.
           </CaseStudyCallout>
-        </div>
+        </Reveal>
       </Container>
 
       {/* exploratory sketches — full-bleed horizontal row of hand-drawn
@@ -97,7 +105,10 @@ export function Methodology() {
             centred row is CROPPED by the screen edges as it narrows (overflow
             clipped, both outer frames chopped). Below 1200px they start shrinking
             to fit (flex-1) so they stay usable on smaller screens. */}
-        <div className="mt-6 flex items-stretch justify-center gap-4 overflow-hidden px-4 pb-2 sm:gap-6 min-[1200px]:px-0">
+        <Reveal
+          stagger={0.12}
+          className="mt-6 flex items-stretch justify-center gap-4 overflow-hidden px-4 pb-2 sm:gap-6 min-[1200px]:px-0"
+        >
           {SKETCHES.map((file, i) => (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -107,7 +118,7 @@ export function Methodology() {
               className="h-auto min-w-0 flex-1 object-contain min-[1200px]:w-[568px] min-[1200px]:flex-none"
             />
           ))}
-        </div>
+        </Reveal>
       </div>
     </section>
   );

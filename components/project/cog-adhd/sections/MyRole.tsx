@@ -1,4 +1,5 @@
 import { A, Container, Title, Body } from "../ui";
+import { Reveal } from "../Reveal";
 
 const ROLES = [
   {
@@ -31,9 +32,14 @@ export function MyRole() {
   return (
     <section data-section="MyRole" className="pt-[88px] pb-0">
       <Container>
-        <Title className="mb-12 md:mb-16">MY ROLE</Title>
+        <Reveal>
+          <Title className="mb-12 md:mb-16">MY ROLE</Title>
+        </Reveal>
 
-        <div className="grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
+        <Reveal
+          stagger={0.1}
+          className="grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-4"
+        >
           {ROLES.map((r) => (
             <div key={r.label}>
               <div className="mb-4 h-[72px]">
@@ -48,7 +54,7 @@ export function MyRole() {
               <Body>{r.body}</Body>
             </div>
           ))}
-        </div>
+        </Reveal>
       </Container>
     </section>
   );
