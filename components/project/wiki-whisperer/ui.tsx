@@ -82,14 +82,17 @@ export function InsightCard({
   label: string;
   title: ReactNode;
   children: ReactNode;
-  /** card dimensions in px (default 420×320) */
-  width?: number;
-  height?: number;
+  /** card dimensions in px (default 420×320); pass "auto" to size to content / stretch */
+  width?: number | "auto";
+  height?: number | "auto";
 }) {
   return (
     <div
-      style={{ width, height }}
-      className="flex max-w-full flex-col rounded-2xl border border-[#f1f0ea] bg-[#fafafa] px-9 py-8"
+      style={{
+        width: width === "auto" ? undefined : width,
+        height: height === "auto" ? undefined : height,
+      }}
+      className="flex h-full w-full max-w-full flex-col rounded-2xl border border-[var(--cog-line)] bg-[var(--cog-card)] px-9 py-8"
     >
       <p className="font-[family-name:var(--font-mono)] text-[15px] font-bold uppercase tracking-[0.02em] text-[var(--cog-ink)]">
         {label}

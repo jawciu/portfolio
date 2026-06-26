@@ -16,9 +16,9 @@
   --cog-line: #e7e1f1; /* hairlines / card borders */
   --cog-card: #ffffff;
 
-  --green: #e5007d; /* TEMPLATE accent slot — E.ON Next magenta (dividers / rules / callout) */
+  --green: #e15bad; /* TEMPLATE accent slot — pink (dividers / rules / callout) */
   --dark-green: #b3005f; /* TEMPLATE dark-accent slot — deep magenta (emphasised labels) */
-  --cog-green: #e5007d; /* mapped to the brand magenta */
+  --cog-green: #e15bad; /* mapped to the pink accent */
   --cog-green-deep: #b3005f;
 
   /* E.ON Next decorative spectrum (used sparingly for dots / blobs / accents) */

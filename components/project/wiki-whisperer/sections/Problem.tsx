@@ -1,9 +1,9 @@
-import { A, Container, Kicker, Title, Body } from "../ui";
+import { A, Container, Kicker, Title, Body, CaseStudyCallout } from "../ui";
 import { Reveal } from "../Reveal";
 
 const REST = [
-  "Recalling the right answer with a customer on the line is genuinely hard, so the cognitive load is constant. The earlier tools did not solve it. Wiki Whisperer V1, the first AI attempt, launched to excitement then lost trust.",
-  "It returned too many dead ends and forced specialists to phrase prompts in exactly the right way. So specialists fell back on the fastest thing they knew, interrupting a colleague. My goal was to design a tool they would reach for first.",
+  "The earlier tools did not solve it. Wiki Whisperer V1, the first AI attempt, launched to excitement then quicklylost trust.",
+  "It returned too many dead ends and forced specialists to phrase prompts in exactly the right way.",
 ];
 
 export function Problem() {
@@ -12,18 +12,16 @@ export function Problem() {
       <Container>
         <Reveal>
           <Kicker>Problem space</Kicker>
-          <Title>A powerful tool no one trusted</Title>
+          <Title>Cognitive overload, no reliable fallback</Title>
         </Reveal>
 
         {/* intro line — full width */}
         <Reveal className="max-w-[820px]">
           <Body>
-            Energy specialists - support call centre agents at E.ON Next - need to be able
-            to handle any query across hundreds of processes, protocols and tools that never
-            stop changing.
+            Energy specialists (support call centre agents at E.ON Next) need to handle any query across hundreds of processes, protocols and tools that never
+            stop changing. Recalling the right answer, especially with a customer on the line is genuinely hard, so the cognitive load is constant.
           </Body>
         </Reveal>
-
         {/* two columns: product screenshot left, the rest of the copy right */}
         <Reveal
           stagger={0.12}
@@ -42,6 +40,12 @@ export function Problem() {
               <Body key={i}>{line}</Body>
             ))}
           </div>
+        </Reveal>
+        <Reveal className="mt-12 max-w-[820px]">
+          <CaseStudyCallout stream>
+          Specialists fell back on the fastest thing they knew, asking a colleague. <br />
+          My goal was to design a tool they would reach for first.
+          </CaseStudyCallout>
         </Reveal>
       </Container>
     </section>
