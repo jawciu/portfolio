@@ -1335,6 +1335,34 @@ Newest first. Record *why*, not just *what*.
 > state (working / broken / in-progress), and explicit next steps for the next agent. Capture stated intent
 > ("tomorrow we do X") and long absences here too.
 
+### 2026-06-26 (eve) — Built the `case-study` skill + the Wiki Whisperer V2 case study; SHORT BREAK (Caroline back in ~30 min)
+- **Status: WORKING, ALL COMMITTED + PUSHED.** Branch `project-showcase-experiment`, HEAD
+  `7746bc9`. Caroline paused (~30 min, heat + machine crashing) and shut the computer; nothing
+  is at risk. Only untracked = the 3 source decks in `assets/` (intentional).
+- **Done this session:** (1) created the reusable **`case-study` skill** (`.claude/skills/
+  case-study/` — SKILL/structure/voice/build), mined her voice from cog + her real Framer
+  studies; (2) built the **Wiki Whisperer V2 case study** at **`/project/wiki-whisperer`**
+  (E.ON Next, agentic RAG) end-to-end — 13 sections, own **light `.ww-root` theme**
+  (aubergine ink + magenta accent, `#FEFCFF`/`#FFFAFA` bg, `#F7EBFF` glass), hero matches cog
+  meta layout, glass seam, Reveal/StreamingQuote motion; wired the E.ON Next showcase card →
+  the page. See the detailed Decision Log entries above. **Impact framed honestly** (lead
+  qual + adoption + rigour; quant directional, tests still running; control analysis was the
+  data scientist's, Caroline supported). All names anonymised; no em dashes; British spelling.
+- **Live assets in:** hero **promo video** (`promo.mp4`, 29MB tracked) on a pink→lavender
+  gradient glow; **Problem section** V2 chat screenshot (`problem-chat.png`, cog image
+  treatment + 24px inner padding, two-column).
+- **NEXT (visual pass — pick up here):** (a) **Redesign** section — pull the real V2 screens
+  from the Figma file (`figma.com/design/YuUbDFCAHnXIu9n53egFKV`); (b) **Early impact** —
+  wire the telemetry charts (extract from `assets/Wiki Whisperer V2 Pilot Analysis.pdf`; the
+  earlier `pdftoppm` to `public/` silently failed, retry); (c) **User-led refinement** —
+  the feedback flag-form screenshot, **MUST anonymise** the real names/email in the Ops-deck
+  version; (d) **Rollout** — decide the leftover video placeholder (still / replay / drop).
+- **Gotchas for resume:** dev server must be running for visual checks; MCP screenshots time
+  out on these live pages, so use the **standalone-Playwright trick from the PROJECT ROOT**
+  (write `_x.mjs` in repo root, `node` it, `rm` it). Each case study MUST use its own theme
+  scope class (wiki = `.ww-root`) — sharing `.cog-root` leaks across studies (fixed this
+  session; `build.md` updated).
+
 ### 2026-06-26 — Cog Results section rebuilt + Methodology/Interviews tweaks + template extraction; committed the whole shared tree (this agent)
 - **Done this session (branch `project-showcase-experiment`):**
   1. **Results section** (`sections/Results.tsx`) — major rework to match Caroline's
