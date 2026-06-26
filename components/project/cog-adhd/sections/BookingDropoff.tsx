@@ -1,19 +1,19 @@
-import { Container, Title, Statement } from "../ui";
+import { Container, Title, CaseStudyCallout } from "../ui";
 
 export function BookingDropoff() {
   return (
-    <section data-section="BookingDropoff" className="py-16 md:py-24">
+    <section data-section="BookingDropoff" className="pt-[120px] pb-[120px]">
       <Container>
-        <Title className="text-[clamp(1.25rem,1rem+1vw,1.6rem)]">
+        <Title>
           Session Booking Drop-off
         </Title>
         <div className="mt-6 md:mt-8 max-w-[820px]">
-          <Statement>
+          <CaseStudyCallout>
             Beyond the core insights, I identified a high-impact friction: users
             valued individual and flexible session booking but often forgot to
             rebook, even when they wanted to continue. This presented a clear
             opportunity for a quick, valuable fix.
-          </Statement>
+          </CaseStudyCallout>
         </div>
       </Container>
     </section>

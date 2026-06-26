@@ -29,7 +29,7 @@ const ROLES = [
 
 export function MyRole() {
   return (
-    <section data-section="MyRole" className="py-16 md:py-24">
+    <section data-section="MyRole" className="pt-[88px] pb-0">
       <Container>
         <Title className="mb-12 md:mb-16">MY ROLE</Title>
 
@@ -44,9 +44,7 @@ export function MyRole() {
                   className="h-[72px] w-auto"
                 />
               </div>
-              <p className="cog-label mb-3 font-bold text-[var(--cog-ink)]">
-                {r.label} &gt;
-              </p>
+              <p className="case-study-label mb-3">{r.label} &gt;</p>
               <Body>{r.body}</Body>
             </div>
           ))}

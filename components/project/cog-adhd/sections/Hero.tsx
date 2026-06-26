@@ -14,7 +14,7 @@ export function Hero() {
         />
       </div>
 
-      <Container className="pt-10 pb-10 md:pt-14 md:pb-12">
+      <Container className="pt-10 pb-[120px] md:pt-14">
         {/* Page title — main H1. See `.case-study-title` (template token). */}
         <h1 className="case-study-title">
           Gaps and Opportunities

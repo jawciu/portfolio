@@ -1,17 +1,81 @@
-import { A, Body, Callout, Container, Kicker, Title } from "../ui";
+import { A, Body, CaseStudyCallout, Container, Kicker, Title } from "../ui";
 
 /** small mono caption tag used on the dashboard concept mockups */
 function DesignIdeaTag() {
   return (
-    <span className="cog-label inline-block self-end text-[var(--cog-green)]">
+    <span className="cog-label self-end border-b-2 border-[var(--green)] pb-2 pl-[84px] pr-3 text-right text-[var(--cog-ink)]">
       design idea
     </span>
   );
 }
 
+/* Overlapping product-card clusters. Sizes are the exact px Caroline specified;
+   the whole cluster scales as one unit via the `--cs` custom property (so the
+   overlap/aspect stay identical) and only goes full-size at lg. Every card gets a
+   20px radius, a 1px #E3E2DA border and a soft #D4D2D2 @25% shadow. */
+type StackCardData = {
+  src: string;
+  alt: string;
+  w: number;
+  h: number;
+  top: number;
+  left: number;
+  z: number;
+};
+
+const VISION_STACK: StackCardData[] = [
+  { src: "image-23.svg", alt: "Cog home screen — Hi Katherine, your daily practice", w: 320, h: 523, top: 0, left: 300, z: 10 },
+  { src: "image-21.svg", alt: "Cog check-in — How is your focus?", w: 208, h: 321, top: 150, left: 0, z: 0 },
+  { src: "image-22.svg", alt: "Cog check-in — How is your punctuality?", w: 208, h: 320, top: 235, left: 170, z: 20 },
+];
+const VISION_STACK_W = 620;
+const VISION_STACK_H = 555;
+
+const JOURNAL_STACK: StackCardData[] = [
+  { src: "image-24.svg", alt: "Cog journal — What went well today?", w: 320, h: 523, top: 0, left: 0, z: 0 },
+  { src: "image-25.svg", alt: "Cog journal — What’s been happening?", w: 300, h: 246, top: 55, left: 230, z: 10 },
+];
+const JOURNAL_STACK_W = 530;
+const JOURNAL_STACK_H = 523;
+
+function CardStack({
+  cards,
+  w,
+  h,
+}: {
+  cards: StackCardData[];
+  w: number;
+  h: number;
+}) {
+  const u = (n: number) => `calc(var(--cs) * ${n}px)`;
+  return (
+    <div
+      className="relative shrink-0 [--cs:0.5] min-[420px]:[--cs:0.62] sm:[--cs:0.8] lg:[--cs:1]"
+      style={{ width: u(w), height: u(h) }}
+    >
+      {cards.map((c) => (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          key={c.src}
+          src={A(c.src)}
+          alt={c.alt}
+          className="absolute rounded-[20px] border border-[#E3E2DA] object-cover shadow-[1px_1px_10px_2px_rgba(212,210,210,0.25)]"
+          style={{
+            width: u(c.w),
+            height: u(c.h),
+            top: u(c.top),
+            left: u(c.left),
+            zIndex: c.z,
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
 export function Strategy() {
   return (
-    <section data-section="Strategy" className="py-16 md:py-24">
+    <section data-section="Strategy" className="pt-[120px] pb-0 bg-[var(--cog-bg-section)]">
       <Container>
         <Kicker>Strategy</Kicker>
         <Title>
@@ -21,15 +85,15 @@ export function Strategy() {
         </Title>
 
         <div className="mt-8 md:mt-10">
-          <Callout>
+          <CaseStudyCallout>
             The issues I uncovered revealed many opportunities for improvement.
             I began to imagine, what could a big picture product vision for Cog
             clinic look like?
-          </Callout>
+          </CaseStudyCallout>
         </div>
 
-        {/* Body column + the daily-practice card cluster */}
-        <div className="mt-12 grid gap-12 md:mt-16 md:grid-cols-2 md:items-center md:gap-16">
+        {/* Row 1 — copy left, daily-practice card cluster right */}
+        <div className="mt-12 flex flex-col gap-12 md:mt-16 lg:grid lg:grid-cols-[1fr_auto] lg:items-center lg:gap-14">
           <div className="space-y-6">
             <Body>
               Cog allows users to track symptoms, emotions, wins and add daily
@@ -39,6 +103,18 @@ export function Strategy() {
               Why not use these tools to give users a clear, insightful view of
               their progress and overall well-being?
             </Body>
+          </div>
+          <div className="flex justify-center lg:justify-end">
+            <CardStack cards={VISION_STACK} w={VISION_STACK_W} h={VISION_STACK_H} />
+          </div>
+        </div>
+
+        {/* Row 2 — journal card cluster left, copy right */}
+        <div className="mt-12 flex flex-col gap-12 md:mt-16 lg:grid lg:grid-cols-[auto_1fr] lg:items-center lg:gap-14">
+          <div className="flex justify-center lg:justify-start">
+            <CardStack cards={JOURNAL_STACK} w={JOURNAL_STACK_W} h={JOURNAL_STACK_H} />
+          </div>
+          <div className="space-y-6">
             <Body>
               This would also give therapists a better understanding of their
               patient&rsquo;s health and areas to focus on.
@@ -49,63 +125,41 @@ export function Strategy() {
               could be a huge motivation boost.
             </Body>
           </div>
-
-          {/* overlapping product cards: Hi Katherine + Focus + Punctuality */}
-          <div className="relative mx-auto w-full max-w-md">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={A("image-23.svg")}
-              alt="Cog app screen — Hi Katherine, your daily practice with ADHD strategies hub and daily check-in"
-              className="relative z-10 ml-auto w-[72%] drop-shadow-sm"
-            />
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={A("image-21.svg")}
-              alt="Cog app card — How is your focus?"
-              className="absolute bottom-0 left-0 z-20 w-[46%] drop-shadow-md"
-            />
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={A("image-22.svg")}
-              alt="Cog app card — How is your punctuality?"
-              className="absolute bottom-[-6%] left-[34%] z-0 w-[46%] drop-shadow-sm"
-            />
-          </div>
         </div>
 
         {/* Centralised hub — concept dashboard 1 */}
         <div className="mt-20 md:mt-28">
-          <Body className="mx-auto max-w-2xl">
+          <Body className="w-[510px] max-w-full">
             Additionally, a centralised hub would keep therapy organised; session
             summaries, homework, communication, reminders, and an archive all in
             one place, so nothing ever gets lost.
           </Body>
-          <figure className="mt-8 flex flex-col">
+          <figure className="mt-3 flex flex-col">
             <DesignIdeaTag />
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={A("image-26.svg")}
               alt="Cog Clinic dashboard concept — Katherine Bell progress view with symptom-progress line chart and symptom-control donut charts"
-              className="mt-3 w-full rounded-2xl border border-[var(--cog-line)] bg-[var(--cog-bg-alt)] shadow-sm"
+              className="mt-3 w-full rounded-[20px] border border-[#E3E2DA] bg-[var(--cog-bg-alt)] shadow-[1px_1px_10px_2px_rgba(212,210,210,0.25)]"
             />
           </figure>
         </div>
 
         {/* Automating admin — concept dashboard 2 */}
         <div className="mt-20 md:mt-28">
-          <Body className="mx-auto max-w-2xl">
+          <Body className="w-[510px] max-w-full">
             Automating some of the admin work could further reduce clinician
             burnout. For example, after each session, AI could draft a session
             summary and risk assessment based on the user&rsquo;s data, allowing
             therapists to simply review it.
           </Body>
-          <figure className="mt-8 flex flex-col">
+          <figure className="mt-3 flex flex-col">
             <DesignIdeaTag />
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={A("image-27.svg")}
               alt="Cog Clinic dashboard concept — Katherine Bell session view with an AI-drafted session summary"
-              className="mt-3 w-full rounded-2xl border border-[var(--cog-line)] bg-[var(--cog-bg-alt)] shadow-sm"
+              className="mt-3 w-full rounded-[20px] border border-[#E3E2DA] bg-[var(--cog-bg-alt)] shadow-[1px_1px_10px_2px_rgba(212,210,210,0.25)]"
             />
           </figure>
         </div>

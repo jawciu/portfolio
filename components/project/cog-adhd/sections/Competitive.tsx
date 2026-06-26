@@ -10,7 +10,7 @@ const LOGOS = [
 
 export function Competitive() {
   return (
-    <section data-section="Competitive" className="py-16 md:py-24">
+    <section data-section="Competitive" className="pt-[120px] pb-0">
       <Container>
         <Kicker>Competitive Analysis</Kicker>
         <Title>

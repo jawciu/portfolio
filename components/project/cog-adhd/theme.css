@@ -7,6 +7,7 @@
   --cog-bg: #f5f4ef; /* page cream */
   --cog-bg-alt: #faf9f5; /* slightly lighter band */
   --cog-bg-warm: #f6efe2; /* hero confetti band */
+  --cog-bg-section: #f7f7f4; /* shared section bg from "current therapy process" onward */
   --cog-ink: #1a1a1a; /* near-black text */
   --cog-ink-soft: #4a4a4a;
   --soft-ink: #4a4a4a; /* TEMPLATE: soft body-copy ink, reusable across case studies */
@@ -149,6 +150,19 @@
   font-size: 16px;
   line-height: 1.4;
   color: var(--soft-ink);
+}
+
+/* CASE-STUDY QUOTE — the standard look for verbatim quotes (affinity post-its,
+   speech bubbles, pull quotes): Geist, ITALIC, 15px / line-height 1.5, ink.
+   Reusable across ALL case studies — TEMPLATE token. Self-contained for type:
+   layout utilities (flex / items-center / text-left) are fine to add, but don't
+   stack font / size / style / colour utilities on it. */
+.case-study-quote {
+  font-family: var(--font-body), sans-serif;
+  font-style: italic;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--cog-ink);
 }
 
 /* CASE-STUDY CALLOUT — a left-ruled statement / pull-quote. Reusable across ALL

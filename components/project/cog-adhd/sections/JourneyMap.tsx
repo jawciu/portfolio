@@ -4,7 +4,7 @@ export function JourneyMap() {
   return (
     <section
       data-section="JourneyMap"
-      className="py-16 md:py-24 bg-[#f7f7f4]"
+      className="pt-[120px] pb-0 bg-[var(--cog-bg-section)]"
     >
       <Container>
         <Title>

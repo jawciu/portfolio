@@ -49,7 +49,7 @@ const INSIGHTS = [
 
 export function Findings() {
   return (
-    <section data-section="Findings" className="py-16 md:py-24">
+    <section data-section="Findings" className="pt-[120px] pb-0">
       <Container>
         <Kicker>Key research findings</Kicker>
         <Title>
@@ -83,7 +83,7 @@ export function Findings() {
                     : "bg-[var(--cog-postit-orange)]"
                 }`}
               >
-                <blockquote className="flex flex-1 items-center font-[family-name:var(--font-body)] text-[15px] italic leading-[1.5] text-[var(--cog-ink)]">
+                <blockquote className="case-study-quote flex flex-1 items-center">
                   &ldquo;{q.text}&rdquo;
                 </blockquote>
                 <figcaption className="text-right text-sm text-[var(--cog-ink-soft)]">

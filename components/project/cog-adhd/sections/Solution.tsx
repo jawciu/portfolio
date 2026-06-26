@@ -1,11 +1,11 @@
-import { A, Container, Kicker, Title, Body, Statement } from "../ui";
+import { A, Container, Kicker, Title, Body, CaseStudyCallout } from "../ui";
 
 /** The four question prompts, each paired with its orange icon-on-mint card. */
 const PROMPTS = [
-  { icon: "image-22.svg", text: "How has this week been overall?" },
-  { icon: "image-1.svg", text: "Which days were the hardest for me?" },
-  { icon: "image-2.svg", text: "What made those days so challenging?" },
-  { icon: "image-4.svg", text: "What should I talk to my therapist about?" },
+  { icon: "image-33.svg", text: "How has this week been overall?" },
+  { icon: "image-34.svg", text: "Which days were the hardest for me?" },
+  { icon: "image-35.svg", text: "What made those days so challenging?" },
+  { icon: "image-36.svg", text: "What should I talk to my therapist about?" },
 ];
 
 /** Bold mono feature label ending in a ">" chevron, e.g. "weekly overview graph >". */
@@ -19,10 +19,10 @@ function FeatureLabel({ children }: { children: React.ReactNode }) {
 
 export function Solution() {
   return (
-    <section data-section="Solution" className="py-16 md:py-24">
+    <section data-section="Solution" className="pt-[120px] pb-0 bg-[var(--cog-bg-section)]">
       <Container>
         <Kicker>Solution</Kicker>
-        <Title className="mt-3 md:mt-4">User Journey Shaping Clarity</Title>
+        <Title>User Journey Shaping Clarity</Title>
         <div className="mt-6 md:mt-8 max-w-[560px]">
           <Body>
             I focused my redesign on improving the user&rsquo;s journey when
@@ -35,15 +35,17 @@ export function Solution() {
         {/* Persona chip + 4 question prompts */}
         <div className="mt-14 md:mt-20 flex flex-col gap-10 md:flex-row md:items-start md:gap-12">
           {/* Katherine Bell persona */}
-          <div className="flex shrink-0 flex-col items-center text-center md:w-[160px]">
+          <div className="flex shrink-0 flex-col items-start text-left md:w-[160px]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={A("image-20.svg")}
+              src={A("image-32.svg")}
               alt="Portrait of Katherine Bell, the therapy-client persona"
-              className="w-[92px] h-[92px] select-none"
+              className="w-[140px] h-auto select-none"
             />
-            <p className="mt-3 cog-label">Katherine Bell</p>
-            <p className="mt-1 font-[family-name:var(--font-body)] text-[12px] text-[var(--cog-muted)]">
+            <p className="mt-3 font-[family-name:var(--font-body)] text-base font-bold text-[var(--cog-ink)]">
+              Katherine Bell
+            </p>
+            <p className="mt-1 font-[family-name:var(--font-body)] text-[13px] text-[var(--cog-muted)]">
               Therapy Client
             </p>
           </div>
@@ -57,9 +59,9 @@ export function Solution() {
                   src={A(p.icon)}
                   alt=""
                   aria-hidden="true"
-                  className="h-[58px] w-auto select-none"
+                  className="w-[140px] h-auto select-none"
                 />
-                <p className="mt-2 font-[family-name:var(--font-mono)] text-[12px] italic leading-relaxed text-[var(--cog-muted)]">
+                <p className="case-study-quote mt-3">
                   &ldquo;{p.text}&rdquo;
                 </p>
               </div>
@@ -69,19 +71,19 @@ export function Solution() {
 
         {/* Cluster 1 — mockups left, copy right */}
         <div className="mt-16 md:mt-24 grid grid-cols-1 items-center gap-10 md:grid-cols-2 md:gap-14">
-          {/* Overview bar chart + overlapping Daily card */}
-          <div className="relative mx-auto w-full max-w-[420px]">
+          {/* Overview bar chart + overlapping Daily card — smaller + spread apart */}
+          <div className="relative mx-auto w-full max-w-[460px]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={A("image-38.svg")}
               alt="Weekly overview screen plotting ADHD scores over the last 7 days as a bar chart"
-              className="w-[78%] h-auto select-none"
+              className="w-[60%] h-auto select-none rounded-[20px] border border-[#E3E2DA] shadow-[1px_1px_10px_2px_rgba(212,210,210,0.25)]"
             />
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={A("image-37.svg")}
               alt="Daily check-in detail for Wednesday 11th Dec showing 'Your Highs' with mood and restlessness ratings"
-              className="absolute right-0 top-[6%] w-[60%] h-auto select-none drop-shadow-sm"
+              className="absolute right-0 top-[16%] w-[48%] h-auto select-none rounded-[20px] border border-[#E3E2DA] shadow-[1px_1px_10px_2px_rgba(212,210,210,0.25)]"
             />
           </div>
 
@@ -132,24 +134,24 @@ export function Solution() {
             <img
               src={A("image-40.svg")}
               alt="Journal entries screen with your journal comments, wins, and a 'You practiced self-help!' note"
-              className="w-[64%] h-auto select-none"
+              className="w-[64%] h-auto select-none rounded-[20px] border border-[#E3E2DA] shadow-[1px_1px_10px_2px_rgba(212,210,210,0.25)]"
             />
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={A("image-39.svg")}
               alt="Symptom ranking screen grouping the week into Your Highs, Your Lows, and Your Neutral Zone"
-              className="absolute right-0 top-[14%] w-[58%] h-auto select-none drop-shadow-sm"
+              className="absolute right-[-14%] top-[-24%] w-[58%] h-auto select-none rounded-[20px] border border-[#E3E2DA] shadow-[1px_1px_10px_2px_rgba(212,210,210,0.25)]"
             />
           </div>
         </div>
 
-        {/* Batch-booking statement */}
+        {/* Batch-booking callout */}
         <div className="mt-20 md:mt-28 max-w-[760px]">
-          <Statement>
+          <CaseStudyCallout>
             In parallel, I also addressed session booking drop-off by introducing
             a batch booking feature, allowing users to schedule multiple therapy
             sessions at once.
-          </Statement>
+          </CaseStudyCallout>
         </div>
       </Container>
     </section>

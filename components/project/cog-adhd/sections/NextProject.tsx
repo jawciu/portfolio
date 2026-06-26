@@ -4,8 +4,8 @@ export function NextProject() {
   return (
     <section data-section="NextProject" className="relative">
       {/* ── View next project band ───────────────────────────────────────── */}
-      <div className="relative overflow-hidden bg-[var(--cog-bg)]">
-        <Container className="relative z-10 pt-16 md:pt-24">
+      <div className="relative overflow-hidden bg-[var(--cog-bg-section)]">
+        <Container className="relative z-10 pt-[120px]">
           <p className="case-study-section-heading text-[var(--cog-ink)]">View Next Project</p>
 
           <div className="mt-10 max-w-[640px]">
