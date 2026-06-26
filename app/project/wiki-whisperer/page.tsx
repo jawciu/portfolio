@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 
 export default function WikiWhispererCaseStudy() {
   return (
-    <main className="cog-root min-h-screen w-full">
+    <main className="ww-root min-h-screen w-full">
       {/* PINNED HERO — taller than the viewport, pinned at a measured negative top so
           the device mockups scroll into FULL view before the glass plate rises over it. */}
       <StickyHero>
@@ -42,7 +42,7 @@ export default function WikiWhispererCaseStudy() {
         className="relative z-10 rounded-t-[2.5rem] backdrop-blur-2xl backdrop-saturate-150 shadow-[0_-24px_60px_-20px_rgba(60,29,122,0.18)]"
         style={{
           background:
-            "linear-gradient(180deg, rgba(214,205,228,0.62) 0px, rgba(224,217,238,0.7) 60px, rgba(238,234,248,0.9) 125px, rgba(245,243,251,0.98) 165px, #f7f5fb 185px)",
+            "linear-gradient(180deg, rgba(240,226,252,0.72) 0px, rgba(247,235,255,0.85) 64px, rgba(248,240,255,0.93) 128px, rgba(250,246,254,0.98) 168px, #fefcff 188px)",
         }}
       >
         {/* glass rim glint */}
@@ -55,18 +55,20 @@ export default function WikiWhispererCaseStudy() {
           }}
         />
 
+        {/* Top zone — cool near-white (--cog-bg, the plate's solid colour) */}
         <div data-ww="MyRole"><MyRole /></div>
         <div data-ww="Problem"><Problem /></div>
         <div data-ww="Redesign"><Redesign /></div>
         <div data-ww="UnderTheHood"><UnderTheHood /></div>
         <div data-ww="Measuring"><Measuring /></div>
-        <div data-ww="Wins"><Wins /></div>
-        <div data-ww="Impact"><Impact /></div>
-        <div data-ww="Feedback"><Feedback /></div>
-        <div data-ww="Rollout"><Rollout /></div>
-        <div data-ww="WhatsNext"><WhatsNext /></div>
-        <div data-ww="Takeaways"><Takeaways /></div>
-        <div data-ww="NextProject"><NextProject /></div>
+        {/* Lower zone — warm near-white (--cog-bg-section); near-identical so the seam is invisible */}
+        <div data-ww="Wins" className="bg-[var(--cog-bg-section)]"><Wins /></div>
+        <div data-ww="Impact" className="bg-[var(--cog-bg-section)]"><Impact /></div>
+        <div data-ww="Feedback" className="bg-[var(--cog-bg-section)]"><Feedback /></div>
+        <div data-ww="Rollout" className="bg-[var(--cog-bg-section)]"><Rollout /></div>
+        <div data-ww="WhatsNext" className="bg-[var(--cog-bg-section)]"><WhatsNext /></div>
+        <div data-ww="Takeaways" className="bg-[var(--cog-bg-section)]"><Takeaways /></div>
+        <div data-ww="NextProject" className="bg-[var(--cog-bg-section)]"><NextProject /></div>
       </div>
     </main>
   );

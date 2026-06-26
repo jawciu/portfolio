@@ -4,11 +4,11 @@
    Geist Mono --font-mono). The .case-study-* type rules are the shared TEMPLATE and
    are byte-identical to the cog case study — only the colour tokens below differ. */
 
-.cog-root {
-  --cog-bg: #f7f5fb; /* page — light lilac white */
-  --cog-bg-alt: #fbfaff; /* slightly lighter band */
-  --cog-bg-warm: #fdf3f8; /* soft pink warm band */
-  --cog-bg-section: #f2eefb; /* shared section bg — a touch more lilac */
+.ww-root {
+  --cog-bg: #fefcff; /* page — cool near-white */
+  --cog-bg-alt: #fffafa; /* warm near-white — cards / placeholders */
+  --cog-bg-warm: #fffafa; /* warm near-white band */
+  --cog-bg-section: #fffafa; /* second background tone — warm near-white */
   --cog-ink: #2a1a45; /* deep aubergine — headings/text */
   --cog-ink-soft: #4c4263;
   --soft-ink: #4c4263; /* TEMPLATE: soft body-copy ink, reusable across case studies */

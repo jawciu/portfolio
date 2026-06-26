@@ -43,9 +43,22 @@ top to match this project's brand:
 - The decorative tokens (`--cog-mint`, `--cog-orange`, `--cog-purple`, post-its…) — set
   to this project's palette or drop the ones you don't use.
 
-Keep the scope class as `.cog-root` OR rename it to `.cs-root` and update the page wrapper +
-every `var()` consumer — simplest is to keep `.cog-root` (it's just a scope name, it doesn't
-leak). The light theme is scoped here so it never touches the dark site.
+**Give each study its OWN unique scope class — never reuse `.cog-root`.** This is a real
+trap: the `--cog-*` tokens are scoped to the wrapper class, and Next.js keeps a route's CSS
+loaded after you client-side navigate away. If two case studies both scope to `.cog-root`,
+then once a visitor has loaded both pages, the later stylesheet's `.cog-root { --green … }`
+overrides the other's, and one study's accents/background silently change to the other's
+(e.g. cog's green went magenta after the wiki study shipped). So pick a per-slug class
+(`.ww-root`, `.cog-root`, `.<slug>-root`), set it in `theme.css` (the vars/base block only)
+AND on the page's `<main className="…-root">`. The token NAMES can stay `--cog-*` (just
+defined under the new scope) so the copied `ui.tsx` keeps working. The light theme is still
+scoped so it never touches the dark site.
+
+> Note: the shared template classes (`.case-study-*`, `.cog-container`, `.cs-word`) are
+> currently duplicated verbatim in every project's `theme.css`. They're identical, so they
+> don't conflict (they resolve their `var()`s from whichever `-root` scope wraps them). Only
+> the scoped vars block must be unique. A cleaner future refactor would hoist those shared
+> classes into ONE global stylesheet and leave each `theme.css` with just its scoped tokens.
 
 ### 3. Assets
 Drop everything in `public/projects/<slug>/` with clean lowercase names. Reference via

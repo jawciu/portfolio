@@ -129,6 +129,30 @@ it's a deliberate call.
 
 Newest first. Record *why*, not just *what*.
 
+- **2026-06-26** — **Wiki case study: theme-scope collision FIX + glass/bg tint polish.**
+  **BUG (important gotcha):** the wiki `theme.css` scoped its `--cog-*` tokens to the SAME
+  `.cog-root` class as the cog study. Next.js keeps a route's CSS loaded after client-side
+  nav, so once a visitor had opened both case studies, the later stylesheet's `.cog-root`
+  overrode the other's — **cog's green accents went magenta and its cream bg went white**
+  (Caroline caught it). FIX: the wiki study now scopes to **`.ww-root`** (theme.css vars
+  block + `<main className="ww-root">`); token names stay `--cog-*` so the copied `ui.tsx`
+  is unchanged. Verified via Playwright: cog `.cog-root` = green `#19a072` / cream `#f5f4ef`
+  both fresh AND after client-nav from wiki; wiki `.ww-root` = magenta `#e5007d` / white
+  `#fefcff`; no leak. The shared `.case-study-*`/`.cog-container`/`.cs-word` classes are
+  still duplicated across theme files but are identical (resolve vars from whichever `-root`
+  wraps them), so they don't conflict — only the scoped vars block must be unique. **Updated
+  `build.md`** to forbid reusing `.cog-root` and explain why (the old advice "keep `.cog-root`,
+  it doesn't leak" was WRONG); flagged a future refactor to hoist the shared classes into one
+  global stylesheet. **VISUAL TWEAKS (Caroline):** (1) glass seam frost retinted from a
+  greige "purple haze" to a clean **`#F7EBFF`** lavender; (2) bg tints changed from lilac
+  `#f7f5fb` to **`#FEFCFF` (cool near-white, main) + `#FFFAFA` (warm near-white)** as a
+  whisper-subtle two-zone (top sections plate-default, Wins→NextProject get
+  `bg-[var(--cog-bg-section)]`); glass gradient final stop updated to `#fefcff`. **Copy
+  (Caroline's edits):** hero de-jargoned — title now "Designing an AI Brain for a Support
+  Call Centre", brand shows "E.ON NEXT", summary drops "on live calls", setting-the-stage
+  reworded; MyRole + Problem reworded. **AGREED:** the promo video moves to the HERO (replaces
+  the device-screens placeholder) in the visual pass, with the making-of story kept in
+  Rollout. Committed + pushed.
 - **2026-06-26** — **Built the Wiki Whisperer V2 case study (`/project/wiki-whisperer`)
   using the `case-study` skill — first study produced by the skill.** E.ON Next project:
   an **agentic RAG** ("second AI brain") that helps generalist energy specialists answer
