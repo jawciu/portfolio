@@ -80,14 +80,14 @@ export function Methodology() {
 
       <Container>
         {/* Firebase callout */}
-        <Reveal className="mt-16">
-          <CaseStudyCallout>
+        <div className="mt-16">
+          <CaseStudyCallout stream>
             Early on, I worked with engineers to figure out what was realistic.
             Our backend setup in Firebase couldn&apos;t support complex data
             aggregation without a major restructure, so we went with a
             lightweight weekly check-in history to launch fast and learn quickly.
           </CaseStudyCallout>
-        </Reveal>
+        </div>
       </Container>
 
       {/* exploratory sketches — full-bleed horizontal row of hand-drawn

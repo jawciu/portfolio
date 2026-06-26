@@ -1,5 +1,6 @@
 import { A, Body, CaseStudyCallout, Container, Kicker, Title } from "../ui";
 import { Reveal } from "../Reveal";
+import { Parallax } from "../Parallax";
 
 /** small mono caption tag used on the dashboard concept mockups */
 function DesignIdeaTag() {
@@ -87,13 +88,13 @@ export function Strategy() {
           </Title>
         </Reveal>
 
-        <Reveal className="mt-8 md:mt-10">
-          <CaseStudyCallout>
+        <div className="mt-8 md:mt-10">
+          <CaseStudyCallout stream>
             The issues I uncovered revealed many opportunities for improvement.
             I began to imagine, what could a big picture product vision for Cog
             clinic look like?
           </CaseStudyCallout>
-        </Reveal>
+        </div>
 
         {/* Row 1 — copy left, daily-practice card cluster right */}
         <Reveal
@@ -111,7 +112,9 @@ export function Strategy() {
             </Body>
           </div>
           <div className="flex justify-center lg:justify-end">
-            <CardStack cards={VISION_STACK} w={VISION_STACK_W} h={VISION_STACK_H} />
+            <Parallax speed={40}>
+              <CardStack cards={VISION_STACK} w={VISION_STACK_W} h={VISION_STACK_H} />
+            </Parallax>
           </div>
         </Reveal>
 
@@ -121,7 +124,9 @@ export function Strategy() {
           className="mt-12 flex flex-col gap-12 md:mt-16 lg:grid lg:grid-cols-[auto_1fr] lg:items-center lg:gap-14"
         >
           <div className="flex justify-center lg:justify-start">
-            <CardStack cards={JOURNAL_STACK} w={JOURNAL_STACK_W} h={JOURNAL_STACK_H} />
+            <Parallax speed={-32}>
+              <CardStack cards={JOURNAL_STACK} w={JOURNAL_STACK_W} h={JOURNAL_STACK_H} />
+            </Parallax>
           </div>
           <div className="space-y-6">
             <Body>

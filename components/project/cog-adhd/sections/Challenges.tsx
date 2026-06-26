@@ -1,5 +1,7 @@
 import { A, Container, Kicker, Title, Body } from "../ui";
 import { Reveal } from "../Reveal";
+import { Parallax } from "../Parallax";
+import { StreamingQuote } from "../StreamingQuote";
 
 export function Challenges() {
   return (
@@ -36,22 +38,26 @@ export function Challenges() {
                 aria-hidden="true"
                 className="w-full h-auto select-none"
               />
-              <p className="case-study-quote absolute inset-x-[10%] top-[14%] bottom-[28%] flex items-center text-left">
-                &ldquo;I&rsquo;m finding it hard to make sense of all the symptoms
-                and analyse them day by day to see where my low points are.&rdquo;
-              </p>
+              <StreamingQuote
+                as="p"
+                className="case-study-quote absolute inset-x-[10%] top-[14%] bottom-[28%] flex items-center text-left"
+              >
+                {`“I’m finding it hard to make sense of all the symptoms and analyse them day by day to see where my low points are.”`}
+              </StreamingQuote>
             </div>
           </div>
 
           {/* Cluttered "Your tracker history" phone screen — cropped at the bottom */}
           <div className="order-1 md:order-2 flex justify-center md:justify-end">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={A("image-31.png")}
-              alt="Early version of the Cog tracker history screen showing a dense day-by-day list of colour-coded symptom progress bars"
-              className="w-full max-w-[360px] object-cover object-top"
-              style={{ aspectRatio: "1269 / 1950" }}
-            />
+            <Parallax speed={42} className="w-full max-w-[360px]">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={A("image-31.png")}
+                alt="Early version of the Cog tracker history screen showing a dense day-by-day list of colour-coded symptom progress bars"
+                className="w-full object-cover object-top"
+                style={{ aspectRatio: "1269 / 1950" }}
+              />
+            </Parallax>
           </div>
         </Reveal>
       </Container>

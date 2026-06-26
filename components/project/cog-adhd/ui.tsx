@@ -1,6 +1,7 @@
 // Shared read-only primitives for the Cog ADHD case study sections.
 // Builders IMPORT from here for consistency — do not edit per-section.
 import type { ReactNode } from "react";
+import { StreamingQuote } from "./StreamingQuote";
 
 /** asset path helper — all case-study assets live in /public/projects/cog-adhd */
 export const A = (file: string) => `/projects/cog-adhd/${file}`;
@@ -47,8 +48,19 @@ export function Callout({ children }: { children: ReactNode }) {
 }
 
 /** TEMPLATE left-ruled statement — Geist Mono 32px / 1.2, light ink, green rule.
-    Reusable across case studies (see `.case-study-callout`). */
-export function CaseStudyCallout({ children }: { children: ReactNode }) {
+    Reusable across case studies (see `.case-study-callout`). Pass `stream` to
+    reveal it word-by-word as it scrolls in (only when children is a plain
+    string). */
+export function CaseStudyCallout({
+  children,
+  stream = false,
+}: {
+  children: ReactNode;
+  stream?: boolean;
+}) {
+  if (stream && typeof children === "string") {
+    return <StreamingQuote className="case-study-callout">{children}</StreamingQuote>;
+  }
   return <p className="case-study-callout">{children}</p>;
 }
 
@@ -124,9 +136,9 @@ export function TestimonialBubble({
       />
       {/* text sits in the bubble body (above the tail) — never mirrored */}
       <figcaption className="absolute inset-0 flex flex-col justify-center px-[10%] pt-[2%] pb-[10%]">
-        <p className="text-[15px] italic leading-relaxed text-[var(--cog-ink)]">
-          &ldquo;{quote}&rdquo;
-        </p>
+        <StreamingQuote className="text-[15px] italic leading-relaxed text-[var(--cog-ink)]">
+          {`“${quote}”`}
+        </StreamingQuote>
         <span className="mt-2 text-right text-[14px] text-[var(--cog-muted)]">
           {who}
         </span>

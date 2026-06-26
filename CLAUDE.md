@@ -129,6 +129,93 @@ it's a deliberate call.
 
 Newest first. Record *why*, not just *what*.
 
+- **2026-06-26** — **Created the `case-study` project skill** (`.claude/skills/case-study/`)
+  so new case studies repeat cog's structure/voice/build from raw material. Caroline has 3
+  more case studies to add and wanted a skill encoding her tone of voice, heading structure,
+  paragraph length, storytelling + the reusable build template, so she can hand over raw
+  assets + unorganised copy and get a structured page. **Decisions locked with her (via
+  AskUserQuestion):** (1) **flexible block library**, not one rigid arc — assemble section
+  archetypes to fit each project's *shape* (research UX / product-build / marketing), cog
+  being the canonical example; (2) **own visual identity per study** — each gets its own
+  scoped `theme.css` PALETTE, but reuses the same `.case-study-*` type system, `ui.tsx`
+  primitives, `Reveal/Parallax/StreamingQuote` motion, layout rhythm, and the glass seam
+  (the template is structural; colour is per-project); (3) **voice mined from cog + her
+  earlier written case studies** — she's sending her old Framer case studies next to enrich
+  the voice rules. **Files:** `SKILL.md` (intake→outline→write→scaffold→wire→verify
+  workflow), `structure.md` (the arc + a 14-block library table mapping each block to its
+  arc beat / primitives / copy length, + block-selection-by-project-shape + a raw-material→
+  block intake checklist), `build.md` (exact scaffold: copy the kit, retint theme palette
+  only, assets via `A()`, the `pt-[120px]` section frame + baked-gap rules, `page.tsx`
+  glass-seam assembly, showcase-card wiring, the standalone-Playwright verify trick + cog
+  gotchas), `voice.md` (first-person/plain/outcome-first stance, 1–3-sentence paragraphs,
+  eyebrow=topic/heading=takeaway, the 3 quote registers, storytelling rules, a voice
+  checklist). Built from a full read of cog's `page.tsx`/`ui.tsx`/`theme.css`/motion kit +
+  DESIGN.md. **Hard rules in the skill:** never fabricate findings/quotes/metrics/personas
+  (ask for the real material); don't restyle the shared type tokens per project (palette
+  only); don't force a non-research project into the research arc. **VOICE PASS DONE
+  (same session):** Caroline pasted her real written studies (the **booking-conversions**
+  study + the **marketing-website** study), her About/intro/footer copy, and ~7 LinkedIn
+  posts. Replaced `voice.md`'s ENRICH stub with a rich **"From the originals"** section
+  capturing her **signature micro-devices** — ellipsis verb-lists (`…researched …analysed
+  …focused`), `>`-suffixed lowercase labels, statement stacks ending on a "my goal was…"
+  line, numbered `goal #01`, bare big-number results, `@`-attributed quotes, bold key
+  phrases — plus her opening move (`SETTING THE STAGE` + one-line mission), closing move
+  (`KEY LEARNINGS` + `WHAT'S NEXT` + View-next bridge), eyebrow vocabulary, favoured
+  vocab (British spelling), and the LinkedIn carryover (warm/curious/self-aware) WITH a
+  do-not-copy list (emojis/hashtags/@shoutouts/sparkles out of case-study body). Also added
+  to `structure.md` the **three real arcs** (booking-conversions / marketing-website /
+  research-strategy=cog) as shape references, noting the cross-study frame (`SETTING THE
+  STAGE` + 4-step `MY ROLE` open; `KEY LEARNINGS`/`WHAT'S NEXT`/View-next close). **The 2
+  pasted studies are likely 2 of the 3 new pages to build** (booking conversions +
+  marketing website; 3rd TBD — maybe synapse). **NEXT:** build the 3 new studies from her
+  assets using the skill. Uncommitted (new skill files + CLAUDE.md only).
+- **2026-06-26** — **Fun motion round 2: parallax + word-streaming quotes on the EXISTING
+  sections** (Caroline's redirect — see next bullet). After the all-sections `Reveal`
+  (committed), I first tried an experimental NEW section — `InteractiveWeek`, a playable
+  weekly-check-in chart that demonstrates the product. **Caroline removed it** — she didn't
+  want a new *section*, she wanted the existing content animated "a bit more fun" (parallax
+  / streaming). The `InteractiveWeek.tsx` file + its `page.tsx` mount were deleted (page.tsx
+  is back to its committed state; nothing of it remains). *(If ever wanted again: it was a
+  cream InsightCard-style card, 7 GSAP-grown day-bars of Katherine's invented focus data,
+  hover/tap/arrow-key readout with a count-up score, pre-selecting the hardest day; fully
+  a11y + reduced-motion safe.)* **Pivoted to two reusable primitives:**
+  **(1) `Parallax.tsx`** — wraps an image/cluster, scroll-scrubbed vertical drift
+  (`fromTo y:+speed→-speed`, `ease:none`, `scrub:true`, `start top bottom`/`end bottom
+  top`), reduced-motion gated via `gsap.matchMedia`. Applied to: Challenges phone
+  (`speed 42`), Strategy's two CardStack clusters (`40` / `-32`), and Results' two
+  testimonial COLUMNS (`22` / `-18`). RULE: never put Parallax + Reveal on the SAME element
+  (both write `y`) — Parallax goes on the inner img/cluster, Reveal on the outer block.
+  **Results overlap fix (Caroline):** per-bubble Parallax made the zigzag bubbles drift
+  INTO each other; fixed by wrapping each COLUMN in ONE Parallax (rigid unit → internal gaps
+  never change; the two columns are separate x-bands so they can't cross). **(2)
+  `StreamingQuote.tsx`** — types a quote CHARACTER-by-character as it scrolls in (each char
+  fades opacity ONLY, staggered by inline per-char `transition-delay` ~`0.01s`/char ≈ 100
+  cps) — Caroline wanted "less blur, more like the homepage typing." NO blur, NO transform
+  (chars stay inline → normal wrapping, no reflow). *(was word-by-word opacity+translateY+
+  blur(4px); she found it too floaty/blurry.)* DOM-driven, NO React state: chars render
+  visible (SSR/no-JS/reduced all show full text), then post-mount the effect sets
+  `data-stream="armed"` (instant hide, off-screen so no flash) and an IntersectionObserver
+  flips it to `"play"`. CSS lives in `theme.css` (`.cs-char` + `[data-stream="armed"|
+  "play"]`, fade `0.12s`). Renders `<p>` or `<blockquote>` (concrete branches, not
+  polymorphic — ElementType blew up the TS union / tripped the refs lint). sr-only full
+  text + aria-hidden animated copy. **Reduced-motion GOTCHA (fixed):** React's hydration
+  commit runs the effect once with the server snapshot `reduced=false` (arming) BEFORE
+  re-rendering to the real `true`, so chars got stuck hidden — fixed by having the `reduced`
+  branch DELETE `data-stream` (un-arm) rather than early-return. **IO GOTCHA (fixed):** a
+  negative bottom `rootMargin` left the 5 bottom-of-page quotes (Solution callout + 4
+  Results testimonials) stuck hidden — they can't scroll above a bottom inset — so switched
+  to an `intersectionRatio >= 0.25` threshold trigger. Applied streaming to **14 quotes**:
+  the 6 `CaseStudyCallout` pull-quotes (new `stream` prop on the ui.tsx primitive; their
+  wrapping `<Reveal>` → plain `<div>` so the text types instead of a block-fade), the 4
+  Results `TestimonialBubble`s (streamed inside the ui.tsx primitive), the 3 Findings
+  post-its (`as="blockquote"`), and the 1 Challenges speech bubble. tsc + eslint clean.
+  Verified via Playwright: streaming CSS served (`.cs-char`, `.cs-word` gone), all 14 quotes
+  / 1966 chars reach `data-stream="play"` + opacity 1 with 0 stuck (normal), 0 hidden / 0 armed
+  (reduced-motion), 0 console errors; screenshots of Challenges/Findings/Results/Competitive
+  confirm no reflow in the centred bubbles + parallax float reads well. **UNCOMMITTED** —
+  the "try something fun" round for Caroline to react to (intensity dials: Parallax `speed`,
+  StreamingQuote `step`, the `.cs-word` transition duration in theme.css). The all-sections
+  `Reveal` before it is already committed + pushed.
 - **2026-06-26** — **Cog case-study scroll motion: `Reveal` primitive + applied to the
   first 4 sections (a "play" / direction-finding slice).** Caroline asked to experiment
   with scroll/loading animations. Built **`components/project/cog-adhd/Reveal.tsx`** — a

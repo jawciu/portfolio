@@ -201,3 +201,16 @@
   line-height: 1.55;
   color: var(--cog-ink);
 }
+
+/* StreamingQuote — character-by-character typing reveal driven by the
+   StreamingQuote component (it sets data-stream on the quote element). Chars
+   occupy their final layout (no reflow, no blur); armed = hidden instantly,
+   play = each char fades in, staggered by an inline per-char transition-delay.
+   Default (no data-stream / reduced motion) leaves the text fully visible. */
+[data-stream="armed"] .cs-char {
+  opacity: 0;
+}
+[data-stream="play"] .cs-char {
+  opacity: 1;
+  transition: opacity 0.12s ease;
+}

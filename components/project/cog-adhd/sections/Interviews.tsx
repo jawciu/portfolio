@@ -154,12 +154,12 @@ export function Interviews() {
         </Reveal>
 
         {/* goal */}
-        <Reveal className="mt-16 md:mt-20">
-          <CaseStudyCallout>
+        <div className="mt-16 md:mt-20">
+          <CaseStudyCallout stream>
             My goal was to gain a deeper understanding of the ADHD therapy
             landscape so I could address our users&apos; needs better.
           </CaseStudyCallout>
-        </Reveal>
+        </div>
 
         {/* thought-bubble cluster — two tidy rows, no overlap:
             row 1 = purple · green, row 2 = green · purple · green. */}

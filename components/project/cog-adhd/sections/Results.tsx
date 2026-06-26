@@ -1,5 +1,6 @@
 import { A, Container, Kicker, Title, Body, TestimonialBubble } from "../ui";
 import { Reveal } from "../Reveal";
+import { Parallax } from "../Parallax";
 
 type Bubble = {
   asset: string;
@@ -81,17 +82,20 @@ export function Results() {
               `pt-32` on the left column = how far it drops to alternate with the
               right column; `gap-8` = vertical space between the two stacked
               bubbles in each column. */}
+          {/* the two columns drift as RIGID units at gentle, different rates so
+              they parallax for depth WITHOUT the bubbles ever converging (each
+              column keeps its internal gaps); the quotes themselves type in. */}
           <div className="flex justify-center gap-2 sm:gap-0">
-            <Reveal stagger={0.15} className="flex flex-col items-center gap-8 pt-50">
+            <Parallax speed={22} className="flex flex-col items-center gap-8 pt-50">
               {THERAPIST.map((bubble) => (
                 <TestimonialBubble key={bubble.asset} {...bubble} />
               ))}
-            </Reveal>
-            <Reveal stagger={0.15} className="flex flex-col items-center gap-8">
+            </Parallax>
+            <Parallax speed={-18} className="flex flex-col items-center gap-8">
               {CUSTOMER.map((bubble) => (
                 <TestimonialBubble key={bubble.asset} {...bubble} />
               ))}
-            </Reveal>
+            </Parallax>
           </div>
 
           {/* result clip — phone screen recording */}

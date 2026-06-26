@@ -1,5 +1,6 @@
 import { A, Container, Kicker, Title, InsightCard } from "../ui";
 import { Reveal } from "../Reveal";
+import { StreamingQuote } from "../StreamingQuote";
 
 const QUOTES = [
   {
@@ -89,9 +90,12 @@ export function Findings() {
                     : "bg-[var(--cog-postit-orange)]"
                 }`}
               >
-                <blockquote className="case-study-quote flex flex-1 items-center">
-                  &ldquo;{q.text}&rdquo;
-                </blockquote>
+                <StreamingQuote
+                  as="blockquote"
+                  className="case-study-quote flex flex-1 items-center"
+                >
+                  {`“${q.text}”`}
+                </StreamingQuote>
                 <figcaption className="text-right text-sm text-[var(--cog-ink-soft)]">
                   {q.by}
                 </figcaption>

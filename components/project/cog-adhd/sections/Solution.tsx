@@ -158,13 +158,13 @@ export function Solution() {
         </Reveal>
 
         {/* Batch-booking callout */}
-        <Reveal className="mt-20 md:mt-28 max-w-[760px]">
-          <CaseStudyCallout>
+        <div className="mt-20 md:mt-28 max-w-[760px]">
+          <CaseStudyCallout stream>
             In parallel, I also addressed session booking drop-off by introducing
             a batch booking feature, allowing users to schedule multiple therapy
             sessions at once.
           </CaseStudyCallout>
-        </Reveal>
+        </div>
       </Container>
     </section>
   );

@@ -99,12 +99,12 @@ export function Competitive() {
         </Reveal>
 
         {/* Gap callout */}
-        <Reveal className="mt-16">
-          <CaseStudyCallout>
+        <div className="mt-16">
+          <CaseStudyCallout stream>
             This gap in therapy-support tools indicated a unique opportunity to
             develop features that actively support the therapeutic journey.
           </CaseStudyCallout>
-        </Reveal>
+        </div>
       </Container>
     </section>
   );
