@@ -31,6 +31,14 @@ colors:
   orb-3: "#ffcf52"
   orb-4: "#3fc4ad"
   orb-5: "#bdeed9"
+  # Case-study template colours — the light sub-theme (scoped to .cog-root /
+  # components/project/<slug>/theme.css). Reusable across every case study.
+  cs-bg: "#f5f4ef"            # page cream (--cog-bg)
+  cs-bg-section: "#f7f7f4"    # shared section bg from "current therapy process" onward (--cog-bg-section)
+  cs-green: "#19a072"         # TEMPLATE green — dividers / rules / callout left-rule (--green)
+  cs-dark-green: "#006b4b"    # TEMPLATE dark green — emphasised labels e.g. persona name (--dark-green)
+  cs-soft-ink: "#4a4a4a"      # soft body-copy ink (--soft-ink)
+  cs-card-border: "#f1f0ea"   # InsightCard hairline border
 typography:
   # Iosevka Charon — the signature voice. Headlines, project titles, hero intro.
   hero-display:
@@ -98,6 +106,12 @@ typography:
     lineHeight: 1.2
     color: var(--soft-ink)   # #4a4a4a — light ink
     borderLeft: 2px solid #19a072   # green rule
+  case-study-quote:            # italic quotes / question prompts (.case-study-quote)
+    fontFamily: Geist
+    fontStyle: italic
+    fontSize: 15px
+    lineHeight: 1.5
+    color: var(--cog-ink)
   # Geist — body copy. The only sans on the page; calm against the noise.
   body-lg:
     fontFamily: Geist
@@ -135,6 +149,13 @@ spacing:
   content-max: 80rem    # max-w-7xl — main content column
   content-max-wide: 88rem  # 2xl:max-w-[88rem]
   label-inset: 0.5rem   # pl-2 — directory section labels' nudge inside the column
+  # Case-study section rhythm — TOP-ONLY padding so each heading gets exactly this
+  # much of its OWN background above it (every section: pt-[120px] pb-0). The gap
+  # before EVERY section heading is therefore a uniform 120px. Two exceptions below.
+  cs-section-gap: 120px
+  cs-section-gap-tight: 88px     # ONLY the MyRole heading (glass-plate top → heading); see exceptions
+  cs-hero-screens-below: 120px   # gap below the hero device mockups (Hero Container pb)
+  cs-bg-change-gap: 120px        # added on BOTH sides at the cream→section bg change (BookingDropoff pb + JourneyMap pt = 240px total)
 components:
   glass-sheet:            # the About surface — frosts the hero through it
     backgroundColor: rgba(7, 7, 9, 0.5)
@@ -166,6 +187,25 @@ components:
     size: 8px
   separator:              # the magenta "/" between directory-style words
     textColor: "{colors.accent-magenta}"
+  insight-card:           # reusable case-study card (Findings insights, Methodology problems)
+    component: InsightCard        # components/project/<slug>/ui.tsx
+    size: "420×320px default"     # optional width/height props (e.g. 380×260 for Methodology) — inline style, max-w-full
+    rounded: 1rem                 # rounded-2xl
+    backgroundColor: "#fafafa"
+    borderColor: "{colors.cs-card-border}"   # #f1f0ea hairline
+    padding: 2.25rem              # px-9 py-8
+    label: "{typography.case-study-hero-label}"  # mono ALL-CAPS 15px bold (e.g. INSIGHT #01 / PROBLEM #01)
+    title: "{typography.case-study-label}"       # Geist Mono 16px/800 lowercase
+    divider: "1px solid {colors.cs-green}"       # green #19a072 rule under the title
+    body: "{typography.case-study-body-md}"
+  testimonial-bubble:     # reusable case-study quote cloud (Results testimonials)
+    component: TestimonialBubble  # components/project/<slug>/ui.tsx
+    art: "cloud PNG asset, tail bottom-left or -right; width prop in px (aspect ratio preserved)"
+    flip: "bool — mirrors the art (-scale-x-100) so the tail sits on the opposite side; text is never mirrored"
+    quote: { fontFamily: Geist, fontSize: 15px, style: italic, color: "{colors.cs-ink}" }
+    attribution: { fontFamily: Geist, fontSize: 14px, align: right, color: "{colors.cs-muted}" }
+    textBox: "absolute inset-0, justify-center, px-[10%] pt-[2%] pb-[10%] — keeps copy in the body, above the tail"
+    layout: "scatter several into a staggered zigzag (two flex columns, one offset down with pt-*); center the paired visual with items-center on the row"
   case-study-glass-seam:  # ties a case study to the homepage — content plate RISES over a pinned hero
     heroPin: "sticky, top = -(heroHeight - viewportHeight)"  # measured in StickyHero.tsx; the hero (taller than the viewport) scrolls up until the device mockups are FULLY visible, THEN pins, so the plate rises over it only after the assets are seen
     overlap: 0                    # plate sits just below the hero (no -mt) so it enters AFTER the mockups are fully shown, then rises on scroll
@@ -174,6 +214,7 @@ components:
     shadow: "0 -24px 60px -20px rgba(40,34,20,0.18)"  # soft shadow UNDER the plate's top edge — floating-glass depth
     background: "linear-gradient(180deg, rgba(206,201,186,0.62) 0px, rgba(222,217,204,0.7) 60px, rgba(238,235,227,0.9) 125px, rgba(245,244,239,0.98) 165px, #f5f4ef 185px)"  # frosted top tinted DARKER than cream (visible glass edge), FAST fade to solid cream (~185px) so copy never reads over frost
     rimGlint: "linear-gradient(90deg, transparent, rgba(255,255,255,0.85) 22%, rgba(255,255,255,0.35) 50%, rgba(255,255,255,0.7) 78%, transparent)"  # soft bright hairline along the top edge
+    spacingException: "120px below the hero device screens (Hero Container pb); 88px from the glass-plate top to the MyRole heading (MyRole pt-[88px], the one tighter section)"
   footer:                 # global site footer — dark plate closing every route (home + case studies)
     backgroundColor: "{colors.bg}"     # always dark, even on light case studies (mounted outside .cog-root)
     borderTop: rgba(245, 245, 245, 0.1)
@@ -292,10 +333,36 @@ a colour utility, keeping the class self-contained. Left-ruled **statements / pu
 `case-study-callout` (component `CaseStudyCallout`) — **Geist Mono, 28px / line-height 1.2**
 (22px ≤640px), light `--soft-ink`, with a **2px green rule** (`#19a072`) on the left. Like the
 other type tokens it's self-contained (apply alone). The older `cog-callout`/`cog-statement`
-stay for the dark near-black mono quotes used elsewhere. Genuinely-small captions (thought-bubble text, legends) use explicit `text-[13px]`
+stay for the dark near-black mono quotes used elsewhere. Italic **quotes and question
+prompts** use `case-study-quote` — **Geist italic, 15px / line-height 1.5**, `--cog-ink`
+(the affinity-board post-its and the Solution question prompts share it). Genuinely-small captions (thought-bubble text, legends) use explicit `text-[13px]`
 /`text-sm` utilities directly (Geist is inherited from `.cog-root`). These live in each case
 study's `theme.css` as `.case-study-*` classes so they're reused verbatim across
 every case-study page.
+
+**InsightCard** (`components/project/<slug>/ui.tsx`, component `<InsightCard label title>…children>`)
+is the reusable insight/problem card — a light `#fafafa` card, `rounded-2xl`, `cs-card-border`
+(`#f1f0ea`) hairline, `px-9 py-8`, **420×320 by default** with optional `width`/`height`
+props (e.g. **380×260** in Methodology; applied via inline `style` since Tailwind can't
+build arbitrary px from runtime values, with `max-w-full` kept as a class). Inside: a mono
+**ALL-CAPS** label (Geist Mono 15px bold — `INSIGHT #01` / `PROBLEM #01`), a `case-study-label`
+title, a **green `cs-green` (`#19a072`) divider**, then `case-study-body-md` copy. Lay cards out
+in a centred `flex flex-wrap justify-center gap-9`; a row of three 380px cards needs a wider band
+than the 1080 column (`max-w-[1280px] px-6`) to stay single-row.
+
+**Persona name** (journey-map / solution persona, e.g. "Katherine Bell") is Geist **bold** in
+`cs-dark-green` (`#006b4b`); its role line and quote sit beneath, the quote `italic`.
+
+**TestimonialBubble** (`components/project/<slug>/ui.tsx`, `<TestimonialBubble asset quote who
+width flip />`) is the reusable quote cloud — a cloud PNG with the **italic** quote (Geist 15px,
+`cs-ink`) and a **muted, right-aligned** attribution (Geist 14px, `cs-muted`) centred in the body
+**above the tail** (`px-[10%] pt-[2%] pb-[10%]`). `width` is explicit px (aspect ratio preserved);
+`flip` mirrors the art (`-scale-x-100`) so the tail points the other way (text stays unmirrored).
+Scatter several into a **staggered zigzag** — two flex columns, one dropped with `pt-*` — and
+**vertically centre a paired visual** (e.g. the Results phone clip) against the cluster with
+`items-center` on the grid row (the cluster's bbox centre = the visual's centre). The bubble assets
+ship with **mixed tail sides**, so check each PNG before deciding `flip`. A reused screen-recording
+clip is a plain `<video autoPlay loop muted playsInline>` (no device frame needed if it's baked in).
 
 ## Layout & Spacing
 
@@ -304,6 +371,13 @@ A single centred content column over a full-bleed dark canvas.
 - **Rhythm:** 8px base. Sections breathe with large vertical padding
   (`~11rem`); the hero is full-viewport with the live canvas fixed behind.
 - **Column:** `max-w-7xl` (80rem), widening to `88rem` on very large screens.
+- **Full-bleed image row (crop, don't shrink):** for a wide artwork row that should
+  fill the screen on big displays (e.g. Methodology's exploratory sketches), use a
+  centred `flex` capped at `max-w-[1800px]` with the children at a **fixed px width +
+  `flex-none`** above a breakpoint and `overflow-hidden` on the row — so as the
+  viewport narrows the frames hold size and the outer ones get **cropped by the edges**
+  rather than scaling down. Below the breakpoint (`min-[1200px]:` off) switch the
+  children to `flex-1` so they start shrinking to stay usable.
 - **Section labels share the column:** the directory-style section labels
   (`/about`, `/toolkit`, `/projects`) all sit in the *same* content-column
   geometry — a full-bleed `px-8 md:px-12` box → centred `max-w-7xl` (→ `88rem` at
@@ -318,6 +392,21 @@ A single centred content column over a full-bleed dark canvas.
   hairlines at fractional DPR.
 - **Showcase:** the project bento is a flex row of glass cards with a small
   `gap-3` so cards read as separate panels, one expanding on hover/focus.
+
+**Case-study section rhythm.** Every case-study section gets a uniform **120px
+before its heading**, implemented as **top-only padding** (each `<section>` is
+`pt-[120px] pb-0`; NextProject's heading Container is `pt-[120px]`). Top-only (not a
+symmetric `py-[44px]` split) is deliberate: each heading gets exactly 120px of its
+*own* background above it — the gap is precise and independent of the neighbour — and
+the `pb-0` boundaries are invisible because adjacent section backgrounds are
+near-identical (cream `cs-bg` `#f5f4ef` vs `cs-bg-section` `#f7f7f4`). The dial is the
+single `pt-[120px]` per section file (13 spots). **Two intentional exceptions:**
+(1) **MyRole / glass seam** — the hero device mockups get **120px below** them (Hero
+Container `pb-[120px]`), and MyRole alone uses **`pt-[88px]`** (glass-plate top →
+heading) so its heading clears the frosted glass top without feeling far; (2) **the
+cream→section background change** (BookingDropoff → JourneyMap) gets **120px on BOTH
+sides** (BookingDropoff `pb-[120px]` + JourneyMap `pt-[120px]` = **240px** total) for
+extra breathing room where the colour shifts. Every other boundary stays at 120px.
 
 ## Elevation & Depth
 

@@ -129,6 +129,78 @@ it's a deliberate call.
 
 Newest first. Record *why*, not just *what*.
 
+- **2026-06-26** — **Uniform 120px gap before every case-study section heading.** Caroline
+  wanted the space between sections (after one, before the next heading) to be consistent;
+  tried **88px**, then bumped to **120px** (88 read too tight). All 12 content sections shared the SAME `py-16 md:py-24` (so the gap was
+  already uniform, but ~192px = 96 bottom + 96 top desktop). Switched every section from
+  symmetric `py-16 md:py-24` → **top-only `pt-[88px] pb-0`** (+ NextProject's heading
+  Container `pt-16 md:pt-24` → `pt-[88px]`). RATIONALE for top-only (not symmetric
+  `py-[44px]`): (a) each heading gets exactly 88px of its OWN background above it → the
+  metric she cares about is precise and independent of the neighbour; (b) the first
+  section (MyRole) keeps ~88px below the glass plate (was 96), so its heading still clears
+  the frosted top — `py-[44px]` would've dropped it to 44 into the busy frost; (c) the
+  `pb-0` boundaries are invisible because adjacent section bgs are near-identical (cream
+  `#f5f4ef` vs section `#f7f7f4`). Verified via Playwright: gap before EVERY heading
+  Interviews→NextProject = **120px** exactly (MyRole's ~660 is measured off the tall
+  Hero/glass-reveal — the special first-section-under-glass case, not a section gap);
+  boundary with a full-bleed bottom (Methodology sketches → Challenges) reads clean, no
+  cramping. tsc + eslint clean. **Uncommitted** pending Caroline. *Dial: the single
+  `pt-[120px]` per section is the knob — change once per file (13 spots) to retune.*
+  **EXCEPTION (the MyRole / glass-seam region, Caroline 2026-06-26):** the 120 felt tight
+  there, so it's split — **120px BELOW the hero device screens** (Hero `Container`
+  `pb-10 md:pb-12` → `pb-[120px]`) and **88px from the glass-plate top to the MyRole
+  heading** (MyRole `pt-[120px]` → `pt-[88px]`). So MyRole alone uses `pt-[88px]`; every
+  other section stays `pt-[120px]`. Verified: belowScreens=120, glassTop→MyRoleHeading=88.
+  **EXCEPTION 2 (the cream→section bg change, Caroline 2026-06-26):** at the
+  **BookingDropoff → JourneyMap** boundary the page background changes (cream `--cog-bg`
+  → `--cog-bg-section`), so she wanted MORE space there — 120px on BOTH sides. Added
+  **`pb-[120px]` to BookingDropoff** (was `pb-0`); JourneyMap keeps its `pt-[120px]`. So
+  the content-to-heading gap at that one boundary = **240px** (120 cream + 120 section,
+  colour change at the midpoint). Verified contentToHeading=240. All OTHER boundaries
+  remain 120px (top-only).
+- **2026-06-26** — **Solution section: persona alignment, product-cluster spacing +
+  batch-booking callout.** Follow-up tweaks: **(1)** persona "Katherine Bell" + "Therapy
+  Client" → **left-aligned** (`items-start text-left`, was centred); **(2)** "Katherine
+  Bell" → **Geist bold** `text-base` (was `cog-label` mono); **(3) Cluster 1** (Overview
+  `image-38` + Daily `image-37`) made smaller + spread apart so both read clearly —
+  container `max-w-[420px]→[460px]`, image-38 `78%→60%`, image-37 `60%→48%` (overlap
+  dropped from ~18% to ~8%, Overview chart now fully visible); **(4) Cluster 2** right
+  card (`image-39`) moved up + right to `right-[-8%] top-[-16%]` (was `right-0 top-[14%]`
+  — sits above and past the journal card's top-right, per her ref; overflows upward into
+  the inter-cluster gap, no collision);
+  **(5)** batch-booking statement → **`<CaseStudyCallout>`** (green left rule; was
+  `<Statement>`/`cog-statement`). tsc + eslint clean; verified via Playwright against her
+  2 cluster screenshots. **Uncommitted** pending Caroline.
+- **2026-06-26** — **Solution section: persona photo, question prompts + product-image
+  treatment.** Caroline's asks (match her Framer screenshot): **(1)** Katherine persona
+  photo → **`image-32.svg`** (circular portrait + orange ring + arc lines, no tan square;
+  was `image-20.svg`), sized `w-[140px] h-auto` (dropped the forced `92×92` square).
+  **(2)** the 4 question-prompt icons → **`image-33/34/35/36.svg`** (green-cloud + orange
+  question-mark / magnifying-glass / lightbulb / sun composites, 145×91; were
+  `image-22/1/2/4`), sized `w-[140px] h-auto`. **(3)** the 4 question texts now use the
+  **`.case-study-quote`** class (italic Geist 15px ink — "same styling as quotes"; was
+  bespoke `font-mono 12px italic muted`). **(4)** the 4 product mockup images
+  (`image-38/37/40/39`) gained the shared app-image treatment
+  **`rounded-[20px] border border-[#E3E2DA] shadow-[1px_1px_10px_2px_rgba(212,210,210,0.25)]`**
+  — copied verbatim from `Strategy.tsx`'s app screenshots above (replaced the old
+  `drop-shadow-sm` on the two overlapping cards). Assets `image-33..36.svg` were already
+  in `public/projects/cog-adhd/`, byte-identical to her `Image(33..36).svg` sources. tsc
+  + eslint clean; verified via Playwright against her screenshot — close match.
+  **Uncommitted** pending Caroline.
+- **2026-06-25** — **Methodology: problem cards → `InsightCard`, Firebase note →
+  `CaseStudyCallout`.** Reused the shared **`<InsightCard>`** (from `ui.tsx`) for the 3
+  "PROBLEM #01–03" cards (label `Problem #${n}`, `.case-study-label` title, green divider,
+  body) at a slightly smaller **380×260** (InsightCard gained optional `width`/`height`
+  props — default 420×320, applied via inline `style` since Tailwind can't generate
+  arbitrary px from runtime values; `max-w-full` kept as a class) — was bespoke
+  `--cog-bg-alt` panels. Swapped the long Firebase paragraph
+  ("Early on, I worked with engineers…") from `<Callout>` (`.cog-callout`, dark mono) →
+  **`<CaseStudyCallout>`** (`.case-study-callout` — Geist Mono 28px, green `#19a072` left
+  rule), wrapped in `mt-16`. **LAYOUT NOTE:** InsightCard is fixed **420px**, so 3 cards
+  don't fit the ~1080 content column → they **wrap 2-on-top + 1-below** (centred
+  `flex flex-wrap justify-center gap-9`, like Findings). FLAGGED to Caroline as a choice:
+  keep 2+1, or widen the band for a true 3-across (cards would extend past the text
+  column). tsc + eslint clean; verified via Playwright. **Uncommitted** pending Caroline.
 - **2026-06-25** — **JourneyMap (CURRENT THERAPY PROCESS) restyled + widened to match
   her design.** Caroline's asks: **(1) section bg → `#F7F7F4`** (was `--cog-bg` cream
   `#f5f4ef` — slightly lighter; inline `bg-[#f7f7f4]`). **(2) Katherine persona image →
@@ -1060,6 +1132,51 @@ Newest first. Record *why*, not just *what*.
 > Latest handoff lives at the top. At the end of a session, append a new entry with: what changed, current
 > state (working / broken / in-progress), and explicit next steps for the next agent. Capture stated intent
 > ("tomorrow we do X") and long absences here too.
+
+### 2026-06-26 — Cog Results section rebuilt + Methodology/Interviews tweaks + template extraction; committed the whole shared tree (this agent)
+- **Done this session (branch `project-showcase-experiment`):**
+  1. **Results section** (`sections/Results.tsx`) — major rework to match Caroline's
+     Framer design: (a) intro copy split into **2 paragraphs at `max-w-[600px]`**;
+     (b) the 4 mint **testimonial speech bubbles** rebuilt — explicit per-bubble sizes
+     (Caroline's final: 280/300/320/340px), a **staggered zigzag** (two flex columns,
+     left column dropped with `pt-50`), quote **italic** ink + **muted right-aligned**
+     attribution centred in the body above the tail; (c) the phone on the right is now
+     the **`Video.mp4`** screen-recording (copied to `public/projects/cog-adhd/
+     results-phone.mp4`, plays via `<video autoPlay loop muted playsInline>`); the
+     clip already has a device frame baked in. Phone + bubble cluster are **vertically
+     centred** via `items-center` on the grid (verified: video centre 858 = bubble
+     bbox centre 858, symmetric ±68px).
+     - **GOTCHA — bubble assets have MIXED tail sides:** `stack-5` tail bottom-RIGHT,
+       `stack-6/7/8` tail bottom-LEFT. So `flip` (which mirrors the art via
+       `-scale-x-100`) is set per-bubble by eye — top-right and bottom-right are
+       flipped. Always open each PNG before deciding `flip`.
+  2. **Methodology sketches** (`sections/Methodology.tsx`) — the exploratory-sketch row
+     is now **full-bleed + crops, doesn't shrink**: centred `flex max-w-[1800px]
+     overflow-hidden`, frames fixed `w-[568px] flex-none` above 1200px (outer ones
+     cropped by the screen edges as it narrows), `flex-1` below 1200px so they start
+     scaling. Touch the screen edges at ~1800px.
+  3. **Interviews persona cards** (`sections/Interviews.tsx`) — border swapped from
+     `--cog-line` to the InsightCard hairline **`#f1f0ea`** (template consistency).
+  4. **TEMPLATE EXTRACTION** — pulled the bubble into a reusable **`TestimonialBubble`**
+     primitive in `components/project/cog-adhd/ui.tsx` (`asset/quote/who/width/flip`
+     props; `A()` applied internally). Results now imports it. Documented it + the
+     full-bleed-crop image-row pattern + the items-center centring tip in **DESIGN.md**
+     (front-matter `testimonial-bubble` component + Components/Layout prose).
+- **COMMITTED + PUSHED the entire shared working tree** (Caroline explicitly asked,
+  grouped into a few commits) — this swept in the OTHER agents' in-flight work too:
+  the section vertical-rhythm change (`pt-[120px] pb-0 bg-[var(--cog-bg-section)]`
+  across most sections), Strategy/Solution/Challenges/BookingDropoff/Takeaways/MyRole/
+  Hero/JourneyMap/Findings/Competitive/NextProject restyles, `theme.css` tokens, the
+  ProjectCard/VariantBentoSoft (synapse) tweaks, and the synapse asset. See the commits
+  below. tsc + eslint clean before pushing.
+- **State: WORKING, committed + pushed.** Results verified via the standalone-Playwright
+  trick at 1440 (0 console errors). Nothing in progress, nothing broken.
+- **Open intent — TOMORROW:** work on the **"View Next Project" section**
+  (`components/project/cog-adhd/sections/NextProject.tsx`) BEFORE starting any new case
+  studies. (It currently holds the "View Next Project" band; the global footer already
+  lives in `app/layout.tsx`.)
+- **Note for next agent:** `results-phone.mp4` is a **2.2 MB binary now tracked in git**
+  under `public/` — Caroline was told; leave it unless she asks to git-ignore it.
 
 ### 2026-06-25 — Cog case-study: hero/template polish + homepage-style GLASS REVEAL (this agent)
 - **Context:** worked the `/project/cog-adhd` case study all session, ALONGSIDE a second
