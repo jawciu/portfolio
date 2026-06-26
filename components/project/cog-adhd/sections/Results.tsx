@@ -1,98 +1,104 @@
-import { A, Container, Kicker, Title, Body } from "../ui";
+import { A, Container, Kicker, Title, Body, TestimonialBubble } from "../ui";
 
 type Bubble = {
   asset: string;
   quote: string;
   who: string;
-  className: string;
+  /** explicit bubble width in px (aspect ratio is preserved) */
+  width: number;
+  /** mirror the art horizontally so the tail sits on the LEFT */
+  flip?: boolean;
 };
 
-// Four mint speech bubbles, scattered like the PDF.
-const BUBBLES: Bubble[] = [
-  {
-    asset: "stack-5.png",
-    quote:
-      "In the past, I struggled to see the point of checking in, but using it to look back at my week is great.",
-    who: "@Cog clinic customer",
-    className: "md:ml-24 md:-mb-2",
-  },
+// Therapist quotes (left column) and customer quotes (right column) — staggered
+// into a loose zigzag scatter, matching the PDF.
+const THERAPIST: Bubble[] = [
   {
     asset: "stack-6.png",
     quote: "It's a great starting point, and I'm excited to use the it with my clients.",
     who: "@Cog clinic therapist",
-    className: "md:ml-0 md:mt-6",
-  },
-  {
-    asset: "stack-7.png",
-    quote:
-      "This motivates me to check in more often, as I can use the entries as a conversation starter in therapy.",
-    who: "@Cog clinic customer",
-    className: "md:ml-28 md:mt-2",
+    width: 280, // top-left
   },
   {
     asset: "stack-8.png",
     quote:
       "Being able to spot key highs and lows of the week helps focus therapy sessions on the most relevant issues.",
     who: "@Cog clinic therapist",
-    className: "md:ml-4 md:mt-4",
+    width: 340, // bottom-left
   },
 ];
 
-function SpeechBubble({ bubble }: { bubble: Bubble }) {
-  return (
-    <figure className={`relative w-full max-w-[16rem] ${bubble.className}`}>
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={A(bubble.asset)}
-        alt=""
-        aria-hidden="true"
-        className="block w-full h-auto select-none pointer-events-none"
-      />
-      <figcaption className="absolute inset-0 flex flex-col justify-center px-6 pb-5">
-        <p className="cog-body text-[13px] leading-snug italic text-[var(--cog-ink)]">
-          &ldquo;{bubble.quote}&rdquo;
-        </p>
-        <span className="mt-2 cog-label text-[11px] text-[var(--cog-green)]">
-          {bubble.who}
-        </span>
-      </figcaption>
-    </figure>
-  );
-}
+const CUSTOMER: Bubble[] = [
+  {
+    asset: "stack-5.png",
+    quote:
+      "In the past, I struggled to see the point of checking in, but using it to look back at my week is great.",
+    who: "@Cog clinic customer",
+    width: 300, // top-right — tail on the left
+    flip: true,
+  },
+  {
+    asset: "stack-7.png",
+    quote:
+      "This motivates me to check in more often, as I can use the entries as a conversation starter in therapy.",
+    who: "@Cog clinic customer",
+    width: 320, // bottom-right — tail on the right
+    flip: true,
+  },
+];
 
 export function Results() {
   return (
-    <section data-section="Results" className="py-16 md:py-24">
+    <section data-section="Results" className="pt-[120px] pb-0 bg-[var(--cog-bg-section)]">
       <Container>
         <Kicker>Results</Kicker>
-        <Title className="mt-3">Small changes, measurable results</Title>
+        <Title>Small changes, measurable results</Title>
 
-        <Body className="mt-6 max-w-[44rem]">
-          The history feature helped both users and therapists find value in reviewing past
-          check-ins, contributing to a noticeable{" "}
-          <strong className="font-semibold text-[var(--cog-ink)]">
-            increase in DAU and average time spent
-          </strong>
-          . Separately, after implementing batch session booking, we saw an{" "}
-          <strong className="font-semibold text-[var(--cog-ink)]">
-            increase in therapy bookings.
-          </strong>
-        </Body>
+        <div className="mt-6 max-w-[600px] space-y-6">
+          <Body>
+            The history feature helped both users and therapists find value in
+            reviewing past check-ins, contributing to a noticeable{" "}
+            <strong className="font-semibold text-[var(--cog-ink)]">
+              increase in DAU and average time spent
+            </strong>
+            .
+          </Body>
+          <Body>
+            Separately, after implementing batch session booking, we saw an{" "}
+            <strong className="font-semibold text-[var(--cog-ink)]">
+              increase in therapy bookings.
+            </strong>
+          </Body>
+        </div>
 
         <div className="mt-12 grid grid-cols-1 items-center gap-10 md:mt-16 lg:grid-cols-[1fr_auto]">
-          {/* scattered testimonial bubble cluster */}
-          <div className="flex flex-col gap-6 sm:grid sm:grid-cols-2 sm:gap-x-8 sm:gap-y-2">
-            {BUBBLES.map((bubble) => (
-              <SpeechBubble key={bubble.asset} bubble={bubble} />
-            ))}
+          {/* scattered testimonial bubble cluster — therapists (left) and
+              customers (right) staggered into a zigzag.
+              DIALS: `gap-3` = horizontal closeness of the two columns;
+              `pt-32` on the left column = how far it drops to alternate with the
+              right column; `gap-8` = vertical space between the two stacked
+              bubbles in each column. */}
+          <div className="flex justify-center gap-2 sm:gap-0">
+            <div className="flex flex-col items-center gap-8 pt-50">
+              {THERAPIST.map((bubble) => (
+                <TestimonialBubble key={bubble.asset} {...bubble} />
+              ))}
+            </div>
+            <div className="flex flex-col items-center gap-8">
+              {CUSTOMER.map((bubble) => (
+                <TestimonialBubble key={bubble.asset} {...bubble} />
+              ))}
+            </div>
           </div>
 
-          {/* solution screen — "Check in history" phone (Daily tab) */}
+          {/* result clip — phone screen recording */}
           <div className="flex justify-center lg:justify-end">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={A("image-large-screens-1.svg")}
-              alt="Cog Clinic 'Check in history' screen showing the daily entries view with journal entries, wins and comments"
+            <video
+              src={A("results-phone.mp4")}
+              autoPlay
+              loop
+              muted
+              playsInline
               className="block h-auto w-[16rem] max-w-full md:w-[18rem]"
             />
           </div>
