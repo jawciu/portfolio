@@ -120,6 +120,7 @@ export function VariantBentoSoft() {
                 }}
                 imageClassName="pointer-events-none absolute right-[-12%] top-[55%] h-[53%] w-auto max-w-none -translate-y-1/2 rounded-2xl object-contain shadow-[0_20px_60px_rgba(0,0,0,0.45)]"
                 blob={{ core: "#C24F83", edge: "#734A8E", coreStop: 8, edgeStop: 52 }}
+                href="https://surrealdb.com/blog/building-compounding-memory-with-knowledge-graphs-and-agentic-rag"
               />
             );
           }

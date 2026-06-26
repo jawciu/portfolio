@@ -39,7 +39,8 @@ export type ProjectCardProps = {
   imageClassName?: string;
   /** the corner gradient blob colours */
   blob: CardBlob;
-  /** optional case-study route — clicking the OPEN card navigates here */
+  /** optional link — clicking the OPEN card follows it. An absolute http(s) URL
+      opens in a new tab (external); a relative path navigates in-app. */
   href?: string;
 };
 
@@ -79,10 +80,14 @@ export function ProjectCard({
   const imgClass =
     imageClassName ??
     "pointer-events-none absolute right-[-6%] top-1/2 h-[88%] w-auto -translate-y-1/2 object-contain object-left";
-  // Collapsed click → open the card; open click (with a case study) → navigate.
+  // Collapsed click → open the card; open click (with a link) → follow it.
+  // External http(s) links open in a new tab; relative paths navigate in-app.
+  const isExternal = !!href && /^https?:\/\//.test(href);
   const onClick = () => {
-    if (open && href) router.push(href);
-    else onActivate();
+    if (open && href) {
+      if (isExternal) window.open(href, "_blank", "noopener,noreferrer");
+      else router.push(href);
+    } else onActivate();
   };
   return (
     <button
@@ -90,7 +95,13 @@ export function ProjectCard({
       onMouseEnter={onActivate}
       onFocus={onActivate}
       onClick={onClick}
-      aria-label={open && href ? `Open ${title} case study` : undefined}
+      aria-label={
+        open && href
+          ? isExternal
+            ? `Read about ${title} (opens in a new tab)`
+            : `Open ${title} case study`
+          : undefined
+      }
       className={`group relative min-h-0 overflow-hidden rounded-3xl text-left outline-none transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
         open && href ? "cursor-pointer" : ""
       }`}
