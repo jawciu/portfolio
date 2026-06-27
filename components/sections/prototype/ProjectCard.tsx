@@ -24,6 +24,9 @@ export type ProjectCardProps = {
   /** collapsed-state vertical label — the company name only, e.g. "E.ON Next";
       the year is appended (dimmed) from the `year` prop. */
   collapsedLabel: string;
+  /** short project name shown (dimmed) after the company on the collapsed spine,
+      e.g. "Wiki Whisperer" — lets multiple projects under one brand read apart. */
+  collapsedTitle?: string;
   year: string;
   /** mono kicker shown above the title, e.g. "/e.on_next" */
   label: string;
@@ -64,6 +67,7 @@ export function ProjectCard({
   open,
   onActivate,
   collapsedLabel,
+  collapsedTitle,
   year,
   label,
   title,
@@ -150,16 +154,26 @@ export function ProjectCard({
       />
       <Grain opacity={0.06} />
 
-      {/* collapsed — vertical label floating in the wisp */}
+      {/* collapsed — vertical label floating in the wisp. Two stacked columns
+          (vertical-rl flows block children right-to-left): company + year on the
+          right, the project name dimmer beside it — so a long name never overflows
+          the card height as one run would. */}
       {!open && (
         <div className="absolute inset-0 flex items-center justify-center">
-          <span
-            className="whitespace-nowrap font-mono text-sm uppercase tracking-[0.3em] text-fg md:text-base"
+          <div
+            className="whitespace-nowrap text-center font-mono uppercase tracking-[0.3em]"
             style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}
           >
-            {collapsedLabel}
-            <span className="text-fg/55"> · {year}</span>
-          </span>
+            <span className="block text-sm text-fg md:text-base">
+              {collapsedLabel}
+              <span className="text-fg/55"> · {year}</span>
+            </span>
+            {collapsedTitle && (
+              <span className="mt-2.5 block text-xs text-fg/70 md:text-sm">
+                {collapsedTitle}
+              </span>
+            )}
+          </div>
         </div>
       )}
 

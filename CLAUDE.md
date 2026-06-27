@@ -129,6 +129,30 @@ it's a deliberate call.
 
 Newest first. Record *why*, not just *what*.
 
+- **2026-06-27 (later 3)** — **Bento collapsed-card spines now carry a short PROJECT NAME
+  (distinct from the company), + cards 04/05 set up as "coming soon".** Caroline: the
+  closed bento cards only showed the company (E.ON Next / cog adhd), but she may have
+  **multiple projects under one brand** (e.g. two E.ON Next), so each closed card needs a
+  short project name too. Added a **`name`** field to `ProjectMeta` (`projectMeta.ts`,
+  flows through `enriched`; fallback = `p.title`): Wiki Whisperer (E.ON Next) / mental
+  health support (cog) / building ai agents (synapse) / AI design system (project-04) / AI
+  native onboarding platform (project-05). **`lib/projects.ts`**: project-04 company →
+  **E.ON Next**, project-05 → **vector** (titles set to the names; both stay
+  `placeholder: true`). **`ProjectCard.tsx`**: new optional **`collapsedTitle`** prop;
+  passed `p.name` for the 3 real cards in `VariantBentoSoft`. **KEY layout fix (don't
+  regress):** rendering company + name + year as ONE vertical run **overflowed the card
+  height and clipped** ("E.ON NEXT"→"ON NEXT", "COMING SOON"→"COMING SOO"). Fixed by
+  splitting the collapsed spine into **TWO vertical columns** — `writing-mode: vertical-rl`
+  on the wrapper makes `block` children flow as columns right-to-left, so column 1 (bright
+  `text-sm/base`) = `company · year`, column 2 (dimmer `text-xs/sm text-fg/70`, `mt-2.5`
+  gap) = the project name. Each column is short enough to never overflow. **Both columns
+  centered** along the card's vertical via **`text-center`** on the wrapper (in vertical-rl,
+  text-align runs vertical, so this centres each row in the card height). Same two-column
+  structure on the **placeholder cells** (04/05). **Cards 04/05 show year `2026`** (not
+  "coming soon" — Caroline's call; the "coming soon" treatment will live on their OPEN
+  cards, designs coming from her). Both stay `placeholder: true`. tsc + eslint clean;
+  verified at 1440@2× (0 console errors) — all four spines read cleanly, centered, no
+  clipping. **Uncommitted.**
 - **2026-06-27** — **Shared `CaseStudyButton` component + wiki Rollout character / What's
   Next swap / hide Takeaways / cog "View next project" reuse.** (1) **New reusable
   `components/project/CaseStudyButton.tsx`** (`"use client"`) — the squarish thin-border,

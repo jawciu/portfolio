@@ -60,6 +60,7 @@ export function VariantBentoSoft() {
                 open={open}
                 onActivate={onActivate}
                 collapsedLabel={p.company}
+                collapsedTitle={p.name}
                 year={p.year}
                 label="/e.on_next"
                 logo={{ src: "/assets/e_on_next.png", alt: "E.ON Next" }}
@@ -84,6 +85,7 @@ export function VariantBentoSoft() {
                 open={open}
                 onActivate={onActivate}
                 collapsedLabel={p.company}
+                collapsedTitle={p.name}
                 year={p.year}
                 label="/cog_adhd"
                 logo={{ src: "/assets/cog-adhd-logo.png", alt: "cog_adhd" }}
@@ -109,6 +111,7 @@ export function VariantBentoSoft() {
                 open={open}
                 onActivate={onActivate}
                 collapsedLabel={p.company}
+                collapsedTitle={p.name}
                 year={p.year}
                 label="/synapse"
                 logo={{ src: "/assets/synapse-logo.png", alt: "synapse" }}
@@ -179,13 +182,18 @@ export function VariantBentoSoft() {
 
               {!open && (
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <span
-                    className="whitespace-nowrap font-mono text-sm uppercase tracking-[0.3em] text-fg md:text-base"
+                  <div
+                    className="whitespace-nowrap text-center font-mono uppercase tracking-[0.3em]"
                     style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}
                   >
-                    {p.company}
-                    <span className="text-fg/55"> · {p.year}</span>
-                  </span>
+                    <span className="block text-sm text-fg md:text-base">
+                      {p.company}
+                      <span className="text-fg/55"> · {p.year}</span>
+                    </span>
+                    <span className="mt-2.5 block text-xs text-fg/70 md:text-sm">
+                      {p.name}
+                    </span>
+                  </div>
                 </div>
               )}
 

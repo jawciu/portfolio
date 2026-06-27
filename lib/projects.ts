@@ -42,6 +42,6 @@ export const projects: Project[] = [
     tags: ["Product", "AI Architecture", "Backend"],
     accent: "linear-gradient(120deg, #C24E86 0%, #6D1B76 100%)",
   },
-  { slug: "project-04", company: "Project 04", title: "Project 04", description: "", tags: [], placeholder: true },
-  { slug: "project-05", company: "Project 05", title: "Project 05", description: "", tags: [], placeholder: true },
+  { slug: "project-04", company: "E.ON Next", title: "AI design system", description: "", tags: [], placeholder: true },
+  { slug: "project-05", company: "vector", title: "AI onboarding platform", description: "", tags: [], placeholder: true },
 ];
