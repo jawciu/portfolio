@@ -214,31 +214,40 @@ homepage nav's `[ PROJECTS ]` mono/tracking feel but is bordered + bold so it st
 section's promo video lives in the hero, give that `<video>` `id="hero-promo"` and use the
 button variant above to scroll back + replay from 0.
 
-**Closing "View next project"** — eyebrow + heading + `CaseStudyButton`, on a distinct band.
-The band reads best as a **frosted glass panel** echoing the hero glass seam (this is what
-Caroline landed on): `rounded-t-[2.5rem]` + `backdrop-blur-2xl backdrop-saturate-150`, a
-**whisper-subtle near-white tint** (wiki `#fcf8ff`), a top **rim-glint hairline**, and a soft
-upward shadow:
+**Closing "View next project" — REQUIRED on every case study, identical structure.** It is a
+**frosted glass panel** echoing the hero glass seam: `rounded-t-[2.5rem]` + `backdrop-blur-2xl
+backdrop-saturate-150`, a whisper-subtle tint, a top **rim-glint hairline**, a soft upward
+shadow, and **two parallax `SoftBlob`s** drifting low on the right (eyebrow + heading +
+`CaseStudyButton` on the left):
 ```tsx
 <section data-section="NextProject"
-  className="relative isolate -mt-[64px] overflow-hidden rounded-t-[2.5rem] bg-[#fcf8ff] pt-[120px] pb-[160px] backdrop-blur-2xl backdrop-saturate-150 shadow-[0_-24px_60px_-20px_rgba(120,80,160,0.16)]">
-  {/* rim glint */}
+  className="relative isolate overflow-hidden rounded-t-[2.5rem] bg-[<tint>] pt-[120px] pb-[160px] backdrop-blur-2xl backdrop-saturate-150 shadow-[0_-24px_60px_-20px_<shadow>]">
+  {/* rim glint (white — reads on any light tint) */}
   <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-px rounded-t-[2.5rem]"
        style={{ background: "linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,0.85) 22%, rgba(255,255,255,0.35) 50%, rgba(255,255,255,0.7) 78%, rgba(255,255,255,0))" }} />
-  <SoftBlob className="bottom-[2%] right-[2%] h-[330px] w-[560px]" />   {/* see blob rule */}
-  <Container>
-    <Reveal>
-      <Kicker>View next project</Kicker>
-      <div className="flex flex-col items-start gap-6">
-        <h3 className="case-study-section-heading mb-0!">Next project title<br />second line</h3>
-        <CaseStudyButton href="#">CHECK IT OUT</CaseStudyButton>
-      </div>
-    </Reveal>
-  </Container>
+  <Parallax speed={130} className="absolute bottom-[0%] right-[1%] -z-10 h-[380px] w-[620px]">
+    <SoftBlob className="inset-0 h-full w-full opacity-100 blur-[56px]" /></Parallax>
+  <Parallax speed={-90} className="absolute bottom-[16%] right-[24%] -z-10 h-[300px] w-[460px]">
+    <SoftBlob className="inset-0 h-full w-full opacity-100 blur-[56px]" /></Parallax>
+  <Container><Reveal>
+    <Kicker>View next project</Kicker>
+    <div className="flex flex-col items-start gap-6">
+      <h3 className="case-study-section-heading mb-0!">Next project title<br />second line</h3>
+      <CaseStudyButton href="#">CHECK IT OUT</CaseStudyButton>
+    </div>
+  </Reveal></Container>
 </section>
 ```
-Both studies share this exact structure. Note `mb-0!` on the h3 (the baked heading margin would
-otherwise float the button).
+The structure + the rim glint + the CTA are **identical** across studies; only the palette
+differs. Per study, retint these three to the study's surface + accent:
+- **`<tint>`** — a whisper-subtle near-white in the study's surface hue (wiki lilac `#fcf8ff`,
+  cog warm cream `#faf9f5`).
+- **`<shadow>`** — the upward shadow tinted to the study's accent (wiki `rgba(120,80,160,0.16)`,
+  cog `rgba(0,107,75,0.14)` dark-green).
+- **`SoftBlob`** — each study has its own `SoftBlob` retinted to its palette (wiki peach→lilac,
+  cog peach→mint); see the blob rule for the two-radial recipe.
+
+Note `mb-0!` on the h3 (the baked heading margin would otherwise float the button).
 
 > **Tuck the section above UNDER the rounded glass corner.** If the previous section has a
 > visual bleeding to its bottom edge (e.g. an image flush to the boundary), the glass panel's
