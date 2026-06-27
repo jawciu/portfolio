@@ -13,7 +13,7 @@
   --cog-ink-soft: #4c4263;
   --soft-ink: #4c4263; /* TEMPLATE: soft body-copy ink, reusable across case studies */
   --cog-muted: #807798; /* secondary copy */
-  --cog-line: #e7e1f1; /* hairlines / card borders */
+  --cog-line: #f7ebff; /* hairlines / card + asset-frame borders — unified lavender */
   --cog-card: #ffffff;
 
   --green: #e15bad; /* TEMPLATE accent slot — pink (dividers / rules / callout) */

@@ -1,4 +1,4 @@
-import { Container, Kicker, Title, Body, CaseStudyCallout, InsightCard } from "../ui";
+import { A, Container, Kicker, Title, Body, CaseStudyCallout, InsightCard } from "../ui";
 import { Reveal } from "../Reveal";
 
 const FEATURES: [string, string, string][] = [
@@ -24,6 +24,17 @@ const FEATURES: [string, string, string][] = [
   ],
 ];
 
+/** small right-aligned mono tag with an accent underline, sits above each design screenshot */
+function DesignsTag() {
+  return (
+    <div className="mx-auto mt-14 flex max-w-[1000px] justify-end">
+      <span className="cog-label border-b-2 border-[var(--green)] pb-2 pl-[84px] pr-3 text-right text-[var(--cog-ink)]">
+        designs
+      </span>
+    </div>
+  );
+}
+
 export function Redesign() {
   return (
     <section data-section="Redesign" className="pt-[120px] pb-0">
@@ -33,14 +44,15 @@ export function Redesign() {
           <Title>building trust, usability and flexibilityy</Title>
         </Reveal>
 
-        <Reveal className="max-w-[760px]">
+        {/* <Reveal className="max-w-[760px]">
           <Body>
             V2 had to undo V1&apos;s scars. I designed for trust and low effort first, so
             an answer is fast to believe and easy to act on while still talking to a
             customer.
           </Body>
-        </Reveal>
+        </Reveal> */}
 
+        {/* all four principles */}
         <Reveal
           stagger={0.12}
           className="mx-auto mt-12 grid max-w-[900px] auto-rows-fr gap-9 md:grid-cols-2"
@@ -52,16 +64,32 @@ export function Redesign() {
           ))}
         </Reveal>
 
-        {/* product visual — placeholder until the Figma screens land */}
-        <Reveal className="mt-14 flex h-[360px] w-full items-center justify-center rounded-2xl border border-dashed border-[var(--cog-line)] bg-[var(--cog-bg-alt)]">
-          <span className="case-study-label text-[var(--cog-muted)]">
-            v2 answer layout (structured + sourced)
-          </span>
+        {/* product visual — creative on demand (table) */}
+        <Reveal>
+          <DesignsTag />
+        </Reveal>
+        <Reveal className="mx-auto mt-4 max-w-[1000px] overflow-hidden rounded-[20px] border border-[#F7EBFF] bg-white shadow-[1px_1px_10px_2px_rgba(212,210,210,0.25)]">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={A("redesign-table.png")}
+            alt="Wiki Whisperer V2 turning a tariff comparison into a structured table on demand"
+            className="block w-full"
+          />
+        </Reveal>
+
+        {/* product visual — structured + sourced (trust) */}
+        <Reveal className="mx-auto mt-8 max-w-[1000px] overflow-hidden rounded-[20px] border border-[#F7EBFF] bg-white shadow-[1px_1px_10px_2px_rgba(212,210,210,0.25)]">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={A("redesign-trust.png")}
+            alt="Wiki Whisperer V2 answer broken into scannable sections with linked, hoverable source citations"
+            className="block w-full"
+          />
         </Reveal>
 
         <Reveal className="mt-12 max-w-[860px]">
           <CaseStudyCallout stream>
-            An answer is only useful if the specialist trusts it enough to say it out loud. So I designed for trust before anything else.
+            An answer is only useful if the specialist trusts it enough to say it out loud. So we designed for trust and reliability before anything else.
           </CaseStudyCallout>
         </Reveal>
       </Container>

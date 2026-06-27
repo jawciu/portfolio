@@ -62,9 +62,9 @@ export default function WikiWhispererCaseStudy() {
         <div data-ww="UnderTheHood"><UnderTheHood /></div>
         <div data-ww="Measuring"><Measuring /></div>
         {/* Lower zone — warm near-white (--cog-bg-section); near-identical so the seam is invisible */}
+        <div data-ww="Feedback" className="bg-[var(--cog-bg-section)]"><Feedback /></div>
         <div data-ww="Wins" className="bg-[var(--cog-bg-section)]"><Wins /></div>
         <div data-ww="Impact" className="bg-[var(--cog-bg-section)]"><Impact /></div>
-        <div data-ww="Feedback" className="bg-[var(--cog-bg-section)]"><Feedback /></div>
         <div data-ww="Rollout" className="bg-[var(--cog-bg-section)]"><Rollout /></div>
         <div data-ww="WhatsNext" className="bg-[var(--cog-bg-section)]"><WhatsNext /></div>
         <div data-ww="Takeaways" className="bg-[var(--cog-bg-section)]"><Takeaways /></div>

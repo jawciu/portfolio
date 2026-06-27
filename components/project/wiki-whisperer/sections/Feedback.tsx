@@ -1,6 +1,18 @@
 import { Container, Kicker, Title, Body } from "../ui";
 import { Reveal } from "../Reveal";
 
+const QUICK: [string, string][] = [
+  ["speed >", "Snappier, streaming responses so the tool keeps pace with a live call."],
+  [
+    "pin answers >",
+    "Specialists pin the answers they reach for most, one tap away when it counts.",
+  ],
+  [
+    "search history >",
+    "Past chats are searchable, so a solved question never has to be solved twice.",
+  ],
+];
+
 const FEATURES: [string, string][] = [
   [
     "the flag form >",
@@ -25,11 +37,30 @@ export function Feedback() {
           <Title>Letting specialists make the Wiki better</Title>
         </Reveal>
 
-        <Reveal stagger={0.1} className="flex max-w-[760px] flex-col gap-5">
+        <Reveal className="max-w-[760px]">
           <Body>
-            V2 is only ever as good as the knowledge behind it, and the research showed two
-            problems: gaps in the documentation, and a feedback process that lived in Slack,
-            outside the tool, so specialists forgot to use it mid-call.
+            The pilots surfaced a steady stream of refinements. Some were quick usability
+            wins that made V2 easier to live with on a call.
+          </Body>
+        </Reveal>
+
+        {/* quick UX shoutouts */}
+        <Reveal stagger={0.1} className="mt-10 grid gap-8 md:grid-cols-3">
+          {QUICK.map(([label, line]) => (
+            <div key={label}>
+              <p className="case-study-label">{label}</p>
+              <Body className="mt-2">{line}</Body>
+            </div>
+          ))}
+        </Reveal>
+
+        {/* the deeper piece — closing the loop on the knowledge itself */}
+        <Reveal stagger={0.1} className="mt-14 flex max-w-[760px] flex-col gap-5">
+          <Body>
+            The bigger piece was the knowledge itself. V2 is only ever as good as the
+            knowledge behind it, and the research showed two problems: gaps in the
+            documentation, and a feedback process that lived in Slack, outside the tool, so
+            specialists forgot to use it mid-call.
           </Body>
           <Body>So I designed feedback into the product.</Body>
         </Reveal>

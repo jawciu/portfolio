@@ -27,7 +27,7 @@ export function Problem() {
           stagger={0.12}
           className="mt-12 grid items-center gap-10 md:grid-cols-2 md:gap-14"
         >
-          <div className="rounded-[20px] border border-[#E3E2DA] bg-white p-6 shadow-[1px_1px_10px_2px_rgba(212,210,210,0.25)]">
+          <div className="rounded-[20px] border border-[#F7EBFF] bg-white p-6 shadow-[1px_1px_10px_2px_rgba(212,210,210,0.25)]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={A("problem-chat.png")}
