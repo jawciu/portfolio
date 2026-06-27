@@ -13,7 +13,8 @@ import { Impact } from "../../../components/project/wiki-whisperer/sections/Impa
 import { Feedback } from "../../../components/project/wiki-whisperer/sections/Feedback";
 import { Rollout } from "../../../components/project/wiki-whisperer/sections/Rollout";
 import { WhatsNext } from "../../../components/project/wiki-whisperer/sections/WhatsNext";
-import { Takeaways } from "../../../components/project/wiki-whisperer/sections/Takeaways";
+// Key takeaways hidden for now — restore this import + its <Takeaways /> below when ready.
+// import { Takeaways } from "../../../components/project/wiki-whisperer/sections/Takeaways";
 import { NextProject } from "../../../components/project/wiki-whisperer/sections/NextProject";
 
 export const metadata: Metadata = {
@@ -81,7 +82,7 @@ export default function WikiWhispererCaseStudy() {
         <div data-ww="Impact"><Impact /></div>
         <div data-ww="Rollout"><Rollout /></div>
         <div data-ww="WhatsNext"><WhatsNext /></div>
-        <div data-ww="Takeaways"><Takeaways /></div>
+        {/* <div data-ww="Takeaways"><Takeaways /></div> */}
         <div data-ww="NextProject"><NextProject /></div>
       </div>
     </main>

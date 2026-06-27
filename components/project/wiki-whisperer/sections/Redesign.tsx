@@ -87,7 +87,7 @@ export function Redesign() {
           />
         </Reveal>
 
-        <Reveal className="mt-12 max-w-[860px]">
+        <Reveal className="mt-[104px] mb-[24px] max-w-[860px]">
           <CaseStudyCallout stream>
             An answer is only useful if the specialist trusts it enough to say it out loud. So we designed for trust and reliability before anything else.
           </CaseStudyCallout>

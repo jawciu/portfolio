@@ -36,7 +36,7 @@ export function Wins() {
 
         <Reveal className="max-w-[760px]">
           <Body>
-            The clearest signal came from specialists themselves. They had gone from
+            The clearest signal came from specialists themselves. <br/> They had gone from
             doubting the tool to depending on it.
           </Body>
         </Reveal>

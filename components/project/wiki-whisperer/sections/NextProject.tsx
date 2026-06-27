@@ -1,10 +1,17 @@
-import Link from "next/link";
 import { Container, Kicker } from "../ui";
 import { Reveal } from "../Reveal";
+import { SoftBlob } from "../SoftBlob";
+import { CaseStudyButton } from "../../CaseStudyButton";
 
 export function NextProject() {
   return (
-    <section data-section="NextProject" className="pt-[120px] pb-[120px]">
+    <section
+      data-section="NextProject"
+      className="relative isolate overflow-hidden bg-[#fcf8ff] pt-[120px] pb-[160px]"
+    >
+      {/* blurry blob, sitting low on the right so it reads as part of this band */}
+      <SoftBlob className="bottom-[2%] right-[2%] h-[330px] w-[560px]" />
+
       <Container>
         <Reveal>
           <Kicker>View next project</Kicker>
@@ -14,14 +21,9 @@ export function NextProject() {
               <br />
               in ADHD therapy
             </h3>
-            <Link
-              href="/project/cog-adhd"
-              className="inline-flex items-center gap-2 rounded-full border border-[var(--green)] px-6 py-3 text-[var(--green)] transition-colors hover:bg-[var(--green)] hover:text-white"
-            >
-              <span className="case-study-label" style={{ color: "inherit" }}>
-                check it out
-              </span>
-            </Link>
+            <CaseStudyButton href="/project/cog-adhd" color="#b52fa5">
+              CHECK IT OUT
+            </CaseStudyButton>
           </div>
         </Reveal>
       </Container>

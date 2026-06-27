@@ -2,6 +2,7 @@
 // Builders IMPORT from here for consistency — do not edit per-section.
 import type { ReactNode } from "react";
 import { StreamingQuote } from "./StreamingQuote";
+import { Reveal } from "./Reveal";
 
 /** asset path helper — all case-study assets live in /public/projects/cog-adhd */
 export const A = (file: string) => `/projects/wiki-whisperer/${file}`;
@@ -101,6 +102,41 @@ export function InsightCard({
       <div className="mt-5 h-px w-full bg-[var(--green)]" />
       <Body className="mt-5 text-[var(--cog-ink-soft)]">{children}</Body>
     </div>
+  );
+}
+
+/** TEMPLATE stat row — centred big numbers (Geist Bold, accent) with a caption
+    beneath. Each stat is a fixed-width, content-centred block with a consistent
+    real gutter between them (48px → 88px on large screens), so the spacing reads
+    the same whether there are 3 or 4 of them (rather than stretching to fill the
+    width). Wraps to a grid on smaller screens. The block carries 44px of
+    top/bottom breathing room. Caption accepts a string or `<br/>`-split nodes.
+    Children stagger in as the row scrolls into view. Reusable across case
+    studies. */
+export function Stats({
+  items,
+  className = "",
+}: {
+  items: { n: string; caption: ReactNode }[];
+  className?: string;
+}) {
+  return (
+    <Reveal
+      stagger={0.1}
+      className={`mx-auto flex max-w-full flex-wrap justify-center gap-x-12 gap-y-12 py-11 lg:gap-x-[88px] ${className}`}
+    >
+      {items.map((s, i) => (
+        <div
+          key={`${s.n}-${i}`}
+          className="flex w-[150px] flex-col items-center text-center md:w-[190px]"
+        >
+          <p className="font-[family-name:var(--font-body)] text-[44px] font-bold leading-none text-[#b52fa5] md:text-[66px]">
+            {s.n}
+          </p>
+          <p className="case-study-body-md mt-3">{s.caption}</p>
+        </div>
+      ))}
+    </Reveal>
   );
 }
 

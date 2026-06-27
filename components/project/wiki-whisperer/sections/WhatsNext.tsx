@@ -1,41 +1,37 @@
-import { Container, Kicker, Title, Body } from "../ui";
+import { A, Container, Kicker, Title, Body } from "../ui";
 import { Reveal } from "../Reveal";
 
-const NEXT: [string, string][] = [
-  [
-    "Kraken integration >",
-    "Account-specific answers, the most requested next step, weighed against the risk of automating too much of the specialist's judgement.",
-  ],
-  [
-    "see, not just read >",
-    "Image support so specialists can upload a meter photo, and visual step-by-step guidance through the systems.",
-  ],
-  [
-    "faster, in their control >",
-    "A stop button, faster responses, and longer context so a chat does not break mid-case.",
-  ],
-  [
-    "more accessible >",
-    "Dictation, text-to-speech and export, so the tool fits more ways of working.",
-  ],
-];
-
 export function WhatsNext() {
+  // pb-[120px]: this section sits directly above the tinted NextProject band, so it
+  // needs bottom breathing space before the background-colour boundary.
   return (
-    <section data-section="WhatsNext" className="pt-[120px] pb-0">
+    <section data-section="WhatsNext" className="pt-[120px] pb-[120px]">
       <Container>
         <Reveal>
           <Kicker>What&apos;s next</Kicker>
-          <Title>From iteration to intention</Title>
+          <Title>
+            Account specific information
+            <br />
+            and image support
+          </Title>
         </Reveal>
 
-        <Reveal stagger={0.12} className="grid gap-8 md:grid-cols-2">
-          {NEXT.map(([label, body]) => (
-            <div key={label}>
-              <p className="case-study-label">{label}</p>
-              <Body className="mt-2">{body}</Body>
-            </div>
-          ))}
+        {/* illustration left, copy right (tight gap) */}
+        <Reveal stagger={0.1} className="mt-14 grid items-center gap-8 lg:grid-cols-[auto_1fr] lg:gap-12">
+          <div className="flex justify-center lg:justify-start">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={A("impact.svg")}
+              alt="Onboarding ramp illustration"
+              className="h-auto w-[255px] max-w-full"
+            />
+          </div>
+          <div className="max-w-[480px]">
+            <Body>
+              Next are the bigger improvements flagged in the research: a Kraken integration
+              for account-specific answers, and image support.
+            </Body>
+          </div>
         </Reveal>
       </Container>
     </section>

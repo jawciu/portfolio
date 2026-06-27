@@ -1,5 +1,6 @@
-import { Container, Kicker, Title, Body } from "../ui";
+import { A, Container, Kicker, Title, Body } from "../ui";
 import { Reveal } from "../Reveal";
+import { WatchVideoButton } from "../WatchVideoButton";
 
 export function Rollout() {
   return (
@@ -7,32 +8,39 @@ export function Rollout() {
       <Container>
         <Reveal>
           <Kicker>The rollout</Kicker>
-          <Title>Hyping a launch agents would believe in</Title>
+          <Title>
+            Showcasing Wiki Whisperer&rsquo;s
+            <br />
+            new capabilities
+          </Title>
         </Reveal>
 
-        <Reveal stagger={0.1} className="flex max-w-[760px] flex-col gap-5">
-          <Body>
-            The pilots surfaced one more thing: specialists burned by V1 did not even try
-            V2&apos;s best features. Many did not realise it was conversational until we
-            showed them.
-          </Body>
-          <Body>
-            So adoption was a perception problem too. For the company-wide rollout I
-            scripted a one-minute feature-hype video, in the spirit of a Google or
-            ElevenLabs launch, and directed a motion designer to bring it to life.
-          </Body>
-          <Body>
-            It shows specialists they can ask complex questions, be creative, and give
-            feedback, so they arrive ready to use V2 well. The rollout itself is a low-risk,
-            site-by-site phased launch, with monitoring at each gate before the next.
-          </Body>
-        </Reveal>
-
-        {/* the promo video lives here — placeholder until the mp4 is added */}
-        <Reveal className="mt-14 flex aspect-video w-full items-center justify-center rounded-2xl border border-dashed border-[var(--cog-line)] bg-[var(--cog-bg-alt)]">
-          <span className="case-study-label text-[var(--cog-muted)]">
-            one-minute feature-hype video
-          </span>
+        {/* copy + watch-video button left, wiki character right */}
+        <Reveal stagger={0.1} className="mt-14 grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
+          <div className="flex max-w-[560px] flex-col items-start gap-5">
+            <Body>
+              The pilots surfaced one more thing. Some specialists were so burned by V1 that
+              their expectations for V2 were low, they missed features or didn&rsquo;t realise
+              the tool was conversational until we spoke with them.
+            </Body>
+            <Body>
+              Adoption wasn&rsquo;t just a product problem, it was also a perception one. So
+              for the company-wide rollout, I led the creation of a one-minute feature-showcase
+              video to reset that first impression.
+            </Body>
+            {/* the promo video lives in the hero, so the button scrolls back up to it */}
+            <div className="mt-3">
+              <WatchVideoButton />
+            </div>
+          </div>
+          <div className="flex justify-center">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={A("wiki-character.png")}
+              alt="Wiki Whisperer leaf character holding a crystal-ball staff"
+              className="h-auto w-[220px] max-w-full"
+            />
+          </div>
         </Reveal>
       </Container>
     </section>

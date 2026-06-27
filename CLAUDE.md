@@ -129,6 +129,118 @@ it's a deliberate call.
 
 Newest first. Record *why*, not just *what*.
 
+- **2026-06-27** — **Shared `CaseStudyButton` component + wiki Rollout character / What's
+  Next swap / hide Takeaways / cog "View next project" reuse.** (1) **New reusable
+  `components/project/CaseStudyButton.tsx`** (`"use client"`) — the squarish thin-border,
+  bold mono-uppercase, hover-fill CTA. Takes a **`color` prop** (per-case-study accent; set
+  via an inline `--csb` CSS var so `border-/text-/hover:bg-[var(--csb)]` all follow it) and
+  renders a Next `<Link>` when `href` is set else a `<button>` (pass `onClick`). Both the
+  wiki **`WatchVideoButton`** (color `#b52fa5`, keeps its scroll-to-top + restart-video
+  onClick) and the wiki + cog **`NextProject` "CHECK IT OUT"** buttons now use it.
+  (2) **Wiki Rollout**: added the **leaf mascot** (`assets/Idle/wiki-leaf-character.png` →
+  `public/projects/wiki-whisperer/wiki-character.png`, `w-[220px]`) above the watch-video
+  button in the right column. (3) **Wiki What's Next**: swapped to **illustration LEFT,
+  copy RIGHT**. (4) **Hid the wiki Takeaways section** ("do it later") — commented out the
+  import + `<Takeaways/>` in `app/project/wiki-whisperer/page.tsx` (easy to restore).
+  (5) **Cog `NextProject` reworked to match the wiki structure** (Kicker eyebrow "View next
+  project" + h3 + `CaseStudyButton`), button colour = **`#006b4b` (cog `--dark-green`)**.
+  **NOTE/flag:** this REPLACED cog's old confetti-ribbon + purple-stripe band (the
+  decorative `image-44.svg` swooshes + dashes are gone) — tell Caroline in case she wants
+  that flourish kept. (6) **Wiki `NextProject`**: added a **`SoftBlob` on the right** (the
+  section is now `relative isolate overflow-hidden`). tsc + eslint clean, 0 console errors
+  on both pages; verified all sections via the standalone-Playwright trick. **Uncommitted.**
+- **2026-06-27 (later 2)** — **Tinted-band lightened + bg-boundary breathing space + case-study
+  skill updated.** (1) Wiki NextProject tint **2× lighter**: `#f8f1ff` → **`#fcf8ff`** (barely
+  visible, ambient blob still reads on it). (2) **Fixed the hard bg-colour boundary with no
+  breathing space** (Caroline flagged in BOTH studies): the section ABOVE a background change was
+  `pb-0`, so its content butted against the colour-change line. Added **`pb-[120px]`** to the
+  section above each boundary — wiki **`WhatsNext`** (above the tinted NextProject) and cog
+  **`Takeaways`** (its `--cog-bg-section` tint meets the cream NextProject). Same 240px-with-
+  colour-change-at-midpoint convention as the BookingDropoff→JourneyMap boundary. (3) **Captured
+  the whole session's patterns into the `case-study` skill** (`build.md`) so it's not re-explained:
+  added recipes for the **`Stats`** component (font-bold, fixed-width items + consistent
+  `lg:gap-x-[88px]` gutter, `py-11`), the shared **`CaseStudyButton`** (color prop, Link/button,
+  watch-video scroll+restart variant), the **closing "View next project"** structure (+ optional
+  tinted band), the **SoftBlob containment rule** (keep the box inside `overflow-hidden` so it's
+  not cut), and the **bg-colour-boundary → `pb-[120px]` on the section above** rule (+ whisper-
+  subtle tints). Plus gotchas: JSX comment can't follow `return (`; `CaseStudyButton` is shared not
+  per-study; copy only gets shorter. tsc + eslint clean; both boundaries verified. **Uncommitted.**
+- **2026-06-27 (later)** — **Wiki Rollout / What's Next / NextProject polish.** (1) Rollout:
+  **watch-video button moved UNDER the copy** (left column, `items-start`); the leaf mascot
+  sits alone on the right. (2) What's Next: **copy made more concise** ("Next are the bigger
+  improvements flagged in the research: a Kraken integration for account-specific answers,
+  and image support.") and the **gap tightened** — grid `lg:grid-cols-2` → `lg:grid-cols-[auto_1fr]`
+  (`lg:gap-12`) so the copy sits close to the illustration instead of starting at the 50%
+  line. (3) Wiki NextProject: gave it a **subtle lilac tint `bg-[#f8f1ff]`** so the band
+  stands out as distinct, and **fixed the SoftBlob being clipped** — it was `right-[-8%]
+  top-1/2` (extending above the section, so `overflow-hidden` cut a hard top edge). Now
+  `bottom-[2%] right-[2%] h-[330px] w-[560px]` — fully contained (SoftBlob fades within its
+  box, so no visible edge) and sitting low so it reads as part of the band. cog NextProject
+  unchanged (no blob/tint there). tsc + eslint clean, 0 console errors, 0 h-overflow.
+  **Uncommitted.**
+- **2026-06-27** — **Wiki: "watch video" restarts the hero promo + What's Next → 2-col
+  (image + 2 steps).** (1) The Rollout **"watch video" button now restarts the hero video
+  from 0**: gave the hero `<video>` `id="hero-promo"` (`Hero.tsx`) and the button
+  (`WatchVideoButton.tsx`) sets `currentTime = 0` + `play()` after scrolling to top
+  (verified: 5s → 0 then resumes). (2) **`WhatsNext.tsx`** retitled to **"Account specific
+  information / and image support"**, trimmed the `NEXT` list from 4 to **2** (kept Kraken
+  integration + see-not-just-read), and laid out as a **two-column row — `impact.svg` on
+  the LEFT, the two steps on the RIGHT** (was a 4-up grid with the image centred below).
+  tsc + eslint clean, 0 console errors. **Uncommitted.**
+- **2026-06-27** — **Wiki Rollout: shorter copy + "watch video" scroll-to-top button.**
+  Trimmed `Rollout.tsx` to **2 paragraphs** (Caroline's copy: the V1-burn perception
+  problem → led the one-minute feature-showcase video) and **replaced the dashed video
+  placeholder with a "▶ watch video" button**. The promo video lives in the HERO (top of
+  the page), so the button scrolls back up to it. Lenis's instance isn't exposed
+  (`SmoothScroll` keeps it local), so the button is a small client component
+  **`components/project/wiki-whisperer/WatchVideoButton.tsx`** using
+  `window.scrollTo({ top: 0, behavior: "smooth" })` — verified it takes scrollY ~9922 → 0,
+  0 console errors. Styled to match the case-study pill button (`NextProject`'s rounded-full
+  green/`--green` border + hover-fill, `.case-study-label` text). tsc + eslint clean.
+  **Uncommitted.**
+- **2026-06-27** — **Wiki Early Impact reordered; onboarding copy → label+body; measure
+  illustration moved to What's Next.** Several iterative passes on `Impact.tsx`, final
+  state: (1) the "Some teams closed their support channels…" CaseStudyCallout sits **ABOVE
+  the stats**; (2) the **stats**; (3) a **two-column row** — LEFT is the onboarding beat as
+  a **`.case-study-label` "In the new-starter academy >" + `Body` md** ("V2 compressed the
+  learning curve and reduced the number of senior advisor needed on the floor."), RIGHT is
+  the **@Academy Skills Lead `TestimonialBubble`**. (Intermediate tries that Caroline then
+  redirected: the onboarding line was briefly a 2nd callout below the stats, and the LEFT
+  column briefly held the `impact.svg` illustration at 340 then 170px — both reverted.) The
+  **`impact.svg`** (rising-arrow-over-a-ruler graphic; copied `assets/impact.svg` →
+  `public/projects/wiki-whisperer/impact.svg`) now lives in **`WhatsNext.tsx`**, centred
+  below the next-steps grid at `w-[170px]`. Import bookkeeping: `Impact` dropped `A`, uses
+  `Body`; `WhatsNext` added `A`. tsc + eslint clean, 0 console errors; verified both
+  sections via the standalone-Playwright trick. **Uncommitted.**
+- **2026-06-27** — **Wiki Early Impact reworked + reusable `Stats` template primitive.**
+  Caroline's edits to the **Impact** section (`components/project/wiki-whisperer/sections/
+  Impact.tsx`): (1) **stats restyled to match the User pilots (`Measuring`) section** —
+  centred big numbers in `#b52fa5` (Geist) with a caption beneath, dropping the earlier
+  Userpilot-style metric cards / progress bars she didn't want; (2) **removed the V1
+  comparison deltas** (`+17% on V1` etc); (3) the **@Academy Skills Lead quote → a
+  `TestimonialBubble` (bubble-1.png) on the RIGHT**, with the onboarding label+body in the
+  **left column** (two-column `lg:grid-cols-2`, `items-center`); (4) **removed** the 3
+  placeholder telemetry boxes (CHI / repeat contacts / complaint resolution) and the "The
+  operational telemetry above is directional…" line. Kept the "closed their support
+  channels" CaseStudyCallout. **Extracted a reusable `Stats` component into `ui.tsx`**
+  (template primitive, like `InsightCard`/`TestimonialBubble`): `items={[{n, caption}]}`
+  (caption = string or `<br/>`-split nodes), centred numbers **`font-bold`** (NOT
+  extrabold — Caroline wanted them a touch lighter), **44px top/bottom breathing room**
+  (`py-11`). **Refactored the `Measuring` (User pilots) section onto the same component**
+  so both stat rows share one source of truth and the bold weight matches (was its own
+  inline `font-extrabold` flex row). **SPACING GOTCHA (important):** first used a
+  stretch-grid (`grid-cols-2 lg:grid-cols-4` / `grid-cols-3`) that filled `max-w-[920px]`
+  — but equal columns filling a fixed width make **3 items look far apart and 4 items look
+  bunched** (Caroline flagged: user-pilots too spread, impact too tight). FIX: switched to
+  a **centred `flex flex-wrap` of fixed-width items** (`w-[150px] md:w-[190px]`) with a
+  **real, consistent gutter** (`gap-x-12 lg:gap-x-[88px]`, i.e. 48px → 88px on large), so
+  the distance between any two stats reads the same regardless of count (wraps to a grid on
+  small screens). Also added **+44px to the Feedback section gap** between the quick-UX
+  (speed/pin/search) breakout row and the flag-form breakout row (`mt-12` → `mt-[92px]` =
+  48 + 44; verified the inter-block gap = 92px). tsc + eslint clean; verified both stat
+  rows + the Feedback gap via the standalone-Playwright trick. **Uncommitted.** *(Note:
+  Caroline has also been hand-editing `Feedback.tsx` — trimmed copy + commented out the old
+  "deeper piece" Container; left her edits intact.)*
 - **2026-06-26** — **Wiki hero: promo video + gradient-glow shadow + lighter seam.** Wired
   the E.ON Next promo animation into the hero as the product visual (replaces the
   device-screens placeholder): `public/projects/wiki-whisperer/promo.mp4` (the "Scriggly"

@@ -133,6 +133,14 @@ Use it on the left/right of a two-column content section: `grid items-center gap
 > overlap, each one still carries the same treatment. If raw art ships with a baked-in dark
 > shadow, crop it out and let this treatment supply the shadow. Caroline has corrected this
 > more than once, so default to it without being asked.
+>
+> **Flat / square assets (raster screenshots, exported SVGs with no frame) MUST get rounded
+> corners + the lilac hairline border too.** Add `rounded-[16px] border-[1.5px]
+> border-[#F7EBFF]` (wiki tint) to the `<img>`. First crop any transparent padding out of the
+> SVG `viewBox` so the panel fills the box edge-to-edge — otherwise CSS `rounded-*` clips empty
+> margin and the visible corners stay square. For assets that already bake their own frame
+> (e.g. a device mockup with a rounded panel + tooltip overhang), add the border *inside* the
+> SVG as a stroked perimeter path so it hugs the real shape, never the bounding box.
 
 **Feature/principle block — numbered `InsightCard`s, pure white, equal height:**
 ```tsx
@@ -157,6 +165,86 @@ sibling behind a hero card/video:
   <div className="relative w-full overflow-hidden rounded-2xl border border-[var(--cog-line)]">{/* video/img */}</div>
 </div>
 ```
+
+**Stat row — the `Stats` component** (centred big numbers + caption; lead the impact with
+these). Lives in each study's `ui.tsx` (it imports the study's `Reveal`). Spec, learned over
+many rounds with Caroline, so build it exactly:
+```tsx
+export function Stats({ items, className = "" }: { items: { n: string; caption: ReactNode }[]; className?: string }) {
+  return (
+    <Reveal stagger={0.1}
+      className={`mx-auto flex max-w-full flex-wrap justify-center gap-x-12 gap-y-12 py-11 lg:gap-x-[88px] ${className}`}>
+      {items.map((s, i) => (
+        <div key={`${s.n}-${i}`} className="flex w-[150px] flex-col items-center text-center md:w-[190px]">
+          <p className="font-[family-name:var(--font-body)] text-[44px] font-bold leading-none text-[#b52fa5] md:text-[66px]">{s.n}</p>
+          <p className="case-study-body-md mt-3">{s.caption}</p>
+        </div>
+      ))}
+    </Reveal>
+  );
+}
+```
+Rules baked in (each one a correction she made): numbers are **Geist `font-bold`** (NOT
+extrabold) in the study's number accent; **fixed-width items + a real, consistent gutter**
+(`flex` of `w-[190px]` blocks, `gap-x-12` → `lg:gap-x-[88px]`) so spacing reads the same whether
+there are 3 or 4 — a stretch-grid makes 3 look far apart and 4 look bunched; **44px top/bottom
+breathing room** (`py-11`); wraps to a grid on small screens. `caption` accepts a string or
+`<br/>`-split nodes. Use the **same component** for every stat row on the page so weight + spacing
+match. Retint `#b52fa5` to the study's number colour.
+
+**CTA button — the shared `CaseStudyButton`** (`components/project/CaseStudyButton.tsx`, reused
+across studies, accent via a `color` prop). Squarish thin border, bold mono uppercase label,
+fills with the accent on hover; renders a `Link` when `href` is set else a `<button>` (pass
+`onClick`). Colour flows through an inline `--csb` CSS var so it can differ per study:
+```tsx
+<CaseStudyButton href="/project/<next-slug>" color="#b52fa5">CHECK IT OUT</CaseStudyButton>
+// button variant (e.g. a "watch video" that scrolls to the hero promo + restarts it):
+<CaseStudyButton color="#b52fa5" onClick={() => { window.scrollTo({ top: 0, behavior: "smooth" });
+  const v = document.getElementById("hero-promo"); if (v instanceof HTMLVideoElement) { v.currentTime = 0; void v.play(); } }}>
+  <svg width="13" height="13" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true"><path d="M2 1.5v9l8-4.5z" /></svg> WATCH VIDEO
+</CaseStudyButton>
+```
+Use it for **every** CTA (the closing "check it out", any in-page "watch video"). It mirrors the
+homepage nav's `[ PROJECTS ]` mono/tracking feel but is bordered + bold so it stands out. If a
+section's promo video lives in the hero, give that `<video>` `id="hero-promo"` and use the
+button variant above to scroll back + replay from 0.
+
+**Closing "View next project"** — eyebrow + heading + `CaseStudyButton`, optionally on a
+distinct band:
+```tsx
+<section data-section="NextProject" className="relative isolate overflow-hidden bg-[#fcf8ff] pt-[120px] pb-[160px]">
+  <SoftBlob className="bottom-[2%] right-[2%] h-[330px] w-[560px]" />   {/* optional: see blob rule */}
+  <Container>
+    <Reveal>
+      <Kicker>View next project</Kicker>
+      <div className="flex flex-col items-start gap-6">
+        <h3 className="case-study-section-heading mb-0!">Next project title<br />second line</h3>
+        <CaseStudyButton href="#" color="<study accent>">CHECK IT OUT</CaseStudyButton>
+      </div>
+    </Reveal>
+  </Container>
+</section>
+```
+Both studies share this exact structure (the button colour is the only difference — wiki
+`#b52fa5`, cog `#006b4b` dark green). Note `mb-0!` on the h3 (the baked heading margin would
+otherwise float the button).
+
+**Ambient `SoftBlob`** (per-study, copy + retint) — soft decorative wash. **Containment rule:**
+a blob inside an `overflow-hidden` section is clipped to a hard rectangle if its box extends past
+the section edge. Keep the blob's **box fully inside** the section (positive insets, e.g.
+`bottom-[2%] right-[2%]`, sized to fit) — SoftBlob fades to transparent well within its box, so a
+contained box shows no edge. Anchor it **low** if it should read as part of a closing band. Never
+rely on a negative inset + the clip to "crop" it; that is exactly the hard cut Caroline rejects.
+
+> **Background-colour boundary → the section ABOVE needs `pb-[120px]`.** Sections default to
+> top-only padding (`pt-[120px] pb-0`), which is invisible when adjacent backgrounds match. But
+> when a section has its **own background** (a tinted band, e.g. the closing `NextProject`, or any
+> `bg-[var(--cog-bg-section)]` section), the colour-change line lands right under the previous
+> section's content with no breathing room. Give the **section above the boundary** `pb-[120px]`
+> (its own content clears the line; combined with the next section's `pt-[120px]` that's ~240px of
+> gap with the colour change at the midpoint). Do this on BOTH sides of every bg change. Tints
+> must be **whisper-subtle** (near-white, e.g. wiki `#fcf8ff`) — visible enough to read as a
+> distinct band but light enough that ambient blobs still show on top.
 
 ### 5. Assemble `page.tsx`
 Mirror cog's `app/project/cog-adhd/page.tsx`:
@@ -241,3 +329,13 @@ them in on every study. All four are already reduced-motion safe.
   computed value in-browser, don't trust the source.
 - Two agents often share this working tree — `git add` specific files, never `-A`. Commit
   only when Caroline asks.
+- A `{/* … */}` JSX comment **cannot** be the first thing after `return (` (it parses as a
+  stray expression beside the element). Put layout-rationale notes as a `//` comment **above**
+  the `return`, or inside the JSX once there's a parent element.
+- `CaseStudyButton` is **shared** (`components/project/CaseStudyButton.tsx`), not per-study —
+  import it from `../../CaseStudyButton` (sections) / `../CaseStudyButton` (study root) and pass
+  the study's `color`. `Stats` and `SoftBlob` are per-study (copy into the study folder + retint).
+- Caroline iterates copy + spacing fast and reacts to screenshots. Default to: lead with impact,
+  keep paragraphs short, prefer label (`thing >`) + `Body` over long prose, and when she says
+  "concise it" the copy may only get **shorter, never longer**. Verify each layout change with the
+  standalone-Playwright trick rather than guessing.

@@ -100,6 +100,7 @@ export function Hero() {
           />
           <div className="relative w-full overflow-hidden rounded-2xl border border-[var(--cog-line)]">
             <video
+              id="hero-promo"
               src={A("promo.mp4")}
               autoPlay
               loop
