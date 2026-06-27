@@ -29,13 +29,16 @@ export default function WikiWhispererCaseStudy() {
     <main className="ww-root min-h-screen w-full">
       {/* PINNED HERO — taller than the viewport, pinned at a measured negative top so
           the device mockups scroll into FULL view before the glass plate rises over it. */}
+      {/* DWELL SPACE — near-white room BELOW the mockups, INSIDE the pinned hero, so
+          the glass plate (flush under the hero) rises up THROUGH it first, holding the
+          mockups in full view while the glass visibly climbs toward them. Replaces the
+          old transparent post-hero buffer, whose frozen gap read as "end of page".
+          Transparent over the `.ww-root` near-white, so it's seamless. Tune the height
+          to trade off how long the visuals dwell before the glass covers. */}
       <StickyHero>
         <Hero />
+        <div aria-hidden className="h-[34vh]" />
       </StickyHero>
-
-      {/* BUFFER — delays the glass reveal so the visitor scrolls past the pinned hero
-          before the plate climbs in. */}
-      <div aria-hidden className="h-[45vh]" />
 
       {/* GLASS SEAM — everything after the hero rides a frosted lilac-glass plate that
           slides UP over the pinned hero (mirrors the homepage About-over-hero move).

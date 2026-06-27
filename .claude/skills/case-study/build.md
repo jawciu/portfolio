@@ -298,8 +298,13 @@ Mirror cog's `app/project/cog-adhd/page.tsx`:
 - `import "../../../components/project/<slug>/theme.css";` first.
 - `export const metadata` — SEO title `"<Project> — <hook> | Caroline Jaworsky"` + description.
 - `<main className="cog-root min-h-screen w-full">` wrapping:
-  - `<StickyHero><Hero /></StickyHero>` (pinned hero),
-  - a transparent `<div aria-hidden className="h-[45vh]" />` buffer,
+  - the **pinned hero WITH in-hero dwell space**: `<StickyHero><Hero /><div aria-hidden
+    className="h-[34vh]" /></StickyHero>`. The spacer goes INSIDE StickyHero, below the
+    hero, so it lifts the mockups off the screen bottom and the glass rises THROUGH it
+    first (mockups held in view, motion continuous). NEVER use a separate transparent
+    buffer AFTER the hero — that freezes the screen (hero pinned + glass not yet entered)
+    and reads as "end of page". The spacer is transparent over the page bg, so seamless;
+    its height = how long the visuals dwell before the glass covers.
   - the **glass-seam plate** (`relative z-10 rounded-t-[2.5rem] backdrop-blur-2xl
     backdrop-saturate-150` + the cream gradient + rim-glint hairline — copy the exact
     style block; retint the gradient if the study's surface isn't cream),
@@ -373,11 +378,13 @@ validated.
 
 4. **Glass hero overlay** (the seam: `StickyHero.tsx` + the plate in `page.tsx`) — the
    signature opener. The hero is pinned (`StickyHero` measures `top: -(heroHeight −
-   viewportHeight)` so the device mockups scroll into full view, then it sticks); a
-   transparent `h-[45vh]` buffer delays the reveal; then a frosted `rounded-t-[2.5rem]`
-   glass plate (`backdrop-blur-2xl backdrop-saturate-150`, the cream gradient that lands on
-   solid surface by ~185px, plus the white rim-glint hairline) **rises up over the pinned
-   hero** as the visitor scrolls. This mirrors how the homepage's About sheet glides over the
+   viewportHeight)` so the device mockups scroll into full view, then it sticks); an
+   in-hero `h-[34vh]` dwell spacer (INSIDE StickyHero, below the hero) holds the mockups in
+   view while a frosted `rounded-t-[2.5rem]` glass plate (`backdrop-blur-2xl
+   backdrop-saturate-150`, the cream gradient that lands on solid surface by ~185px, plus
+   the white rim-glint hairline) **rises up through that space and over the pinned hero** as
+   the visitor scrolls (continuous motion — do NOT use a separate post-hero buffer, it
+   freezes the screen and reads as "end of page"). This mirrors how the homepage's About sheet glides over the
    WebGL hero, tying the case study to the site. Required on every study; retint the gradient
    to the study's surface colour if it is not cream. Full recipe + rationale: the
    `case-study-glass-seam` entry in DESIGN.md.

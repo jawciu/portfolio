@@ -129,6 +129,33 @@ it's a deliberate call.
 
 Newest first. Record *why*, not just *what*.
 
+- **2026-06-27 (later 6)** — **Glass-reveal "frozen stop" fixed on cog: dead buffer →
+  in-hero cream dwell-space.** Caroline's bf found the case-study glass reveal confusing:
+  after the hero pins, the page sat motionless for a stretch before the glass rose, so it
+  read as "no more content." Root cause = the **`h-[45vh]` transparent buffer AFTER the
+  hero** (`app/project/cog-adhd/page.tsx`): during it the hero is pinned AND the glass plate
+  hasn't entered yet, so for ~half a viewport of scroll the screen is fully frozen (zero
+  motion) = the "is this the end?" feeling. **FIX (her direction — remove the stop but let
+  the visuals dwell longer):** deleted the post-hero buffer and instead added a
+  **`h-[34vh]` spacer INSIDE the pinned `StickyHero`, below `<Hero />`**. Because the spacer
+  is part of the pinned element it lifts the mockups up off the screen bottom; the glass
+  plate now sits flush under the hero and rises up THROUGH that empty cream FIRST, holding
+  the mockups in full view while the glass visibly climbs toward them, THEN covers them.
+  Net: continuous motion the whole way (hero scrolls up → glass climbs → covers), no frozen
+  interval, and the mockups dwell on screen longer. The spacer is transparent over the cream
+  `.cog-root` (`background: var(--cog-bg) #f5f4ef`, theme.css:30), so it's seamless. **Why
+  this beats the old buffer:** old buffer was OUTSIDE the pinned hero (mockups pinned at the
+  very bottom, glass entered only after the buffer) → frozen; new spacer is INSIDE it (glass
+  enters exactly when the hero pins and climbs immediately). Verified via the standalone-
+  Playwright trick at 1440: hero pins ~scrollY 900, glass plate already on-screen + climbing
+  continuously from there (plateTop 672→371→70→…), mockups held at devBottom 474 (~426px
+  cream below them), 0 console errors. tsc + eslint clean. **Dial:** the `h-[34vh]` spacer =
+  how long the visuals dwell before the glass covers. **Applied to BOTH cog AND wiki**
+  (Caroline okayed the cog feel, then asked to roll out + save the pattern). **Pattern
+  saved** in 3 places so future studies don't regress: DESIGN.md `case-study-glass-seam`
+  (new `dwellSpace` field + a DO-NOT-use-a-separate-buffer note), and the `case-study` skill
+  `build.md` (the page.tsx assembly bullet + the "Glass hero overlay" required-element note
+  both now describe the in-hero dwell spacer, not a post-hero buffer). **Committed + pushed.**
 - **2026-06-27 (later 5)** — **Wiki motion audited against cog + the Reveal/streaming rule
   hardened in the `case-study` skill.** Caroline wanted the wiki study to follow cog's motion
   language (Reveal on every element, streaming on the quotes) and that rule saved for future
