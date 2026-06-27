@@ -48,7 +48,7 @@ export const projects: Project[] = [
     company: "vector",
     title: "Rethinking time-to-value\nin B2B SaaS onboarding",
     description:
-      "ai-native vendor-customer workspace that guides workflows by turning meetings into action points",
+      "built an ai-native vendor-customer workspace that guides workflows by turning meetings into action points",
     tags: ["Product", "UX/UI", "AI", "Full-stack"],
   },
 ];
