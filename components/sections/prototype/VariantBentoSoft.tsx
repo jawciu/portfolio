@@ -31,8 +31,8 @@ function openWash([c0, c1, c2]: [string, string, string]) {
 
 function spineWash([c0, c1]: [string, string, string]) {
   return [
-    `radial-gradient(30% 70% at 50% 35%, ${c0}40, transparent 66%)`,
-    `radial-gradient(38% 85% at 50% 70%, ${c1}33, transparent 68%)`,
+    `radial-gradient(35% 74% at 50% 35%, ${c0}80, transparent 70%)`,
+    `radial-gradient(44% 90% at 50% 70%, ${c1}66, transparent 72%)`,
   ].join(", ");
 }
 

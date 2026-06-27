@@ -58,8 +58,8 @@ function bloom({ core, edge, coreStop = 0, edgeStop = 48, fadeStop = 80 }: CardB
 // crossfades cleanly into the bloom when the card opens.
 function spine({ core, edge }: CardBlob) {
   return [
-    `radial-gradient(30% 70% at 50% 35%, ${core}99, transparent 66%)`,
-    `radial-gradient(38% 85% at 50% 70%, ${edge}88, transparent 68%)`,
+    `radial-gradient(35% 74% at 50% 35%, ${core}cc, transparent 70%)`,
+    `radial-gradient(44% 90% at 50% 70%, ${edge}b3, transparent 72%)`,
   ].join(", ");
 }
 

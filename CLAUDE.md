@@ -129,6 +129,20 @@ it's a deliberate call.
 
 Newest first. Record *why*, not just *what*.
 
+- **2026-06-27 (later 4)** — **Bento: +88px below cards before footer + saturated collapsed
+  gradients.** (1) Added **+88px bottom space** under the showcase before the global footer:
+  `#work` section in `app/page.tsx` now `py-12 pb-[136px] md:py-20 md:pb-[168px]` (the `pb`
+  overrides `py`'s bottom; 48/80 base + 88). (2) **Made the collapsed-card gradients more
+  visible/saturated** so each closed card reads as a DISTINCT project (Caroline's ask).
+  Boosted alpha + reach on BOTH collapsed-blob functions, then **dialed back to a middle
+  ground** (first pass `f2`/`e6` read too strong): `spine()` in `ProjectCard.tsx` (the 3
+  real cards) core `99`→`cc` / edge `88`→`b3`, radii/transparent stops widened
+  (`35% 74%…70%`, `44% 90%…72%`); `spineWash()` in `VariantBentoSoft.tsx` (placeholders
+  04/05) `40`→`80` / `33`→`66`, same widened geometry. The blob sits behind the
+  `backdrop-blur-xl backdrop-saturate-150` glass, so it reads as a soft diffused colour
+  field, now clearly per-project (cog amber→green, synapse magenta→purple, E.ON-04
+  teal/green, vector-05 orange→magenta). Open-state `bloom()` untouched. tsc + eslint clean,
+  0 console errors. **Uncommitted.**
 - **2026-06-27 (later 3)** — **Bento collapsed-card spines now carry a short PROJECT NAME
   (distinct from the company), + cards 04/05 set up as "coming soon".** Caroline: the
   closed bento cards only showed the company (E.ON Next / cog adhd), but she may have

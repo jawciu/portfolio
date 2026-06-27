@@ -59,7 +59,8 @@ export default function Home() {
             shines through as a hairline. */}
         <div className="-mt-px bg-bg">
           <Toolkit />
-          <section id="work" className="px-8 py-12 md:px-12 md:py-20">
+          {/* pb adds +88px below the cards before the footer (48/80 base + 88). */}
+          <section id="work" className="px-8 py-12 pb-[136px] md:px-12 md:py-20 md:pb-[168px]">
             <Suspense fallback={<ProjectCarousel />}>
               <ProjectShowcasePrototype />
             </Suspense>
