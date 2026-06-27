@@ -13,13 +13,13 @@ gsap.registerPlugin(ScrollTrigger, useGSAP);
 // Caroline's voice — kept casual on purpose (lowercase starts + unicode
 // sprinkles are intentional). Paragraph breaks survive via whitespace-pre-line
 // on the StreamingText element; the streaming reveal is length-agnostic.
-const BIO = `I'm a multi-skilled product designer. I solve problems fast and focus on listening to users via qualitative methods and looking at data. ˚ ⊹ ｡ ·
+const BIO = `I'm a multi-skilled product designer. I solve problems quickly, listening to users through qualitative methods and reading the data. ˚ ⊹ ｡ ·
 
-✧ With my background in fashion and graphics I have attention to detail and an eye for design. I don't believe in pixel perfect but ship fast and learn, though because of my skills I can do good design fast.
+✧ A background in fashion and graphics means real attention to detail and an eye for design. I don't chase pixel-perfect. I ship and iterate, and the craft means I do it fast and well. ♡
 
-♡ ❀ I'm forever learning. always on the new side quest building new skills and finding tools whilst working on yet another project. ° ◦
+❀ I'm forever learning, always on a side quest, building skills and finding tools while shipping the next thing. ° ◦
 
-☆⋆✦ currently vibing with Claude and learning more about code architecture in the meantime. Also learning 3d :) Also trying to get to do a handstand. current sport quests: calisthenics, yoga, ultimate frisbee and squash. ✿`;
+☆⋆✦ right now: vibing with Claude, going deeper on code architecture and 3D, trying to land a handstand and getting way too competitive at ultimate frisbee. ✿`;
 
 // Rim reflections, Apple-icon style (refs: Caroline's glass sphere + the
 // Liquid Glass Podcasts icon; Icon Composer docs — "crisp specular highlights
