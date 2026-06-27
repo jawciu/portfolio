@@ -1,19 +1,40 @@
-import { Container, Kicker, Title, Body } from "../ui";
+import type { ReactNode } from "react";
+import { Container, Kicker, Title, Body, InsightCard } from "../ui";
 import { Reveal } from "../Reveal";
 
-const PILLARS: [string, string][] = [
-  [
-    "agentic",
-    "V2 is one of E.ON Next's first autonomous agents: a reasoning-and-acting agent on LangGraph, with an LLM as the brain and retrieval tools as the hands.",
-  ],
-  [
-    "grounded",
-    "It answers only from E.ON Next's own knowledge, using RAG, a continuously resynced knowledge base, and guardrails that block anything off-limits.",
-  ],
-  [
-    "proven",
-    "Subject-matter experts validated answers against a golden dataset before release, and a chunking and retrieval rework lifted positive recall from 82% to 90%.",
-  ],
+// num = concept + index (caps eyebrow), buzz = the AI buzzwords (prominent line,
+// mostly lowercase; acronyms / proper nouns keep their case)
+const PILLARS: { num: string; buzz: string; body: ReactNode }[] = [
+  {
+    num: "agentic #01",
+    buzz: "LLM · tools · LangGraph",
+    body: (
+      <>
+        One of E.ON Next&apos;s first autonomous agents: a reasoning-and-acting loop on LangGraph,
+        where an LLM plans each step and calls retrieval tools.
+      </>
+    ),
+  },
+  {
+    num: "grounded #02",
+    buzz: "RAG · guardrails",
+    body: (
+      <>
+        It answers only from E.ON Next&apos;s own knowledge, using RAG over a continuously resynced
+        knowledge base, with guardrails that block anything off-limits.
+      </>
+    ),
+  },
+  {
+    num: "proven #03",
+    buzz: "golden dataset · evals",
+    body: (
+      <>
+        Subject-matter experts validated answers against a golden dataset before release, and a
+        chunking and retrieval rework lifted positive recall from 82% to 90%.
+      </>
+    ),
+  },
 ];
 
 export function UnderTheHood() {
@@ -22,7 +43,11 @@ export function UnderTheHood() {
       <Container>
         <Reveal>
           <Kicker>Under the hood</Kicker>
-          <Title>An autonomous, heavily tested agent</Title>
+          <Title>
+            Production-grade,
+            <br />
+            eval-driven retrieval AI
+          </Title>
         </Reveal>
 
         <Reveal className="max-w-[760px]">
@@ -34,15 +59,17 @@ export function UnderTheHood() {
         </Reveal>
 
         <Reveal stagger={0.12} className="mt-12 grid auto-rows-fr gap-8 md:grid-cols-3">
-          {PILLARS.map(([label, body]) => (
-            <div
-              key={label}
-              className="flex h-full flex-col rounded-2xl border border-[var(--cog-line)] bg-[var(--cog-card)] px-8 py-7"
+          {PILLARS.map(({ num, buzz, body }) => (
+            <InsightCard
+              key={num}
+              label={num}
+              // override case-study-label's forced lowercase so LLM/RAG/LangGraph keep their case
+              title={<span style={{ textTransform: "none" }}>{buzz}</span>}
+              width="auto"
+              height="auto"
             >
-              <p className="case-study-label">{label}</p>
-              <div className="mt-4 h-px w-full bg-[var(--green)]" />
-              <Body className="mt-5 text-[var(--cog-ink-soft)]">{body}</Body>
-            </div>
+              {body}
+            </InsightCard>
           ))}
         </Reveal>
       </Container>
