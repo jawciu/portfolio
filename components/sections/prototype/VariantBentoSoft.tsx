@@ -171,7 +171,7 @@ export function VariantBentoSoft() {
                 title={p.title}
                 subtitle={p.description}
                 tags={p.tags}
-                blob={{ core: "#ff9c7d", edge: "#c098ff" }}
+                blob={{ core: "#f96a3f", edge: "#9059ee", fadeStop: 72 }}
                 actions={[
                   { label: "SOURCE CODE", href: "https://github.com/jawciu/vector" },
                   { label: "TRY IT", href: "https://vector.quest/" },
