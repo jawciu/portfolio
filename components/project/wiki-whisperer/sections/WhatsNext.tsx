@@ -22,17 +22,19 @@ export function WhatsNext() {
         </Reveal>
       </Container>
 
-      {/* lower band: cropped opportunity table bleeds off the screen-left edge + sits
-          flush to the bottom; the copy is vertically centred against the table's height.
-          The band min-height (lg) matches the table's rendered height so items-center
-          aligns the copy to the image centre. */}
+      {/* lower band: cropped opportunity table bleeds off the screen-left edge. The
+          image box spans the FULL band height (inset-y-0) and the band height is driven
+          by the copy, so image and copy occupy the exact same vertical extent — that
+          makes items-center line the copy's centre up with the image's centre no matter
+          how long the copy gets (a fixed-height bottom-pinned image would only match when
+          the copy happened to be the same height). */}
       <div className="relative mt-12 lg:mt-16">
-        {/* fixed-height crop box: width grows toward half the screen on wide viewports
-            while the height stays capped, so object-cover scales the table UP and crops
-            it MORE as the screen widens. Anchored top-left so the header + first rows
-            stay; flush to the screen-left edge + section bottom. */}
+        {/* full-band-height crop box: width grows toward half the screen on wide
+            viewports while object-cover scales/crops the table to the band height.
+            Anchored top-left so the header + first rows stay; bleeds off the screen-left
+            edge and fills top-to-bottom of the band. */}
         <div
-          className="pointer-events-none absolute bottom-0 left-0 -z-10 hidden overflow-hidden lg:block lg:h-[330px] lg:w-[46%] xl:h-[380px] xl:w-1/2"
+          className="pointer-events-none absolute inset-y-0 left-0 -z-10 hidden overflow-hidden lg:block lg:w-[46%] xl:w-1/2"
           // fade the right edge into the page so the table dissolves into the
           // background instead of ending on a hard vertical line.
           style={{
@@ -49,11 +51,12 @@ export function WhatsNext() {
           />
         </div>
 
-        <Container className="flex justify-end lg:min-h-[330px] lg:items-center xl:min-h-[380px]">
+        <Container className="flex justify-end lg:min-h-[330px] lg:items-start lg:pt-12 xl:min-h-[380px] xl:pt-16">
           <Reveal stagger={0.1} className="max-w-[440px]">
             <Body>
-              Next are the bigger improvements flagged in the research: a Kraken integration
-              for account-specific answers, and image support.
+            Two larger improvements surfaced in research. <br/>  <br/>
+            A CRM (Kraken) integration would connect Wiki Whisperer to customer data, pulling account-specific insights and resolving issues faster. <br/>  <br/> 
+            Energy specialists were also keen on images in responses. Particularly for questions about electricity meters, where a picture does a lot of the explaining.
             </Body>
           </Reveal>
         </Container>
