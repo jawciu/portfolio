@@ -193,41 +193,60 @@ breathing room** (`py-11`); wraps to a grid on small screens. `caption` accepts 
 match. Retint `#b52fa5` to the study's number colour.
 
 **CTA button — the shared `CaseStudyButton`** (`components/project/CaseStudyButton.tsx`, reused
-across studies, accent via a `color` prop). Squarish thin border, bold mono uppercase label,
-fills with the accent on hover; renders a `Link` when `href` is set else a `<button>` (pass
-`onClick`). Colour flows through an inline `--csb` CSS var so it can differ per study:
+across studies). Squarish thin border (`border` not `border-2` — match the nav-bracket line
+weight), bold mono uppercase label. **ONE fixed colour in every instance** — border + text are
+the home background (`--color-bg`); on hover it reverses (fills with that colour, text flips
+light). Renders a `Link` when `href` is set else a `<button>` (pass `onClick`):
 ```tsx
-<CaseStudyButton href="/project/<next-slug>" color="#b52fa5">CHECK IT OUT</CaseStudyButton>
+<CaseStudyButton href="/project/<next-slug>">CHECK IT OUT</CaseStudyButton>
 // button variant (e.g. a "watch video" that scrolls to the hero promo + restarts it):
-<CaseStudyButton color="#b52fa5" onClick={() => { window.scrollTo({ top: 0, behavior: "smooth" });
+<CaseStudyButton onClick={() => { window.scrollTo({ top: 0, behavior: "smooth" });
   const v = document.getElementById("hero-promo"); if (v instanceof HTMLVideoElement) { v.currentTime = 0; void v.play(); } }}>
   <svg width="13" height="13" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true"><path d="M2 1.5v9l8-4.5z" /></svg> WATCH VIDEO
 </CaseStudyButton>
 ```
+> Caroline trialled a per-study `color` prop (per-study accents) and then **dropped it for one
+> uniform colour** across all studies — do NOT reintroduce a `color` prop. Video CTAs keep the
+> ▶ play glyph; non-video CTAs are text-only.
+
 Use it for **every** CTA (the closing "check it out", any in-page "watch video"). It mirrors the
 homepage nav's `[ PROJECTS ]` mono/tracking feel but is bordered + bold so it stands out. If a
 section's promo video lives in the hero, give that `<video>` `id="hero-promo"` and use the
 button variant above to scroll back + replay from 0.
 
-**Closing "View next project"** — eyebrow + heading + `CaseStudyButton`, optionally on a
-distinct band:
+**Closing "View next project"** — eyebrow + heading + `CaseStudyButton`, on a distinct band.
+The band reads best as a **frosted glass panel** echoing the hero glass seam (this is what
+Caroline landed on): `rounded-t-[2.5rem]` + `backdrop-blur-2xl backdrop-saturate-150`, a
+**whisper-subtle near-white tint** (wiki `#fcf8ff`), a top **rim-glint hairline**, and a soft
+upward shadow:
 ```tsx
-<section data-section="NextProject" className="relative isolate overflow-hidden bg-[#fcf8ff] pt-[120px] pb-[160px]">
-  <SoftBlob className="bottom-[2%] right-[2%] h-[330px] w-[560px]" />   {/* optional: see blob rule */}
+<section data-section="NextProject"
+  className="relative isolate -mt-[64px] overflow-hidden rounded-t-[2.5rem] bg-[#fcf8ff] pt-[120px] pb-[160px] backdrop-blur-2xl backdrop-saturate-150 shadow-[0_-24px_60px_-20px_rgba(120,80,160,0.16)]">
+  {/* rim glint */}
+  <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-px rounded-t-[2.5rem]"
+       style={{ background: "linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,0.85) 22%, rgba(255,255,255,0.35) 50%, rgba(255,255,255,0.7) 78%, rgba(255,255,255,0))" }} />
+  <SoftBlob className="bottom-[2%] right-[2%] h-[330px] w-[560px]" />   {/* see blob rule */}
   <Container>
     <Reveal>
       <Kicker>View next project</Kicker>
       <div className="flex flex-col items-start gap-6">
         <h3 className="case-study-section-heading mb-0!">Next project title<br />second line</h3>
-        <CaseStudyButton href="#" color="<study accent>">CHECK IT OUT</CaseStudyButton>
+        <CaseStudyButton href="#">CHECK IT OUT</CaseStudyButton>
       </div>
     </Reveal>
   </Container>
 </section>
 ```
-Both studies share this exact structure (the button colour is the only difference — wiki
-`#b52fa5`, cog `#006b4b` dark green). Note `mb-0!` on the h3 (the baked heading margin would
+Both studies share this exact structure. Note `mb-0!` on the h3 (the baked heading margin would
 otherwise float the button).
+
+> **Tuck the section above UNDER the rounded glass corner.** If the previous section has a
+> visual bleeding to its bottom edge (e.g. an image flush to the boundary), the glass panel's
+> rounded-top corner will reveal that image's *straight* cut edge — looks broken. Pull the glass
+> panel up over it with a **negative top margin** (`-mt-[64px]`): later sibling in DOM, so it
+> paints on top, and with `backdrop-blur` the image **frosts under the curve** instead of being
+> cut. (If you do this, the section above can stay `pb-0` — the overlap replaces the bg-boundary
+> breathing space.)
 
 **Ambient `SoftBlob`** (per-study, copy + retint) — soft decorative wash. **Containment rule:**
 a blob inside an `overflow-hidden` section is clipped to a hard rectangle if its box extends past
@@ -235,6 +254,19 @@ the section edge. Keep the blob's **box fully inside** the section (positive ins
 `bottom-[2%] right-[2%]`, sized to fit) — SoftBlob fades to transparent well within its box, so a
 contained box shows no edge. Anchor it **low** if it should read as part of a closing band. Never
 rely on a negative inset + the clip to "crop" it; that is exactly the hard cut Caroline rejects.
+
+> **Make decorative blobs visible, and parallax them.** Caroline wants section blobs clearly
+> read, not barely-there: override `SoftBlob`'s defaults with `opacity-100` and a crisper
+> `blur-[56px]`, and use **two overlapping** blobs for a richer wash. Then give each blob a
+> **scroll parallax** so they drift at a different rate than the copy (the homepage feel): wrap
+> the positioned box in `<Parallax>` and put the blob inside as `inset-0 h-full w-full`, with
+> **different speeds and opposite signs** per blob (e.g. `speed={40}` / `speed={-26}`):
+> ```tsx
+> <Parallax speed={40} className="absolute bottom-[0%] right-[1%] -z-10 h-[380px] w-[620px]">
+>   <SoftBlob className="inset-0 h-full w-full opacity-100 blur-[56px]" />
+> </Parallax>
+> ```
+> (The `Parallax` div is the positioned box; its transform moves the absolute blob inside it.)
 
 > **Background-colour boundary → the section ABOVE needs `pb-[120px]`.** Sections default to
 > top-only padding (`pt-[120px] pb-0`), which is invisible when adjacent backgrounds match. But
@@ -333,8 +365,16 @@ them in on every study. All four are already reduced-motion safe.
   stray expression beside the element). Put layout-rationale notes as a `//` comment **above**
   the `return`, or inside the JSX once there's a parent element.
 - `CaseStudyButton` is **shared** (`components/project/CaseStudyButton.tsx`), not per-study —
-  import it from `../../CaseStudyButton` (sections) / `../CaseStudyButton` (study root) and pass
-  the study's `color`. `Stats` and `SoftBlob` are per-study (copy into the study folder + retint).
+  import it from `../../CaseStudyButton` (sections) / `../CaseStudyButton` (study root). It takes
+  **no colour prop** (one fixed colour across studies). `Stats` and `SoftBlob` are per-study
+  (copy into the study folder + retint).
+- A frosted glass panel needs **content behind it to frost** to read at all. A `backdrop-blur`
+  over a flat solid surface does ~nothing — rely on the rim glint + rounded corner + tint, OR
+  position it over the ambient blobs / an overlapping image (see the closing-section tuck rule).
+- Glass edge against a **light-over-dark boundary**: a white rim line placed exactly on the
+  seam is invisible. Push the highlight a few px **into the dark** side so it reads as a lit
+  bevel. For a natural look make it **uneven** (overlapping elliptical highlights at a few
+  x-spots), not a flat full-width band.
 - Caroline iterates copy + spacing fast and reacts to screenshots. Default to: lead with impact,
   keep paragraphs short, prefer label (`thing >`) + `Body` over long prose, and when she says
   "concise it" the copy may only get **shorter, never longer**. Verify each layout change with the
