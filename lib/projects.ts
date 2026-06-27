@@ -36,7 +36,7 @@ export const projects: Project[] = [
   {
     slug: "synapse",
     company: "synapse",
-    title: "Compounding memory with knowledge graphs and agentic RAG",
+    title: "Compounding memory\nwith knowledge graphs\nand agentic RAG",
     description:
       "built a memory-first reflection agent for the london langchain x surrealdb hackathon",
     tags: ["Product", "AI Architecture", "Backend"],
@@ -46,9 +46,9 @@ export const projects: Project[] = [
   {
     slug: "project-05",
     company: "vector",
-    title: "Rethinking time-to-value in B2B SaaS onboarding",
+    title: "Rethinking time-to-value\nin B2B SaaS onboarding",
     description:
-      "an ai-native vendor-customer workspace that turns meeting transcripts into follow-ups and flags at-risk accounts before they go dark",
+      "ai-native vendor-customer workspace that guides workflows by turning meetings into action points",
     tags: ["Product", "UX/UI", "AI", "Full-stack"],
   },
 ];
