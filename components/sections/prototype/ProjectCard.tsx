@@ -201,7 +201,11 @@ export function ProjectCard({
                 {label}
               </span>
             </div>
-            <h3 className="mt-[1.8rem] max-w-none font-hero text-xl font-bold uppercase leading-[1.05] tracking-tight text-fg md:text-[1.75rem]">
+            <h3
+              className={`mt-[1.8rem] font-hero text-xl font-bold uppercase leading-[1.05] tracking-tight text-fg md:text-[1.75rem] ${
+                image ? "max-w-none" : "max-w-xl"
+              }`}
+            >
               {title}
             </h3>
             {subtitle && (
