@@ -129,6 +129,81 @@ it's a deliberate call.
 
 Newest first. Record *why*, not just *what*.
 
+- **2026-06-27 (highlights)** — **New `/highlights` career section under About**
+  (`components/sections/Highlights.tsx`, mounted in `app/page.tsx` on the black plate
+  directly under `<About/>`, before `<Toolkit/>`). Caroline brought a reference
+  `Highlights.jsx` from another project (a data-driven 4-card career row with per-role
+  accent colours) and asked for the DS treatment: our fonts/colours/section-label,
+  placed below About. **Build:** kept the data-driven pattern (a `HIGHLIGHTS` array,
+  edit DATA not markup) but rebuilt the markup against DESIGN.md. 4 chapters: founding
+  designer @ COG (health-tech, 0→1), product designer @ E.ON Next (**AI tools** —
+  foregrounded for the AI-role hunt), senior print designer @ Burberry · McQueen,
+  educator @ BrainStation. **Type:** role = Geist Mono uppercase wide-tracked (HUD
+  voice), company = Geist body `font-medium` full-fg, detail = Geist Mono caption
+  `fg-muted`. Three-font discipline kept. **Colour decision (the DS-critical part):**
+  the reference's 4 arbitrary hexes aren't in our system, and DESIGN.md forbids new
+  accents / decorative colour. So each chapter maps to a **spectrum token** and colour
+  enters as *light*, not a fill — the role text takes a spectrum accent (signal: which
+  chapter), everything else monochrome. **(Caroline pared it back: an earlier version
+  had a dissolving colour-pool smudge + a lit glow-rule above each role; she asked to
+  drop both, keeping just the coloured role label.)** **Order (her call):** founding
+  designer → product designer → educator → senior print designer (last). **Accent
+  sequence (her call): green → yellow → red → pink** — COG `#3fc4ad` (orb-4 green) ·
+  E.ON `#ffcf52` (orb-3 yellow) · BrainStation `#F56267` (flame-2 red) · Burberry
+  `#ff2f7e` (orb-1 pink). **Label** `/highlights` uses the exact shared column
+  geometry (full-bleed `px-8 md:px-12` → `max-w-7xl 2xl:max-w-[88rem]` → `pl-2`) so it
+  lines up with `/about` + `/toolkit` down the page. **Motion:** one staggered fade-up
+  on scroll-in via the existing `useInView` + `usePrefersReducedMotion` (reduced-motion
+  shows instantly, no transition). Grid `grid-cols-2 → md:grid-cols-4`. tsc + eslint
+  clean; verified desktop (1440) + mobile (430) via the standalone-Playwright trick —
+  reads clean, colours distinct, label aligned, mobile reflows to 2×2. (The one console
+  dup-key warning is PRE-EXISTING from Toolkit's `Marquee` duplicating its track, not
+  this component.) **Dials:** the `HIGHLIGHTS` array (content + per-chapter accent +
+  order — leading with founding-designer is deliberate; reorder by moving a line), the
+  pool/rule geometry, `i * 0.08` stagger. **Uncommitted** pending Caroline.
+- **2026-06-27 (later 7)** — **Home bento: synapse card now shows THREE CTA buttons
+  instead of a single whole-card link.** Caroline wants the synapse ("sign-ups" in
+  voice transcription) card to offer multiple destinations: a blog post, the live
+  product, and the source repo. A single whole-card click can't do that, so the open
+  card now renders three buttons in the **"Check it out" style** (outline + bold mono
+  uppercase). **Changes:** (1) **`components/project/CaseStudyButton.tsx`** gained a
+  **`tone`** prop (`"ink"` default = the bg-colour version for light case-study pages;
+  **`"light"`** = fg-colour outline for DARK surfaces like the bento card — the ink
+  version is near-invisible on dark), a **`size`** prop (`"md"` default; **`"sm"`** =
+  compact, `px-3 py-2`, **12px** label, `tracking-[0.12em]`), and now renders external
+  `http(s)` hrefs as `<a target="_blank" rel="noopener noreferrer">` (in-app paths still
+  use Next `<Link>`). (2) **`components/sections/prototype/ProjectCard.tsx`** gained an
+  **`actions?: {label,href}[]`** prop (overrides `href`). When present the card can't be
+  a `<button>` (no nested interactive elements), so the root becomes a **`<div>`** — kept
+  as the root in BOTH open/closed states so the flex-grow expand transition never
+  remounts; collapsed it's still activatable (click / Enter / Space / hover, `role=button`
+  + `tabIndex`). The buttons render as a **single no-wrap row** (`gap-4`) below the
+  subtitle; the actions card's left column widens to **`w-[56%]`** (vs `w-[50%]`) so all
+  three fit one line, and the project **tags stay** (bottom-left). (3) **synapse card**
+  (`VariantBentoSoft.tsx`, i===2): swapped `href` for `actions` — **MY BLOG POST** →
+  SurrealDB blog, **TRY IT** → `https://synapse-ks93.onrender.com/`, **SOURCE CODE** →
+  `https://github.com/jawciu/synapse`. tsc + eslint clean; verified the one-line fit +
+  tags via the standalone-Playwright trick. **This is a first test on synapse** — the
+  pattern (`actions` prop) is reusable for any other card that needs multiple links.
+  **Uncommitted.**
+- **2026-06-27 (later 8)** — **Rolled the `actions` button pattern out to the rest of the
+  home bento + migrated the last two placeholder cards to `<ProjectCard>`.** Follow-on to
+  later-7. (1) **E.ON Next/wiki (i===0)** and **cog (i===1)** cards: replaced the
+  whole-card `href` with a single **`[MY CASE STUDY]`** button (`actions` = one internal
+  link → renders a Next `<Link>`, in-app nav, not a new tab). (2) **AI design system
+  (project-04, i===3)** and **vector (project-05, i===4)**: migrated from the old centred
+  placeholder `<button>` layout to **`<ProjectCard>`** so all five cards share one
+  expanded layout. project-04 = E.ON Next logo + `/ai_design_system` kicker, blue→teal
+  blob (`#3fc4ad`→`#2835A8`), **no CTA yet** (none specified). project-05 = `/vector`
+  kicker, orange→magenta blob (`#ff8526`→`#ff2f7e`), **`[SOURCE CODE]` + `[TRY IT]`**
+  buttons with **placeholder `#` hrefs** (need real URLs from Caroline). Both still have
+  empty copy (no subtitle/tags/image) — placeholder content pending. (3) The old
+  placeholder fallback block (+ `POOLS`/`openWash`/`spineWash`/`Grain`) is **kept** in
+  `VariantBentoSoft.tsx` as a safety net for any future unhandled index, but no card uses
+  it now. tsc + eslint clean; all four cards verified open via the standalone-Playwright
+  trick. **Uncommitted.** **TODO:** vector's real SOURCE CODE + TRY IT URLs; real
+  copy/assets for both placeholder cards; decide if AI design system gets a CTA.
+
 - **2026-06-27 (later 6)** — **Glass-reveal "frozen stop" fixed on cog: dead buffer →
   in-hero cream dwell-space.** Caroline's bf found the case-study glass reveal confusing:
   after the hero pins, the page sat motionless for a stretch before the glass rose, so it
@@ -1531,6 +1606,120 @@ Newest first. Record *why*, not just *what*.
 > Latest handoff lives at the top. At the end of a session, append a new entry with: what changed, current
 > state (working / broken / in-progress), and explicit next steps for the next agent. Capture stated intent
 > ("tomorrow we do X") and long absences here too.
+
+### 2026-06-27 (eve-3) — Site-wide spelling/British-English copy pass + Wiki What's Next vertical alignment; Caroline signed off ("bye")
+- **Status: WORKING, all COMMITTED** on `project-showcase-experiment`. Two small, self-contained
+  commits this session; tsc clean; nothing in progress, nothing broken.
+- **(1) Spelling + British-English pass** (commit `255e08c`) — read EVERY user-facing copy
+  source (homepage hero/about-bio/footer/nav/bento cards, both case studies' sections,
+  `lib/projects.ts`, `projectMeta.ts`, SEO metadata). British spelling was already consistent
+  throughout; fixes were: wiki `quicklylost`→`quickly lost`, `source acticles`→`articles`,
+  `flexibilityy`→`flexibility`, `skepticism`→`scepticism` (the only Americanism), `senior
+  advisor`→`advisors`, `I lead`→`I led` (Measuring, tense); cog Results `use the it`→`use it`
+  in a therapist quote. **LEFT ALONE per Caroline:** the cog Solution alt text
+  `'You practiced self-help!'` (US spelling, but it quotes the literal on-screen UI text).
+  *(That commit also carried Caroline's own Impact stat rounding — 89.4%→89% etc.)*
+- **(2) Wiki What's Next vertical alignment** (commit `4df353d`, `WhatsNext.tsx`) — Caroline
+  rewrote the copy (now 3 paragraphs). She wanted it vertically centred against the
+  left-bleeding opportunity-table image. Fix: image box changed from a fixed-height
+  bottom-pinned crop (`bottom-0 h-[330/380px]`) to **full band height (`inset-y-0`)**, so
+  image + copy share the same vertical extent. Then, because the table is top-heavy (header +
+  bold first rows, fades at the bottom), a true geometric centre READ low — so the copy is
+  **top-aligned with an offset** (`lg:items-start lg:pt-12 xl:pt-16`), sitting ~25px above
+  centre, landing it in the table's upper body. Verified at 1024/1440/1920 via the
+  standalone-Playwright trick (dev server was already running): centred Δ=0 before the offset,
+  then raised; 0 console errors; screenshot confirmed the balance.
+- **Next steps:** none outstanding from this session. Continue the wiki visual pass / re-enable
+  the hidden Key Takeaways when ready (carried over from the eve-2 handoff below).
+- **Open intent:** none stated.
+
+### 2026-06-27 (eve-2) — Wiki MyRole icons + User-led refinement (Feedback) rebuild + footer GitHub links; Caroline signed off ("bye")
+- **Status: WORKING. My files are committed** (working tree shows them clean; HEAD `e3c2a8c`,
+  a parallel agent has also been committing — glass reveal / stats / copy). Only dirty item is
+  `WhatsNext.tsx` (modified by the other thread, not me) + untracked source assets.
+- **Done this session (all in `components/project/wiki-whisperer/sections/Feedback.tsx`,
+  `components/Footer.tsx`, the wiki SVG assets, and `.claude/skills/case-study/build.md`):**
+  1. **MyRole** — rebuilt to cog's icon-card layout using Caroline's new SVGs
+     (`design/research/testing/launch.svg`). Card-colour tweak to match Figma: coral cards
+     (design, testing) lightened `#EDCAFC → #F5DFFF`; fuchsia cards (research, launch) kept on
+     peach `#FFC7B2` (she later supplied updated research/launch with `#FFDDD1` baked in).
+  2. **Feedback ("User-led refinement")** — two breakout product blocks (can run wider than the
+     1080 heading via `max-w-[1300px]` wrappers):
+     - Block 1: **pin.svg + search.svg** screenshots LEFT, the speed/pin-answers/search-history
+       copy RIGHT. Equal height, 12px gap (tooltip visible), bigger on large screens
+       (`lg:h-500 xl:h-572`). New copy in the `QUICK` array.
+     - Block 2 (flipped): copy LEFT (the-flag-form / routed-to-be-actioned, "context and copy"
+       removed, pink rules removed), **flag-form.svg + feedback.svg** screenshots RIGHT.
+       flag-form ~0.85x, feedback ~1.1x (row height tracks feedback so nothing overflows).
+     - Deeper-piece paragraph was commented out by Caroline (left as-is).
+  3. **SVG surgery (important, documented in the skill):** the pin/search/feedback SVGs needed
+     fixing at the source, not in CSS:
+     - `pin.svg`: rounded both bottom corners (added rounding to the sidebar + panel paths),
+       removed the tooltip's drop-shadow filter (the "wrapper" box), cropped viewBox to the
+       device (`0 6 456 767`) so it's the same height as search, and added a lilac
+       `#F7EBFF` **perimeter stroke path** (hugs the device, not the bounding box / tooltip).
+     - `search.svg`: added `stroke="#F7EBFF"` to its panel path (it already filled its viewBox).
+     - `feedback.svg`: a flat raster (pattern-fill) with square corners — cropped its viewBox
+       (`894 → 862`) to drop transparent padding, then CSS `rounded-[16px] border-[1.5px]
+       border-[#F7EBFF]` on the `<img>` gives rounded corners + the lilac border.
+     - **Gotcha:** CSS `rounded-*`/`border` only works when the panel fills the img box. If the
+       SVG has shadow/transparent margin (or content narrower than the box, like pin's tooltip),
+       CSS rounds empty space — must fix in the SVG (crop viewBox and/or stroke the real path).
+  4. **Footer** (`components/Footer.tsx`, global): added a top-left **`github.com/jawciu/portfolio`**
+     link (→ repo, new tab) styled like the navbar `~/caro/portfolio/2026` path label, and a
+     **GitHub icon** in the "Reach me here" row (→ `github.com/jawciu`, new tab) matching the
+     LinkedIn/email icons. (Caroline then restyled the footer heading to Iosevka + added a glassy
+     top edge herself — that's her edit, kept.)
+  5. **Skill** (`build.md`): extended the product-visual HARD RULE to spell out that flat/square
+     assets (raster screenshots, frameless SVGs) must get `rounded-[16px] border-[1.5px]
+     border-[#F7EBFF]` (crop transparent viewBox padding first), and pre-framed assets get the
+     border as an in-SVG stroked perimeter path.
+- **NEXT / loose ends:** (a) stray temp file **`_wncheck.mjs`** in the repo root (not mine —
+  delete if unwanted). (b) Untracked new source assets: `assets/impact.svg`, `assets/Idle/`,
+  `assets/feedback.svg`, `assets/flag form.svg` (the live copies are already in
+  `public/projects/wiki-whisperer/`). (c) The 3 `assets/*.pdf` source decks stay untracked
+  (intentional). (d) `WhatsNext.tsx` is modified by the parallel thread.
+- **Verify trick (unchanged):** MCP screenshots time out on these live pages; use a throwaway
+  `playwright` script from the PROJECT ROOT (`domcontentloaded` + `waitForTimeout`, element-shoot).
+
+### 2026-06-27 (eve) — Wiki What's Next bg-table + footer heading + motion audit + stat count-up; Caroline signed off ("bye")
+- **Status: WORKING. All MY work committed + pushed** on `project-showcase-experiment`
+  (HEAD `555fbba`, origin in sync). Done this session:
+  1. **WhatsNext** (`sections/WhatsNext.tsx`): replaced the `impact.svg` illustration with the
+     **prioritised opportunity table as a left-bleeding background image** — flush to the
+     screen-left edge + section bottom, eyebrow/heading in their normal top-left spot, copy
+     vertically centred against the table. Image is an `object-cover` crop box that grows to
+     **half the screen width on wide viewports (`xl:w-1/2`) and crops MORE as it widens**;
+     right edge fades into the page via a mask. Lilac (scheme-matched) already-cropped PNG at
+     `public/projects/wiki-whisperer/opportunities-table-crop.png` (orphan full-size png
+     removed). *(Caroline has since expanded the copy to two paragraphs about the Kraken/CRM
+     integration + image support — her edit, uncommitted, leave it.)*
+  2. **Footer** "Let's Connect" → **`font-hero`** (Iosevka) with the same uppercase +
+     faux-extra-bold text-stroke as every other heading. (in commit `9c96fe3`)
+  3. **Blob experiment** (make ambient blobs fixed/parallax) — TRIED then **fully REVERTED**
+     at her request; blobs are back to the original static `absolute inset-0` layer. Don't
+     re-add without her ask. (Gotcha learned: the glass plate's `backdrop-filter` makes it a
+     containing block, so `position:fixed` blobs inside it are NOT viewport-fixed; and
+     `sticky` inside it lands at a constant-but-offset top, not 0.)
+  4. **Motion audit**: wiki already matched cog (Reveal on every element bar the Hero, stream
+     on every callout/testimonial; `Reveal.tsx`/`StreamingQuote.tsx` byte-identical to cog;
+     verified 0 stuck-hidden, all 940 `.cs-char` play, 0 errors). Hardened the rules in the
+     `case-study` skill `build.md` + added a Motion acceptance check. (commit `9f635d5`)
+  5. **Stat count-up**: new **`components/project/wiki-whisperer/CountUp.tsx`** (GSAP +
+     ScrollTrigger, reduced-motion/SSR safe, parses suffix/decimals/grouping from the display
+     string), baked into the shared **`Stats`** primitive so BOTH wiki stat rows roll 0→value
+     on scroll-in (`tabular-nums` to steady widths). **Dropped the % decimals** → Impact now
+     **89 / 97 / 94 / 91%**. (commits `555fbba` + `255e08c`, pushed.)
+- **UNCOMMITTED in the shared tree (NOT mine — leave for Caroline / other agents):**
+  `WhatsNext.tsx` (her expanded What's Next copy), `app/project/wiki-whisperer/page.tsx` (she
+  swapped the post-hero buffer for an in-hero `h-[34vh]` "dwell space"), `app/project/cog-adhd/
+  page.tsx`, `DESIGN.md`, `build.md` (a "HARD RULE — every product visual uses the same
+  radius/hairline/soft shadow" addition), `CLAUDE.md`. Don't `git add -A`; commit only when
+  she asks, specific files only.
+- **Minor follow-up (optional):** the wiki page `metadata.description` still says "89.4%
+  adoption" — could round to "89%" to match the stat now that decimals are dropped.
+- **Open intent:** none stated; she said "bye" mid-flow on the What's Next copy + hero dwell
+  edits (both still uncommitted, intentionally).
 
 ### 2026-06-27 — Wiki case-study polish pass (Early Impact / Rollout / What's Next / NextProject) + reusable components + glass footer
 - **Status: WORKING. Almost all committed + pushed** on `project-showcase-experiment`. Long

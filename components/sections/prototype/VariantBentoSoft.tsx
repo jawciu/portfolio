@@ -67,7 +67,7 @@ export function VariantBentoSoft() {
                 title={p.title}
                 subtitle={p.description}
                 tags={p.tags}
-                href="/project/wiki-whisperer"
+                actions={[{ label: "MY CASE STUDY", href: "/project/wiki-whisperer" }]}
                 image={{
                   src: "/assets/eon-next-product.svg?v=3",
                   alt: "Wiki Whisperer agentic-RAG chat answering an energy query",
@@ -98,7 +98,7 @@ export function VariantBentoSoft() {
                 }}
                 imageClassName="pointer-events-none absolute right-[-10%] bottom-0 h-[65%] w-auto max-w-none object-contain object-left"
                 blob={{ core: "#F2922E", edge: "#189E71", coreStop: 30, edgeStop: 50, fadeStop: 80 }}
-                href="/project/cog-adhd"
+                actions={[{ label: "MY CASE STUDY", href: "/project/cog-adhd" }]}
               />
             );
           }
@@ -124,7 +124,59 @@ export function VariantBentoSoft() {
                 }}
                 imageClassName="pointer-events-none absolute right-[-12%] top-[55%] h-[53%] w-auto max-w-none -translate-y-1/2 rounded-2xl object-contain shadow-[0_20px_60px_rgba(0,0,0,0.45)]"
                 blob={{ core: "#C24F83", edge: "#734A8E", coreStop: 8, edgeStop: 52 }}
-                href="https://surrealdb.com/blog/building-compounding-memory-with-knowledge-graphs-and-agentic-rag"
+                actions={[
+                  {
+                    label: "MY BLOG POST",
+                    href: "https://surrealdb.com/blog/building-compounding-memory-with-knowledge-graphs-and-agentic-rag",
+                  },
+                  { label: "TRY IT", href: "https://synapse-ks93.onrender.com/" },
+                  { label: "SOURCE CODE", href: "https://github.com/jawciu/synapse" },
+                ]}
+              />
+            );
+          }
+
+          // Project 04 (AI design system, E.ON Next) — reusable card layout.
+          // Copy/visual still placeholder; no CTA yet.
+          if (i === 3) {
+            return (
+              <ProjectCard
+                key={p.slug}
+                open={open}
+                onActivate={onActivate}
+                collapsedLabel={p.company}
+                collapsedTitle={p.name}
+                year={p.year}
+                label="/ai_design_system"
+                logo={{ src: "/assets/e_on_next.png", alt: "E.ON Next" }}
+                title={p.title}
+                subtitle={p.description}
+                tags={p.tags}
+                blob={{ core: "#3fc4ad", edge: "#2835A8" }}
+              />
+            );
+          }
+
+          // Project 05 (vector) — reusable card layout; source + live-product CTAs.
+          if (i === 4) {
+            return (
+              <ProjectCard
+                key={p.slug}
+                open={open}
+                onActivate={onActivate}
+                collapsedLabel={p.company}
+                collapsedTitle={p.name}
+                year={p.year}
+                label="/vector"
+                title={p.title}
+                subtitle={p.description}
+                tags={p.tags}
+                blob={{ core: "#ff8526", edge: "#ff2f7e" }}
+                actions={[
+                  // TODO: real URLs from Caroline
+                  { label: "SOURCE CODE", href: "#" },
+                  { label: "TRY IT", href: "#" },
+                ]}
               />
             );
           }

@@ -12,6 +12,7 @@
 //     subtitle, tags (pinned bottom-left).
 import { useRouter } from "next/navigation";
 import { Grain } from "./softBits";
+import { CaseStudyButton } from "../../project/CaseStudyButton";
 
 // Gradient-blob colours: a warm core diffusing out to a cool edge. Optional stops
 // tune how far the core holds before the edge takes over — bump `coreStop` to keep
@@ -45,6 +46,10 @@ export type ProjectCardProps = {
   /** optional link — clicking the OPEN card follows it. An absolute http(s) URL
       opens in a new tab (external); a relative path navigates in-app. */
   href?: string;
+  /** when present, the OPEN card shows these CTA buttons (outline + bold mono
+      label, like the case-study "Check it out") instead of a single whole-card
+      link — e.g. blog post / live product / source code. Overrides `href`. */
+  actions?: { label: string; href: string }[];
 };
 
 // Expanded bloom — one big blurred circle whose centre sits just OUTSIDE the
@@ -78,8 +83,10 @@ export function ProjectCard({
   imageClassName,
   blob,
   href,
+  actions,
 }: ProjectCardProps) {
   const router = useRouter();
+  const hasActions = !!(actions && actions.length);
   // Default: artwork floats centred, bleeding slightly off the right edge.
   const imgClass =
     imageClassName ??
@@ -93,24 +100,13 @@ export function ProjectCard({
       else router.push(href);
     } else onActivate();
   };
-  return (
-    <button
-      type="button"
-      onMouseEnter={onActivate}
-      onFocus={onActivate}
-      onClick={onClick}
-      aria-label={
-        open && href
-          ? isExternal
-            ? `Read about ${title} (opens in a new tab)`
-            : `Open ${title} case study`
-          : undefined
-      }
-      className={`group relative min-h-0 overflow-hidden rounded-3xl text-left outline-none transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-        open && href ? "cursor-pointer" : ""
-      }`}
-      style={{ flexGrow: open ? 6 : 1, flexBasis: 0 }}
-    >
+  const rootClass = `group relative min-h-0 overflow-hidden rounded-3xl text-left outline-none transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+    (hasActions ? !open : open && href) ? "cursor-pointer" : ""
+  }`;
+  const rootStyle = { flexGrow: open ? 6 : 1, flexBasis: 0 };
+
+  const inner = (
+    <>
       {/* colour blob BEHIND the glass — bloom (open) crossfades with spine
           (collapsed); same palette so the transition is seamless. */}
       <div
@@ -188,7 +184,7 @@ export function ProjectCard({
         {/* LEFT — copy sits a bit above centre; year top-left, tags bottom-left */}
         <div
           className={`relative flex flex-col justify-center p-6 md:p-9 ${
-            image ? "w-[50%] flex-none" : "flex-1"
+            image ? (hasActions ? "w-[56%] flex-none" : "w-[50%] flex-none") : "flex-1"
           }`}
         >
           <p className="absolute left-6 top-6 font-mono text-[10px] uppercase tracking-[0.25em] text-fg/60 md:left-9 md:top-9">
@@ -214,6 +210,18 @@ export function ProjectCard({
                 {subtitle}
               </p>
             )}
+            {/* CTA buttons — outline + bold mono label (light tone for the dark
+                card); a single compact row, each opening its own link instead of
+                a whole-card click. */}
+            {hasActions && (
+              <div className="mt-7 flex flex-nowrap items-center gap-4">
+                {actions!.map((a) => (
+                  <CaseStudyButton key={a.href} href={a.href} tone="light" size="sm">
+                    {a.label}
+                  </CaseStudyButton>
+                ))}
+              </div>
+            )}
           </div>
           {tags && tags.length > 0 && (
             <p className="absolute inset-x-6 bottom-6 flex items-center gap-x-2 whitespace-nowrap font-mono text-xs uppercase tracking-[0.1em] text-fg md:inset-x-9 md:bottom-9 md:text-sm">
@@ -232,6 +240,57 @@ export function ProjectCard({
           </div>
         )}
       </div>
+    </>
+  );
+
+  // A card with CTA buttons can't be a <button> (no nested interactive elements),
+  // so it renders a <div> — kept as the root in BOTH states so the flex-grow
+  // transition never remounts. Collapsed, the div is still activatable (click /
+  // Enter / Space / hover); open, the inner buttons take over.
+  if (hasActions) {
+    return (
+      <div
+        onMouseEnter={onActivate}
+        onFocus={onActivate}
+        onClick={open ? undefined : onActivate}
+        onKeyDown={
+          open
+            ? undefined
+            : (e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  onActivate();
+                }
+              }
+        }
+        role={open ? undefined : "button"}
+        tabIndex={open ? -1 : 0}
+        aria-label={open ? undefined : `Expand ${title}`}
+        className={rootClass}
+        style={rootStyle}
+      >
+        {inner}
+      </div>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      onMouseEnter={onActivate}
+      onFocus={onActivate}
+      onClick={onClick}
+      aria-label={
+        open && href
+          ? isExternal
+            ? `Read about ${title} (opens in a new tab)`
+            : `Open ${title} case study`
+          : undefined
+      }
+      className={rootClass}
+      style={rootStyle}
+    >
+      {inner}
     </button>
   );
 }
