@@ -42,7 +42,6 @@ export const projects: Project[] = [
     tags: ["Product", "AI Architecture", "Backend"],
     accent: "linear-gradient(120deg, #C24E86 0%, #6D1B76 100%)",
   },
-  { slug: "project-04", company: "E.ON Next", title: "AI design system", description: "", tags: [], placeholder: true },
   {
     slug: "project-05",
     company: "vector",
@@ -50,5 +49,13 @@ export const projects: Project[] = [
     description:
       "built an ai-native vendor-customer workspace that guides workflows by turning meetings into action points",
     tags: ["Product", "UX/UI", "AI", "Full-stack"],
+  },
+  {
+    slug: "project-04",
+    company: "E.ON Next",
+    title: "AI design system for\nE.ON Next tech products",
+    description:
+      "built the brand identity and a reusable component library that gives e.on next's ai products one consistent design language",
+    tags: ["Brand", "Design System", "UX/UI"],
   },
 ];

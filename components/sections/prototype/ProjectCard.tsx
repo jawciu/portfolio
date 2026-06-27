@@ -50,6 +50,9 @@ export type ProjectCardProps = {
       label, like the case-study "Check it out") instead of a single whole-card
       link — e.g. blog post / live product / source code. Overrides `href`. */
   actions?: { label: string; href: string }[];
+  /** optional non-interactive note shown where the CTA row would sit, e.g.
+      "case study coming soon" — a dim outlined chip, not a link. */
+  note?: string;
 };
 
 // Expanded bloom — one big blurred circle whose centre sits just OUTSIDE the
@@ -84,6 +87,7 @@ export function ProjectCard({
   blob,
   href,
   actions,
+  note,
 }: ProjectCardProps) {
   const router = useRouter();
   const hasActions = !!(actions && actions.length);
@@ -202,7 +206,7 @@ export function ProjectCard({
               </span>
             </div>
             <h3
-              className={`mt-[1.8rem] font-hero text-xl font-bold uppercase leading-[1.05] tracking-tight text-fg md:text-[1.75rem] ${
+              className={`mt-[1.8rem] whitespace-pre-line font-hero text-xl font-bold uppercase leading-[1.05] tracking-tight text-fg md:text-[1.75rem] ${
                 image ? "max-w-none" : "max-w-xl"
               }`}
             >
@@ -229,6 +233,14 @@ export function ProjectCard({
                   </CaseStudyButton>
                 ))}
               </div>
+            )}
+            {/* coming-soon note — dim outlined chip, echoes the CTA shape but
+                clearly non-interactive (dashed border, muted fg). */}
+            {note && (
+              <span className="mt-7 inline-flex items-center gap-2 rounded-md border border-dashed border-fg/30 px-3 py-2 font-mono text-[12px] font-bold uppercase tracking-[0.12em] text-fg/55">
+                <span aria-hidden className="inline-block h-1.5 w-1.5 rounded-full bg-fg/40" />
+                {note}
+              </span>
             )}
           </div>
           {tags && tags.length > 0 && (

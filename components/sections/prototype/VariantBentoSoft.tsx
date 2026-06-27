@@ -123,7 +123,7 @@ export function VariantBentoSoft() {
                   alt: "synapse reflection agent — map your mind journaling view",
                 }}
                 imageClassName="pointer-events-none absolute right-[-12%] top-[55%] h-[53%] w-auto max-w-none -translate-y-1/2 rounded-2xl object-contain shadow-[0_20px_60px_rgba(0,0,0,0.45)]"
-                blob={{ core: "#C24F83", edge: "#734A8E", coreStop: 8, edgeStop: 52 }}
+                blob={{ core: "#8FB7EA", edge: "#13564B", coreStop: 8, edgeStop: 52 }}
                 actions={[
                   {
                     label: "MY BLOG POST",
@@ -136,9 +136,37 @@ export function VariantBentoSoft() {
             );
           }
 
-          // Project 04 (AI design system, E.ON Next) — reusable card layout.
-          // Copy/visual still placeholder; no CTA yet.
+          // Project 04 (vector) — reusable card layout; source + live-product CTAs.
           if (i === 3) {
+            return (
+              <ProjectCard
+                key={p.slug}
+                open={open}
+                onActivate={onActivate}
+                collapsedLabel={p.company}
+                collapsedTitle={p.name}
+                year={p.year}
+                label="/vector"
+                title={p.title}
+                subtitle={p.description}
+                tags={p.tags}
+                image={{
+                  src: "/assets/vector-product.png",
+                  alt: "vector — AI turning a meeting into a draft onboarding task",
+                }}
+                imageClassName="pointer-events-none absolute right-[-15%] top-[calc(50%+32px)] h-[50%] w-auto max-w-none -translate-y-1/2 rounded-2xl bg-[#18181f] p-5 object-contain shadow-[0_20px_60px_rgba(0,0,0,0.45)]"
+                blob={{ core: "#f96a3f", edge: "#9059ee", fadeStop: 72 }}
+                actions={[
+                  { label: "SOURCE CODE", href: "https://github.com/jawciu/vector" },
+                  { label: "TRY IT", href: "https://vector.quest/" },
+                ]}
+              />
+            );
+          }
+
+          // Project 05 (AI design system, E.ON Next) — reusable card layout.
+          // Wiki Whisperer blob colours; case study still to come.
+          if (i === 4) {
             return (
               <ProjectCard
                 key={p.slug}
@@ -152,30 +180,8 @@ export function VariantBentoSoft() {
                 title={p.title}
                 subtitle={p.description}
                 tags={p.tags}
-                blob={{ core: "#3fc4ad", edge: "#2835A8" }}
-              />
-            );
-          }
-
-          // Project 05 (vector) — reusable card layout; source + live-product CTAs.
-          if (i === 4) {
-            return (
-              <ProjectCard
-                key={p.slug}
-                open={open}
-                onActivate={onActivate}
-                collapsedLabel={p.company}
-                collapsedTitle={p.name}
-                year={p.year}
-                label="/vector"
-                title={p.title}
-                subtitle={p.description}
-                tags={p.tags}
-                blob={{ core: "#f96a3f", edge: "#9059ee", fadeStop: 72 }}
-                actions={[
-                  { label: "SOURCE CODE", href: "https://github.com/jawciu/vector" },
-                  { label: "TRY IT", href: "https://vector.quest/" },
-                ]}
+                blob={{ core: "#C05846", edge: "#6D1B76" }}
+                note="case study coming soon"
               />
             );
           }
