@@ -238,14 +238,20 @@ shadow, and **two parallax `SoftBlob`s** drifting low on the right (eyebrow + he
   </Reveal></Container>
 </section>
 ```
-The structure + the rim glint + the CTA are **identical** across studies; only the palette
-differs. Per study, retint these three to the study's surface + accent:
+The glass frame (rounded-t, backdrop-blur, **rim glint**) and the CTA are **identical** across
+studies; only the palette + the decorative fill differ. Per study:
 - **`<tint>`** — a whisper-subtle near-white in the study's surface hue (wiki lilac `#fcf8ff`,
   cog warm cream `#faf9f5`).
-- **`<shadow>`** — the upward shadow tinted to the study's accent (wiki `rgba(120,80,160,0.16)`,
-  cog `rgba(0,107,75,0.14)` dark-green).
-- **`SoftBlob`** — each study has its own `SoftBlob` retinted to its palette (wiki peach→lilac,
-  cog peach→mint); see the blob rule for the two-radial recipe.
+- **`<shadow>`** — the upward shadow tinted to a study accent (wiki `rgba(120,80,160,0.16)`,
+  cog `rgba(24,158,113,0.16)` — the MyRole card green).
+- **Decorative fill** — per study, either the **two parallax `SoftBlob`s** shown above (wiki —
+  each study has its own retinted `SoftBlob`, see the blob rule) OR a **study decorative image**
+  bled behind the copy (cog uses its confetti ribbon `image-44.svg`, `absolute bottom-0 ... -z-10
+  opacity-90`). Pick whatever suits the study's visual language.
+- **Title + link → the REAL next case study.** The `<h3>` is the *next* project's own title
+  (cog → wiki's "Designing an AI brain / for a support call centre"; wiki → cog's "Gaps and
+  opportunities / in ADHD therapy") and `CaseStudyButton href` is that study's route
+  (`/project/<slug>`). The studies cross-link; never leave `href="#"`.
 
 Note `mb-0!` on the h3 (the baked heading margin would otherwise float the button).
 
