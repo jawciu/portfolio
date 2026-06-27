@@ -1,10 +1,10 @@
-import { Container, Kicker, Title, Body } from "../ui";
+import { Container, Kicker, Title, CaseStudyCallout } from "../ui";
 import { Reveal } from "../Reveal";
 
-const SCOPE: { n: string; caption: string }[] = [
-  { n: "2", caption: "user pilots" },
-  { n: "14", caption: "control and variant teams" },
-  { n: "12", caption: "weeks of testing" },
+const SCOPE: { n: string; l1: string; l2: string }[] = [
+  { n: "2", l1: "separate", l2: "user pilots" },
+  { n: "14", l1: "control and", l2: "variant teams" },
+  { n: "12", l1: "weeks of", l2: "testing" },
 ];
 
 export function Measuring() {
@@ -13,40 +13,35 @@ export function Measuring() {
       <Container>
         <Reveal>
           <Kicker>User pilots</Kicker>
-          <Title>Isolating the tool&apos;s real effect</Title>
+          <Title>Understanding the tool&apos;s <br /> real effect</Title>
         </Reveal>
 
-        {/* pilot scope — the setup, up front */}
+        {/* pilot scope — centred big numbers (Geist ExtraBold) */}
         <Reveal
           stagger={0.1}
-          className="mt-12 grid max-w-[760px] gap-x-8 gap-y-10 sm:grid-cols-3"
+          className="mx-auto mt-14 flex max-w-[680px] justify-center gap-4 sm:gap-10"
         >
           {SCOPE.map((s) => (
-            <div key={s.caption}>
-              <p className="font-[family-name:var(--font-hero)] text-5xl leading-none text-[var(--green)] md:text-6xl">
+            <div key={s.l2} className="flex flex-1 flex-col items-center text-center">
+              <p className="font-[family-name:var(--font-body)] text-[44px] font-extrabold leading-none text-[#b52fa5] md:text-[66px]">
                 {s.n}
               </p>
-              <p className="case-study-body-md mt-3">{s.caption}</p>
+              <p className="case-study-body-md mt-3">
+                {s.l1}
+                <br />
+                {s.l2}
+              </p>
             </div>
           ))}
         </Reveal>
 
-        {/* how it was measured — the honest, harder read */}
-        <Reveal stagger={0.1} className="mt-14 flex max-w-[760px] flex-col gap-5">
-          <Body>
-            I did not want a flattering number, so the trial was measured carefully and
-            two ways.
-          </Body>
-          <Body>
+        {/* the honest, harder read — in the callout */}
+        <Reveal className="mx-auto mt-16 max-w-[860px]">
+          <CaseStudyCallout stream>
             Our data scientist compared treatment teams against matched control teams to
-            isolate the tool&apos;s real effect, rather than comparing heavy and light
-            users, where the keenest adopters can skew the picture. I ran the qualitative
-            side, interviewing specialists about what had actually changed.
-          </Body>
-          <Body>
-            It is the honest, harder read, and it set a clean baseline for what to scale
-            next.
-          </Body>
+            isolate the tool&apos;s effects while I lead the qualitative side, interviewing
+            specialists about their experiences.
+          </CaseStudyCallout>
         </Reveal>
       </Container>
     </section>

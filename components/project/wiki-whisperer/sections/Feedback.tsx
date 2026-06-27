@@ -1,4 +1,4 @@
-import { Container, Kicker, Title, Body } from "../ui";
+import { A, Container, Kicker, Title, Body } from "../ui";
 import { Reveal } from "../Reveal";
 
 const QUICK: [string, string][] = [
@@ -34,25 +34,48 @@ export function Feedback() {
       <Container>
         <Reveal>
           <Kicker>User-led refinement</Kicker>
-          <Title>Letting specialists make the Wiki better</Title>
+          <Title>Energy specialists guiding <br/> product&rsquo;s improvement</Title>
         </Reveal>
 
         <Reveal className="max-w-[760px]">
           <Body>
-            The pilots surfaced a steady stream of refinements. Some were quick usability
+            The pilots surfaced a steady stream of refinements. <br/> Some were quick usability
             wins that made V2 easier to live with on a call.
           </Body>
         </Reveal>
 
-        {/* quick UX shoutouts */}
-        <Reveal stagger={0.1} className="mt-10 grid gap-8 md:grid-cols-3">
-          {QUICK.map(([label, line]) => (
-            <div key={label}>
-              <p className="case-study-label">{label}</p>
-              <Body className="mt-2">{line}</Body>
-            </div>
-          ))}
-        </Reveal>
+        {/* quick UX shoutouts — list left, product screenshots right */}
+        <div className="mt-12 grid items-center gap-10 md:grid-cols-2 lg:gap-16">
+          <Reveal stagger={0.12} className="flex flex-col gap-8">
+            {QUICK.map(([label, line]) => (
+              <div key={label}>
+                <p className="case-study-label">{label}</p>
+                <Body className="mt-2">{line}</Body>
+              </div>
+            ))}
+          </Reveal>
+
+          {/* two equal-height panels, 32px gap so the pinned tooltip stays visible.
+              The SVGs bake in their own frame + shadow (and pin's tooltip overhangs
+              the frame), so no wrapper card/background here. The SVGs are clipped flat
+              at the bottom, so round the bottom corners to finish the panels. */}
+          <Reveal className="flex h-[400px] items-stretch justify-center gap-8 md:h-[440px]">
+            {/* pin-conversation panel (left) */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={A("pin.svg")}
+              alt="Pinning a conversation from the chat list"
+              className="h-full w-auto"
+            />
+            {/* search-history panel (right) */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={A("search.svg")}
+              alt="Searchable chat history with pinned conversations"
+              className="h-full w-auto"
+            />
+          </Reveal>
+        </div>
 
         {/* the deeper piece — closing the loop on the knowledge itself */}
         <Reveal stagger={0.1} className="mt-14 flex max-w-[760px] flex-col gap-5">

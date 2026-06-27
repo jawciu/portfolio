@@ -37,6 +37,10 @@ story, tighten it or cut it.
 - **Never fabricate** findings, quotes, metrics, personas, or testimonials. Ask for the real
   material.
 - **British spelling** throughout (optimise, colour, prioritise, analyse, behaviour).
+- **Asides go in parentheses, not spaced hyphens.** Write "Energy specialists (support call
+  centre agents at E.ON Next) need to…", never "Energy specialists - support call centre
+  agents at E.ON Next - need to…". (Caroline rewrites every spaced-hyphen aside into
+  parentheses; do it in the first draft.)
 
 ## Stance & person
 
@@ -60,8 +64,14 @@ story, tighten it or cut it.
   of text — the page breathes; copy is a caption to the visuals, not an essay.
 - **Per section:** an intro/summary of 1–2 short paragraphs, then the rest carried by
   cards, callouts, quotes, and images. Card bodies are 1–3 sentences. Feature blurbs are
-  one sentence each. If a section's prose runs past ~4 short paragraphs, it's too long —
+  one sentence each. If a section's prose runs past ~4 short paragraphs, it's too long.
   push content into cards/callouts or split it.
+- **Draft tight, then cut harder.** Caroline's single most consistent edit is to *shorten*.
+  My first Problem draft was 5 dense paragraphs in one column; she cut it to a 2-line intro +
+  2 short supporting lines + one callout. On the first pass: keep the load-bearing sentence,
+  drop secondary detail (extra tool names, side-stats, "the idea was right but…" asides) that
+  doesn't move the impact story, and lift the one punchy line (usually the "my goal was…"
+  mission) into a `CaseStudyCallout`. Aim for the *tightened* version first, not the full one.
 
 ## Headings & eyebrows
 
@@ -85,6 +95,16 @@ Every section leads with the **eyebrow → heading** pair (the `Kicker` + `Title
 
 Pattern: **eyebrow = topic, heading = the takeaway.** Don't waste the heading on "Research"
 when it can say what the research *found*.
+
+**Concrete substance beats clever framing.** Caroline rewrites poetic/abstract headings into
+ones that name the actual mechanics or the actual goals. Match her on the first draft:
+- Problem: "A powerful tool no one trusted" → **"Cognitive overload, no reliable fallback"**
+  (names the two real frictions, comma-joined).
+- Redesign: "From rigid prompts to fluid dialogue" → **"Building trust, usability and
+  flexibility"** (lists the three goals the section delivers).
+Two favoured shapes: a **two-part comma heading** stating the tension, or a **goal-list
+heading** naming what the section achieves. Source casing doesn't matter (the token uppercases
+the page title; section headings render as set) — what matters is that it's specific.
 
 ## Pull-quotes, callouts & user quotes
 
@@ -158,7 +178,10 @@ above hold; this adds what's distinctive to *her*.
    short sentences: `analysis >`, `research >`, `ideation >`, `design >`, `enhanced
    navigation >`, `focused content >`, `improved accessibility >`, `strategic CTA's >`,
    `brand identity >`, `following foundations >`. (Maps to `case-study-label`, which is
-   already lowercase.) This is the MY ROLE and feature-list pattern.
+   already lowercase.) This is the MY ROLE and compact-list pattern. Note: for a *prominent*
+   feature/principle block, Caroline prefers numbered `InsightCard`s over bare `>` labels
+   (she converted the wiki redesign list into "principle #01" cards). See structure.md's
+   layout defaults. Keep the `>` labels for MY ROLE and tight inline lists.
 
 3. **Statement stacks.** A section body is sometimes a stack of standalone declarative
    sentences (each its own line, not a paragraph) that build an argument, ending on a "my

@@ -58,7 +58,28 @@ Each block maps to one `sections/<Name>.tsx` component. Every block opens with t
   bet; Solution = the page/system you shipped; Results = engagement/conversion.
 
 When in doubt, fewer strong sections beat many thin ones. Every section must earn its place
-in the arc — if it doesn't move the story, cut it.
+in the arc. If it doesn't move the story, cut it.
+
+## Layout defaults (learned from Caroline's revisions)
+
+On the first draft, reach for these *before* a plain single column of paragraphs. They are the
+edits she repeatedly makes by hand, so build them in from the start:
+
+- **Pair copy with a visual, two columns.** A content/problem section reads as a wall of text
+  if it's just stacked `<Body>` paragraphs. Default to a short full-width intro line, then a
+  two-column `Reveal` (`grid items-center gap-10 md:grid-cols-2`) with a **product screenshot
+  on one side** (in the app-image card treatment, see build.md) and 1–2 short supporting
+  lines on the other, then a `CaseStudyCallout` to punctuate. (This is exactly how the Problem
+  section was rebuilt from my paragraph-stack draft.)
+- **Feature / principle / pillar lists → numbered `InsightCard`s, not label+body stacks.** When
+  a section lists 3–4 features or principles, present them as `InsightCard`s with a **numbered
+  label** (`principle #01`, `insight #01`, `feature #01`), a short title, the pink divider, and
+  a 1–3 sentence body. Pure white, equal-height, in a centred 2×2 grid (build.md has the exact
+  markup). Reserve the bare `>`-suffix inline labels (voice device #2) for the compact MY ROLE
+  step list, not for a prominent carded block.
+- **One callout per section as punctuation.** After the content block, a single
+  `<CaseStudyCallout stream>` carrying the pivot/mission line (often with a `<br/>` to control
+  the break). Don't bury that line inside a paragraph.
 
 ## Mapping raw material → blocks (intake checklist)
 

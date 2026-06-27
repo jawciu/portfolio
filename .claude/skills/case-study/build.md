@@ -36,10 +36,16 @@ Keep the whole `.cog-root` class name and EVERY `.case-study-*` type rule **byte
 (the type system is the shared template). Change ONLY the colour custom-properties at the
 top to match this project's brand:
 
-- `--cog-bg` / `--cog-bg-section` — the page surface(s). Light, low-chroma.
+- `--cog-bg` / `--cog-bg-section` — the page surface(s). **Keep them near-white and very
+  low-chroma.** Caroline retinted the wiki study from lilac-tinted surfaces (`#f7f5fb` /
+  `#f2eefb`) to near-whites (`#fefcff` cool + `#fffafa` warm). Don't tint backgrounds
+  strongly; let the accent carry the colour. A whisper-subtle two-zone (a cool near-white
+  default + a warm near-white for later sections) reads better than one lilac wash.
 - `--cog-ink` / `--cog-ink-soft` / `--soft-ink` / `--cog-muted` — text. Usually keep.
 - `--green` / `--dark-green` — the divider/rule/accent. Retint to the project's accent;
-  these drive `InsightCard` dividers + the `.case-study-callout` left rule.
+  these drive `InsightCard` dividers + the `.case-study-callout` left rule. **Soften an
+  over-saturated brand colour** rather than using it raw: the wiki accent went from the raw
+  E.ON magenta `#e5007d` to a gentler pink `#e15bad`. Set BOTH `--green` and `--cog-green`.
 - The decorative tokens (`--cog-mint`, `--cog-orange`, `--cog-purple`, post-its…) — set
   to this project's palette or drop the ones you don't use.
 
@@ -104,6 +110,53 @@ Rules baked into the template (don't fight them — see DESIGN.md):
 - **Full-bleed image rows** (crop, don't shrink): break out of `Container`, centred `flex`
   capped at `max-w-[1800px]`, children fixed-px `flex-none` above a breakpoint with
   `overflow-hidden` so the outer ones crop as the viewport narrows.
+
+### 4b. Reusable layout patterns (build these in, don't hand-wait for the edit)
+
+These are the concrete recipes behind the structure.md "layout defaults". Copy them verbatim.
+
+**Product screenshot — the app-image card treatment** (white card, hairline, soft shadow):
+```tsx
+<div className="rounded-[20px] border border-[#E3E2DA] bg-white p-6 shadow-[1px_1px_10px_2px_rgba(212,210,210,0.25)]">
+  {/* eslint-disable-next-line @next/next/no-img-element */}
+  <img src={A("screenshot.png")} alt="…" className="block w-full" />
+</div>
+```
+Use it on the left/right of a two-column content section: `grid items-center gap-10 md:grid-cols-2 md:gap-14`.
+
+> **HARD RULE — every product visual uses this exact radius + hairline + soft shadow.**
+> `rounded-[20px]` · a 1px hairline border in the study's lightest tint (cog `#E3E2DA`, wiki
+> `#F7EBFF`) · `shadow-[1px_1px_10px_2px_rgba(212,210,210,0.25)]`. NEVER invent a one-off
+> treatment — no `rounded-2xl`/`rounded-xl`, no strong/dark drop shadows
+> (e.g. `shadow-[0_24px_60px...]`, big aubergine glows), no thick or coloured borders. This
+> applies to *all* images, SVGs, videos and overlapping/cropped panels alike — when panels
+> overlap, each one still carries the same treatment. If raw art ships with a baked-in dark
+> shadow, crop it out and let this treatment supply the shadow. Caroline has corrected this
+> more than once, so default to it without being asked.
+
+**Feature/principle block — numbered `InsightCard`s, pure white, equal height:**
+```tsx
+<Reveal stagger={0.12} className="mx-auto mt-12 grid max-w-[900px] auto-rows-fr gap-9 md:grid-cols-2">
+  {FEATURES.map(([label, title, body]) => (
+    <InsightCard key={label} label={label} title={title} width="auto" height="auto">
+      {body}
+    </InsightCard>
+  ))}
+</Reveal>
+```
+`auto-rows-fr` + `height="auto"` makes all cards equal to the tallest (no fixed 320px box);
+`width="auto"` lets them fill the grid column. The `InsightCard` background should be pure
+white (`--cog-card`) and the border the study's hairline (`--cog-line`).
+
+**Gradient "shadow" glow** (box-shadow can't be a gradient) — a blurred absolutely-positioned
+sibling behind a hero card/video:
+```tsx
+<div className="relative mt-14">
+  <div aria-hidden className="pointer-events-none absolute -bottom-4 left-5 right-5 top-8 rounded-[1.75rem] blur-lg"
+       style={{ background: "linear-gradient(135deg, #FFF0F0, #F7EBFF)" }} />
+  <div className="relative w-full overflow-hidden rounded-2xl border border-[var(--cog-line)]">{/* video/img */}</div>
+</div>
+```
 
 ### 5. Assemble `page.tsx`
 Mirror cog's `app/project/cog-adhd/page.tsx`:
