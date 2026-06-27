@@ -46,8 +46,9 @@ export const projects: Project[] = [
   {
     slug: "project-05",
     company: "vector",
-    title: "Rethinking the first 90 days of B2B SaaS onboarding",
-    description: "an ai-native vendor-customer workspace",
+    title: "Rethinking time-to-value in B2B SaaS onboarding",
+    description:
+      "an ai-native vendor-customer workspace that turns meeting transcripts into follow-ups and flags at-risk accounts before they go dark",
     tags: ["Product", "UX/UI", "AI", "Full-stack"],
   },
 ];

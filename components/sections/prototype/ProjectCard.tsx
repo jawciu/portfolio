@@ -210,7 +210,11 @@ export function ProjectCard({
             </h3>
             {subtitle && (
               /* subtitle — Geist Mono, lowercase, same colour as the heading */
-              <p className="mt-[1.875rem] max-w-xs font-mono text-xs lowercase leading-relaxed text-fg md:text-sm">
+              <p
+                className={`mt-[1.875rem] font-mono text-xs lowercase leading-relaxed text-fg md:text-sm ${
+                  image ? "max-w-xs" : "max-w-md"
+                }`}
+              >
                 {subtitle}
               </p>
             )}
