@@ -18,9 +18,9 @@ export const projects: Project[] = [
   {
     slug: "nest-agentic-rag",
     company: "E.ON Next",
-    title: "Designing agentic RAG to help with cognitive load",
+    title: "Designing an AI Brain for a Support Call Centre",
     description:
-      "Improved cognitive load by giving users agentic RAG that answers their questions.",
+      "redesigned an agentic rag that energy specialists trust to answer complex customer queries, reaching 89.4% adoption",
     tags: ["Research", "UX/UI", "Testing", "Launch"],
     accent: "linear-gradient(120deg, #ff7a2a 0%, #ff006e 52%, #7a3bff 100%)",
   },
