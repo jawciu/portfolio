@@ -17,7 +17,7 @@ type Bubble = {
 const THERAPIST: Bubble[] = [
   {
     asset: "stack-6.png",
-    quote: "It's a great starting point, and I'm excited to use the it with my clients.",
+    quote: "It's a great starting point, and I'm excited to use it with my clients.",
     who: "@Cog clinic therapist",
     width: 280, // top-left
   },

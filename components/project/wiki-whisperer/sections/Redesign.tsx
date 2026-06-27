@@ -15,7 +15,7 @@ const FEATURES: [string, string, string][] = [
   [
     "principle #03",
     "structured and sourced",
-    "Long paragraphs became scannable sections, bullets and step-by-step guides, each linked to source acticles so agents can trust what they read.",
+    "Long paragraphs became scannable sections, bullets and step-by-step guides, each linked to source articles so agents can trust what they read.",
   ],
   [
     "principle #04",
@@ -41,7 +41,7 @@ export function Redesign() {
       <Container>
         <Reveal>
           <Kicker>THE REDESIGN</Kicker>
-          <Title>building trust, usability and flexibilityy</Title>
+          <Title>building trust, usability and flexibility</Title>
         </Reveal>
 
         {/* <Reveal className="max-w-[760px]">

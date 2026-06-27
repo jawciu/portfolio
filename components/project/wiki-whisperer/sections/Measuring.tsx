@@ -23,7 +23,7 @@ export function Measuring() {
         <Reveal className="mx-auto mt-16 max-w-[860px]">
           <CaseStudyCallout stream>
             Our data scientist compared treatment teams against matched control teams to
-            isolate the tool&apos;s effects while I lead the qualitative side, interviewing
+            isolate the tool&apos;s effects while I led the qualitative side, interviewing
             specialists about their experiences.
           </CaseStudyCallout>
         </Reveal>

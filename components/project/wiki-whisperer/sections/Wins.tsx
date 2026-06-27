@@ -31,7 +31,7 @@ export function Wins() {
       <Container>
         <Reveal>
           <Kicker>Big wins</Kicker>
-          <Title>From skepticism to reliance</Title>
+          <Title>From scepticism to reliance</Title>
         </Reveal>
 
         <Reveal className="max-w-[760px]">

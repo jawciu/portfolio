@@ -2,10 +2,10 @@ import { Container, Kicker, Title, Body, CaseStudyCallout, TestimonialBubble, St
 import { Reveal } from "../Reveal";
 
 const STATS: { n: string; caption: string }[] = [
-  { n: "89.4%", caption: "adoption across all trial teams" },
-  { n: "96.9%", caption: "would recommend V2 to other specialists" },
-  { n: "93.8%", caption: "said it helped prevent follow-up contacts" },
-  { n: "90.6%", caption: "now rely less on the old Wiki or Slack" },
+  { n: "89%", caption: "adoption across all trial teams" },
+  { n: "97%", caption: "would recommend V2 to other specialists" },
+  { n: "94%", caption: "said it helped prevent follow-up contacts" },
+  { n: "91%", caption: "now rely less on the old Wiki or Slack" },
 ];
 
 export function Impact() {
@@ -32,7 +32,7 @@ export function Impact() {
           <div className="max-w-[520px]">
             <p className="case-study-label">In the new-starter academy &gt;</p>
             <Body className="mt-3">
-              V2 compressed the learning curve and reduced the number of senior advisor
+              V2 compressed the learning curve and reduced the number of senior advisors
               needed on the floor.
             </Body>
           </div>

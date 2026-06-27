@@ -2,7 +2,7 @@ import { A, Container, Kicker, Title, Body, CaseStudyCallout } from "../ui";
 import { Reveal } from "../Reveal";
 
 const REST = [
-  "The earlier tools did not solve it. Wiki Whisperer V1, the first AI attempt, launched to excitement then quicklylost trust.",
+  "The earlier tools did not solve it. Wiki Whisperer V1, the first AI attempt, launched to excitement then quickly lost trust.",
   "It returned too many dead ends and forced specialists to phrase prompts in exactly the right way.",
 ];
 
