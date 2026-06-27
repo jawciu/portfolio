@@ -43,5 +43,12 @@ export const projects: Project[] = [
     accent: "linear-gradient(120deg, #C24E86 0%, #6D1B76 100%)",
   },
   { slug: "project-04", company: "E.ON Next", title: "AI design system", description: "", tags: [], placeholder: true },
-  { slug: "project-05", company: "vector", title: "AI onboarding platform", description: "", tags: [], placeholder: true },
+  {
+    slug: "project-05",
+    company: "vector",
+    title: "Cutting B2B SaaS churn with AI-native onboarding",
+    description:
+      "a shared vendor-customer workspace where ai handles follow-ups, meeting transcripts and risk surfacing",
+    tags: ["Product", "Design", "AI Engineering", "Full-stack"],
+  },
 ];

@@ -203,6 +203,18 @@ Newest first. Record *why*, not just *what*.
   it now. tsc + eslint clean; all four cards verified open via the standalone-Playwright
   trick. **Uncommitted.** **TODO:** vector's real SOURCE CODE + TRY IT URLs; real
   copy/assets for both placeholder cards; decide if AI design system gets a CTA.
+- **2026-06-27 (later 9)** — **Vector card wired + content pulled from its README.**
+  vector (project-05) `SOURCE CODE` → `https://github.com/jawciu/vector`, `TRY IT` →
+  `https://vector.quest/`. Pulled copy from the repo README (`raw.githubusercontent.com/
+  jawciu/vector/main/README.md`) into `lib/projects.ts` project-05: title **"Cutting B2B
+  SaaS churn with AI-native onboarding"**, subtitle (mono lowercase) "a shared
+  vendor-customer workspace where ai handles follow-ups, meeting transcripts and risk
+  surfacing", role tags **Product · Design · AI Engineering · Full-stack** (solo build:
+  product, data model, AI orchestration, design system, deploy). Dropped its
+  `placeholder: true`. (Stack per README: Next.js 16, React 19, Tailwind 4, Prisma 7,
+  Supabase, Anthropic Claude API, Resend, dnd-kit, Playwright, Vercel.) tsc + eslint
+  clean, card verified. **STILL TODO:** AI design system (project-04) card still has empty
+  subtitle/tags + no CTA — no README/source for it yet, need material from Caroline.
 
 - **2026-06-27 (later 6)** — **Glass-reveal "frozen stop" fixed on cog: dead buffer →
   in-hero cream dwell-space.** Caroline's bf found the case-study glass reveal confusing:

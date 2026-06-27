@@ -173,9 +173,8 @@ export function VariantBentoSoft() {
                 tags={p.tags}
                 blob={{ core: "#ff8526", edge: "#ff2f7e" }}
                 actions={[
-                  // TODO: real URLs from Caroline
-                  { label: "SOURCE CODE", href: "#" },
-                  { label: "TRY IT", href: "#" },
+                  { label: "SOURCE CODE", href: "https://github.com/jawciu/vector" },
+                  { label: "TRY IT", href: "https://vector.quest/" },
                 ]}
               />
             );
