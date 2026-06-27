@@ -20,7 +20,7 @@ export const projects: Project[] = [
     company: "E.ON Next",
     title: "Designing an AI Brain for a Support Call Centre",
     description:
-      "redesigned an agentic rag that energy specialists trust to answer complex customer queries, reaching 89.4% adoption",
+      "redesigned a knowledge system that 94% of support agents said helped prevent follow-up contacts",
     tags: ["Research", "UX/UI", "Testing", "Launch"],
     accent: "linear-gradient(120deg, #ff7a2a 0%, #ff006e 52%, #7a3bff 100%)",
   },
