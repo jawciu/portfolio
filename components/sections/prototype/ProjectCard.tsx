@@ -66,8 +66,8 @@ function bloom({ core, edge, coreStop = 0, edgeStop = 48, fadeStop = 80 }: CardB
 // crossfades cleanly into the bloom when the card opens.
 function spine({ core, edge }: CardBlob) {
   return [
-    `radial-gradient(35% 74% at 50% 35%, ${core}cc, transparent 70%)`,
-    `radial-gradient(44% 90% at 50% 70%, ${edge}b3, transparent 72%)`,
+    `radial-gradient(24% 82% at 50% 32%, ${core}cc, transparent 66%)`,
+    `radial-gradient(30% 100% at 50% 72%, ${edge}b3, transparent 68%)`,
   ].join(", ");
 }
 
@@ -121,7 +121,7 @@ export function ProjectCard({
       <div
         aria-hidden
         className="absolute inset-0 transition-opacity duration-700"
-        style={{ background: spine(blob), opacity: open ? 0 : 0.95 }}
+        style={{ background: spine(blob), opacity: open ? 0 : 0.67 }}
       />
 
       {/* glass surface — translucent gradient + backdrop blur/saturate */}
