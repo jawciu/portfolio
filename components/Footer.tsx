@@ -3,12 +3,40 @@
 export function Footer() {
   return (
     <footer
-      className="relative bg-bg border-t border-fg/10"
+      // z-10: sit above the homepage's fixed `z-[5]` darkening plate, which otherwise
+      // paints over the footer (it's `pointer-events-none`) and greys the copy.
+      className="relative z-10 bg-bg"
       // Re-theme the case-study body token for this dark surface: `.case-study-body-md`
       // stays self-contained (no stacked utilities) and reads light here.
       style={{ ["--soft-ink" as string]: "rgba(245,245,245,0.72)" }}
     >
-      <div className="mx-auto max-w-7xl px-8 md:px-12 py-16 md:py-20">
+      {/* glassy top edge — a lit bevel sitting a few px INTO the dark plate, so it
+          reads as the edge of a glass plate even with a light section directly above
+          (a white line exactly on the light/dark boundary would be invisible).
+          Built from overlapping elliptical highlights at a few x-spots so the shine is
+          UNEVEN — bright where light catches the glass, fading between — not a flat band. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 h-28"
+        style={{
+          background:
+            "radial-gradient(46% 130% at 17% 4%, rgba(255,255,255,0.28), rgba(255,255,255,0) 70%)," +
+            "radial-gradient(34% 120% at 47% 9%, rgba(255,255,255,0.10), rgba(255,255,255,0) 68%)," +
+            "radial-gradient(40% 120% at 72% 2%, rgba(255,255,255,0.20), rgba(255,255,255,0) 70%)," +
+            "radial-gradient(30% 110% at 92% 11%, rgba(255,255,255,0.06), rgba(255,255,255,0) 66%)",
+        }}
+      />
+      {/* shiny specular rim line — same as the bento cards' top edge */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 h-px"
+        style={{
+          background:
+            "linear-gradient(90deg, rgba(245,245,245,0.05), rgba(255,255,255,0.55) 22%, rgba(245,245,245,0.12) 55%, rgba(245,245,245,0.04))",
+        }}
+      />
+
+      <div className="relative mx-auto max-w-7xl px-8 md:px-12 py-16 md:py-20">
         <div className="flex flex-col gap-12 md:flex-row md:items-start md:justify-between">
           {/* left: link to the portfolio source on GitHub, styled like the navbar
               ~/caro/portfolio/2026 path label. Opens in a new tab. */}
@@ -23,7 +51,12 @@ export function Footer() {
           </a>
 
           <div className="max-w-[460px]">
-          <h2 className="font-mono font-bold uppercase tracking-[0.04em] text-fg text-2xl md:text-[36px] leading-[1.05]">
+          {/* same Iosevka heading treatment as every other heading (font-hero,
+              uppercase, faux extra-bold via text-stroke since Charon has no 800). */}
+          <h2
+            className="font-hero font-bold uppercase tracking-[-0.01em] text-fg text-2xl md:text-[36px] leading-[1.08]"
+            style={{ WebkitTextStroke: "0.6px currentColor" }}
+          >
             Let&apos;s Connect
           </h2>
 

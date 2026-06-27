@@ -1471,6 +1471,59 @@ Newest first. Record *why*, not just *what*.
 > state (working / broken / in-progress), and explicit next steps for the next agent. Capture stated intent
 > ("tomorrow we do X") and long absences here too.
 
+### 2026-06-27 — Wiki case-study polish pass (Early Impact / Rollout / What's Next / NextProject) + reusable components + glass footer
+- **Status: WORKING. Almost all committed + pushed** on `project-showcase-experiment`. Long
+  iterative visual session with Caroline. The Decision Log (top of this file) has the blow-by-blow.
+- **Shipped this session (per-section detail is in the Decision Log entries dated 2026-06-27):**
+  1. **Early Impact** (`Impact.tsx`) — stats restyled to match the **User pilots** big-number
+     look, V1-comparison deltas removed, callout reordered above the stats, onboarding beat as a
+     `case-study-label` + `Body` next to the @Academy Skills Lead `TestimonialBubble`.
+  2. **Reusable `Stats` component** (per-study `ui.tsx`) — centred big numbers, **font-bold**,
+     fixed-width items with a consistent `lg:gap-x-[88px]` gutter, `py-11`; `Measuring` (User
+     pilots) refactored onto it so both stat rows match.
+  3. **Shared `CaseStudyButton`** (`components/project/CaseStudyButton.tsx`). NOTE: Caroline
+     then simplified it to **one fixed colour** (`--color-bg`, reverse-on-hover) and dropped the
+     per-study `color` prop (commit `6e5d314`) — the `build.md` skill still describes a `color`
+     prop; update it if that divergence matters.
+  4. **Rollout** — shorter copy, the **leaf mascot** (`wiki-character.png`), and a
+     **`WatchVideoButton`** that scrolls to the hero and **restarts the promo from 0** (hero
+     `<video id="hero-promo">`).
+  5. **What's Next** — retitled, concise copy; Caroline reworked the visual to a **cropped
+     opportunity table that bleeds off the screen-left edge** with a right-edge mask fade
+     (`opportunities-table-crop.png`), copy on the right.
+  6. **NextProject** — wiki version is a **frosted lilac glass panel** (`rounded-t-[2.5rem]`,
+     `backdrop-blur-2xl`, rim glint, soft shadow, `bg-[#fcf8ff]` whisper-tint) with **two
+     `Parallax` blobs** (more visible) and **`-mt-[64px]`** so the What's Next table **tucks
+     under the rounded glass corner** (fixes the straight-cut corner). cog NextProject reworked
+     to the same eyebrow+heading+CTA structure.
+  7. **bg-colour boundary rule** — section above a tint gets `pb-[120px]` (cog `Takeaways`);
+     captured in the `case-study` skill `build.md` along with `Stats`, `CaseStudyButton`, the
+     closing-section recipe, and the **SoftBlob containment rule** (keep the box inside
+     `overflow-hidden` so it isn't cut).
+  8. **Hid the wiki `Takeaways`** section for now (commented out in `page.tsx`; restore later).
+  9. **Global footer glassy edge** (`Footer.tsx`) — an **uneven** lit bevel (overlapping
+     elliptical highlights, brightest ~17%/72%) + the **bento card's shiny rim line**, reading
+     as glass without rising over anything. **Bug fixed:** the homepage footer copy looked grey
+     because the homepage's `fixed inset-0 z-[5]` darkening plate painted over the `z-auto`
+     footer — gave the footer **`z-10`** so it sits above the plate (wiki had no such plate, so
+     it was already fine).
+- **Commits:** `65814ca` (the Impact/Rollout/What's-Next/NextProject pass + Stats + initial
+  CaseStudyButton + breathing space + skill update), `6e5d314` (Caroline: CTA single fixed
+  colour), `d7af042` (Caroline: bento card spine names + cards 04/05). Final commit this session
+  = the **footer glass + What's Next table** work (Footer.tsx + WhatsNext.tsx + the crop image).
+- **UNCOMMITTED at handoff:** just the footer-glass + WhatsNext changes being committed now.
+  **Intentionally NOT committed:** the big source decks/PDFs + source SVGs in `assets/` (87–120MB
+  each), and the orphaned **`public/projects/wiki-whisperer/opportunities-table.png`** (the
+  non-crop version — WhatsNext now uses `-crop`; left untracked, delete or keep as Caroline likes).
+- **Gotchas reaffirmed:** a `{/* */}` JSX comment can't follow `return (`; MCP/`networkidle`
+  screenshots time out on these live pages → use the standalone-Playwright trick from the
+  project root; a white rim line exactly on a light/dark boundary is invisible (push the
+  highlight a few px into the dark); shared tree → `git add` specific files, never `-A`.
+- **Open / next steps:** continue the wiki visual pass; re-enable + build the **Key Takeaways**
+  section when ready; decide on the orphan `opportunities-table.png`; if the `CaseStudyButton`
+  fixed-colour decision sticks, update the `build.md` skill note (currently says `color` prop).
+- **Open intent:** none stated for next session.
+
 ### 2026-06-26 (eve) — Built the `case-study` skill + the Wiki Whisperer V2 case study; SHORT BREAK (Caroline back in ~30 min)
 - **Status: WORKING, ALL COMMITTED + PUSHED.** Branch `project-showcase-experiment`, HEAD
   `7746bc9`. Caroline paused (~30 min, heat + machine crashing) and shut the computer; nothing
