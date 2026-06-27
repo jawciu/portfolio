@@ -152,9 +152,13 @@ Newest first. Record *why*, not just *what*.
   E.ON `#ffcf52` (orb-3 yellow) · BrainStation `#F56267` (flame-2 red) · Burberry
   `#ff2f7e` (orb-1 pink). **Label** `/highlights` uses the exact shared column
   geometry (full-bleed `px-8 md:px-12` → `max-w-7xl 2xl:max-w-[88rem]` → `pl-2`) so it
-  lines up with `/about` + `/toolkit` down the page. **Motion:** one staggered fade-up
-  on scroll-in via the existing `useInView` + `usePrefersReducedMotion` (reduced-motion
-  shows instantly, no transition). Grid `grid-cols-2 → md:grid-cols-4`. tsc + eslint
+  lines up with `/about` + `/toolkit` down the page. **Motion (Caroline's later ask —
+  match the About bio):** each line **types in via the shared `StreamingText`** (replaced
+  the original fade-up). Added optional **`delay` (ms) + `style`** props to
+  `StreamingText` (backward-compatible; About unaffected) so the lines cascade off one
+  `useInView` trigger — top-to-bottom within a card, left-to-right across cards (`CPS 280`,
+  `CARD_GAP 130ms`, `LINE_GAP 80ms` = the dials). Reduced-motion shows full text instantly
+  (handled inside `StreamingText`). Grid `grid-cols-2 → md:grid-cols-4`. tsc + eslint
   clean; verified desktop (1440) + mobile (430) via the standalone-Playwright trick —
   reads clean, colours distinct, label aligned, mobile reflows to 2×2. (The one console
   dup-key warning is PRE-EXISTING from Toolkit's `Marquee` duplicating its track, not

@@ -1,7 +1,13 @@
 "use client";
 
 import { useInView } from "@/lib/useInView";
-import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
+import { StreamingText } from "./StreamingText";
+
+// Streaming cascade timing (echoes the About bio's type-on). Lines reveal
+// top-to-bottom within a card; cards cascade left-to-right off one scroll trigger.
+const CPS = 280; // chars/sec — matches the About bio's fast type
+const CARD_GAP = 130; // ms between cards
+const LINE_GAP = 80; // ms between the 3 lines of a card
 
 // ── DATA ──────────────────────────────────────────────────────────────
 // Single source of truth — one object per career chapter. Add, reorder or
@@ -44,7 +50,6 @@ const HIGHLIGHTS: Highlight[] = [
 
 export function Highlights() {
   const { ref, inView } = useInView<HTMLUListElement>(0.3);
-  const reduced = usePrefersReducedMotion();
 
   return (
     // Sits on the black plate directly under About. Same full-bleed px box →
@@ -69,34 +74,33 @@ export function Highlights() {
           className="mt-9 grid grid-cols-2 gap-x-8 gap-y-12 pl-2 md:mt-12 md:grid-cols-4 md:gap-10"
         >
           {HIGHLIGHTS.map((item, i) => {
-            const shown = reduced || inView;
+            const base = i * CARD_GAP;
             return (
-              <li
-                key={item.company}
-                className="flex flex-col"
-                style={{
-                  opacity: shown ? 1 : 0,
-                  transform: shown ? "none" : "translateY(16px)",
-                  transition: reduced
-                    ? undefined
-                    : "opacity 0.7s ease, transform 0.7s ease",
-                  transitionDelay: reduced ? undefined : `${i * 0.08}s`,
-                }}
-              >
-                {/* role label carries the only colour — a spectrum token used as
-                    signal (which chapter), the rest of the card monochrome. */}
-                <span
+              <li key={item.company} className="flex flex-col">
+                {/* each line types in (top-to-bottom); the role label carries the
+                    only colour — a spectrum token as signal, rest monochrome. */}
+                <StreamingText
+                  text={item.role}
+                  active={inView}
+                  cps={CPS}
+                  delay={base}
                   className="font-mono text-[11px] uppercase tracking-[0.18em] md:text-xs"
                   style={{ color: item.accent }}
-                >
-                  {item.role}
-                </span>
-                <span className="mt-2 font-body text-base font-medium text-fg md:text-lg">
-                  {item.company}
-                </span>
-                <span className="mt-1.5 font-mono text-[11px] tracking-[0.04em] text-fg-muted">
-                  {item.detail}
-                </span>
+                />
+                <StreamingText
+                  text={item.company}
+                  active={inView}
+                  cps={CPS}
+                  delay={base + LINE_GAP}
+                  className="mt-3.5 font-body text-base font-medium text-fg md:text-lg"
+                />
+                <StreamingText
+                  text={item.detail}
+                  active={inView}
+                  cps={CPS}
+                  delay={base + 2 * LINE_GAP}
+                  className="mt-1 font-mono text-[10px] tracking-[0.2em] text-fg/70 md:text-[11px]"
+                />
               </li>
             );
           })}
