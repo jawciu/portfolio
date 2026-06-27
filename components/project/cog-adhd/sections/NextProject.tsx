@@ -14,7 +14,7 @@ export function NextProject() {
               <br />
               for a dual audience
             </h3>
-            <CaseStudyButton href="#" color="#006b4b">
+            <CaseStudyButton href="#">
               CHECK IT OUT
             </CaseStudyButton>
           </div>

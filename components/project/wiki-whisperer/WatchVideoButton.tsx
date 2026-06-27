@@ -7,7 +7,6 @@ import { CaseStudyButton } from "../CaseStudyButton";
 export function WatchVideoButton() {
   return (
     <CaseStudyButton
-      color="#b52fa5"
       onClick={() => {
         window.scrollTo({ top: 0, behavior: "smooth" });
         const video = document.getElementById("hero-promo");
