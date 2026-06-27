@@ -337,10 +337,16 @@ them in on every study. All four are already reduced-motion safe.
 
 1. **Reveal** (`Reveal.tsx`) — the scroll-in "coming into focus" entrance: content fades +
    rises + de-blurs as it enters (`autoAlpha 0→1`, `y 28→0`, `blur 6→0`, `expo.out`, plays
-   once). Wrap **every** section's heading block, and its content clusters, in `<Reveal>`.
-   Use the default for a single block; use `stagger` (pass the grid/flex classes to `Reveal`
-   itself) so a card grid or row **assembles** instead of popping. Dials: `y`, `blur`,
-   `stagger`, `start`, `delay`.
+   once). **Hard rule — every element animates in:** in **every** section wrap the heading
+   block in its own `<Reveal>` and wrap **each** content block (intro line, every grid/row,
+   every standalone image, every callout) in a `<Reveal>` too. No content sits un-revealed —
+   if it renders on screen, it enters on scroll. Use the default for a single block; use
+   `stagger` (pass the grid/flex classes to `Reveal` itself) so a card grid or row
+   **assembles** instead of popping. Shared primitives that contain content — `Stats`,
+   `TestimonialBubble`, `InsightCard` clusters — already wrap themselves in `Reveal`, so don't
+   double-wrap them. **The ONE exception is the Hero**: it is pinned and visible immediately,
+   so it has no `Reveal` (true in both cog and wiki). Dials: `y`, `blur`, `stagger`, `start`,
+   `delay`.
 
 2. **Parallax** (`Parallax.tsx`) — scroll-scrubbed vertical drift on imagery for depth: an
    element travels `+speed → −speed` as it transits the viewport. Apply to the inner
@@ -351,9 +357,19 @@ them in on every study. All four are already reduced-motion safe.
 
 3. **StreamingQuote** (`StreamingQuote.tsx`) and **`CaseStudyCallout stream`** — word-by-word
    reveal: each word settles into its final position then fades + rises + de-blurs in
-   sequence (safe inside fixed/centred bubbles, no reflow). Use it on the author **pivot
-   callouts** (`<CaseStudyCallout stream>…</CaseStudyCallout>`) and on **user/testimonial
-   quotes** (the affinity post-its and `TestimonialBubble` already wrap their quote in it).
+   sequence (safe inside fixed/centred bubbles, no reflow). **Hard rule — every quote
+   streams:** put `stream` on **every** `<CaseStudyCallout>` (the author pivot callouts), and
+   render every user/testimonial quote through `TestimonialBubble` or a `StreamingQuote`
+   (`as="blockquote"`) so it streams too — `TestimonialBubble` and the affinity post-its
+   already wrap their quote in it. No pull-quote or testimonial appears as plain static text.
+
+**Motion acceptance check (run before calling a study done).** Scroll the whole page via the
+standalone-Playwright trick, then assert in the browser: (a) **0 console errors**; (b) **0
+stuck-hidden elements** — nothing with `visibility:hidden`/`opacity≈0` left behind after you
+scroll past it (a stuck `Reveal`); (c) **every `.cs-char` reaches `data-stream="play"`**, none
+left `armed` (a stuck `StreamingQuote`). Re-run once in a `prefers-reduced-motion` context and
+confirm all content is visible immediately with 0 errors. This is exactly how cog and wiki were
+validated.
 
 4. **Glass hero overlay** (the seam: `StickyHero.tsx` + the plate in `page.tsx`) — the
    signature opener. The hero is pinned (`StickyHero` measures `top: -(heroHeight −

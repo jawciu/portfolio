@@ -129,6 +129,26 @@ it's a deliberate call.
 
 Newest first. Record *why*, not just *what*.
 
+- **2026-06-27 (later 5)** — **Wiki motion audited against cog + the Reveal/streaming rule
+  hardened in the `case-study` skill.** Caroline wanted the wiki study to follow cog's motion
+  language (Reveal on every element, streaming on the quotes) and that rule saved for future
+  studies. **Audit result: wiki already matched** — every section except the Hero already
+  wraps its heading + each content block in `<Reveal>` (with `stagger` on grids/rows), all 4
+  `<CaseStudyCallout>`s pass `stream`, and `TestimonialBubble`/`Stats` reveal/stream
+  internally (so they're never double-wrapped). Wiki's `Reveal.tsx` + `StreamingQuote.tsx`
+  are **byte-identical** to cog's (confirmed via `diff`); no stray static quotes. **Runtime
+  check** (scroll the whole page via the standalone-Playwright trick): 0 console errors, **0
+  stuck-hidden elements**, all **940 `.cs-char` reach `data-stream="play"`** (0 left armed).
+  So no code changes were needed on wiki. **Saved the behaviour** by sharpening the
+  `case-study` skill `build.md` "Required signature elements": item 1 (Reveal) now states the
+  **hard rule that every element animates in** (heading block + each content block wrapped;
+  shared `Stats`/`TestimonialBubble`/`InsightCard` self-wrap so don't double-wrap; **the Hero
+  is the ONE exception** — pinned + visible immediately, no Reveal in either study); item 3
+  (streaming) now states **every `<CaseStudyCallout>` gets `stream` and every testimonial
+  renders through `TestimonialBubble`/`StreamingQuote`**; and added a **Motion acceptance
+  check** (the 0-errors / 0-stuck-hidden / all-chars-play assertions, plus a reduced-motion
+  pass) to run before any study is called done. Only `build.md` + this journal changed.
+  **Uncommitted.**
 - **2026-06-27 (later 4)** — **Bento: +88px below cards before footer + saturated collapsed
   gradients.** (1) Added **+88px bottom space** under the showcase before the global footer:
   `#work` section in `app/page.tsx` now `py-12 pb-[136px] md:py-20 md:pb-[168px]` (the `pb`
