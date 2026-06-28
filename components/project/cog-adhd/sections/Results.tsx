@@ -1,4 +1,6 @@
 import { A, Container, Kicker, Title, Body, TestimonialBubble } from "../ui";
+import { Reveal } from "../Reveal";
+import { Parallax } from "../Parallax";
 
 type Bubble = {
   asset: string;
@@ -15,7 +17,7 @@ type Bubble = {
 const THERAPIST: Bubble[] = [
   {
     asset: "stack-6.png",
-    quote: "It's a great starting point, and I'm excited to use the it with my clients.",
+    quote: "It's a great starting point, and I'm excited to use it with my clients.",
     who: "@Cog clinic therapist",
     width: 280, // top-left
   },
@@ -51,10 +53,12 @@ export function Results() {
   return (
     <section data-section="Results" className="pt-[120px] pb-0 bg-[var(--cog-bg-section)]">
       <Container>
-        <Kicker>Results</Kicker>
-        <Title>Small changes, measurable results</Title>
+        <Reveal stagger={0.08}>
+          <Kicker>Results</Kicker>
+          <Title>Small changes, measurable results</Title>
+        </Reveal>
 
-        <div className="mt-6 max-w-[600px] space-y-6">
+        <Reveal stagger={0.1} className="mt-6 max-w-[600px] space-y-6">
           <Body>
             The history feature helped both users and therapists find value in
             reviewing past check-ins, contributing to a noticeable{" "}
@@ -69,7 +73,7 @@ export function Results() {
               increase in therapy bookings.
             </strong>
           </Body>
-        </div>
+        </Reveal>
 
         <div className="mt-12 grid grid-cols-1 items-center gap-10 md:mt-16 lg:grid-cols-[1fr_auto]">
           {/* scattered testimonial bubble cluster — therapists (left) and
@@ -78,21 +82,24 @@ export function Results() {
               `pt-32` on the left column = how far it drops to alternate with the
               right column; `gap-8` = vertical space between the two stacked
               bubbles in each column. */}
+          {/* the two columns drift as RIGID units at gentle, different rates so
+              they parallax for depth WITHOUT the bubbles ever converging (each
+              column keeps its internal gaps); the quotes themselves type in. */}
           <div className="flex justify-center gap-2 sm:gap-0">
-            <div className="flex flex-col items-center gap-8 pt-50">
+            <Parallax speed={22} className="flex flex-col items-center gap-8 pt-50">
               {THERAPIST.map((bubble) => (
                 <TestimonialBubble key={bubble.asset} {...bubble} />
               ))}
-            </div>
-            <div className="flex flex-col items-center gap-8">
+            </Parallax>
+            <Parallax speed={-18} className="flex flex-col items-center gap-8">
               {CUSTOMER.map((bubble) => (
                 <TestimonialBubble key={bubble.asset} {...bubble} />
               ))}
-            </div>
+            </Parallax>
           </div>
 
           {/* result clip — phone screen recording */}
-          <div className="flex justify-center lg:justify-end">
+          <Reveal className="flex justify-center lg:justify-end">
             <video
               src={A("results-phone.mp4")}
               autoPlay
@@ -101,7 +108,7 @@ export function Results() {
               playsInline
               className="block h-auto w-[16rem] max-w-full md:w-[18rem]"
             />
-          </div>
+          </Reveal>
         </div>
       </Container>
     </section>

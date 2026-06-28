@@ -1,4 +1,5 @@
 import { A, Container, Kicker, Title, Body, CaseStudyCallout } from "../ui";
+import { Reveal } from "../Reveal";
 
 type Persona = {
   img: string;
@@ -119,17 +120,22 @@ export function Interviews() {
   return (
     <section data-section="Interviews" className="pt-[120px] pb-0">
       <Container>
-        <Kicker>INTERVIEWS</Kicker>
-        <Title>
-          HOLISTIC INSIGHTS
-          <br />
-          THROUGH 360&deg; INTERVIEWS WITH&hellip;
-        </Title>
+        <Reveal stagger={0.08}>
+          <Kicker>INTERVIEWS</Kicker>
+          <Title>
+            HOLISTIC INSIGHTS
+            <br />
+            THROUGH 360&deg; INTERVIEWS WITH&hellip;
+          </Title>
+        </Reveal>
 
         {/* three persona cards — narrow cards (body wraps to ~3 lines) with a 48px
             gap between them; the mascots overhang the card top by ~32px, so mt-20
             keeps a visible 48px clear gap below the heading (80px − 32px = 48px). */}
-        <div className="mt-20 flex flex-col items-center gap-6 sm:flex-row sm:items-stretch sm:justify-center sm:gap-12">
+        <Reveal
+          stagger={0.12}
+          className="mt-20 flex flex-col items-center gap-6 sm:flex-row sm:items-stretch sm:justify-center sm:gap-12"
+        >
           {PERSONAS.map((p) => (
             <div
               key={p.label}
@@ -145,11 +151,11 @@ export function Interviews() {
               <Body className="mt-3">{p.body}</Body>
             </div>
           ))}
-        </div>
+        </Reveal>
 
         {/* goal */}
         <div className="mt-16 md:mt-20">
-          <CaseStudyCallout>
+          <CaseStudyCallout stream>
             My goal was to gain a deeper understanding of the ADHD therapy
             landscape so I could address our users&apos; needs better.
           </CaseStudyCallout>
@@ -158,16 +164,22 @@ export function Interviews() {
         {/* thought-bubble cluster — two tidy rows, no overlap:
             row 1 = purple · green, row 2 = green · purple · green. */}
         <div className="mt-12 flex flex-col items-center gap-y-6 md:mt-16">
-          <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-6">
+          <Reveal
+            stagger={0.1}
+            className="flex flex-wrap items-center justify-center gap-x-10 gap-y-6"
+          >
             {BUBBLES.slice(0, 2).map((b, i) => (
               <Bubble key={i} b={b} />
             ))}
-          </div>
-          <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-6">
+          </Reveal>
+          <Reveal
+            stagger={0.1}
+            className="flex flex-wrap items-center justify-center gap-x-10 gap-y-6"
+          >
             {BUBBLES.slice(2).map((b, i) => (
               <Bubble key={i} b={b} />
             ))}
-          </div>
+          </Reveal>
         </div>
       </Container>
     </section>

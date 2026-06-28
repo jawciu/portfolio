@@ -12,6 +12,7 @@
 //     subtitle, tags (pinned bottom-left).
 import { useRouter } from "next/navigation";
 import { Grain } from "./softBits";
+import { CaseStudyButton } from "../../project/CaseStudyButton";
 
 // Gradient-blob colours: a warm core diffusing out to a cool edge. Optional stops
 // tune how far the core holds before the edge takes over — bump `coreStop` to keep
@@ -24,6 +25,9 @@ export type ProjectCardProps = {
   /** collapsed-state vertical label — the company name only, e.g. "E.ON Next";
       the year is appended (dimmed) from the `year` prop. */
   collapsedLabel: string;
+  /** short project name shown (dimmed) after the company on the collapsed spine,
+      e.g. "Wiki Whisperer" — lets multiple projects under one brand read apart. */
+  collapsedTitle?: string;
   year: string;
   /** mono kicker shown above the title, e.g. "/e.on_next" */
   label: string;
@@ -42,6 +46,13 @@ export type ProjectCardProps = {
   /** optional link — clicking the OPEN card follows it. An absolute http(s) URL
       opens in a new tab (external); a relative path navigates in-app. */
   href?: string;
+  /** when present, the OPEN card shows these CTA buttons (outline + bold mono
+      label, like the case-study "Check it out") instead of a single whole-card
+      link — e.g. blog post / live product / source code. Overrides `href`. */
+  actions?: { label: string; href: string }[];
+  /** optional non-interactive note shown where the CTA row would sit, e.g.
+      "case study coming soon" — a dim outlined chip, not a link. */
+  note?: string;
 };
 
 // Expanded bloom — one big blurred circle whose centre sits just OUTSIDE the
@@ -55,8 +66,8 @@ function bloom({ core, edge, coreStop = 0, edgeStop = 48, fadeStop = 80 }: CardB
 // crossfades cleanly into the bloom when the card opens.
 function spine({ core, edge }: CardBlob) {
   return [
-    `radial-gradient(30% 70% at 50% 35%, ${core}99, transparent 66%)`,
-    `radial-gradient(38% 85% at 50% 70%, ${edge}88, transparent 68%)`,
+    `radial-gradient(24% 82% at 50% 32%, ${core}cc, transparent 66%)`,
+    `radial-gradient(30% 100% at 50% 72%, ${edge}b3, transparent 68%)`,
   ].join(", ");
 }
 
@@ -64,6 +75,7 @@ export function ProjectCard({
   open,
   onActivate,
   collapsedLabel,
+  collapsedTitle,
   year,
   label,
   title,
@@ -74,8 +86,11 @@ export function ProjectCard({
   imageClassName,
   blob,
   href,
+  actions,
+  note,
 }: ProjectCardProps) {
   const router = useRouter();
+  const hasActions = !!(actions && actions.length);
   // Default: artwork floats centred, bleeding slightly off the right edge.
   const imgClass =
     imageClassName ??
@@ -89,24 +104,13 @@ export function ProjectCard({
       else router.push(href);
     } else onActivate();
   };
-  return (
-    <button
-      type="button"
-      onMouseEnter={onActivate}
-      onFocus={onActivate}
-      onClick={onClick}
-      aria-label={
-        open && href
-          ? isExternal
-            ? `Read about ${title} (opens in a new tab)`
-            : `Open ${title} case study`
-          : undefined
-      }
-      className={`group relative min-h-0 overflow-hidden rounded-3xl text-left outline-none transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-        open && href ? "cursor-pointer" : ""
-      }`}
-      style={{ flexGrow: open ? 6 : 1, flexBasis: 0 }}
-    >
+  const rootClass = `group relative min-h-0 overflow-hidden rounded-3xl text-left outline-none transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+    (hasActions ? !open : open && href) ? "cursor-pointer" : ""
+  }`;
+  const rootStyle = { flexGrow: open ? 6 : 1, flexBasis: 0 };
+
+  const inner = (
+    <>
       {/* colour blob BEHIND the glass — bloom (open) crossfades with spine
           (collapsed); same palette so the transition is seamless. */}
       <div
@@ -117,7 +121,7 @@ export function ProjectCard({
       <div
         aria-hidden
         className="absolute inset-0 transition-opacity duration-700"
-        style={{ background: spine(blob), opacity: open ? 0 : 0.95 }}
+        style={{ background: spine(blob), opacity: open ? 0 : 0.67 }}
       />
 
       {/* glass surface — translucent gradient + backdrop blur/saturate */}
@@ -150,16 +154,26 @@ export function ProjectCard({
       />
       <Grain opacity={0.06} />
 
-      {/* collapsed — vertical label floating in the wisp */}
+      {/* collapsed — vertical label floating in the wisp. Two stacked columns
+          (vertical-rl flows block children right-to-left): company + year on the
+          right, the project name dimmer beside it — so a long name never overflows
+          the card height as one run would. */}
       {!open && (
         <div className="absolute inset-0 flex items-center justify-center">
-          <span
-            className="whitespace-nowrap font-mono text-sm uppercase tracking-[0.3em] text-fg md:text-base"
+          <div
+            className="whitespace-nowrap text-center font-mono uppercase tracking-[0.3em]"
             style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}
           >
-            {collapsedLabel}
-            <span className="text-fg/55"> · {year}</span>
-          </span>
+            <span className="block text-sm text-fg md:text-base">
+              {collapsedLabel}
+              <span className="text-fg/55"> · {year}</span>
+            </span>
+            {collapsedTitle && (
+              <span className="mt-2.5 block text-xs text-fg/70 md:text-sm">
+                {collapsedTitle}
+              </span>
+            )}
+          </div>
         </div>
       )}
 
@@ -174,7 +188,7 @@ export function ProjectCard({
         {/* LEFT — copy sits a bit above centre; year top-left, tags bottom-left */}
         <div
           className={`relative flex flex-col justify-center p-6 md:p-9 ${
-            image ? "w-[50%] flex-none" : "flex-1"
+            image ? (hasActions ? "w-[56%] flex-none" : "w-[50%] flex-none") : "flex-1"
           }`}
         >
           <p className="absolute left-6 top-6 font-mono text-[10px] uppercase tracking-[0.25em] text-fg/60 md:left-9 md:top-9">
@@ -191,14 +205,42 @@ export function ProjectCard({
                 {label}
               </span>
             </div>
-            <h3 className="mt-[1.8rem] max-w-none font-hero text-xl font-bold uppercase leading-[1.05] tracking-tight text-fg md:text-[1.75rem]">
+            <h3
+              className={`mt-[1.8rem] whitespace-pre-line font-hero text-xl font-bold uppercase leading-[1.05] tracking-tight text-fg md:text-[1.75rem] ${
+                image ? "max-w-none" : "max-w-xl"
+              }`}
+            >
               {title}
             </h3>
             {subtitle && (
               /* subtitle — Geist Mono, lowercase, same colour as the heading */
-              <p className="mt-[1.875rem] max-w-xs font-mono text-xs lowercase leading-relaxed text-fg md:text-sm">
+              <p
+                className={`mt-[1.875rem] font-mono text-xs lowercase leading-relaxed text-fg md:text-sm ${
+                  image ? "max-w-xs" : "max-w-md"
+                }`}
+              >
                 {subtitle}
               </p>
+            )}
+            {/* CTA buttons — outline + bold mono label (light tone for the dark
+                card); a single compact row, each opening its own link instead of
+                a whole-card click. */}
+            {hasActions && (
+              <div className="mt-7 flex flex-nowrap items-center gap-4">
+                {actions!.map((a) => (
+                  <CaseStudyButton key={a.href} href={a.href} tone="light" size="sm">
+                    {a.label}
+                  </CaseStudyButton>
+                ))}
+              </div>
+            )}
+            {/* coming-soon note — dim outlined chip, echoes the CTA shape but
+                clearly non-interactive (dashed border, muted fg). */}
+            {note && (
+              <span className="mt-7 inline-flex items-center gap-2 rounded-md border border-dashed border-fg/30 px-3 py-2 font-mono text-[12px] font-bold uppercase tracking-[0.12em] text-fg/55">
+                <span aria-hidden className="inline-block h-1.5 w-1.5 rounded-full bg-fg/40" />
+                {note}
+              </span>
             )}
           </div>
           {tags && tags.length > 0 && (
@@ -218,6 +260,57 @@ export function ProjectCard({
           </div>
         )}
       </div>
+    </>
+  );
+
+  // A card with CTA buttons can't be a <button> (no nested interactive elements),
+  // so it renders a <div> — kept as the root in BOTH states so the flex-grow
+  // transition never remounts. Collapsed, the div is still activatable (click /
+  // Enter / Space / hover); open, the inner buttons take over.
+  if (hasActions) {
+    return (
+      <div
+        onMouseEnter={onActivate}
+        onFocus={onActivate}
+        onClick={open ? undefined : onActivate}
+        onKeyDown={
+          open
+            ? undefined
+            : (e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  onActivate();
+                }
+              }
+        }
+        role={open ? undefined : "button"}
+        tabIndex={open ? -1 : 0}
+        aria-label={open ? undefined : `Expand ${title}`}
+        className={rootClass}
+        style={rootStyle}
+      >
+        {inner}
+      </div>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      onMouseEnter={onActivate}
+      onFocus={onActivate}
+      onClick={onClick}
+      aria-label={
+        open && href
+          ? isExternal
+            ? `Read about ${title} (opens in a new tab)`
+            : `Open ${title} case study`
+          : undefined
+      }
+      className={rootClass}
+      style={rootStyle}
+    >
+      {inner}
     </button>
   );
 }

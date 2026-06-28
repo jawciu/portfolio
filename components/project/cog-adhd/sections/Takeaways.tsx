@@ -1,4 +1,5 @@
 import { A, Container, Kicker, Title, Body } from "../ui";
+import { Reveal } from "../Reveal";
 
 const TAKEAWAYS = [
   {
@@ -19,17 +20,24 @@ const TAKEAWAYS = [
 ];
 
 export function Takeaways() {
+  // pb-[120px]: this section's tinted background ends at a boundary with the cream
+  // NextProject below, so its content needs bottom breathing space before that line.
   return (
-    <section data-section="Takeaways" className="pt-[120px] pb-0 bg-[var(--cog-bg-section)]">
+    <section data-section="Takeaways" className="pt-[120px] pb-[120px] bg-[var(--cog-bg-section)]">
       <Container>
-        <Kicker>KEY TAKEAWAYS</Kicker>
-        <Title className="max-w-3xl">
-          DESIGN IS COMPLEX
-          <br />
-          AND CONTEXT-DRIVEN
-        </Title>
+        <Reveal stagger={0.08}>
+          <Kicker>KEY TAKEAWAYS</Kicker>
+          <Title className="max-w-3xl">
+            DESIGN IS COMPLEX
+            <br />
+            AND CONTEXT-DRIVEN
+          </Title>
+        </Reveal>
 
-        <div className="grid grid-cols-1 gap-x-10 gap-y-12 md:grid-cols-3">
+        <Reveal
+          stagger={0.12}
+          className="grid grid-cols-1 gap-x-10 gap-y-12 md:grid-cols-3"
+        >
           {TAKEAWAYS.map((item, i) => (
             <div key={i}>
               <div className="flex h-20 items-end">
@@ -45,7 +53,7 @@ export function Takeaways() {
               <Body className="mt-3 text-[var(--cog-ink-soft)]">{item.body}</Body>
             </div>
           ))}
-        </div>
+        </Reveal>
       </Container>
     </section>
   );

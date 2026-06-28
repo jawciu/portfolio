@@ -18,38 +18,42 @@ import { Marquee } from "@/components/Marquee";
 // Icons live in /public/assets/toolkit. `contain` icons are bare brand glyphs
 // (padded, centred on the dark tile); the rest are full app-icon art (object-
 // cover fills the squircle). Plain <img> so SVG + png/webp/jpeg all just work.
-type App = { src: string; label: string; contain?: boolean };
+// `light` icons (bright/light-background art) read visually larger than dark
+// ones at the same box size (irradiation illusion), so their tile is rendered
+// ~4px smaller to even out the perceived size across the row.
+type App = { src: string; label: string; contain?: boolean; light?: boolean };
 
+// Order is Caroline's (2026-06-28): colour icons grouped, then a contiguous run
+// of black-and-white icons, then back round to Miro at the loop seam.
 const APPS: App[] = [
-  { src: "/assets/toolkit/figma.png", label: "Figma" },
-  { src: "/assets/toolkit/illustrator.webp", label: "Illustrator" },
-  { src: "/assets/toolkit/PS.png", label: "Photoshop" },
-  { src: "/assets/toolkit/framer.svg", label: "Framer", contain: true },
-  { src: "/assets/toolkit/miro.png", label: "Miro" },
-  { src: "/assets/toolkit/asana.png", label: "Asana" },
-  // product-journey tools — research, analytics, AI, 3D (sit between asana and
-  // the dev tools)
-  { src: "/assets/toolkit/notebooklm.webp", label: "NotebookLM" },
-  { src: "/assets/toolkit/mixpanel.png", label: "Mixpanel", contain: true },
-  { src: "/assets/toolkit/marvin.jpeg", label: "Marvin" },
-  { src: "/assets/toolkit/spline.jpeg", label: "Spline" },
-  { src: "/assets/toolkit/chatgpt.jpg", label: "ChatGPT" },
-  { src: "/assets/toolkit/miniti.png", label: "Miniti" },
-  { src: "/assets/toolkit/google-ai-studio.png", label: "Google AI Studio", contain: true },
-  { src: "/assets/toolkit/obsidian1.png", label: "Obsidian" },
-  // build / data / dev tools
-  { src: "/assets/toolkit/cursor.jpeg", label: "Cursor" },
-  { src: "/assets/toolkit/github.svg", label: "GitHub", contain: true },
-  { src: "/assets/toolkit/vercel.svg", label: "Vercel", contain: true },
-  { src: "/assets/toolkit/supabase.svg", label: "Supabase", contain: true },
-  { src: "/assets/toolkit/surrealdb.svg", label: "SurrealDB" },
-  { src: "/assets/toolkit/iterm.png", label: "iTerm" },
-  { src: "/assets/toolkit/raycast.svg", label: "Raycast", contain: true },
-  { src: "/assets/toolkit/claude-ai-icon.webp", label: "Claude" },
+  { src: "/assets/toolkit/miro.png", label: "Miro", light: true },
+  { src: "/assets/toolkit/notebooklm.webp", label: "NotebookLM", light: true },
+  { src: "/assets/toolkit/marvin.jpeg", label: "Marvin", light: true },
+  { src: "/assets/toolkit/asana.png", label: "Asana", light: true },
+  { src: "/assets/toolkit/claude.png", label: "Claude", light: true },
   { src: "/assets/toolkit/claudecode.webp", label: "Claude Code" },
   { src: "/assets/toolkit/opik.svg", label: "Opik", contain: true },
+  { src: "/assets/toolkit/raycast.svg", label: "Raycast", contain: true },
+  { src: "/assets/toolkit/figma.png", label: "Figma" },
+  { src: "/assets/toolkit/google-ai-studio.png", label: "Google AI Studio", contain: true },
+  { src: "/assets/toolkit/miniti.png", label: "Miniti" },
+  { src: "/assets/toolkit/iterm.png", label: "iTerm" },
+  { src: "/assets/toolkit/supabase.svg", label: "Supabase", contain: true },
+  { src: "/assets/toolkit/spline.png", label: "Spline" },
+  { src: "/assets/toolkit/surrealdb.png", label: "SurrealDB" },
+  { src: "/assets/toolkit/obsidian.png", label: "Obsidian" },
+  { src: "/assets/toolkit/mixpanel.png", label: "Mixpanel", contain: true },
+  { src: "/assets/toolkit/PS.png", label: "Photoshop" },
+  // black-and-white icons, grouped together
+  { src: "/assets/toolkit/chatgpt.png", label: "ChatGPT" },
   { src: "/assets/toolkit/midjourney.png", label: "Midjourney" },
-  { src: "/assets/toolkit/images.png", label: "Whispr Flow" },
+  { src: "/assets/toolkit/whisprflow.png", label: "Whispr Flow" },
+  { src: "/assets/toolkit/cursor.png", label: "Cursor" },
+  { src: "/assets/toolkit/framer.svg", label: "Framer", contain: true },
+  { src: "/assets/toolkit/github.svg", label: "GitHub", contain: true },
+  { src: "/assets/toolkit/vercel.svg", label: "Vercel", contain: true },
+  // back to colour — illustrator sits before the loop wraps round to Miro
+  { src: "/assets/toolkit/illustrator.png", label: "Illustrator" },
 ];
 
 // One marquee copy must exceed the viewport width or the loop shows a gap.
@@ -157,9 +161,13 @@ export function Toolkit() {
 }
 
 function DockIcon({ app }: { app: App }) {
+  // light icons render ~4px smaller to offset the irradiation illusion
+  const sizeClass = app.light
+    ? "size-[52px] md:size-[60px]"
+    : "size-14 md:size-16";
   return (
     <div
-      className="relative size-14 flex-none overflow-hidden rounded-[1.15rem] md:size-16"
+      className={`relative ${sizeClass} flex-none overflow-hidden rounded-[1.15rem]`}
       style={{ background: "rgba(20,20,26,0.55)" }}
       title={app.label}
     >

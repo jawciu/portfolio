@@ -1,4 +1,5 @@
 import { A, Container, Kicker, Title, Body, CaseStudyCallout } from "../ui";
+import { Reveal } from "../Reveal";
 
 /** The four question prompts, each paired with its orange icon-on-mint card. */
 const PROMPTS = [
@@ -21,19 +22,24 @@ export function Solution() {
   return (
     <section data-section="Solution" className="pt-[120px] pb-0 bg-[var(--cog-bg-section)]">
       <Container>
-        <Kicker>Solution</Kicker>
-        <Title>User Journey Shaping Clarity</Title>
-        <div className="mt-6 md:mt-8 max-w-[560px]">
+        <Reveal stagger={0.08}>
+          <Kicker>Solution</Kicker>
+          <Title>User Journey Shaping Clarity</Title>
+        </Reveal>
+        <Reveal className="mt-6 md:mt-8 max-w-[560px]">
           <Body>
             I focused my redesign on improving the user&rsquo;s journey when
             reviewing their check in data. The goal was to help users move
             seamlessly from identifying key pain points to diving deeper into
             specific insights.
           </Body>
-        </div>
+        </Reveal>
 
         {/* Persona chip + 4 question prompts */}
-        <div className="mt-14 md:mt-20 flex flex-col gap-10 md:flex-row md:items-start md:gap-12">
+        <Reveal
+          stagger={0.12}
+          className="mt-14 md:mt-20 flex flex-col gap-10 md:flex-row md:items-start md:gap-12"
+        >
           {/* Katherine Bell persona */}
           <div className="flex shrink-0 flex-col items-start text-left md:w-[160px]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -67,10 +73,13 @@ export function Solution() {
               </div>
             ))}
           </div>
-        </div>
+        </Reveal>
 
         {/* Cluster 1 — mockups left, copy right */}
-        <div className="mt-16 md:mt-24 grid grid-cols-1 items-center gap-10 md:grid-cols-2 md:gap-14">
+        <Reveal
+          stagger={0.14}
+          className="mt-16 md:mt-24 grid grid-cols-1 items-center gap-10 md:grid-cols-2 md:gap-14"
+        >
           {/* Overview bar chart + overlapping Daily card — smaller + spread apart */}
           <div className="relative mx-auto w-full max-w-[460px]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -105,10 +114,13 @@ export function Solution() {
               </Body>
             </div>
           </div>
-        </div>
+        </Reveal>
 
         {/* Cluster 2 — copy left, mockups right */}
-        <div className="mt-16 md:mt-24 grid grid-cols-1 items-center gap-10 md:grid-cols-2 md:gap-14">
+        <Reveal
+          stagger={0.14}
+          className="mt-16 md:mt-24 grid grid-cols-1 items-center gap-10 md:grid-cols-2 md:gap-14"
+        >
           <div className="order-2 space-y-10 md:order-1">
             <div className="space-y-3">
               <FeatureLabel>symptom ranking</FeatureLabel>
@@ -143,11 +155,11 @@ export function Solution() {
               className="absolute right-[-14%] top-[-24%] w-[58%] h-auto select-none rounded-[20px] border border-[#E3E2DA] shadow-[1px_1px_10px_2px_rgba(212,210,210,0.25)]"
             />
           </div>
-        </div>
+        </Reveal>
 
         {/* Batch-booking callout */}
         <div className="mt-20 md:mt-28 max-w-[760px]">
-          <CaseStudyCallout>
+          <CaseStudyCallout stream>
             In parallel, I also addressed session booking drop-off by introducing
             a batch booking feature, allowing users to schedule multiple therapy
             sessions at once.

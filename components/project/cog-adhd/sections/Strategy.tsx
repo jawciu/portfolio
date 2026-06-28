@@ -1,4 +1,6 @@
 import { A, Body, CaseStudyCallout, Container, Kicker, Title } from "../ui";
+import { Reveal } from "../Reveal";
+import { Parallax } from "../Parallax";
 
 /** small mono caption tag used on the dashboard concept mockups */
 function DesignIdeaTag() {
@@ -77,15 +79,17 @@ export function Strategy() {
   return (
     <section data-section="Strategy" className="pt-[120px] pb-0 bg-[var(--cog-bg-section)]">
       <Container>
-        <Kicker>Strategy</Kicker>
-        <Title>
-          Transforming therapy
-          <br />
-          with AI and data-driven solutions
-        </Title>
+        <Reveal stagger={0.08}>
+          <Kicker>Strategy</Kicker>
+          <Title>
+            Transforming therapy
+            <br />
+            with AI and data-driven solutions
+          </Title>
+        </Reveal>
 
         <div className="mt-8 md:mt-10">
-          <CaseStudyCallout>
+          <CaseStudyCallout stream>
             The issues I uncovered revealed many opportunities for improvement.
             I began to imagine, what could a big picture product vision for Cog
             clinic look like?
@@ -93,7 +97,10 @@ export function Strategy() {
         </div>
 
         {/* Row 1 — copy left, daily-practice card cluster right */}
-        <div className="mt-12 flex flex-col gap-12 md:mt-16 lg:grid lg:grid-cols-[1fr_auto] lg:items-center lg:gap-14">
+        <Reveal
+          stagger={0.14}
+          className="mt-12 flex flex-col gap-12 md:mt-16 lg:grid lg:grid-cols-[1fr_auto] lg:items-center lg:gap-14"
+        >
           <div className="space-y-6">
             <Body>
               Cog allows users to track symptoms, emotions, wins and add daily
@@ -105,14 +112,21 @@ export function Strategy() {
             </Body>
           </div>
           <div className="flex justify-center lg:justify-end">
-            <CardStack cards={VISION_STACK} w={VISION_STACK_W} h={VISION_STACK_H} />
+            <Parallax speed={40}>
+              <CardStack cards={VISION_STACK} w={VISION_STACK_W} h={VISION_STACK_H} />
+            </Parallax>
           </div>
-        </div>
+        </Reveal>
 
         {/* Row 2 — journal card cluster left, copy right */}
-        <div className="mt-12 flex flex-col gap-12 md:mt-16 lg:grid lg:grid-cols-[auto_1fr] lg:items-center lg:gap-14">
+        <Reveal
+          stagger={0.14}
+          className="mt-12 flex flex-col gap-12 md:mt-16 lg:grid lg:grid-cols-[auto_1fr] lg:items-center lg:gap-14"
+        >
           <div className="flex justify-center lg:justify-start">
-            <CardStack cards={JOURNAL_STACK} w={JOURNAL_STACK_W} h={JOURNAL_STACK_H} />
+            <Parallax speed={-32}>
+              <CardStack cards={JOURNAL_STACK} w={JOURNAL_STACK_W} h={JOURNAL_STACK_H} />
+            </Parallax>
           </div>
           <div className="space-y-6">
             <Body>
@@ -125,10 +139,10 @@ export function Strategy() {
               could be a huge motivation boost.
             </Body>
           </div>
-        </div>
+        </Reveal>
 
         {/* Centralised hub — concept dashboard 1 */}
-        <div className="mt-20 md:mt-28">
+        <Reveal className="mt-20 md:mt-28">
           <Body className="w-[510px] max-w-full">
             Additionally, a centralised hub would keep therapy organised; session
             summaries, homework, communication, reminders, and an archive all in
@@ -143,10 +157,10 @@ export function Strategy() {
               className="mt-3 w-full rounded-[20px] border border-[#E3E2DA] bg-[var(--cog-bg-alt)] shadow-[1px_1px_10px_2px_rgba(212,210,210,0.25)]"
             />
           </figure>
-        </div>
+        </Reveal>
 
         {/* Automating admin — concept dashboard 2 */}
-        <div className="mt-20 md:mt-28">
+        <Reveal className="mt-20 md:mt-28">
           <Body className="w-[510px] max-w-full">
             Automating some of the admin work could further reduce clinician
             burnout. For example, after each session, AI could draft a session
@@ -162,7 +176,7 @@ export function Strategy() {
               className="mt-3 w-full rounded-[20px] border border-[#E3E2DA] bg-[var(--cog-bg-alt)] shadow-[1px_1px_10px_2px_rgba(212,210,210,0.25)]"
             />
           </figure>
-        </div>
+        </Reveal>
       </Container>
     </section>
   );

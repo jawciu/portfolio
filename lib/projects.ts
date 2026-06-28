@@ -18,9 +18,9 @@ export const projects: Project[] = [
   {
     slug: "nest-agentic-rag",
     company: "E.ON Next",
-    title: "Designing agentic RAG to help with cognitive load",
+    title: "Designing an AI Brain for a Support Call Centre",
     description:
-      "Improved cognitive load by giving users agentic RAG that answers their questions.",
+      "redesigned a knowledge system that cut follow-up contacts for 94% of support agents",
     tags: ["Research", "UX/UI", "Testing", "Launch"],
     accent: "linear-gradient(120deg, #ff7a2a 0%, #ff006e 52%, #7a3bff 100%)",
   },
@@ -36,12 +36,26 @@ export const projects: Project[] = [
   {
     slug: "synapse",
     company: "synapse",
-    title: "Compounding memory with knowledge graphs and agentic RAG",
+    title: "Compounding memory\nwith knowledge graphs\nand agentic RAG",
     description:
       "built a memory-first reflection agent for the london langchain x surrealdb hackathon",
     tags: ["Product", "AI Architecture", "Backend"],
     accent: "linear-gradient(120deg, #C24E86 0%, #6D1B76 100%)",
   },
-  { slug: "project-04", company: "Project 04", title: "Project 04", description: "", tags: [], placeholder: true },
-  { slug: "project-05", company: "Project 05", title: "Project 05", description: "", tags: [], placeholder: true },
+  {
+    slug: "project-05",
+    company: "vector",
+    title: "Rethinking time-to-value\nin B2B SaaS onboarding",
+    description:
+      "built an ai-native vendor-customer platform that makes onboarding effortless on both sides",
+    tags: ["Product", "UX/UI", "AI", "Full-stack"],
+  },
+  {
+    slug: "project-04",
+    company: "E.ON Next",
+    title: "AI design system for\nE.ON Next tech products",
+    description:
+      "built the brand identity and a reusable component library that gives e.on next's ai products one consistent design language",
+    tags: ["Brand", "Design System", "UX/UI"],
+  },
 ];

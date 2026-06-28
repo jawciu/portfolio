@@ -3,6 +3,7 @@ import Hero from "@/components/Hero";
 import { HeroCopy } from "@/components/HeroCopy";
 import { TelemetryRail } from "@/components/TelemetryRail";
 import { About } from "@/components/sections/About";
+import { Highlights } from "@/components/sections/Highlights";
 import { ProjectCarousel } from "@/components/sections/ProjectCarousel";
 // PROTOTYPE — alternative project-showcase variants (?variant=shell|deck|bento).
 // Remove this import + the Suspense block below and restore <ProjectCarousel />
@@ -31,7 +32,7 @@ export default function Home() {
         {/* Top bar lives in the shared sticky <NavBar /> (root layout) now. */}
 
         {/* Hero copy — sits lower-left, like the comp */}
-        <section className="flex-1 flex flex-col justify-end px-8 md:px-12 pb-[calc(18vh+100px)]">
+        <section className="flex-1 flex flex-col justify-center px-8 md:px-12">
           <div className="max-w-3xl flex flex-col gap-4">
             {/* role line */}
             <div className="flex items-center gap-4 mb-7 font-mono text-sm md:text-base tracking-[0.25em] uppercase text-fg/85">
@@ -58,8 +59,11 @@ export default function Home() {
             opens between the two sections and the bright fixed canvas behind
             shines through as a hairline. */}
         <div className="-mt-px bg-bg">
+          {/* Career highlights — sits on the black plate directly under About. */}
+          <Highlights />
           <Toolkit />
-          <section id="work" className="px-8 py-12 md:px-12 md:py-20">
+          {/* pb adds +88px below the cards before the footer (48/80 base + 88). */}
+          <section id="work" className="px-8 py-12 pb-[136px] md:px-12 md:py-20 md:pb-[168px]">
             <Suspense fallback={<ProjectCarousel />}>
               <ProjectShowcasePrototype />
             </Suspense>

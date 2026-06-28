@@ -31,15 +31,18 @@ export default function CogAdhdCaseStudy() {
           phone/tablet mockups slide into FULL view — and only then does it stick
           (showing the mockups) while the glass plate below rises over it. So the
           device assets are always seen in full before the glass starts covering. */}
-      <StickyHero><Hero /></StickyHero>
-
-      {/* BUFFER — a transparent spacer so the glass rises a bit LATER: once the
-          hero pins (mockups fully visible), the visitor keeps scrolling past it
-          for ~half a viewport BEFORE the glass plate climbs in. Delays the glass
-          ("scroll more → glass appears") instead of it rising the instant the
-          hero pins. It's transparent + behind the pinned hero, so it just adds
-          scroll distance. Tune the height to taste. */}
-      <div aria-hidden className="h-[45vh]" />
+      {/* DWELL SPACE — cream room BELOW the mockups, INSIDE the pinned hero. It
+          lifts the mockups up off the screen bottom, so once the hero pins the
+          glass plate (which now sits flush under the hero) rises up THROUGH this
+          empty cream first, holding the mockups in full view while the glass
+          visibly climbs toward them. Replaces the old transparent post-hero
+          buffer, whose dead/frozen gap read as "end of page". The space is
+          transparent over the cream `.cog-root`, so it's seamless. Tune the
+          height to trade off how long the visuals dwell before the glass covers. */}
+      <StickyHero>
+        <Hero />
+        <div aria-hidden className="h-[34vh]" />
+      </StickyHero>
 
       {/* GLASS SEAM — ties the case study to the homepage: everything after the
           hero rides a frosted cream-glass plate that slides UP over the pinned

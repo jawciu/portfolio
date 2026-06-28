@@ -11,6 +11,9 @@ export type ProjectMeta = {
   status: "Shipped" | "In progress" | "Concept";
   /** short single-line hook for dense list/grid views */
   oneLiner: string;
+  /** short project name shown on the collapsed bento spine, distinct from the
+      company — so multiple projects under one brand (e.g. E.ON Next) read apart */
+  name: string;
 };
 
 const META: Record<string, ProjectMeta> = {
@@ -20,6 +23,7 @@ const META: Record<string, ProjectMeta> = {
     stack: ["Figma", "Agentic RAG", "React", "User Research"],
     status: "Shipped",
     oneLiner: "Cut cognitive load with an agent that answers before you ask.",
+    name: "Wiki Whisperer",
   },
   "cog-adhd": {
     year: "2025",
@@ -27,6 +31,7 @@ const META: Record<string, ProjectMeta> = {
     stack: ["Figma", "Agentic RAG", "User Research", "Prototyping"],
     status: "Shipped",
     oneLiner: "Cut cognitive load in ADHD therapy with an agent that answers before you ask.",
+    name: "mental health support",
   },
   "synapse": {
     year: "2026",
@@ -34,10 +39,11 @@ const META: Record<string, ProjectMeta> = {
     stack: ["LangChain", "SurrealDB", "Agentic RAG", "Knowledge Graphs"],
     status: "Concept",
     oneLiner: "A memory-first reflection agent built at the LangChain x SurrealDB hackathon.",
+    name: "building ai agents",
   },
-  // Placeholders — swap real content in as each project is ready.
-  "project-04": { year: "2023", role: "Product Designer", stack: ["Figma", "Research"], status: "Concept", oneLiner: "Placeholder — drop in the real story." },
-  "project-05": { year: "2023", role: "Product Designer", stack: ["Figma", "Branding"], status: "Concept", oneLiner: "Placeholder — drop in the real story." },
+  // Placeholders — open-card design coming soon.
+  "project-04": { year: "2026", role: "Product Designer", stack: ["Figma", "Research"], status: "Concept", oneLiner: "Placeholder — drop in the real story.", name: "AI design system" },
+  "project-05": { year: "2026", role: "Product Designer", stack: ["Figma", "Branding"], status: "Concept", oneLiner: "Placeholder — drop in the real story.", name: "AI onboarding platform" },
 };
 
 export type EnrichedProject = Project & ProjectMeta;
@@ -50,5 +56,6 @@ export const enriched: EnrichedProject[] = projects.map((p) => ({
     stack: [],
     status: "Concept" as const,
     oneLiner: p.description || "Placeholder",
+    name: p.title,
   }),
 }));

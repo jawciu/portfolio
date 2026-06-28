@@ -31,8 +31,8 @@ function openWash([c0, c1, c2]: [string, string, string]) {
 
 function spineWash([c0, c1]: [string, string, string]) {
   return [
-    `radial-gradient(30% 70% at 50% 35%, ${c0}40, transparent 66%)`,
-    `radial-gradient(38% 85% at 50% 70%, ${c1}33, transparent 68%)`,
+    `radial-gradient(35% 74% at 50% 35%, ${c0}80, transparent 70%)`,
+    `radial-gradient(44% 90% at 50% 70%, ${c1}66, transparent 72%)`,
   ].join(", ");
 }
 
@@ -60,15 +60,17 @@ export function VariantBentoSoft() {
                 open={open}
                 onActivate={onActivate}
                 collapsedLabel={p.company}
+                collapsedTitle={p.name}
                 year={p.year}
                 label="/e.on_next"
                 logo={{ src: "/assets/e_on_next.png", alt: "E.ON Next" }}
                 title={p.title}
                 subtitle={p.description}
                 tags={p.tags}
+                actions={[{ label: "MY CASE STUDY", href: "/project/wiki-whisperer" }]}
                 image={{
                   src: "/assets/eon-next-product.svg?v=3",
-                  alt: "Nest agentic-RAG chat answering a tariff question",
+                  alt: "Wiki Whisperer agentic-RAG chat answering an energy query",
                 }}
                 blob={{ core: "#C05846", edge: "#6D1B76" }}
               />
@@ -83,6 +85,7 @@ export function VariantBentoSoft() {
                 open={open}
                 onActivate={onActivate}
                 collapsedLabel={p.company}
+                collapsedTitle={p.name}
                 year={p.year}
                 label="/cog_adhd"
                 logo={{ src: "/assets/cog-adhd-logo.png", alt: "cog_adhd" }}
@@ -95,7 +98,7 @@ export function VariantBentoSoft() {
                 }}
                 imageClassName="pointer-events-none absolute right-[-10%] bottom-0 h-[65%] w-auto max-w-none object-contain object-left"
                 blob={{ core: "#F2922E", edge: "#189E71", coreStop: 30, edgeStop: 50, fadeStop: 80 }}
-                href="/project/cog-adhd"
+                actions={[{ label: "MY CASE STUDY", href: "/project/cog-adhd" }]}
               />
             );
           }
@@ -108,6 +111,7 @@ export function VariantBentoSoft() {
                 open={open}
                 onActivate={onActivate}
                 collapsedLabel={p.company}
+                collapsedTitle={p.name}
                 year={p.year}
                 label="/synapse"
                 logo={{ src: "/assets/synapse-logo.png", alt: "synapse" }}
@@ -119,8 +123,65 @@ export function VariantBentoSoft() {
                   alt: "synapse reflection agent — map your mind journaling view",
                 }}
                 imageClassName="pointer-events-none absolute right-[-12%] top-[55%] h-[53%] w-auto max-w-none -translate-y-1/2 rounded-2xl object-contain shadow-[0_20px_60px_rgba(0,0,0,0.45)]"
-                blob={{ core: "#C24F83", edge: "#734A8E", coreStop: 8, edgeStop: 52 }}
-                href="https://surrealdb.com/blog/building-compounding-memory-with-knowledge-graphs-and-agentic-rag"
+                blob={{ core: "#8FB7EA", edge: "#13564B", coreStop: 8, edgeStop: 52 }}
+                actions={[
+                  {
+                    label: "MY BLOG POST",
+                    href: "https://surrealdb.com/blog/building-compounding-memory-with-knowledge-graphs-and-agentic-rag",
+                  },
+                  { label: "TRY IT", href: "https://synapse-ks93.onrender.com/" },
+                  { label: "SOURCE CODE", href: "https://github.com/jawciu/synapse" },
+                ]}
+              />
+            );
+          }
+
+          // Project 04 (vector) — reusable card layout; source + live-product CTAs.
+          if (i === 3) {
+            return (
+              <ProjectCard
+                key={p.slug}
+                open={open}
+                onActivate={onActivate}
+                collapsedLabel={p.company}
+                collapsedTitle={p.name}
+                year={p.year}
+                label="/vector"
+                title={p.title}
+                subtitle={p.description}
+                tags={p.tags}
+                image={{
+                  src: "/assets/vector-product.png",
+                  alt: "vector — AI turning a meeting into a draft onboarding task",
+                }}
+                imageClassName="pointer-events-none absolute right-[-15%] top-[calc(50%+32px)] h-[50%] w-auto max-w-none -translate-y-1/2 rounded-2xl bg-[#18181f] p-5 object-contain shadow-[0_20px_60px_rgba(0,0,0,0.45)]"
+                blob={{ core: "#f96a3f", edge: "#9059ee", fadeStop: 72 }}
+                actions={[
+                  { label: "SOURCE CODE", href: "https://github.com/jawciu/vector" },
+                  { label: "TRY IT", href: "https://vector.quest/" },
+                ]}
+              />
+            );
+          }
+
+          // Project 05 (AI design system, E.ON Next) — reusable card layout.
+          // Wiki Whisperer blob colours; case study still to come.
+          if (i === 4) {
+            return (
+              <ProjectCard
+                key={p.slug}
+                open={open}
+                onActivate={onActivate}
+                collapsedLabel={p.company}
+                collapsedTitle={p.name}
+                year={p.year}
+                label="/ai_design_system"
+                logo={{ src: "/assets/e_on_next.png", alt: "E.ON Next" }}
+                title={p.title}
+                subtitle={p.description}
+                tags={p.tags}
+                blob={{ core: "#C05846", edge: "#6D1B76" }}
+                note="case study coming soon"
               />
             );
           }
@@ -178,13 +239,18 @@ export function VariantBentoSoft() {
 
               {!open && (
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <span
-                    className="whitespace-nowrap font-mono text-sm uppercase tracking-[0.3em] text-fg md:text-base"
+                  <div
+                    className="whitespace-nowrap text-center font-mono uppercase tracking-[0.3em]"
                     style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}
                   >
-                    {p.company}
-                    <span className="text-fg/55"> · {p.year}</span>
-                  </span>
+                    <span className="block text-sm text-fg md:text-base">
+                      {p.company}
+                      <span className="text-fg/55"> · {p.year}</span>
+                    </span>
+                    <span className="mt-2.5 block text-xs text-fg/70 md:text-sm">
+                      {p.name}
+                    </span>
+                  </div>
                 </div>
               )}
 

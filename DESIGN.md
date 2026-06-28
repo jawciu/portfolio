@@ -208,7 +208,8 @@ components:
     layout: "scatter several into a staggered zigzag (two flex columns, one offset down with pt-*); center the paired visual with items-center on the row"
   case-study-glass-seam:  # ties a case study to the homepage — content plate RISES over a pinned hero
     heroPin: "sticky, top = -(heroHeight - viewportHeight)"  # measured in StickyHero.tsx; the hero (taller than the viewport) scrolls up until the device mockups are FULLY visible, THEN pins, so the plate rises over it only after the assets are seen
-    overlap: 0                    # plate sits just below the hero (no -mt) so it enters AFTER the mockups are fully shown, then rises on scroll
+    overlap: 0                    # plate sits just below the hero (no -mt) so it enters the instant the hero pins, then rises on scroll
+    dwellSpace: "h-[34vh] spacer INSIDE StickyHero, AFTER <Hero />"  # transparent (shows the page bg) cream/near-white room below the mockups; lifts them off the screen bottom so the glass rises THROUGH this empty space FIRST, holding the mockups in full view while it climbs toward them. DO NOT use a separate transparent buffer AFTER the hero — that leaves the screen FROZEN (hero pinned + glass not yet entered) which reads as "end of page". Put the dwell space INSIDE the pinned hero so the motion stays continuous. Tune the height = how long the visuals dwell before the glass covers.
     rounded: "{rounded.sheet}"    # rounded-t-[2.5rem], echoes the About sheet
     backdropFilter: blur(40px) saturate(1.5)   # backdrop-blur-2xl backdrop-saturate-150
     shadow: "0 -24px 60px -20px rgba(40,34,20,0.18)"  # soft shadow UNDER the plate's top edge — floating-glass depth
