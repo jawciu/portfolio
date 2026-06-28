@@ -152,7 +152,7 @@ export function Solution() {
             <img
               src={A("image-39.svg")}
               alt="Symptom ranking screen grouping the week into Your Highs, Your Lows, and Your Neutral Zone"
-              className="absolute right-[-14%] top-[-24%] w-[58%] h-auto select-none rounded-[20px] border border-[#E3E2DA] shadow-[1px_1px_10px_2px_rgba(212,210,210,0.25)]"
+              className="absolute right-[-14%] top-[-24%] w-[58%] h-auto select-none rounded-[20px] border border-[#E3E2DA] shadow-[1px_1px_10px_2px_rgba(212,210,210,0.25)] max-lg:right-0 max-lg:top-[-16%]"
             />
           </div>
         </Reveal>

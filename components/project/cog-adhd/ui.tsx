@@ -88,7 +88,7 @@ export function InsightCard({
 }) {
   return (
     <div
-      style={{ width, height }}
+      style={{ width, minHeight: height }}
       className="flex max-w-full flex-col rounded-2xl border border-[#f1f0ea] bg-[#fafafa] px-9 py-8"
     >
       <p className="font-[family-name:var(--font-mono)] text-[15px] font-bold uppercase tracking-[0.02em] text-[var(--cog-ink)]">
@@ -124,7 +124,7 @@ export function TestimonialBubble({
   flip?: boolean;
 }) {
   return (
-    <figure className="relative max-w-full" style={{ width }}>
+    <figure className="relative min-w-0 max-w-full" style={{ width }}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={A(asset)}
