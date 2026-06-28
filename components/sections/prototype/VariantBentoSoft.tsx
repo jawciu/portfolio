@@ -75,6 +75,10 @@ export function VariantBentoSoft() {
                   src: "/assets/eon-next-product.svg?v=3",
                   alt: "Wiki Whisperer agentic-RAG chat answering an energy query",
                 }}
+                mobileImage={{
+                  src: "/assets/wiki-chatbot.svg",
+                  alt: "Wiki Whisperer agentic-RAG chat answering an energy query",
+                }}
                 blob={{ core: "#C05846", edge: "#6D1B76" }}
               />
             );
@@ -97,6 +101,10 @@ export function VariantBentoSoft() {
                 tags={p.tags}
                 image={{
                   src: "/assets/cog-adhd-product.png?v=3",
+                  alt: "cog_adhd check-in history, weekly ADHD scores and daily highs/lows",
+                }}
+                mobileImage={{
+                  src: "/assets/cog-mobile.png",
                   alt: "cog_adhd check-in history, weekly ADHD scores and daily highs/lows",
                 }}
                 imageClassName="pointer-events-none absolute right-[-10%] bottom-0 h-[65%] max-[1520px]:h-[55%] max-[1150px]:h-[44%] w-auto max-w-none object-contain object-left"
@@ -123,6 +131,10 @@ export function VariantBentoSoft() {
                 tags={p.tags}
                 image={{
                   src: "/assets/synapse-product.png?v=3",
+                  alt: "synapse reflection agent, map your mind journaling view",
+                }}
+                mobileImage={{
+                  src: "/assets/synapse-mobile.png",
                   alt: "synapse reflection agent, map your mind journaling view",
                 }}
                 imageClassName="pointer-events-none absolute right-[-12%] top-[55%] h-[53%] max-[1520px]:h-[44%] max-[1150px]:h-[36%] w-auto max-w-none -translate-y-1/2 rounded-2xl object-contain shadow-[0_20px_60px_rgba(0,0,0,0.45)]"

@@ -38,6 +38,9 @@ export type ProjectCardProps = {
   logo?: { src: string; alt: string };
   /** optional product visual; when present the card uses the split layout */
   image?: { src: string; alt: string };
+  /** optional mobile-specific visual shown ONLY in the stacked (below-lg) layout,
+      where the desktop `image` would be cut. Falls back to `image` when omitted. */
+  mobileImage?: { src: string; alt: string };
   /** override the product-visual positioning classes (default: floats centred off
       the right edge). e.g. pass a bottom/right-anchored variant for device shots. */
   imageClassName?: string;
@@ -83,6 +86,7 @@ export function ProjectCard({
   tags,
   logo,
   image,
+  mobileImage,
   imageClassName,
   blob,
   href,
@@ -323,13 +327,13 @@ export function ProjectCard({
             {note}
           </span>
         )}
-        {image && (
+        {(mobileImage ?? image) && (
           <div className="mt-6 overflow-hidden rounded-2xl">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={image.src}
-              alt={image.alt}
-              className="mx-auto max-h-[300px] w-auto max-w-full object-contain"
+              src={(mobileImage ?? image)!.src}
+              alt={(mobileImage ?? image)!.alt}
+              className="mx-auto max-h-[340px] w-auto max-w-full object-contain"
             />
           </div>
         )}
