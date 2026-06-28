@@ -94,7 +94,7 @@ export function ProjectCard({
   // Default: artwork floats centred, bleeding slightly off the right edge.
   const imgClass =
     imageClassName ??
-    "pointer-events-none absolute right-[-6%] top-1/2 h-[88%] max-[1520px]:h-[74%] w-auto -translate-y-1/2 object-contain object-left";
+    "pointer-events-none absolute right-[-6%] top-1/2 h-[88%] max-[1520px]:h-[74%] max-[1150px]:h-[60%] w-auto -translate-y-1/2 object-contain object-left";
   // Collapsed click → open the card; open click (with a link) → follow it.
   // External http(s) links open in a new tab; relative paths navigate in-app.
   const isExternal = !!href && /^https?:\/\//.test(href);
