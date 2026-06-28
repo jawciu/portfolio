@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "../../../components/project/cog-adhd/theme.css";
+import { ScrollReset } from "../../../components/ScrollReset";
 import { StickyHero } from "../../../components/project/cog-adhd/StickyHero";
 import { Hero } from "../../../components/project/cog-adhd/sections/Hero";
 import { MyRole } from "../../../components/project/cog-adhd/sections/MyRole";
@@ -25,6 +26,7 @@ export const metadata: Metadata = {
 export default function CogAdhdCaseStudy() {
   return (
     <main className="cog-root min-h-screen w-full">
+      <ScrollReset />
       {/* PINNED HERO — the hero is taller than the viewport, so it's pinned at a
           MEASURED `top: -(heroHeight - viewportHeight)` (see StickyHero): the
           visitor scrolls UP through it first — confetti → title → meta → the

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "../../../components/project/wiki-whisperer/theme.css";
+import { ScrollReset } from "../../../components/ScrollReset";
 import { StickyHero } from "../../../components/project/wiki-whisperer/StickyHero";
 import { SoftBlob } from "../../../components/project/wiki-whisperer/SoftBlob";
 import { Hero } from "../../../components/project/wiki-whisperer/sections/Hero";
@@ -27,6 +28,7 @@ export const metadata: Metadata = {
 export default function WikiWhispererCaseStudy() {
   return (
     <main className="ww-root min-h-screen w-full">
+      <ScrollReset />
       {/* PINNED HERO — taller than the viewport, pinned at a measured negative top so
           the device mockups scroll into FULL view before the glass plate rises over it. */}
       {/* DWELL SPACE — near-white room BELOW the mockups, INSIDE the pinned hero, so

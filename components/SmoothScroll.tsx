@@ -7,6 +7,12 @@ import Lenis from "lenis";
 
 gsap.registerPlugin(ScrollTrigger);
 
+// Module-level handle to the single Lenis instance (created once in the root
+// layout). Lets route components reset the smooth-scroll position on client-side
+// navigation — see ScrollReset. Null before mount / after unmount.
+let lenisInstance: Lenis | null = null;
+export const getLenis = () => lenisInstance;
+
 export function SmoothScroll({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const lenis = new Lenis({
@@ -14,6 +20,7 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
     });
+    lenisInstance = lenis;
 
     const raf = (time: number) => lenis.raf(time * 1000);
     lenis.on("scroll", ScrollTrigger.update);
@@ -29,6 +36,7 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
     return () => {
       window.removeEventListener("load", onLoad);
       lenis.destroy();
+      lenisInstance = null;
       gsap.ticker.remove(raf);
     };
   }, []);
