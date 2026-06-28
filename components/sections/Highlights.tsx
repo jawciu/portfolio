@@ -99,7 +99,7 @@ export function Highlights() {
                   active={inView}
                   cps={CPS}
                   delay={base + 2 * LINE_GAP}
-                  className="mt-1 font-mono text-[10px] tracking-[0.2em] text-fg/70 md:text-[11px]"
+                  className="mt-1 font-mono text-[10px] tracking-[0.2em] text-fg/70 max-sm:tracking-[0.04em] md:text-[11px]"
                 />
               </li>
             );

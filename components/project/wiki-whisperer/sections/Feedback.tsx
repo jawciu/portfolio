@@ -52,20 +52,20 @@ export function Feedback() {
           {/* two equal-height panels, tight gap so the pinned tooltip stays visible.
               The SVGs bake in their own frame + shadow (and pin's tooltip overhangs
               the frame), so no wrapper card/background here. */}
-          <Reveal className="flex h-[380px] items-stretch justify-start gap-3 sm:h-[440px] lg:h-[500px] xl:h-[572px]">
+          <Reveal className="flex h-[380px] items-stretch justify-start gap-3 max-sm:h-auto max-sm:flex-col max-sm:items-center max-sm:gap-5 sm:h-[440px] lg:h-[500px] xl:h-[572px]">
             {/* pin-conversation panel (left) */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={A("pin.svg")}
               alt="Pinning a conversation from the chat list"
-              className="h-full w-auto"
+              className="h-full w-auto max-sm:h-auto max-sm:w-full"
             />
             {/* search-history panel (right) */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={A("search.svg")}
               alt="Searchable chat history with pinned conversations"
-              className="h-full w-auto"
+              className="h-full w-auto max-sm:h-auto max-sm:w-full"
             />
           </Reveal>
 
@@ -108,20 +108,20 @@ export function Feedback() {
 
           {/* two screenshots (flag form + routed-to-Slack). Row height tracks the
               larger feedback panel; flag form sits ~0.85x, feedback ~1.1x. */}
-          <Reveal className="flex h-[374px] items-center justify-end gap-4 sm:h-[440px] lg:h-[506px] xl:h-[572px]">
+          <Reveal className="flex h-[374px] items-center justify-end gap-4 max-sm:h-auto max-sm:flex-col max-sm:items-center max-sm:gap-5 sm:h-[440px] lg:h-[506px] xl:h-[572px]">
             {/* flag-content form (vector card — already framed) */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={A("flag-form.svg")}
               alt="Flag-content form where agents say what was wrong and flag the source"
-              className="h-[77%] w-auto"
+              className="h-[77%] w-auto max-sm:h-auto max-sm:w-full"
             />
             {/* routed to a Slack channel (flat screenshot — add rounded corners + lilac border) */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={A("feedback.svg")}
               alt="Feedback routed to a Slack channel for experts to action"
-              className="h-full w-auto rounded-[16px] border-[1.5px] border-[#F7EBFF]"
+              className="h-full w-auto rounded-[16px] border-[1.5px] border-[#F7EBFF] max-sm:h-auto max-sm:w-full"
             />
           </Reveal>
         </div>

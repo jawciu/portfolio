@@ -85,8 +85,8 @@ export function Results() {
           {/* the two columns drift as RIGID units at gentle, different rates so
               they parallax for depth WITHOUT the bubbles ever converging (each
               column keeps its internal gaps); the quotes themselves type in. */}
-          <div className="flex justify-center gap-2 sm:gap-0">
-            <Parallax speed={22} className="flex flex-col items-center gap-8 pt-50">
+          <div className="flex justify-center gap-2 max-sm:flex-col max-sm:items-center max-sm:gap-8 sm:gap-0">
+            <Parallax speed={22} className="flex flex-col items-center gap-8 pt-50 max-sm:pt-0">
               {THERAPIST.map((bubble) => (
                 <TestimonialBubble key={bubble.asset} {...bubble} />
               ))}

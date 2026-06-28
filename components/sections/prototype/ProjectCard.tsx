@@ -38,6 +38,9 @@ export type ProjectCardProps = {
   logo?: { src: string; alt: string };
   /** optional product visual; when present the card uses the split layout */
   image?: { src: string; alt: string };
+  /** optional mobile-specific visual shown ONLY in the stacked (below-lg) layout,
+      where the desktop `image` would be cut. Falls back to `image` when omitted. */
+  mobileImage?: { src: string; alt: string };
   /** override the product-visual positioning classes (default: floats centred off
       the right edge). e.g. pass a bottom/right-anchored variant for device shots. */
   imageClassName?: string;
@@ -83,6 +86,7 @@ export function ProjectCard({
   tags,
   logo,
   image,
+  mobileImage,
   imageClassName,
   blob,
   href,
@@ -94,7 +98,7 @@ export function ProjectCard({
   // Default: artwork floats centred, bleeding slightly off the right edge.
   const imgClass =
     imageClassName ??
-    "pointer-events-none absolute right-[-6%] top-1/2 h-[88%] w-auto -translate-y-1/2 object-contain object-left";
+    "pointer-events-none absolute right-[-6%] top-1/2 h-[88%] max-[1520px]:h-[74%] max-[1150px]:h-[60%] w-auto -translate-y-1/2 object-contain object-left";
   // Collapsed click → open the card; open click (with a link) → follow it.
   // External http(s) links open in a new tab; relative paths navigate in-app.
   const isExternal = !!href && /^https?:\/\//.test(href);
@@ -104,8 +108,12 @@ export function ProjectCard({
       else router.push(href);
     } else onActivate();
   };
-  const rootClass = `group relative min-h-0 overflow-hidden rounded-3xl text-left outline-none transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-    (hasActions ? !open : open && href) ? "cursor-pointer" : ""
+  // Below lg the cards stop being an accordion: `!grow-0 !basis-auto` (important,
+  // to beat the inline flex-grow/basis) lets each card take its natural, content-
+  // driven height in the stacked column. At lg+ the inline rootStyle drives the
+  // accordion exactly as before.
+  const rootClass = `group relative min-h-0 overflow-hidden rounded-3xl text-left outline-none transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] max-lg:!grow-0 max-lg:!basis-auto ${
+    (hasActions ? !open : open && href) ? "lg:cursor-pointer" : ""
   }`;
   const rootStyle = { flexGrow: open ? 6 : 1, flexBasis: 0 };
 
@@ -113,14 +121,16 @@ export function ProjectCard({
     <>
       {/* colour blob BEHIND the glass — bloom (open) crossfades with spine
           (collapsed); same palette so the transition is seamless. */}
+      {/* below lg every card is expanded, so force the bloom on and the collapsed
+          spine off (important beats the inline opacity); at lg+ they crossfade. */}
       <div
         aria-hidden
-        className="absolute inset-0 transition-opacity duration-700"
+        className="absolute inset-0 transition-opacity duration-700 max-lg:!opacity-100"
         style={{ background: bloom(blob), opacity: open ? 1 : 0 }}
       />
       <div
         aria-hidden
-        className="absolute inset-0 transition-opacity duration-700"
+        className="absolute inset-0 transition-opacity duration-700 max-lg:!opacity-0"
         style={{ background: spine(blob), opacity: open ? 0 : 0.67 }}
       />
 
@@ -159,7 +169,7 @@ export function ProjectCard({
           right, the project name dimmer beside it — so a long name never overflows
           the card height as one run would. */}
       {!open && (
-        <div className="absolute inset-0 flex items-center justify-center">
+        <div className="absolute inset-0 hidden items-center justify-center lg:flex">
           <div
             className="whitespace-nowrap text-center font-mono uppercase tracking-[0.3em]"
             style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}
@@ -177,9 +187,10 @@ export function ProjectCard({
         </div>
       )}
 
-      {/* expanded — split layout: copy left, product visual right */}
+      {/* expanded — split layout: copy left, product visual right. lg+ ONLY; below
+          lg the in-flow stacked block further down renders instead. */}
       <div
-        className={`absolute inset-0 flex transition-opacity ${
+        className={`absolute inset-0 hidden transition-opacity lg:flex ${
           open
             ? "opacity-100 delay-200 duration-500"
             : "pointer-events-none opacity-0 duration-200"
@@ -226,9 +237,18 @@ export function ProjectCard({
                 card); a single compact row, each opening its own link instead of
                 a whole-card click. */}
             {hasActions && (
-              <div className="mt-7 flex flex-nowrap items-center gap-4">
+              // Desktop (lg+) keeps the single nowrap row exactly as before. Below lg the
+              // row may wrap so 3 CTAs drop to a second line cleanly instead of squeezing;
+              // each label is nowrap so a button never grows "fat" by wrapping its own text.
+              <div className="mt-7 flex flex-wrap items-center gap-4 lg:flex-nowrap">
                 {actions!.map((a) => (
-                  <CaseStudyButton key={a.href} href={a.href} tone="light" size="sm">
+                  <CaseStudyButton
+                    key={a.href}
+                    href={a.href}
+                    tone="light"
+                    size="sm"
+                    className="whitespace-nowrap"
+                  >
                     {a.label}
                   </CaseStudyButton>
                 ))}
@@ -258,6 +278,70 @@ export function ProjectCard({
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={image.src} alt={image.alt} className={imgClass} />
           </div>
+        )}
+      </div>
+
+      {/* ── below lg ONLY: in-flow stacked layout ───────────────────────────────
+          Everything flows normally (no absolute positioning) so the card takes its
+          natural height in the stacked column. Copy on top, product image below,
+          tags last — the mobile/tablet answer to the lg+ split above. */}
+      <div className="relative flex flex-col p-6 lg:hidden">
+        <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-fg/60">
+          {year}
+        </p>
+        <div className="mt-5 flex items-center gap-3">
+          {logo && (
+            /* eslint-disable-next-line @next/next/no-img-element */
+            <img src={logo.src} alt={logo.alt} className="h-[27px] w-auto" />
+          )}
+          <span className="font-mono text-xs lowercase tracking-[0.2em] text-fg/70">
+            {label}
+          </span>
+        </div>
+        <h3 className="mt-4 whitespace-pre-line font-hero text-2xl font-bold uppercase leading-[1.08] tracking-tight text-fg">
+          {title}
+        </h3>
+        {subtitle && (
+          <p className="mt-4 max-w-md font-mono text-xs lowercase leading-relaxed text-fg">
+            {subtitle}
+          </p>
+        )}
+        {hasActions && (
+          <div className="mt-6 flex flex-wrap items-center gap-3">
+            {actions!.map((a) => (
+              <CaseStudyButton
+                key={a.href}
+                href={a.href}
+                tone="light"
+                size="sm"
+                className="whitespace-nowrap"
+              >
+                {a.label}
+              </CaseStudyButton>
+            ))}
+          </div>
+        )}
+        {note && (
+          <span className="mt-6 inline-flex items-center gap-2 self-start rounded-md border border-dashed border-fg/30 px-3 py-2 font-mono text-[12px] font-bold uppercase tracking-[0.12em] text-fg/55">
+            <span aria-hidden className="inline-block h-1.5 w-1.5 rounded-full bg-fg/40" />
+            {note}
+          </span>
+        )}
+        {(mobileImage ?? image) && (
+          <div className="mt-6 overflow-hidden rounded-2xl">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={(mobileImage ?? image)!.src}
+              alt={(mobileImage ?? image)!.alt}
+              className="mx-auto max-h-[340px] w-auto max-w-full object-contain"
+            />
+          </div>
+        )}
+        {tags && tags.length > 0 && (
+          <p className="mt-6 flex flex-wrap items-center gap-x-2 font-mono text-xs uppercase tracking-[0.1em] text-fg">
+            <span aria-hidden className="mr-1 inline-block h-2 w-2 bg-fg/60" />
+            {tags.join(" · ")}
+          </p>
         )}
       </div>
     </>

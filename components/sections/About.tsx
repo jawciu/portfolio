@@ -136,11 +136,11 @@ export function About() {
             "linear-gradient(180deg, black 0%, black 78%, transparent 96%)",
         }}
       />
-      <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-10 px-8 pt-28 pb-12 md:grid-cols-[minmax(0,420px)_1fr] md:gap-16 md:px-12 md:pt-40">
+      <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-10 px-8 pt-28 pb-12 md:px-12 md:pt-40 lg:grid-cols-[minmax(0,420px)_1fr] lg:gap-16">
       {/* Photo — circular cut-out set under a glass lens: rim glint, diagonal
           sheen and glare arc (same specular language as the About sheet),
           shaded inner edge so the disc reads curved. */}
-      <div className="relative aspect-square w-full max-w-[420px] md:-ml-10">
+      <div className="relative mx-auto aspect-square w-full max-w-[420px] lg:mx-0 lg:-ml-10">
         {/* Orb-edge treatment: the photo is inset (p-7) so the rim blur has
             room to SMEAR outward past the photo's edge — content bleeding
             into the dark like the orbs — before the outer mask dissolves it.

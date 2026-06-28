@@ -164,7 +164,7 @@ export function TestimonialBubble({
   flip?: boolean;
 }) {
   return (
-    <figure className="relative max-w-full" style={{ width }}>
+    <figure className="relative min-w-0 max-w-full" style={{ width }}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={A(asset)}

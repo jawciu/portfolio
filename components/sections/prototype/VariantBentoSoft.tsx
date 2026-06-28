@@ -47,7 +47,10 @@ export function VariantBentoSoft() {
         /projects
       </div>
 
-      <div className="flex h-[clamp(400px,48vw,560px)] flex-col gap-2 md:flex-row md:gap-3">
+      {/* lg+ = the horizontal accordion (fixed height, flex-row). Below lg the cards
+          stack into a natural-height column (no fixed height) — each ProjectCard
+          renders its in-flow stacked layout. */}
+      <div className="flex flex-col gap-3 lg:h-[clamp(400px,48vw,560px)] lg:flex-row lg:gap-3">
         {items.map((p, i) => {
           const open = i === hot;
           const onActivate = () => setHot(i);
@@ -70,6 +73,10 @@ export function VariantBentoSoft() {
                 actions={[{ label: "MY CASE STUDY", href: "/project/wiki-whisperer" }]}
                 image={{
                   src: "/assets/eon-next-product.svg?v=3",
+                  alt: "Wiki Whisperer agentic-RAG chat answering an energy query",
+                }}
+                mobileImage={{
+                  src: "/assets/wiki-chatbot.svg",
                   alt: "Wiki Whisperer agentic-RAG chat answering an energy query",
                 }}
                 blob={{ core: "#C05846", edge: "#6D1B76" }}
@@ -96,7 +103,11 @@ export function VariantBentoSoft() {
                   src: "/assets/cog-adhd-product.png?v=3",
                   alt: "cog_adhd check-in history, weekly ADHD scores and daily highs/lows",
                 }}
-                imageClassName="pointer-events-none absolute right-[-10%] bottom-0 h-[65%] w-auto max-w-none object-contain object-left"
+                mobileImage={{
+                  src: "/assets/cog-mobile.png",
+                  alt: "cog_adhd check-in history, weekly ADHD scores and daily highs/lows",
+                }}
+                imageClassName="pointer-events-none absolute right-[-10%] bottom-0 h-[65%] max-[1520px]:h-[55%] max-[1150px]:h-[44%] w-auto max-w-none object-contain object-left"
                 blob={{ core: "#F2922E", edge: "#189E71", coreStop: 30, edgeStop: 50, fadeStop: 80 }}
                 actions={[{ label: "MY CASE STUDY", href: "/project/cog-adhd" }]}
               />
@@ -122,7 +133,11 @@ export function VariantBentoSoft() {
                   src: "/assets/synapse-product.png?v=3",
                   alt: "synapse reflection agent, map your mind journaling view",
                 }}
-                imageClassName="pointer-events-none absolute right-[-12%] top-[55%] h-[53%] w-auto max-w-none -translate-y-1/2 rounded-2xl object-contain shadow-[0_20px_60px_rgba(0,0,0,0.45)]"
+                mobileImage={{
+                  src: "/assets/synapse-mobile.png",
+                  alt: "synapse reflection agent, map your mind journaling view",
+                }}
+                imageClassName="pointer-events-none absolute right-[-12%] top-[55%] h-[53%] max-[1520px]:h-[44%] max-[1150px]:h-[36%] w-auto max-w-none -translate-y-1/2 rounded-2xl object-contain shadow-[0_20px_60px_rgba(0,0,0,0.45)]"
                 blob={{ core: "#8FB7EA", edge: "#13564B", coreStop: 8, edgeStop: 52 }}
                 actions={[
                   {
@@ -154,7 +169,7 @@ export function VariantBentoSoft() {
                   src: "/assets/vector-product.png",
                   alt: "vector, AI turning a meeting into a draft onboarding task",
                 }}
-                imageClassName="pointer-events-none absolute right-[-15%] top-[calc(50%+32px)] h-[50%] w-auto max-w-none -translate-y-1/2 rounded-2xl bg-[#18181f] p-5 object-contain shadow-[0_20px_60px_rgba(0,0,0,0.45)]"
+                imageClassName="pointer-events-none absolute right-[-15%] top-[calc(50%+32px)] h-[50%] max-[1520px]:h-[42%] max-[1150px]:h-[34%] w-auto max-w-none -translate-y-1/2 rounded-2xl bg-[#18181f] p-5 object-contain shadow-[0_20px_60px_rgba(0,0,0,0.45)]"
                 blob={{ core: "#f96a3f", edge: "#9059ee", fadeStop: 72 }}
                 actions={[
                   { label: "SOURCE CODE", href: "https://github.com/jawciu/vector" },

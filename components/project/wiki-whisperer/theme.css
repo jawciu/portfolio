@@ -155,6 +155,12 @@
   }
 }
 
+@media (max-width: 480px) {
+  .case-study-callout {
+    font-size: 18px;
+  }
+}
+
 /* the framed monospace pull-quote callouts (left-bordered, typewriter feel) */
 .cog-callout {
   font-family: var(--font-mono), monospace;
