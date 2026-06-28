@@ -156,7 +156,7 @@ export function About() {
         >
           <Image
             src="/assets/portrait.png"
-            alt="Caroline Jaworsky — profile portrait with a pink bougainvillea tucked behind her ear"
+            alt="Caroline Jaworsky, profile portrait with a pink bougainvillea tucked behind her ear"
             fill
             sizes="(min-width: 768px) 420px, 90vw"
             className="object-contain p-7"

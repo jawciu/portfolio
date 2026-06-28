@@ -94,7 +94,7 @@ export function VariantBentoSoft() {
                 tags={p.tags}
                 image={{
                   src: "/assets/cog-adhd-product.png?v=3",
-                  alt: "cog_adhd check-in history — weekly ADHD scores and daily highs/lows",
+                  alt: "cog_adhd check-in history, weekly ADHD scores and daily highs/lows",
                 }}
                 imageClassName="pointer-events-none absolute right-[-10%] bottom-0 h-[65%] w-auto max-w-none object-contain object-left"
                 blob={{ core: "#F2922E", edge: "#189E71", coreStop: 30, edgeStop: 50, fadeStop: 80 }}
@@ -120,7 +120,7 @@ export function VariantBentoSoft() {
                 tags={p.tags}
                 image={{
                   src: "/assets/synapse-product.png?v=3",
-                  alt: "synapse reflection agent — map your mind journaling view",
+                  alt: "synapse reflection agent, map your mind journaling view",
                 }}
                 imageClassName="pointer-events-none absolute right-[-12%] top-[55%] h-[53%] w-auto max-w-none -translate-y-1/2 rounded-2xl object-contain shadow-[0_20px_60px_rgba(0,0,0,0.45)]"
                 blob={{ core: "#8FB7EA", edge: "#13564B", coreStop: 8, edgeStop: 52 }}
@@ -152,7 +152,7 @@ export function VariantBentoSoft() {
                 tags={p.tags}
                 image={{
                   src: "/assets/vector-product.png",
-                  alt: "vector — AI turning a meeting into a draft onboarding task",
+                  alt: "vector, AI turning a meeting into a draft onboarding task",
                 }}
                 imageClassName="pointer-events-none absolute right-[-15%] top-[calc(50%+32px)] h-[50%] w-auto max-w-none -translate-y-1/2 rounded-2xl bg-[#18181f] p-5 object-contain shadow-[0_20px_60px_rgba(0,0,0,0.45)]"
                 blob={{ core: "#f96a3f", edge: "#9059ee", fadeStop: 72 }}

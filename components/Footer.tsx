@@ -78,7 +78,7 @@ export function Footer() {
               href="https://www.linkedin.com/in/carolinejaworsky/"
               target="_blank"
               rel="noreferrer"
-              aria-label="LinkedIn — Caroline Jaworsky"
+              aria-label="LinkedIn - Caroline Jaworsky"
               className="inline-flex h-11 w-11 items-center justify-center rounded-md text-fg transition-colors hover:bg-fg/10"
             >
               <svg
@@ -122,7 +122,7 @@ export function Footer() {
               href="https://github.com/jawciu"
               target="_blank"
               rel="noreferrer"
-              aria-label="GitHub — jawciu (opens in a new tab)"
+              aria-label="GitHub - jawciu (opens in a new tab)"
               className="inline-flex h-11 w-11 items-center justify-center rounded-md text-fg transition-colors hover:bg-fg/10"
             >
               <svg

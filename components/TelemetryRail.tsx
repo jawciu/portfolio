@@ -86,7 +86,7 @@ export function TelemetryRail() {
         "STATIC"
       ) : (
         <>
-          <span ref={fpsRef}>—</span> FPS
+          <span ref={fpsRef}>-</span> FPS
         </>
       )}
     </div>

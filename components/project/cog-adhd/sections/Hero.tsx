@@ -101,19 +101,19 @@ export function Hero() {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={A("image-large-screens.svg")}
-            alt="Cog app phone — check-in history bar chart"
+            alt="Cog app phone - check-in history bar chart"
             className="w-[20.3%] max-w-[210px] shrink-0"
           />
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={A("image-large-screens-1.svg")}
-            alt="Cog app phone — check-in history list"
+            alt="Cog app phone - check-in history list"
             className="w-[20.3%] max-w-[210px] shrink-0"
           />
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={A("image.svg")}
-            alt="Cog Clinic dashboard — Katherine Bell overview"
+            alt="Cog Clinic dashboard - Katherine Bell overview"
             className="w-[53.5%] max-w-[552px] shrink-0"
           />
         </div>
