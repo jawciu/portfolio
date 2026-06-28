@@ -36,7 +36,7 @@ export function Impact() {
               needed on the floor.
             </Body>
           </div>
-          <div className="flex justify-center lg:justify-end">
+          <div className="flex min-w-0 justify-center lg:justify-end">
             <TestimonialBubble
               asset="bubble-1.png"
               quote="Wiki Whisperer V2 has significantly enhanced our onboarding, empowering new starters with consistent information and noticeable improvements in confidence, knowledge retention and engagement."

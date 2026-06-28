@@ -41,7 +41,7 @@ export function Wins() {
           </Body>
         </Reveal>
 
-        <Reveal stagger={0.12} className="mt-12 grid items-start gap-8 md:grid-cols-3">
+        <Reveal stagger={0.12} className="mt-12 grid grid-cols-1 items-start gap-8 lg:grid-cols-3">
           {WINS.map((w) => (
             <TestimonialBubble
               key={w.label}
