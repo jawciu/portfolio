@@ -62,7 +62,7 @@ export function NavBar() {
       <Link
         href="/"
         onClick={handle("/")}
-        className={`font-mono text-xs tracking-[0.2em] transition-colors md:text-sm ${pathColor} ${hover}`}
+        className={`font-mono text-xs tracking-[0.2em] transition-colors max-sm:hidden md:text-sm ${pathColor} ${hover}`}
       >
         ~/caro/portfolio/2026
       </Link>
