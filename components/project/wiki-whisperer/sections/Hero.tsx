@@ -72,7 +72,7 @@ export function Hero() {
               <p className="case-study-body-md mt-2">
                 I led the design of Wiki Whisperer V2, an autonomous AI agent that helps
                 E.ON Next&apos;s energy specialists answer complex customer questions. It
-                rebuilt a distrusted tool into one teams rely on, reached 89.4% adoption
+                rebuilt a distrusted tool into one teams rely on, reached 89% adoption
                 across the trial, and cleared the way for a company-wide rollout.
               </p>
             </div>
