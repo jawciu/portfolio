@@ -32,7 +32,7 @@ export default function Home() {
         {/* Top bar lives in the shared sticky <NavBar /> (root layout) now. */}
 
         {/* Hero copy — sits lower-left, like the comp */}
-        <section className="flex-1 flex flex-col justify-end px-8 md:px-12 pb-[calc(18vh+100px)]">
+        <section className="flex-1 flex flex-col justify-center px-8 md:px-12">
           <div className="max-w-3xl flex flex-col gap-4">
             {/* role line */}
             <div className="flex items-center gap-4 mb-7 font-mono text-sm md:text-base tracking-[0.25em] uppercase text-fg/85">
