@@ -1,0 +1,31 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- warm outer body: coral -> orange -> magenta, fading to transparent -->
+    <radialGradient id="warm" cx="50%" cy="50%" r="50%">
+      <stop offset="0%"  stop-color="#d77a54"/>
+      <stop offset="36%" stop-color="#cf6a4f"/>
+      <stop offset="54%" stop-color="#bc5560"/>
+      <stop offset="70%" stop-color="#8a3f5c" stop-opacity="0.6"/>
+      <stop offset="88%" stop-color="#2a2238" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- teal core sitting inside the warm ring -->
+    <radialGradient id="teal" cx="50%" cy="54%" r="30%">
+      <stop offset="0%"  stop-color="#8eb4a3"/>
+      <stop offset="44%" stop-color="#588d80"/>
+      <stop offset="80%" stop-color="#3c6a66" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#33605f" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- pale sage highlight, slightly right + low, gently elongated -->
+    <radialGradient id="glint" cx="50%" cy="50%" r="50%">
+      <stop offset="0%"  stop-color="#c4d6c9"/>
+      <stop offset="55%" stop-color="#aac4b4" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#aac4b4" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="512" height="512" fill="url(#warm)"/>
+  <rect width="512" height="512" fill="url(#teal)"/>
+  <ellipse cx="272" cy="286" rx="86" ry="62" fill="url(#glint)"/>
+</svg>

@@ -17,7 +17,7 @@ import { Takeaways } from "../../../components/project/cog-adhd/sections/Takeawa
 import { NextProject } from "../../../components/project/cog-adhd/sections/NextProject";
 
 export const metadata: Metadata = {
-  title: "Cog ADHD — Gaps & Opportunities in ADHD Therapy | Caroline Jaworsky",
+  title: "Cog ADHD - Gaps & Opportunities in ADHD Therapy | Caroline Jaworsky",
   description:
     "Research & strategy case study: uncovering key user needs in ADHD therapy and turning insights into tested, shipped solutions for Cog Clinic.",
 };

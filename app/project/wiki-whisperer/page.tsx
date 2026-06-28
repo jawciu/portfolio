@@ -19,9 +19,9 @@ import { NextProject } from "../../../components/project/wiki-whisperer/sections
 
 export const metadata: Metadata = {
   title:
-    "Wiki Whisperer V2 — Designing a second AI brain for energy specialists | Caroline Jaworsky",
+    "Wiki Whisperer V2 - Designing a second AI brain for energy specialists | Caroline Jaworsky",
   description:
-    "Product design case study: redesigning E.ON Next's autonomous AI agent into a tool energy specialists trust, reaching 89.4% adoption and clearing the way for a company-wide rollout.",
+    "Product design case study: redesigning E.ON Next's autonomous AI agent into a tool energy specialists trust, reaching 89% adoption and clearing the way for a company-wide rollout.",
 };
 
 export default function WikiWhispererCaseStudy() {

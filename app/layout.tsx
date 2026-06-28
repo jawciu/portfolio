@@ -46,7 +46,7 @@ const mono = Geist_Mono({
 export const metadata: Metadata = {
   title: {
     default: "Caroline Jaworsky - AI Product Designer",
-    template: "%s — Caroline Jaworsky",
+    template: "%s - Caroline Jaworsky",
   },
   description:
     "Product designer working on consumer apps and B2B SaaS. Selected work, case studies, and writing.",
