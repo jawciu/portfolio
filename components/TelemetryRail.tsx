@@ -73,7 +73,7 @@ export function TelemetryRail() {
   return (
     <div
       aria-hidden
-      className="fixed right-3 top-1/2 z-30 -translate-y-1/2 font-mono text-[10px] md:text-xs tracking-[0.35em] uppercase text-fg/70 pointer-events-none select-none"
+      className="fixed right-3 top-1/2 z-30 -translate-y-1/2 font-mono text-[10px] md:text-xs tracking-[0.35em] uppercase text-fg/70 pointer-events-none select-none max-md:hidden"
       style={{ writingMode: "vertical-rl" }}
     >
       {webgl}

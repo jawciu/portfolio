@@ -35,7 +35,7 @@ export default function Home() {
         <section className="flex-1 flex flex-col justify-center px-8 md:px-12">
           <div className="max-w-3xl flex flex-col gap-4">
             {/* role line */}
-            <div className="flex items-center gap-4 mb-7 font-mono text-sm md:text-base tracking-[0.25em] uppercase text-fg/85">
+            <div className="flex items-center gap-4 mb-7 font-mono text-sm md:text-base tracking-[0.25em] max-sm:gap-2.5 max-sm:text-xs max-sm:tracking-[0.12em] uppercase text-fg/85">
               <span aria-hidden className="inline-block w-3.5 h-3.5 bg-fg/90" />
               <span>Product Designer</span>
               <span aria-hidden className="text-fg/40">•</span>
