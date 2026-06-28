@@ -136,7 +136,7 @@ export function About() {
             "linear-gradient(180deg, black 0%, black 78%, transparent 96%)",
         }}
       />
-      <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-10 px-8 py-28 md:grid-cols-[minmax(0,420px)_1fr] md:gap-16 md:px-12 md:py-40">
+      <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-10 px-8 pt-28 pb-12 md:grid-cols-[minmax(0,420px)_1fr] md:gap-16 md:px-12 md:pt-40">
       {/* Photo — circular cut-out set under a glass lens: rim glint, diagonal
           sheen and glare arc (same specular language as the About sheet),
           shaded inner edge so the disc reads curved. */}
