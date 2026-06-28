@@ -229,6 +229,24 @@ cards, element-screenshot. Delete the temp script after.
 > **`docs/CLAUDE-ARCHIVE.md`**. At the end of a session, append a new entry with: what changed,
 > current state (working / broken / in-progress), and explicit next steps for the next agent.
 
+### 2026-06-28 (later) — New `responsive-design` skill built + approved; bento responsive fix diagnosed, NOT yet applied
+- **Status: skill DONE + reviewer-APPROVED; no component code touched** (Caroline said "build the
+  skill but stop before touching bento cards"). On `project-showcase-experiment`, uncommitted.
+- **Added `.claude/skills/responsive-design/SKILL.md`** — Tailwind v4 responsive guidance: the
+  three-axis model (viewport breakpoints / container queries / content-vs-space shrink), the
+  flexbox `min-w-0` shrink rule, the duplicate-and-hide a11y pattern, and a worked bento example.
+  Process: researched online (Tailwind v4 docs, MDN flex `min-width:0`, container queries, a11y),
+  drafted, then ran an **evaluator subagent** twice (NEEDS_REVISION → APPROVED).
+- **Root-cause of the bento bug (diagnosed, ready to build next):** in `ProjectCard`/`VariantBentoSoft`,
+  (1) synapse's CTA "fat buttons" = each `CaseStudyButton` is `inline-flex` with **no
+  `whitespace-nowrap`** so the LABEL wraps internally (the row is already `flex-nowrap`);
+  (2) the image doesn't "shrink first" because the copy column is a **percentage** `w-[56%]` so
+  both columns shrink in lockstep. **Planned fix:** add `whitespace-nowrap` to `CaseStudyButton`;
+  change synapse copy column from `w-[56%]` to a fixed `flex-none basis-[~28rem]`; make the image
+  column `flex-1 min-w-0`; add a card-level `@container` + `@max-2xl:flex-col` stack trigger for the
+  narrow side-by-side band. Keep desktop (`lg:`+) byte-identical; verify widest layout first.
+- **Open intent:** apply the above to the bento cards once Caroline gives the go-ahead.
+
 ### 2026-06-28 — Homepage `/highlights` career section + About bio refresh; Caroline signed off ("thank you!")
 - **Status: WORKING, all committed + pushed** on `project-showcase-experiment` (commits
   `0eef4ba` then `14343c4`). Nothing in progress, nothing broken.
