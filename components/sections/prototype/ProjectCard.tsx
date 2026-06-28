@@ -226,9 +226,18 @@ export function ProjectCard({
                 card); a single compact row, each opening its own link instead of
                 a whole-card click. */}
             {hasActions && (
-              <div className="mt-7 flex flex-nowrap items-center gap-4">
+              // Desktop (lg+) keeps the single nowrap row exactly as before. Below lg the
+              // row may wrap so 3 CTAs drop to a second line cleanly instead of squeezing;
+              // each label is nowrap so a button never grows "fat" by wrapping its own text.
+              <div className="mt-7 flex flex-wrap items-center gap-4 lg:flex-nowrap">
                 {actions!.map((a) => (
-                  <CaseStudyButton key={a.href} href={a.href} tone="light" size="sm">
+                  <CaseStudyButton
+                    key={a.href}
+                    href={a.href}
+                    tone="light"
+                    size="sm"
+                    className="whitespace-nowrap"
+                  >
                     {a.label}
                   </CaseStudyButton>
                 ))}
