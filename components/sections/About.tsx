@@ -140,7 +140,7 @@ export function About() {
       {/* Photo — circular cut-out set under a glass lens: rim glint, diagonal
           sheen and glare arc (same specular language as the About sheet),
           shaded inner edge so the disc reads curved. */}
-      <div className="relative aspect-square w-full max-w-[420px] lg:-ml-10">
+      <div className="relative mx-auto aspect-square w-full max-w-[420px] lg:mx-0 lg:-ml-10">
         {/* Orb-edge treatment: the photo is inset (p-7) so the rim blur has
             room to SMEAR outward past the photo's edge — content bleeding
             into the dark like the orbs — before the outer mask dissolves it.

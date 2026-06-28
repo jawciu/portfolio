@@ -42,7 +42,7 @@ export function MyRole() {
         >
           {ROLES.map((r) => (
             <div key={r.label}>
-              <div className="mb-4 h-[72px]">
+              <div className="mb-4 flex h-[72px] justify-center sm:justify-start">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={A(r.icon)}
