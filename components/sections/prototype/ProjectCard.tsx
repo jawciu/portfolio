@@ -294,7 +294,7 @@ export function ProjectCard({
             {label}
           </span>
         </div>
-        <h3 className="mt-4 whitespace-pre-line font-hero text-lg font-bold uppercase leading-[1.1] tracking-tight text-fg">
+        <h3 className="mt-4 whitespace-pre-line font-hero text-2xl font-bold uppercase leading-[1.08] tracking-tight text-fg">
           {title}
         </h3>
         {subtitle && (
