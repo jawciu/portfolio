@@ -24,12 +24,24 @@ export function ScrollReset() {
   useLayoutEffect(() => {
     // Jump to the top synchronously, BEFORE the sibling reveal triggers below are
     // created, so they measure against scroll 0 (not the carried-over home-page
-    // scroll). Set both Lenis (smooth-scroll source of truth) and the native
-    // window scroll (what ScrollTrigger reads) so they agree immediately.
-    getLenis()?.scrollTo(0, { immediate: true });
-    window.scrollTo(0, 0);
-    // recompute any already-live trigger start/end for the route now at scroll 0
+    // scroll). Reset Lenis (smooth-scroll source of truth, persists across routes)
+    // AND the native window scroll (what ScrollTrigger reads).
+    const top = () => {
+      getLenis()?.scrollTo(0, { immediate: true, force: true });
+      window.scrollTo(0, 0);
+    };
+    top();
+    // Sync ScrollTrigger's CACHED scroll to 0 now (it doesn't re-read on create),
+    // then recompute trigger start/end for the route at the top.
+    ScrollTrigger.update();
     ScrollTrigger.refresh();
+    // Re-assert next frame in case the persistent smooth-scroll emits a stale
+    // position after this commit (which would otherwise trip the once-fire reveals).
+    const id = requestAnimationFrame(() => {
+      top();
+      ScrollTrigger.update();
+    });
+    return () => cancelAnimationFrame(id);
   }, []);
   return null;
 }
