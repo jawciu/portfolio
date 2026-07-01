@@ -229,6 +229,64 @@ cards, element-screenshot. Delete the temp script after.
 > **`docs/CLAUDE-ARCHIVE.md`**. At the end of a session, append a new entry with: what changed,
 > current state (working / broken / in-progress), and explicit next steps for the next agent.
 
+### 2026-07-01 — HANDOFF: wiki case-study reveals don't animate on client-side nav (UNSOLVED). Responsive pass + scroll fixes DONE.
+> Caroline is handing to a fresh agent. Read this whole entry before touching the reveal bug — a LOT has been
+> tried and ruled out. All work below is committed + pushed to `main` and deployed on Vercel (prod =
+> **carolinejaworsky.com**, direct Vercel, auto-deploys from `main`, ~2 min/build). Latest commit `b0d55d9`.
+
+**DONE + shipped this session (working):**
+- **Responsive pass** (PR #5, merged): bento stacks below `lg` + shrinks card images (`max-[1520px]`/`max-[1150px]`)
+  + dedicated mobile images (`mobileImage` prop on `ProjectCard`); homepage NavBar/About/hero/telemetry;
+  wiki + cog case-study mobile fixes. Desktop untouched. See `.claude/skills/responsive-design/SKILL.md`.
+- **WebGL hero persisted** across routes: `components/PersistentHero.tsx` (mounted in `app/layout.tsx`), shown
+  only on `/`, paused (`frameloop:"never"`) + INSTANT `opacity:0` off-home (z-0, no fade). Deleted old
+  `components/Hero.tsx`. This KILLED the `THREE.WebGLRenderer: Context Lost` freeze on nav (it used to unmount
+  the canvas every nav → GPU teardown → main-thread hang). Scene takes a `paused` prop now.
+- **Scroll-reset on case-study entry**: `components/ScrollReset.tsx` rendered as the FIRST child of BOTH
+  `app/project/{wiki-whisperer,cog-adhd}/page.tsx`. Hard-resets scroll to 0 before the reveals init. Uses
+  `ScrollTrigger.clearScrollMemory("manual")` (ScrollTrigger restores saved scroll on refresh() by default —
+  that was firing reveals), Lenis nudge-to-1px-then-0 (bypass Lenis' `scrollTo` early-return), `window.scrollTo`.
+- **`SmoothScroll.tsx`**: added `history.scrollRestoration="manual"`, Lenis `autoRaf:false` (was double-driving
+  its own rAF), exposes `getLenis()`. Still sets `gsap.ticker.lagSmoothing(0)`.
+
+**THE UNSOLVED BUG:** entering the **wiki** case study from the homepage bento card (client-side nav) → the
+`Reveal` scroll-in animations DON'T play; sections are **"already fully visible"** before they enter view (no
+fade/rise/blur). **Streaming (`StreamingQuote`, IntersectionObserver) DOES work.** **cog works perfectly** with
+the SAME `Reveal` component. On a hard **REFRESH** of the wiki URL, reveals work fine. So: client-nav-specific
+AND wiki-specific.
+
+**Real-browser diagnostic data (from Caroline's console; my headless tests could NEVER reproduce it):**
+- Landing on wiki via card: `scrollY=0, played=0` → GOOD, scroll reset works, reveals hidden at landing.
+- Scrolling down: `played` climbs slowly (0→2 by y=782) → reveals DO fire progressively, not all-at-once.
+- BUT she reports sections are already fully visible with no animation. `reducedMotion:false`. Console: only
+  `THREE.Clock` deprecation + preload warnings (both harmless); `Context Lost` is GONE.
+- **KEY DATA STILL NOT GATHERED:** the `hidden` count (elements with inline `visibility:hidden`) on wiki
+  landing. I only ever got `played` (visibility:inherit). If `hidden` is high (~57, like headless) the reveals
+  ARE hiding → it's an animation-JUMP problem; if `hidden`≈0 they never hide → a different bug. GET THIS FIRST.
+
+**RULED OUT:** scroll position (y=0 confirmed) · ScrollTrigger scroll-memory (clearScrollMemory added) · the
+WebGL freeze (Context Lost gone) · reduced-motion · Parallax (cog uses MORE and works) · the wiki **ambient
+blob layer** (removed it → no change, then restored) · component logic (`Reveal.tsx`, `StreamingQuote.tsx`,
+`StickyHero.tsx` are byte-identical wiki vs cog — diffed).
+
+**Remaining wiki-vs-cog structural diff:** wiki's glass plate is `relative isolate z-10` (cog: `relative z-10`,
+no `isolate`) in `app/project/wiki-whisperer/page.tsx`. Both have `backdrop-blur-2xl`. Wiki page is longer/heavier.
+
+**Leading hypotheses for next agent:**
+1. Reveals FIRE but GSAP JUMPS them to done instantly (no visible animation) after a main-thread hitch —
+   worsened by `gsap.ticker.lagSmoothing(0)` in `SmoothScroll.tsx`. Try a real `lagSmoothing` value (default
+   `500,33`) so GSAP caps catch-up instead of skipping — but watch Lenis sync.
+2. Wiki's `isolate` (last structural diff) — try removing it and test on prod.
+3. Rendering-perf: profile the wiki scroll in Caroline's REAL browser (Performance tab) for long tasks/dropped
+   frames while a reveal should animate. The reveal animates `filter:blur(6px)`; wiki's backdrop-blur over a
+   tall page may make that filter animation skip.
+
+**CRITICAL PROCESS NOTE:** this bug is **NOT reproducible in headless Playwright** — cog AND wiki both animate
+correctly headless (even throttled, even with a "used session" that builds scroll memory). Every fix I verified
+headless still failed in Caroline's browser. **Do NOT trust headless for this; get real-browser data from
+Caroline each iteration** (diagnostic snippet: a `setInterval` logging `scrollY` + counts of `main *` with
+inline `visibility:hidden` vs `inherit`). Each fix = deploy to prod + she tests (~2-3 min/cycle).
+
 ### 2026-06-28 (later) — New `responsive-design` skill built + approved; bento responsive fix diagnosed, NOT yet applied
 - **Status: skill DONE + reviewer-APPROVED; no component code touched** (Caroline said "build the
   skill but stop before touching bento cards"). On `project-showcase-experiment`, uncommitted.
