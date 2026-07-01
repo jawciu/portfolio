@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "../../../components/project/wiki-whisperer/theme.css";
 import { ScrollReset } from "../../../components/ScrollReset";
 import { StickyHero } from "../../../components/project/wiki-whisperer/StickyHero";
-// import { SoftBlob } from "../../../components/project/wiki-whisperer/SoftBlob"; // temporarily disabled — ambient blob diagnostic
+import { SoftBlob } from "../../../components/project/wiki-whisperer/SoftBlob";
 import { Hero } from "../../../components/project/wiki-whisperer/sections/Hero";
 import { MyRole } from "../../../components/project/wiki-whisperer/sections/MyRole";
 import { Problem } from "../../../components/project/wiki-whisperer/sections/Problem";
@@ -62,12 +62,9 @@ export default function WikiWhispererCaseStudy() {
           }}
         />
 
-        {/* AMBIENT BLOBS — TEMPORARILY DISABLED (diagnostic). These 4 heavy
-            blur(70px) blobs sit BEHIND the plate's backdrop-blur, so every scroll
-            frame re-blurs a huge backdrop -> jank -> GSAP (lagSmoothing 0) jumps
-            the reveal animations to done (they look already-shown). Confirming this
-            is the cause of the wiki reveals not animating; will reintroduce the
-            ambient wash in a cheaper way once verified.
+        {/* AMBIENT BLOBS — one continuous layer behind every section (lifted from the
+            E.ON Next deck). Lives here, not per-section, so the soft peach→lilac washes
+            bleed across section boundaries instead of being clipped at each edge. */}
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 -z-10 overflow-hidden rounded-t-[2.5rem]"
@@ -76,7 +73,7 @@ export default function WikiWhispererCaseStudy() {
           <SoftBlob className="right-[6%] top-[38%] h-[920px] w-[1100px]" />
           <SoftBlob className="left-[8%] top-[55%] h-[880px] w-[1060px]" />
           <SoftBlob className="right-[10%] top-[72%] h-[920px] w-[1120px]" />
-        </div> */}
+        </div>
 
         {/* Sections sit transparent over the plate (solid --cog-bg) + the blob layer
             above, so the ambient washes read continuously behind the content. */}
