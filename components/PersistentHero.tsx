@@ -33,7 +33,12 @@ export function PersistentHero() {
   return (
     <div
       aria-hidden
-      className="fixed inset-0 z-0 transition-opacity duration-300"
+      // z-0 (below the home page's z-10 content, so the hero shows on home).
+      // Off-home we hide it with an INSTANT opacity:0 — no transition. The old
+      // 300ms fade was the bug: the z-0 canvas stayed visible ON TOP of the case
+      // study for the fade, flashing the home orbs and hiding the reveal
+      // animations behind it. Hidden instantly, it can't be caught over content.
+      className="fixed inset-0 z-0"
       style={{ opacity: isHome ? 1 : 0, pointerEvents: "none" }}
     >
       <Scene paused={!isHome} />
