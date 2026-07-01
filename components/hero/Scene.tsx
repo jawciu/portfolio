@@ -10,7 +10,7 @@ import { Effects } from "./Effects";
 import { useGPUTier } from "@/lib/useGPUTier";
 import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 
-export function Scene() {
+export function Scene({ paused = false }: { paused?: boolean }) {
   const tier = useGPUTier();
   const reduced = usePrefersReducedMotion();
   // Shared interaction state, mutated outside React (useFrame reads refs).
@@ -44,8 +44,9 @@ export function Scene() {
       dpr={tier >= 3 ? [1, 2] : [1, 1.5]}
       gl={{ powerPreference: "high-performance", antialias: false, alpha: false }}
       camera={{ position: [0, 0, 5], fov: 35 }}
-      // reduced motion -> render on demand (posed frame + scroll/cursor invalidations)
-      frameloop={reduced ? "demand" : "always"}
+      // paused (off-home) -> stop the render loop entirely so the persisted canvas
+      // costs nothing while hidden; reduced motion -> render on demand.
+      frameloop={paused ? "never" : reduced ? "demand" : "always"}
     >
       <color attach="background" args={["#070709"]} />
       <Suspense fallback={null}>

@@ -1,5 +1,4 @@
 import { Suspense } from "react";
-import Hero from "@/components/Hero";
 import { HeroCopy } from "@/components/HeroCopy";
 import { TelemetryRail } from "@/components/TelemetryRail";
 import { About } from "@/components/sections/About";
@@ -14,7 +13,9 @@ import { Toolkit } from "@/components/sections/Toolkit";
 export default function Home() {
   return (
     <>
-      <Hero />
+      {/* The WebGL hero now lives in the root layout (<PersistentHero/>) so it
+          persists across navigation instead of tearing down its GPU context on
+          every route change. It renders behind this page at z-0. */}
 
       {/* Darkening plate — just enough to seat the headline. Kept light + low
           so the left-rail glass (sphere + pill) reads vivid; the contrast it
