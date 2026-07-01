@@ -22,19 +22,21 @@ gsap.registerPlugin(ScrollTrigger);
  */
 export function ScrollReset() {
   useLayoutEffect(() => {
-    // Jump to the top synchronously, BEFORE the sibling reveal triggers below are
-    // created, so they measure against scroll 0 (not the carried-over home-page
-    // scroll). Reset Lenis (smooth-scroll source of truth, persists across routes)
-    // AND the native window scroll (what ScrollTrigger reads).
-    //
-    // Lenis' scrollTo early-returns when `target === targetScroll`, which can
-    // leave a still-running smooth animation. If the shared rAF ticker stalls
-    // mid-animation (e.g. the home WebGL hero loses its GPU context on nav, as
-    // seen in "THREE.WebGLRenderer: Context Lost"), that animation freezes the
-    // scroll partway (observed: stuck at ~1656 instead of 0) and the reveals
-    // near it fire. So force a HARD, synchronous jump that does not depend on the
-    // ticker: nudge to 1px first to bypass the early-return and cancel any
-    // in-flight animation, then jump to 0.
+    // THE root cause of reveals firing on client-side nav: ScrollTrigger.refresh()
+    // RESTORES saved scroll positions by default. Lenis persists across routes, so
+    // on a client nav that restore puts the scroller back at the carried-over
+    // position — the once-fire reveal triggers then evaluate as already-passed and
+    // fire on creation (no animation). A hard refresh has no saved memory, so it
+    // never showed there — which is why this only reproduced in a real, previously
+    // scrolled browser. clearScrollMemory("manual") clears ScrollTrigger's saved
+    // positions AND sets history.scrollRestoration = "manual" so the browser won't
+    // restore either. (GSAP docs recommend exactly this for frameworks with
+    // unconventional routing, e.g. Next's App Router.)
+    ScrollTrigger.clearScrollMemory("manual");
+
+    // Then jump to the top synchronously, BEFORE the sibling reveal triggers below
+    // are created, so they measure against scroll 0. Lenis' scrollTo early-returns
+    // when target === targetScroll, so nudge to 1px first to force the reset.
     const top = () => {
       const lenis = getLenis();
       if (lenis) {
@@ -44,12 +46,11 @@ export function ScrollReset() {
       window.scrollTo(0, 0);
     };
     top();
-    // Sync ScrollTrigger's CACHED scroll to 0 now (it doesn't re-read on create),
-    // then recompute trigger start/end for the route at the top.
-    ScrollTrigger.update();
+    // Recompute trigger start/end for the route at the top. Safe now: memory is
+    // cleared, so refresh() no longer restores a stale scroll.
     ScrollTrigger.refresh();
-    // Re-assert next frame in case the persistent smooth-scroll emits a stale
-    // position after this commit (which would otherwise trip the once-fire reveals).
+    // Re-assert next frame in case the persistent smooth-scroll re-emits a position
+    // after this commit.
     const id = requestAnimationFrame(() => {
       top();
       ScrollTrigger.update();
