@@ -26,8 +26,21 @@ export function ScrollReset() {
     // created, so they measure against scroll 0 (not the carried-over home-page
     // scroll). Reset Lenis (smooth-scroll source of truth, persists across routes)
     // AND the native window scroll (what ScrollTrigger reads).
+    //
+    // Lenis' scrollTo early-returns when `target === targetScroll`, which can
+    // leave a still-running smooth animation. If the shared rAF ticker stalls
+    // mid-animation (e.g. the home WebGL hero loses its GPU context on nav, as
+    // seen in "THREE.WebGLRenderer: Context Lost"), that animation freezes the
+    // scroll partway (observed: stuck at ~1656 instead of 0) and the reveals
+    // near it fire. So force a HARD, synchronous jump that does not depend on the
+    // ticker: nudge to 1px first to bypass the early-return and cancel any
+    // in-flight animation, then jump to 0.
     const top = () => {
-      getLenis()?.scrollTo(0, { immediate: true, force: true });
+      const lenis = getLenis();
+      if (lenis) {
+        lenis.scrollTo(1, { immediate: true, force: true });
+        lenis.scrollTo(0, { immediate: true, force: true });
+      }
       window.scrollTo(0, 0);
     };
     top();
