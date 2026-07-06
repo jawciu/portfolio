@@ -229,7 +229,31 @@ cards, element-screenshot. Delete the temp script after.
 > **`docs/CLAUDE-ARCHIVE.md`**. At the end of a session, append a new entry with: what changed,
 > current state (working / broken / in-progress), and explicit next steps for the next agent.
 
+### 2026-07-06 — Mobile polish round 1 (hero fireball 2x smaller, headline wrap, highlights 1x4). UNCOMMITTED.
+- **NEW GLOBAL RULE (added to `~/.claude/CLAUDE.md`):** mobile/responsive changes must NEVER affect
+  desktop — always guarded overrides (`max-md:`, width-gated uniform), never rewrites of shipping
+  desktop classes/values. Verify widest layout first.
+- **Orb row 2x smaller on mobile:** Caroline wanted the BOTTOM orbs (the `DistortedOrb` watercolour
+  crescents) halved — NOT the top fireball (I first shrank the Backdrop comet via a `uCometScale`
+  shader uniform; she said the fireball was fine before → REVERTED that entirely, `git checkout` of
+  `Backdrop.tsx` + `heroShaders.ts` back to HEAD). Final fix: `DistortedOrb.tsx` group gets
+  `scale={orbScale}` where `orbScale = canvasWidth < 768 ? MOBILE_ORB_SCALE : 1` via
+  `useThree(s => s.size.width)` (reactive on resize). Knobs `MOBILE_ORB_SCALE = 0.5` /
+  `MOBILE_MAX_WIDTH = 768` at top of file. Desktop passes exactly 1 = identical. Result: crescents
+  sit compactly at the bottom edge on phones instead of flooding up behind the headline.
+- **Hero headline mobile wrap:** `HeroCopy.tsx` h1 got `max-md:whitespace-normal` — desktop keeps the
+  authored `\n` break after "into" (pre-line); below md the `\n` collapses to a space so it wraps
+  naturally ("I TURN EARLY CONCEPTS / INTO LAUNCH-READY / PRODUCTS"), no more stranded INTO.
+- **Highlights 1x4 on phones:** `Highlights.tsx` grid `grid-cols-2` → `grid-cols-1 sm:grid-cols-2`
+  (md:grid-cols-4 untouched). Bonus: stacked cards give the 0.2em-tracked detail line room — now
+  single-line on mobile (the previously-flagged wrap).
+- **Verified:** tsc clean; eslint clean except the PRE-EXISTING `set-state-in-effect` in HeroCopy
+  (untouched, noted since 2026-06-09). Playwright at 390×844 (all three confirmed) + 1440×900
+  (desktop identical). **State: working, UNCOMMITTED** (HeroCopy, Backdrop, heroShaders, Highlights).
+
 ### 2026-07-01 (later) — SOLVED (root cause found + fixed): wiki reveals-on-client-nav = unsized hero video
+> **2026-07-06: CONFIRMED FIXED by Caroline on prod** (commit `2914006` deployed to carolinejaworsky.com —
+> reveals animate correctly on client-nav from the bento card). Bug closed.
 - **Root cause (finally):** the wiki hero's promo video (`components/project/wiki-whisperer/sections/Hero.tsx`,
   `public/projects/wiki-whisperer/promo.mp4` = **29 MB, 1920×1080**) was rendered with **no reserved box**
   (`className="block h-auto w-full"`, no width/height/aspect). Until its metadata loads (LATE on a real

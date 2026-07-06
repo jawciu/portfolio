@@ -71,7 +71,7 @@ export function Highlights() {
         <ul
           ref={ref}
           role="list"
-          className="mt-9 grid grid-cols-2 gap-x-8 gap-y-12 pl-2 md:mt-12 md:grid-cols-4 md:gap-10"
+          className="mt-9 grid grid-cols-1 gap-x-8 gap-y-12 pl-2 sm:grid-cols-2 md:mt-12 md:grid-cols-4 md:gap-10"
         >
           {HIGHLIGHTS.map((item, i) => {
             const base = i * CARD_GAP;
