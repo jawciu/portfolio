@@ -229,7 +229,26 @@ cards, element-screenshot. Delete the temp script after.
 > **`docs/CLAUDE-ARCHIVE.md`**. At the end of a session, append a new entry with: what changed,
 > current state (working / broken / in-progress), and explicit next steps for the next agent.
 
-### 2026-07-06 (later 2) — Case-study mobile type + MyRole centring. UNCOMMITTED (round 2 was pushed as `9873240`).
+### 2026-07-06 (later 3) — Wiki mobile fixes (Feedback order, bubble overflow, cut paragraph) + mobile home dot. UNCOMMITTED.
+- **Feedback section mobile order** (`Feedback.tsx`): was header → images → speed/pin/search. Fixed
+  with **CSS `order`** (`max-sm:order-2` on the images Reveal — grid respects order), NOT the
+  duplicate-and-hide Caroline suggested (single markup, desktop provably untouched). Images now sit
+  BELOW the copy, side by side at **1/3 width each** (`max-sm:w-1/3`, container `max-sm:justify-center`;
+  removed `max-sm:flex-col`).
+- **Academy bubble overflow** (`ui.tsx` + `Impact.tsx`): `TestimonialBubble` art scales down but the
+  15px quote text doesn't → the long academy quote spilled out of the bubble on phones. Added
+  `quoteClassName` prop; the academy bubble passes `max-sm:text-[11px] max-sm:leading-snug`.
+  Other bubbles untouched.
+- **WhatsNext last paragraph cut** (`WhatsNext.tsx`): `NextProject` overlaps upward by `-mt-[64px]`
+  (glass seam echo); on stacked layouts the flush-bottom copy got covered. Fix: `max-lg:pb-24` on
+  the section (lg+ has `lg:min-h` room, unchanged).
+- **Mobile home link** (`NavBar.tsx`): the `~/caro/...` path label is `max-sm:hidden`, leaving no
+  route home on phones. Added a mobile-only (`sm:hidden`) Link with the **favicon orb**
+  (`<img src="/icon.svg">` — app/icon.svg is served at /icon.svg) as a tappable home dot, left side.
+- **Verified:** tsc + eslint clean; mobile shots (order ✓ bubble text inside ✓ paragraph clear of the
+  plate ✓ dot ✓) + desktop Feedback/navbar unchanged.
+
+### 2026-07-06 (later 2) — Case-study mobile type + MyRole centring. PUSHED `87abb90`.
 - **Section headings 28px on phones:** `.case-study-section-heading` clamp floor 1.5rem → **1.75rem**
   in BOTH theme.css files (desktop still 36px; floor holds below ~600px). DESIGN.md updated.
 - **H1 32px on phones:** `.case-study-title` mobile (≤640px) 22px → **32px** in both themes.

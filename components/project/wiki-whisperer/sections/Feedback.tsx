@@ -52,20 +52,23 @@ export function Feedback() {
           {/* two equal-height panels, tight gap so the pinned tooltip stays visible.
               The SVGs bake in their own frame + shadow (and pin's tooltip overhangs
               the frame), so no wrapper card/background here. */}
-          <Reveal className="flex h-[380px] items-stretch justify-start gap-3 max-sm:h-auto max-sm:flex-col max-sm:items-center max-sm:gap-5 sm:h-[440px] lg:h-[500px] xl:h-[572px]">
+          {/* MOBILE (max-sm): order-2 sends the panels BELOW the speed/pin/search copy
+              (grid respects CSS order — no duplicated markup, desktop untouched), and
+              the two panels sit side by side at 1/3 width each, centred. */}
+          <Reveal className="flex h-[380px] items-stretch justify-start gap-3 max-sm:order-2 max-sm:h-auto max-sm:items-start max-sm:justify-center max-sm:gap-4 sm:h-[440px] lg:h-[500px] xl:h-[572px]">
             {/* pin-conversation panel (left) */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={A("pin.svg")}
               alt="Pinning a conversation from the chat list"
-              className="h-full w-auto max-sm:h-auto max-sm:w-full"
+              className="h-full w-auto max-sm:h-auto max-sm:w-auto max-sm:min-w-0 max-sm:flex-1"
             />
             {/* search-history panel (right) */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={A("search.svg")}
               alt="Searchable chat history with pinned conversations"
-              className="h-full w-auto max-sm:h-auto max-sm:w-full"
+              className="h-full w-auto max-sm:h-auto max-sm:w-auto max-sm:min-w-0 max-sm:flex-1"
             />
           </Reveal>
 

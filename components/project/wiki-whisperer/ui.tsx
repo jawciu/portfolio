@@ -153,6 +153,7 @@ export function TestimonialBubble({
   who,
   width,
   flip = false,
+  quoteClassName = "",
 }: {
   /** bubble art filename in /public/projects/<case-study>/ */
   asset: string;
@@ -162,6 +163,10 @@ export function TestimonialBubble({
   width: number;
   /** mirror the art horizontally so the tail sits on the opposite side */
   flip?: boolean;
+  /** extra classes for the quote text — the ART scales down responsively but the
+      TEXT doesn't, so a long quote can overflow the shrunken bubble on mobile.
+      Pass a per-bubble override (e.g. "max-sm:text-[11px]") where needed. */
+  quoteClassName?: string;
 }) {
   return (
     <figure className="relative min-w-0 max-w-full" style={{ width }}>
@@ -176,7 +181,7 @@ export function TestimonialBubble({
       />
       {/* text sits in the bubble body (above the tail) — never mirrored */}
       <figcaption className="absolute inset-0 flex flex-col justify-center px-[10%] pt-[2%] pb-[10%]">
-        <StreamingQuote className="text-[15px] italic leading-relaxed text-[var(--cog-ink)]">
+        <StreamingQuote className={`text-[15px] italic leading-relaxed text-[var(--cog-ink)] ${quoteClassName}`}>
           {`“${quote}”`}
         </StreamingQuote>
         <span className="mt-2 text-right text-[14px] text-[var(--cog-muted)]">

@@ -8,7 +8,10 @@ export function WhatsNext() {
   return (
     <section
       data-section="WhatsNext"
-      className="relative isolate overflow-hidden pt-[120px] pb-0"
+      // max-lg:pb-24: NextProject overlaps this section by -mt-[64px] (the glass
+      // seam echo). On lg+ the copy block's min-h leaves room, but stacked/mobile
+      // the last paragraph sat flush at the bottom and got COVERED by the plate.
+      className="relative isolate overflow-hidden pt-[120px] pb-0 max-lg:pb-24"
     >
       <Container>
         {/* eyebrow + heading in their normal place */}

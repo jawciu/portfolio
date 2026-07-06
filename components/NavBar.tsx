@@ -66,6 +66,19 @@ export function NavBar() {
       >
         ~/caro/portfolio/2026
       </Link>
+      {/* MOBILE-ONLY home affordance: the path label above is hidden ≤sm (no room),
+          which left phones with no way back to the root. The favicon orb (app/icon.svg,
+          served at /icon.svg) stands in as a tappable "home" dot. p-1 pads the ~24px
+          glyph toward a usable tap target. */}
+      <Link
+        href="/"
+        onClick={handle("/")}
+        aria-label="Back to home"
+        className="p-1 sm:hidden"
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/icon.svg" alt="" className="h-6 w-6" />
+      </Link>
       <nav
         className={`flex gap-6 font-mono text-xs tracking-[0.25em] md:gap-10 md:text-sm ${navColor}`}
       >
