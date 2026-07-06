@@ -229,6 +229,49 @@ cards, element-screenshot. Delete the temp script after.
 > **`docs/CLAUDE-ARCHIVE.md`**. At the end of a session, append a new entry with: what changed,
 > current state (working / broken / in-progress), and explicit next steps for the next agent.
 
+### 2026-07-01 (later) — SOLVED (root cause found + fixed): wiki reveals-on-client-nav = unsized hero video
+- **Root cause (finally):** the wiki hero's promo video (`components/project/wiki-whisperer/sections/Hero.tsx`,
+  `public/projects/wiki-whisperer/promo.mp4` = **29 MB, 1920×1080**) was rendered with **no reserved box**
+  (`className="block h-auto w-full"`, no width/height/aspect). Until its metadata loads (LATE on a real
+  network), the `<video>` is a ~150px placeholder; on load it pops to full 16:9 height. Measured shift:
+  **document grows ~930px**. That growth is at the TOP of the page, so it moves every section below it AFTER
+  the `Reveal` ScrollTriggers have cached their `"top 85%"` start pixels. On a hard **refresh**,
+  `SmoothScroll`'s `document.fonts.ready`/`window load` fire a `ScrollTrigger.refresh()` that recomputes the
+  starts once the video settled — so refresh worked. On a **client-side nav** neither re-fires (they're
+  registered once in the persistent root layout), and `ScrollReset` refreshes BEFORE the triggers exist +
+  BEFORE the video grows (its rAF re-assert uses `update()`, not `refresh()`). So the cached starts stayed
+  stale-too-early and every reveal's `gsap.from` completed **off-screen, below the fold** → sections looked
+  "already revealed, no animation". Matches Caroline's exact real-browser data ("played climbs 0→2 by y=782
+  yet sections look pre-revealed" = the first 1–2 whose start is near scroll 0 still animate; the rest fired
+  unseen). **cog works** because its hero is aspect-sized SVG (stable at first paint) — no late shift.
+  **Streaming (`StreamingQuote`) survives** because it uses a live `IntersectionObserver` (no cached pixel
+  start). **Why nobody reproduced it headless:** on localhost the video loads instantly, so the box never
+  goes stale — the bug is *network-timing* dependent, not code-logic dependent.
+- **How it was found:** launched a 5-lens multi-agent workflow (GSAP internals / React-Next lifecycle /
+  sticky-geometry / web research / differential) → adversarial refute pass → synthesis. The differential +
+  research lenses converged on the unsized video. Independently verified locally: (1) reveals ARM (57 hidden)
+  and animate fine in dev, prod, and even under 8× CPU throttle → not a logic/position bug in automation;
+  (2) **deterministic proof** via a Playwright probe that route-DELAYS `promo.mp4`: old build → video 150→1080,
+  **doc grows 930px**; fixed build → video **579→579, doc grows 0px**.
+- **THE FIX (applied, NOT committed):** in `Hero.tsx` gave the `<video>` `width={1920} height={1080}` +
+  `aspect-video` (kept `h-auto w-full`). Reserves the 16:9 box at first paint → **zero layout shift** when the
+  video loads → cached ScrollTrigger starts can never go stale → reveals fire in view on client-nav, no
+  refresh needed. Kept Hero a **server component** (dropped an `onLoadedMetadata` refresh idea that would have
+  forced `"use client"`). tsc + eslint clean; no visual regression (the video always rendered at this size
+  once loaded — now the box is just correct from frame 1, which also kills the CLS jump).
+- **State: fix applied + verified locally, UNCOMMITTED** (`M Hero.tsx` only). Per Caroline's rule, not
+  committed/pushed. **Next step:** Caroline verifies on a Vercel deploy (real network is where it repro'd).
+  A copy-paste console diagnostic (armed-hidden count + snap-vs-animate verdict, survives the client-nav) was
+  handed to her in chat if she wants to confirm before/after.
+- **Open intent (2026-07-06):** Caroline went to work mid-review — she'll catch up later. IMPORTANT for
+  next agent: the bug does NOT reproduce in dev/localhost (video loads instantly there); tell her to test
+  either (a) after commit+push+Vercel deploy (the real test), or (b) locally with DevTools Network throttling
+  set to "Slow 4G" during the home → wiki-card client-nav. Waiting on her go-ahead to commit `Hero.tsx`.
+- **If any residual reveal still misbehaves (belt-and-braces, NOT yet applied):** 2 wiki `<img>` also lack
+  explicit width; and the general gap is "no `ScrollTrigger.refresh()` fires after content settles on a
+  client-side nav." Optional hardening = add a deferred per-route `refresh()` in `ScrollReset` after
+  images/fonts settle. Deferred unless needed (video was the 930px dominant cause; don't thrash).
+
 ### 2026-07-01 — HANDOFF: wiki case-study reveals don't animate on client-side nav (UNSOLVED). Responsive pass + scroll fixes DONE.
 > Caroline is handing to a fresh agent. Read this whole entry before touching the reveal bug — a LOT has been
 > tried and ruled out. All work below is committed + pushed to `main` and deployed on Vercel (prod =
