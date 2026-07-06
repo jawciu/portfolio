@@ -56,7 +56,7 @@
   margin-bottom: 0.75rem;
 }
 
-/* CASE-STUDY PAGE TITLE — the main H1. 48px desktop / 22px mobile. */
+/* CASE-STUDY PAGE TITLE — the main H1. 48px desktop / 32px mobile. */
 .case-study-title {
   font-family: var(--font-hero), monospace;
   font-weight: 700;
@@ -70,7 +70,7 @@
 
 @media (max-width: 640px) {
   .case-study-title {
-    font-size: 22px;
+    font-size: 32px; /* raised from 22px 2026-07-06 — bigger on phones */
     -webkit-text-stroke: 0.35px currentColor;
   }
 }
@@ -84,7 +84,7 @@
   letter-spacing: -0.01em;
   line-height: 1.08;
   color: var(--cog-ink);
-  font-size: clamp(1.5rem, 1rem + 2vw, 2.25rem);
+  font-size: clamp(1.75rem, 1rem + 2vw, 2.25rem); /* 28px → 36px */
   margin-bottom: 3rem;
 }
 

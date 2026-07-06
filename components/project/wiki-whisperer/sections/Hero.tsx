@@ -10,9 +10,12 @@ export function Hero() {
     <section data-section="Hero" className="relative">
       <Container className="pt-28 pb-[120px] md:pt-32">
         {/* Page title — H1, two lines via a manual break. */}
+        {/* The break is DESKTOP-ONLY (hidden ≤640px so the 32px mobile title flows
+            naturally). The explicit {" "} matters: JSX drops the newline between
+            text and <br/>, so without it mobile would render "Brainfor". */}
         <h1 className="case-study-title">
-          Designing an AI Brain
-          <br />
+          Designing an AI Brain{" "}
+          <br className="max-sm:hidden" />
           for a Support Call Centre
         </h1>
 

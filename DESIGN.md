@@ -64,7 +64,7 @@ typography:
   # stroking the 700 glyphs in the text colour (text-stroke). Manual line breaks.
   case-study-title:            # the page H1 at the top of a case study
     fontFamily: Iosevka Charon
-    fontSize: 48px      # desktop; 22px at ≤640px (mobile)
+    fontSize: 48px      # desktop; 32px at ≤640px (raised from 22px 2026-07-06)
     fontWeight: "700"   # + -webkit-text-stroke 0.6px (0.35px mobile) = faux extra-bold
     lineHeight: 1.08
     letterSpacing: -0.02em
@@ -78,7 +78,7 @@ typography:
     marginBottom: 0.75rem   # BAKES the consistent eyebrow→heading gap (12px) into the template
   case-study-section-heading:  # each section's heading (MY ROLE, INTERVIEWS, …)
     fontFamily: Iosevka Charon
-    fontSize: 36px      # clamp(1.5rem, 1rem + 2vw, 2.25rem); 24px floor
+    fontSize: 36px      # clamp(1.75rem, 1rem + 2vw, 2.25rem); 28px floor (raised from 24px 2026-07-06, Caroline: bigger on phones)
     fontWeight: "700"   # + -webkit-text-stroke 0.6px (0.4px ≤640px) = SAME faux extra-bold as the title
     lineHeight: 1.08
     letterSpacing: -0.01em   # max 2 lines via manual <br/> in the markup
@@ -293,8 +293,8 @@ families.
 
 **Case-study template** (`case-study-title`, `case-study-section-heading`): case
 studies are a light sub-theme but keep the same display voice — Iosevka, uppercase.
-The page H1 is **48px desktop / 22px mobile** (≤640px); section headings use the
-`clamp(1.5rem→2.25rem)` ramp (**36px** desktop, 24px floor). Both are set at weight
+The page H1 is **48px desktop / 32px mobile** (≤640px); section headings use the
+`clamp(1.75rem→2.25rem)` ramp (**36px** desktop, 28px floor). Both are set at weight
 700 and pushed to "extra bold" by stroking the glyphs in the text colour
 (`-webkit-text-stroke`: title 0.6px / 0.35px mobile, section heading 0.6px / 0.4px
 mobile — the SAME faux-bold treatment) — Charon ships no 800/900 cut, so this is how

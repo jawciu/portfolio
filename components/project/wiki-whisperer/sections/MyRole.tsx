@@ -43,12 +43,17 @@ export function MyRole() {
         >
           {ROLES.map((r) => (
             <div key={r.label}>
-              <div className="mb-4 h-[72px]">
+              {/* Mobile (1-col): icon centred; the label+copy block is centred AS AN
+                  ELEMENT (max-w + mx-auto) while its text stays left-aligned, so the
+                  label and copy share a left edge. sm+ keeps the original left grid. */}
+              <div className="mb-4 flex h-[72px] justify-center sm:justify-start">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={A(r.icon)} alt={r.alt} className="h-[72px] w-auto" />
               </div>
-              <p className="case-study-label mb-3">{r.label} &gt;</p>
-              <Body>{r.body}</Body>
+              <div className="max-sm:mx-auto max-sm:max-w-[85%]">
+                <p className="case-study-label mb-3">{r.label} &gt;</p>
+                <Body>{r.body}</Body>
+              </div>
             </div>
           ))}
         </Reveal>

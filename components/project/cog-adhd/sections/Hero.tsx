@@ -15,10 +15,13 @@ export function Hero() {
       </div>
 
       <Container className="pt-10 pb-[120px] md:pt-14">
-        {/* Page title — main H1. See `.case-study-title` (template token). */}
+        {/* Page title — main H1. See `.case-study-title` (template token).
+            The break is DESKTOP-ONLY (hidden ≤640px so the 32px mobile title flows
+            naturally). The explicit {" "} matters: JSX drops the newline between
+            text and <br/>, so without it mobile would render "Opportunitiesin". */}
         <h1 className="case-study-title">
-          Gaps and Opportunities
-          <br />
+          Gaps and Opportunities{" "}
+          <br className="max-sm:hidden" />
           in ADHD Therapy Processes
         </h1>
 

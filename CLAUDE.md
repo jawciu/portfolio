@@ -153,7 +153,7 @@ it's a deliberate call.
   qual + adoption; quant directional, tests still running); all names anonymised.
 - **Type template** (classes in each `theme.css`, load AFTER Tailwind so they BEAT utilities —
   apply ALONE, never stack `text-*`/`leading-*`/colour utilities on them):
-  `.case-study-title` (H1, Iosevka, 48px/22px mobile, faux-extrabold via `-webkit-text-stroke`
+  `.case-study-title` (H1, Iosevka, 48px/32px mobile, faux-extrabold via `-webkit-text-stroke`
   since Charon has no 800 cut), `.case-study-section-heading` (36px, stroke, baked 48px
   margin-bottom; use `mb-0!` if a button follows since margins don't collapse on inline-flex),
   `.case-study-eyebrows-heading` (Geist sans, uppercase, 13px/700, baked 12px gap to heading),
@@ -229,7 +229,25 @@ cards, element-screenshot. Delete the temp script after.
 > **`docs/CLAUDE-ARCHIVE.md`**. At the end of a session, append a new entry with: what changed,
 > current state (working / broken / in-progress), and explicit next steps for the next agent.
 
-### 2026-07-06 (later) — Mobile polish round 2 (fireball crop-in, card tags/gaps, cog corners, section gaps). UNCOMMITTED.
+### 2026-07-06 (later 2) — Case-study mobile type + MyRole centring. UNCOMMITTED (round 2 was pushed as `9873240`).
+- **Section headings 28px on phones:** `.case-study-section-heading` clamp floor 1.5rem → **1.75rem**
+  in BOTH theme.css files (desktop still 36px; floor holds below ~600px). DESIGN.md updated.
+- **H1 32px on phones:** `.case-study-title` mobile (≤640px) 22px → **32px** in both themes.
+  DESIGN.md + digest updated.
+- **No more unconditional forced breaks in H1s:** Caroline wanted max-width breaks, but MEASURED
+  widths prove it impossible (wiki line2 536px > line1+next-word 488px; cog 534 > 510 — any width
+  fitting line 2 moves the break). Her pick from options: **responsive break** — keep `<br>` but
+  `className="max-sm:hidden"`, plus an explicit `{" "}` before it (JSX drops the newline between
+  text and element; without the space mobile renders "Brainfor"). Desktop pixel-identical; mobile
+  flows naturally at 32px. Same pattern as the homepage headline.
+- **MyRole mobile centring (both studies):** icon `flex h-[72px] justify-center sm:justify-start`
+  (cog had it; wiki brought to parity); label+Body wrapped in `max-sm:mx-auto max-sm:max-w-[85%]`
+  — the text block centres AS AN ELEMENT while label + copy stay left-aligned to each other.
+  sm+ grid untouched. Tune the 85% by eye if she wants more/less inset.
+- **Verified:** tsc + eslint clean; 390px + 1440px shots of both studies (desktop breaks identical,
+  mobile flows, MyRole centred).
+
+### 2026-07-06 (later) — Mobile polish round 2 (fireball crop-in, card tags/gaps, cog corners, section gaps). PUSHED `9873240`.
 - Round 1 committed as `285b415` (main, NOT pushed). Caroline's workflow now: keep committing to
   main, push everything at once when she says. Round 2 changes (all guarded, desktop untouched):
 - **Fireball crop-in (mobile ONLY, her explicit choice):** `uCometShift` uniform in
