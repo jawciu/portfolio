@@ -64,7 +64,9 @@ export default function Home() {
           <Highlights />
           <Toolkit />
           {/* pb adds +88px below the cards before the footer (48/80 base + 88). */}
-          <section id="work" className="px-8 py-12 pb-[136px] md:px-12 md:py-20 md:pb-[168px]">
+          {/* mobile pt-6 (was 12): halves the toolkit->projects gap on phones;
+              md:pt-20 == the old md:py-20 top, so desktop is unchanged. */}
+          <section id="work" className="px-8 pt-6 pb-[136px] md:px-12 md:pt-20 md:pb-[168px]">
             <Suspense fallback={<ProjectCarousel />}>
               <ProjectShowcasePrototype />
             </Suspense>

@@ -26,6 +26,7 @@ export const backdropFragment = /* glsl */ `
   uniform vec2  uMouse;     // 0..1 smoothed
   uniform vec3  uBg;
   uniform float uFade;      // 1 at top -> 0 as hero leaves
+  uniform float uCometShift; // 0 desktop; >0 slides the whole fireball LEFT (mobile crop-in)
 
   varying vec2 vUv;
 
@@ -69,6 +70,10 @@ export const backdropFragment = /* glsl */ `
     float aspect = uResolution.x / uResolution.y;
     vec2 par = (uMouse - 0.5) * 0.03;        // subtle positional drift (unchanged)
     vec2 P = vec2(uv.x*aspect, 1.0 - uv.y) + vec2(par.x, -par.y);
+    // Mobile: slide the whole composition LEFT so the fireball's nose gets a
+    // slight crop by the screen edge (adding to P.x moves features left on
+    // screen). Desktop passes exactly 0.0 -> no-op, rendering bit-identical.
+    P.x += uCometShift;
 
     // mouse-driven REVEAL — same feel as hovering the orbs: as the cursor moves toward
     // the fireball (screen LEFT) each circle unmasks a little more. 0 at centre/right

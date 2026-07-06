@@ -229,7 +229,27 @@ cards, element-screenshot. Delete the temp script after.
 > **`docs/CLAUDE-ARCHIVE.md`**. At the end of a session, append a new entry with: what changed,
 > current state (working / broken / in-progress), and explicit next steps for the next agent.
 
-### 2026-07-06 — Mobile polish round 1 (hero fireball 2x smaller, headline wrap, highlights 1x4). UNCOMMITTED.
+### 2026-07-06 (later) — Mobile polish round 2 (fireball crop-in, card tags/gaps, cog corners, section gaps). UNCOMMITTED.
+- Round 1 committed as `285b415` (main, NOT pushed). Caroline's workflow now: keep committing to
+  main, push everything at once when she says. Round 2 changes (all guarded, desktop untouched):
+- **Fireball crop-in (mobile ONLY, her explicit choice):** `uCometShift` uniform in
+  `heroShaders.ts` (`P.x += uCometShift` right after P) slides the whole comet LEFT so the nose
+  gets a slight chop by the screen edge. `Backdrop.tsx`: `MOBILE_COMET_SHIFT = 0.13` below 768px,
+  exactly `0` on desktop (bit-identical). Knobs at top of Backdrop.tsx.
+- **Card tags fix (stacked layout):** the `■ RESEARCH · UX/UI …` row in `ProjectCard.tsx` was
+  `flex flex-wrap` — the joined tags string is ONE anonymous flex item, so on overflow the whole
+  text wrapped BELOW the square (square stranded alone). Now normal inline flow: square stays on
+  line 1, individual tags wrap word-by-word. (lg+ absolute tags row untouched.)
+- **Cog mobile image corners:** `mobileImage` prop gained optional `flushBottom` —
+  `rounded-b-none` on the stacked-image wrapper. Set on cog only (its artwork is bottom-cropped
+  phones; rounded bottom corners read as a mistake). Other cards keep full `rounded-2xl`.
+- **Bento card gaps on phones:** `VariantBentoSoft` stacked column `gap-3` → `max-md:gap-6`.
+- **Section gaps halved below md:** Highlights `pb-20→pb-10`; Toolkit `py-24→py-12`; `#work`
+  `py-12→pt-6` (desktop `md:pt-20` == old `md:py-20` top, bottom still `md:pb-[168px]`).
+- **Verified:** tsc + eslint clean; 390px shots (chop ✓ tags inline ✓ sharp cog corners ✓ bigger
+  card gaps ✓ tighter section gaps ✓); 1440px hero (nose NOT chopped, desktop identical).
+
+### 2026-07-06 — Mobile polish round 1 (hero orb row 2x smaller, headline wrap, highlights 1x4). COMMITTED `285b415` (main, not pushed).
 - **NEW GLOBAL RULE (added to `~/.claude/CLAUDE.md`):** mobile/responsive changes must NEVER affect
   desktop — always guarded overrides (`max-md:`, width-gated uniform), never rewrites of shipping
   desktop classes/values. Verify widest layout first.

@@ -50,7 +50,7 @@ export function VariantBentoSoft() {
       {/* lg+ = the horizontal accordion (fixed height, flex-row). Below lg the cards
           stack into a natural-height column (no fixed height) — each ProjectCard
           renders its in-flow stacked layout. */}
-      <div className="flex flex-col gap-3 lg:h-[clamp(400px,48vw,560px)] lg:flex-row lg:gap-3">
+      <div className="flex flex-col gap-3 max-md:gap-6 lg:h-[clamp(400px,48vw,560px)] lg:flex-row lg:gap-3">
         {items.map((p, i) => {
           const open = i === hot;
           const onActivate = () => setHot(i);
@@ -106,6 +106,9 @@ export function VariantBentoSoft() {
                 mobileImage={{
                   src: "/assets/cog-mobile.png",
                   alt: "cog_adhd check-in history, weekly ADHD scores and daily highs/lows",
+                  // artwork is cropped at its bottom edge (cut-off phones) —
+                  // rounded bottom corners read as a mistake there
+                  flushBottom: true,
                 }}
                 imageClassName="pointer-events-none absolute right-[-10%] bottom-0 h-[65%] max-[1520px]:h-[55%] max-[1150px]:h-[44%] w-auto max-w-none object-contain object-left"
                 blob={{ core: "#F2922E", edge: "#189E71", coreStop: 30, edgeStop: 50, fadeStop: 80 }}
