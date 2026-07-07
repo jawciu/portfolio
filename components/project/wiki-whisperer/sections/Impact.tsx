@@ -18,14 +18,14 @@ export function Impact() {
         </Reveal>
 
         {/* callout above the stats */}
-        <Reveal className="mt-14 max-w-[860px]">
+        <Reveal className="mt-14 max-sm:mt-9 max-w-[860px]">
           <CaseStudyCallout stream>
             Some teams closed their support channels a couple of weeks into the trial, leaning on the tool instead of each other.
           </CaseStudyCallout>
         </Reveal>
 
         {/* headline numbers — centred big numbers (shared Stats component) */}
-        <Stats className="mt-14" items={STATS} />
+        <Stats className="mt-14 max-sm:mt-9" items={STATS} />
 
         {/* onboarding / bootcamp beat — copy left, quote in a speech bubble right */}
         <Reveal stagger={0.1} className="mt-14 grid items-center gap-10 lg:grid-cols-2 lg:gap-14">

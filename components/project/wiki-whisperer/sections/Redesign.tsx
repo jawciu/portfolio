@@ -68,7 +68,7 @@ export function Redesign() {
         <Reveal>
           <DesignsTag />
         </Reveal>
-        <Reveal className="mx-auto mt-4 max-w-[1000px] overflow-hidden rounded-[20px] border border-[#F7EBFF] bg-white shadow-[1px_1px_10px_2px_rgba(212,210,210,0.25)]">
+        <Reveal className="mx-auto mt-4 max-w-[1000px] overflow-hidden rounded-[20px] max-sm:rounded-[10px] border border-[#F7EBFF] bg-white shadow-[1px_1px_10px_2px_rgba(212,210,210,0.25)]">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={A("redesign-table.png")}
@@ -78,7 +78,7 @@ export function Redesign() {
         </Reveal>
 
         {/* product visual — structured + sourced (trust) */}
-        <Reveal className="mx-auto mt-8 max-w-[1000px] overflow-hidden rounded-[20px] border border-[#F7EBFF] bg-white shadow-[1px_1px_10px_2px_rgba(212,210,210,0.25)]">
+        <Reveal className="mx-auto mt-8 max-w-[1000px] overflow-hidden rounded-[20px] max-sm:rounded-[10px] border border-[#F7EBFF] bg-white shadow-[1px_1px_10px_2px_rgba(212,210,210,0.25)]">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={A("redesign-trust.png")}
@@ -87,7 +87,7 @@ export function Redesign() {
           />
         </Reveal>
 
-        <Reveal className="mt-[104px] mb-[24px] max-w-[860px]">
+        <Reveal className="mt-[104px] mb-[24px] max-sm:mt-[70px] max-sm:mb-4 max-w-[860px]">
           <CaseStudyCallout stream>
             An answer is only useful if the specialist trusts it enough to say it out loud. So we designed for trust and reliability before anything else.
           </CaseStudyCallout>

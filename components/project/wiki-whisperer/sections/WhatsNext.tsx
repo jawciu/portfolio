@@ -58,9 +58,23 @@ export function WhatsNext() {
           <Reveal stagger={0.1} className="max-w-[440px]">
             <Body>
             Two larger improvements surfaced in research. <br/>  <br/>
-            A CRM (Kraken) integration would connect Wiki Whisperer to customer data, pulling account-specific insights and resolving issues faster. <br/>  <br/> 
+            A CRM (Kraken) integration would connect Wiki Whisperer to customer data, pulling account-specific insights and resolving issues faster. <br/>  <br/>
             Energy specialists were also keen on images in responses. Particularly for questions about electricity meters, where a picture does a lot of the explaining.
             </Body>
+          </Reveal>
+        </Container>
+
+        {/* below lg the absolute off-left bleed above is hidden entirely, which left
+            this section imageless on phones — show the table as a regular in-flow
+            visual instead (standard product-visual frame: 16px radius + hairline). */}
+        <Container className="lg:hidden">
+          <Reveal className="mt-10 overflow-hidden rounded-[16px] border-[1.5px] border-[#F7EBFF]">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={A("opportunities-table-crop.png")}
+              alt="Prioritised opportunity backlog: Kraken integration, copy to clipboard and visual UI guidance scored by value and complexity"
+              className="block w-full"
+            />
           </Reveal>
         </Container>
       </div>

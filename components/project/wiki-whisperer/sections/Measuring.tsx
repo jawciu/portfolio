@@ -20,7 +20,7 @@ export function Measuring() {
         <Stats className="mt-14" items={SCOPE} />
 
         {/* the honest, harder read — in the callout */}
-        <Reveal className="mx-auto mt-16 max-w-[860px]">
+        <Reveal className="mx-auto mt-16 max-sm:mt-11 max-w-[860px]">
           <CaseStudyCallout stream>
             Our data scientist compared treatment teams against matched control teams to
             isolate the tool&apos;s effects while I led the qualitative side, interviewing

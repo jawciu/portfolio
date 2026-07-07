@@ -58,7 +58,7 @@ export function Hero() {
                   <br />
                   Hey Marvin
                   <br />
-                  Miro
+                  LangGraph
                   <br />
                   Mixpanel
                   <br />

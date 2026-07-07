@@ -41,7 +41,7 @@ export function Problem() {
             ))}
           </div>
         </Reveal>
-        <Reveal className="mt-[104px] mb-[24px] max-w-[820px]">
+        <Reveal className="mt-[104px] mb-[24px] max-sm:mt-[70px] max-sm:mb-4 max-w-[820px]">
           <CaseStudyCallout stream>
           Specialists fell back on the fastest thing they knew, asking a colleague. <br />
           My goal was to design a tool they would reach for first.
