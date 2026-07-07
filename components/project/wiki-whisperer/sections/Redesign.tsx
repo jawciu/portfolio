@@ -37,7 +37,7 @@ function DesignsTag() {
 
 export function Redesign() {
   return (
-    <section data-section="Redesign" className="pt-[120px] pb-0">
+    <section data-section="Redesign" className="pt-[120px] pb-0 max-sm:pt-20">
       <Container>
         <Reveal>
           <Kicker>THE REDESIGN</Kicker>
@@ -87,7 +87,7 @@ export function Redesign() {
           />
         </Reveal>
 
-        <Reveal className="mt-[104px] mb-[24px] max-sm:mt-[70px] max-sm:mb-4 max-w-[860px]">
+        <Reveal className="mt-[104px] mb-[24px] max-sm:mt-[70px] max-sm:mb-0 max-w-[860px]">
           <CaseStudyCallout stream>
             An answer is only useful if the specialist trusts it enough to say it out loud. So we designed for trust and reliability before anything else.
           </CaseStudyCallout>
