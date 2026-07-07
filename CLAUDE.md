@@ -243,8 +243,10 @@ cards, element-screenshot. Delete the temp script after.
   (glass seam echo); on stacked layouts the flush-bottom copy got covered. Fix: `max-lg:pb-24` on
   the section (lg+ has `lg:min-h` room, unchanged).
 - **Mobile home link** (`NavBar.tsx`): the `~/caro/...` path label is `max-sm:hidden`, leaving no
-  route home on phones. Added a mobile-only (`sm:hidden`) Link with the **favicon orb**
-  (`<img src="/icon.svg">` — app/icon.svg is served at /icon.svg) as a tappable home dot, left side.
+  route home on phones. Added a mobile-only (`sm:hidden`) home Link, left side. First tried the
+  favicon orb; Caroline swapped it for **⌂ U+2302 HOUSE** in `font-mono text-sm` (matches the nav
+  links' cap height — the glyph draws small in Geist Mono, so text-xs looked undersized), taking
+  the shared `pathColor`/`hover` so it flips with the light/dark theme.
 - **Verified:** tsc + eslint clean; mobile shots (order ✓ bubble text inside ✓ paragraph clear of the
   plate ✓ dot ✓) + desktop Feedback/navbar unchanged.
 

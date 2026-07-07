@@ -67,17 +67,17 @@ export function NavBar() {
         ~/caro/portfolio/2026
       </Link>
       {/* MOBILE-ONLY home affordance: the path label above is hidden ≤sm (no room),
-          which left phones with no way back to the root. The favicon orb (app/icon.svg,
-          served at /icon.svg) stands in as a tappable "home" dot. p-1 pads the ~24px
-          glyph toward a usable tap target. */}
+          which left phones with no way back to the root. ⌂ (U+2302 HOUSE) reads as
+          "home" in the same mono/terminal voice as the rest of the nav; it takes the
+          nav link colours so it flips with the light/dark theme. p-1 pads the glyph
+          toward a usable tap target. */}
       <Link
         href="/"
         onClick={handle("/")}
         aria-label="Back to home"
-        className="p-1 sm:hidden"
+        className={`p-1 font-mono text-sm leading-none transition-colors sm:hidden ${pathColor} ${hover}`}
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/icon.svg" alt="" className="h-6 w-6" />
+        ⌂
       </Link>
       <nav
         className={`flex gap-6 font-mono text-xs tracking-[0.25em] md:gap-10 md:text-sm ${navColor}`}
