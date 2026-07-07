@@ -115,7 +115,7 @@ export function Feedback() {
             {/* flag-content form (vector card — already framed) */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={A("flag-form.svg")}
+              src={A("flag-form.png")}
               alt="Flag-content form where agents say what was wrong and flag the source"
               className="h-[77%] w-auto max-sm:h-auto max-sm:w-full"
             />
