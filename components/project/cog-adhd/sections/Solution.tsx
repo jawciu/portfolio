@@ -144,7 +144,7 @@ export function Solution() {
           <div className="relative order-1 mx-auto w-full max-w-[420px] md:order-2">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={A("image-40.svg")}
+              src={A("image-40.png")}
               alt="Journal entries screen with your journal comments, wins, and a 'You practiced self-help!' note"
               className="w-[64%] h-auto select-none rounded-[20px] border border-[#E3E2DA] shadow-[1px_1px_10px_2px_rgba(212,210,210,0.25)]"
             />

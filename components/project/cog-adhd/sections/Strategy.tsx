@@ -27,7 +27,7 @@ type StackCardData = {
 
 const VISION_STACK: StackCardData[] = [
   { src: "image-23.png", alt: "Cog home screen - Hi Katherine, your daily practice", w: 320, h: 523, top: 0, left: 300, z: 10 },
-  { src: "image-21.svg", alt: "Cog check-in - How is your focus?", w: 208, h: 321, top: 150, left: 0, z: 0 },
+  { src: "image-21.png", alt: "Cog check-in - How is your focus?", w: 208, h: 321, top: 150, left: 0, z: 0 },
   { src: "image-22.png", alt: "Cog check-in - How is your punctuality?", w: 208, h: 320, top: 235, left: 170, z: 20 },
 ];
 const VISION_STACK_W = 620;
@@ -35,7 +35,7 @@ const VISION_STACK_H = 555;
 
 const JOURNAL_STACK: StackCardData[] = [
   { src: "image-24.png", alt: "Cog journal - What went well today?", w: 320, h: 523, top: 0, left: 0, z: 0 },
-  { src: "image-25.svg", alt: "Cog journal - What's been happening?", w: 300, h: 246, top: 55, left: 230, z: 10 },
+  { src: "image-25.png", alt: "Cog journal - What's been happening?", w: 300, h: 246, top: 55, left: 230, z: 10 },
 ];
 const JOURNAL_STACK_W = 530;
 const JOURNAL_STACK_H = 523;

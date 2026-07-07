@@ -3,7 +3,7 @@ import { Reveal } from "../Reveal";
 
 const TAKEAWAYS = [
   {
-    icon: "image-41.svg",
+    icon: "image-41.png",
     label: "prioritisation",
     body: "Business goals, budgets, and timelines shape decisions. We prioritised feasible solutions with the highest user value.",
   },

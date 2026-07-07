@@ -32,7 +32,7 @@ export function Competitive() {
         {/* Competitor logo row */}
         <Reveal
           stagger={0.06}
-          className="mt-12 grid grid-cols-2 items-center gap-8 max-sm:flex max-sm:justify-between max-sm:gap-3 sm:grid-cols-3 md:flex md:flex-wrap md:justify-between md:gap-10"
+          className="mt-12 grid grid-cols-2 items-center gap-8 max-sm:flex max-sm:flex-wrap max-sm:justify-center max-sm:gap-x-[5%] max-sm:gap-y-7 sm:grid-cols-3 md:flex md:flex-wrap md:justify-between md:gap-10"
         >
           {LOGOS.map((logo) => (
             // eslint-disable-next-line @next/next/no-img-element
@@ -40,7 +40,7 @@ export function Competitive() {
               key={logo.file}
               src={A(logo.file)}
               alt={logo.alt}
-              className="h-8 w-auto object-contain opacity-80 grayscale max-sm:h-4 max-sm:min-w-0 max-sm:flex-1 md:h-9"
+              className="h-8 w-auto object-contain opacity-80 grayscale max-sm:h-6 max-sm:basis-[28%] max-sm:min-w-0 md:h-9"
             />
           ))}
         </Reveal>
