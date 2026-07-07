@@ -29,7 +29,7 @@ const FEATURES: [string, string][] = [
 
 export function Feedback() {
   return (
-    <section data-section="Feedback" className="pt-[120px] pb-0 max-sm:pt-20">
+    <section data-section="Feedback" className="pt-[120px] pb-0 max-sm:pt-[100px]">
       <Container>
         <Reveal>
           <Kicker>User-led refinement</Kicker>

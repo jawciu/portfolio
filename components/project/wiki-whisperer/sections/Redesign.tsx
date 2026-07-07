@@ -37,7 +37,7 @@ function DesignsTag() {
 
 export function Redesign() {
   return (
-    <section data-section="Redesign" className="pt-[120px] pb-0 max-sm:pt-20">
+    <section data-section="Redesign" className="pt-[120px] pb-0 max-sm:pt-[100px]">
       <Container>
         <Reveal>
           <Kicker>THE REDESIGN</Kicker>

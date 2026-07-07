@@ -39,7 +39,7 @@ const PILLARS: { num: string; buzz: string; body: ReactNode }[] = [
 
 export function UnderTheHood() {
   return (
-    <section data-section="UnderTheHood" className="pt-[120px] pb-0 max-sm:pt-20">
+    <section data-section="UnderTheHood" className="pt-[120px] pb-0 max-sm:pt-[100px]">
       <Container>
         <Reveal>
           <Kicker>Under the hood</Kicker>
