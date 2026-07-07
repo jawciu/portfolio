@@ -1,6 +1,7 @@
 import { A, Container, Kicker, Title, Body, TestimonialBubble } from "../ui";
 import { Reveal } from "../Reveal";
 import { Parallax } from "../Parallax";
+import { AutoplayVideo } from "../AutoplayVideo";
 
 type Bubble = {
   asset: string;
@@ -100,12 +101,10 @@ export function Results() {
 
           {/* result clip — phone screen recording */}
           <Reveal className="flex justify-center lg:justify-end">
-            <video
+            {/* plays via IntersectionObserver too — bare autoPlay can silently
+                fail on Safari. iOS LOW POWER MODE still blocks it (tap to play). */}
+            <AutoplayVideo
               src={A("results-phone.mp4")}
-              autoPlay
-              loop
-              muted
-              playsInline
               className="block h-auto w-[16rem] max-w-full md:w-[18rem]"
             />
           </Reveal>

@@ -41,7 +41,7 @@ export function Solution() {
           className="mt-14 md:mt-20 flex flex-col gap-10 md:flex-row md:items-start md:gap-12"
         >
           {/* Katherine Bell persona */}
-          <div className="flex shrink-0 flex-col items-start text-left md:w-[160px]">
+          <div className="flex shrink-0 flex-col items-start text-left max-sm:items-center max-sm:text-center md:w-[160px]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={A("image-32.png")}
@@ -57,9 +57,9 @@ export function Solution() {
           </div>
 
           {/* Question prompts, one per upcoming feature */}
-          <div className="grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-4 md:flex-1">
+          <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-4 md:flex-1">
             {PROMPTS.map((p) => (
-              <div key={p.text} className="flex flex-col items-start">
+              <div key={p.text} className="flex flex-col items-start max-sm:items-center max-sm:text-center">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={A(p.icon)}
@@ -80,8 +80,9 @@ export function Solution() {
           stagger={0.14}
           className="mt-16 md:mt-24 grid grid-cols-1 items-center gap-10 md:grid-cols-2 md:gap-14"
         >
-          {/* Overview bar chart + overlapping Daily card — smaller + spread apart */}
-          <div className="relative mx-auto w-full max-w-[460px]">
+          {/* Overview bar chart + overlapping Daily card — smaller + spread apart.
+              max-sm:order-2: on phones the copy reads FIRST, then the mockups. */}
+          <div className="relative mx-auto w-full max-w-[460px] max-sm:order-2 max-sm:mt-4">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={A("image-38.svg")}
@@ -96,7 +97,7 @@ export function Solution() {
             />
           </div>
 
-          <div className="space-y-10">
+          <div className="space-y-10 max-sm:order-1">
             <div className="space-y-3">
               <FeatureLabel>weekly overview graph</FeatureLabel>
               <Body>
@@ -121,7 +122,7 @@ export function Solution() {
           stagger={0.14}
           className="mt-16 md:mt-24 grid grid-cols-1 items-center gap-10 md:grid-cols-2 md:gap-14"
         >
-          <div className="order-2 space-y-10 md:order-1">
+          <div className="order-2 space-y-10 max-sm:order-1 md:order-1">
             <div className="space-y-3">
               <FeatureLabel>symptom ranking</FeatureLabel>
               <Body>
@@ -141,7 +142,7 @@ export function Solution() {
           </div>
 
           {/* Journal/wins card + overlapping Highs/Lows card */}
-          <div className="relative order-1 mx-auto w-full max-w-[420px] md:order-2">
+          <div className="relative order-1 mx-auto w-full max-w-[420px] max-sm:order-2 max-sm:mt-24 md:order-2">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={A("image-40.png")}
@@ -158,7 +159,7 @@ export function Solution() {
         </Reveal>
 
         {/* Batch-booking callout */}
-        <div className="mt-20 md:mt-28 max-w-[760px]">
+        <div className="mt-20 max-sm:mt-36 md:mt-28 max-w-[760px]">
           <CaseStudyCallout stream>
             In parallel, I also addressed session booking drop-off by introducing
             a batch booking feature, allowing users to schedule multiple therapy

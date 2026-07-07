@@ -229,7 +229,28 @@ cards, element-screenshot. Delete the temp script after.
 > **`docs/CLAUDE-ARCHIVE.md`**. At the end of a session, append a new entry with: what changed,
 > current state (working / broken / in-progress), and explicit next steps for the next agent.
 
-### 2026-07-07 (later 2) — Wiki table-under-curve + cog mobile fixes. UNCOMMITTED. (Round 5 sizes pushed `255efcf`.)
+### 2026-07-07 (later 3) — Cog mobile mega-batch (7 fixes). UNCOMMITTED.
+- **NextProject squiggle** `max-sm:w-[230%]` (bigger, chopped by section overflow-hidden).
+- **Takeaways**: MyRole centring pattern (icon `max-sm:justify-center`, label+body in
+  `max-sm:mx-auto max-sm:max-w-[85%]`).
+- **Results video**: new `AutoplayVideo.tsx` client component (IntersectionObserver `.play()`
+  nudge + pause off-screen; bare `autoPlay` can silently fail on Safari). NOTE: Caroline's phone
+  was in **Low Power Mode** (yellow battery, 10-13%) — iOS blocks ALL autoplay in LPM, no API can
+  override; retest charged. Video verified playing headless.
+- **Solution**: persona chip + prompt cells centred on phones; BOTH clusters reordered `max-sm`
+  via CSS order → copy first then mockups (weekly/two-tab text → imgs → symptom/journal text → imgs).
+- **Challenges**: bubble first (`max-sm:order-1`), tracker phone `max-sm:max-w-[250px]` (was 360).
+- **Methodology sketches**: one horizontal row on phones (dropped `max-sm:flex-col`), each frame
+  `max-sm:w-[48%]` → centre frame full, outer two chopped by overflow-hidden.
+- **Strategy row 2**: copy above the journal card stack on phones (CSS order).
+- All `max-sm:` guarded; desktop untouched. tsc+lint clean; verified via mobile screenshots.
+- **Round 2 (same session):** Takeaways grid `max-sm:mt-8` (heading air) · Solution cluster-2
+  collage `max-sm:mt-16` (the symptom card's `-16%` overhang ate the 40px grid gap → overlap) +
+  callout `max-sm:mt-28` · JourneyMap Katherine photo `max-sm:mx-auto max-sm:w-[180px]` ·
+  Challenges bubble `max-sm:max-w-[320px]` + quote `max-sm:text-[13px]` · Competitive row-1 copy
+  above the screenshots (`max-sm:order-*`).
+
+### 2026-07-07 (later 2) — Wiki table-under-curve + cog mobile fixes. PUSHED (`0901892`→`6801809` incl. hero SVG bake + logos).
 - **Wiki WhatsNext:** dropped `max-lg:pb-24` (added when TEXT was last; the full-bleed table is last
   now) so the table sits flush and NextProject's `-mt-[64px]` curved plate rides over its bottom edge
   — Caroline's ask. The once-covered paragraph ends safely above the table.

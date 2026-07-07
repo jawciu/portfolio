@@ -29,8 +29,8 @@ export function Challenges() {
           className="mt-12 md:mt-16 grid grid-cols-1 md:grid-cols-2 items-center gap-10 md:gap-16"
         >
           {/* Quote in a green thought bubble */}
-          <div className="order-2 md:order-1 flex justify-center md:justify-start">
-            <div className="relative w-full max-w-[400px]">
+          <div className="order-2 max-sm:order-1 md:order-1 flex justify-center md:justify-start">
+            <div className="relative w-full max-w-[400px] max-sm:max-w-[320px]">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={A("stack-5.png")}
@@ -40,7 +40,7 @@ export function Challenges() {
               />
               <StreamingQuote
                 as="p"
-                className="case-study-quote absolute inset-x-[10%] top-[14%] bottom-[28%] flex items-center text-left"
+                className="case-study-quote absolute inset-x-[10%] top-[14%] bottom-[28%] flex items-center text-left max-sm:text-[13px] max-sm:leading-snug"
               >
                 {`“I’m finding it hard to make sense of all the symptoms and analyse them day by day to see where my low points are.”`}
               </StreamingQuote>
@@ -48,8 +48,8 @@ export function Challenges() {
           </div>
 
           {/* Cluttered "Your tracker history" phone screen — cropped at the bottom */}
-          <div className="order-1 md:order-2 flex justify-center md:justify-end">
-            <Parallax speed={42} className="w-full max-w-[360px]">
+          <div className="order-1 max-sm:order-2 md:order-2 flex justify-center md:justify-end">
+            <Parallax speed={42} className="w-full max-w-[360px] max-sm:max-w-[250px]">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={A("image-31.png")}

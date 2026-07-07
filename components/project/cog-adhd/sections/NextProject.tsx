@@ -27,7 +27,7 @@ export function NextProject() {
         src={A("image-44.svg")}
         alt=""
         aria-hidden="true"
-        className="pointer-events-none absolute bottom-0 left-1/2 -z-10 w-[110%] max-w-none -translate-x-1/2 opacity-90"
+        className="pointer-events-none absolute bottom-0 left-1/2 -z-10 w-[110%] max-sm:w-[230%] max-w-none -translate-x-1/2 opacity-90"
       />
 
       <Container>

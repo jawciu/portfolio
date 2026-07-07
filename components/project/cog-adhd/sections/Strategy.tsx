@@ -123,12 +123,12 @@ export function Strategy() {
           stagger={0.14}
           className="mt-12 flex flex-col gap-12 md:mt-16 lg:grid lg:grid-cols-[auto_1fr] lg:items-center lg:gap-14"
         >
-          <div className="flex justify-center lg:justify-start">
+          <div className="flex justify-center max-sm:order-2 lg:justify-start">
             <Parallax speed={-32}>
               <CardStack cards={JOURNAL_STACK} w={JOURNAL_STACK_W} h={JOURNAL_STACK_H} />
             </Parallax>
           </div>
-          <div className="space-y-6">
+          <div className="space-y-6 max-sm:order-1">
             <Body>
               This would also give therapists a better understanding of their
               patient&rsquo;s health and areas to focus on.

@@ -50,7 +50,7 @@ export function Competitive() {
           stagger={0.14}
           className="mt-16 grid items-center gap-8 md:grid-cols-2 md:gap-12"
         >
-          <div className="flex items-start justify-center gap-4 md:justify-start">
+          <div className="flex items-start justify-center gap-4 max-sm:order-2 md:justify-start">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={A("image-11.png")}
@@ -64,7 +64,7 @@ export function Competitive() {
               className="h-[280px] w-auto min-w-0 object-contain md:h-[420px]"
             />
           </div>
-          <Body>
+          <Body className="max-sm:order-1">
             Self-help apps are typically designed to be engaging and fun,
             offering tools like mood check-ins, educational videos, and AI
             chatbots.

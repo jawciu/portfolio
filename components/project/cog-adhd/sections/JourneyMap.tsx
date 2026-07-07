@@ -5,7 +5,7 @@ export function JourneyMap() {
   return (
     <section
       data-section="JourneyMap"
-      className="pt-[120px] pb-0 bg-[var(--cog-bg-section)]"
+      className="pt-[120px] pb-0 max-sm:pt-[60px] bg-[var(--cog-bg-section)]"
     >
       <Container>
         <Reveal>
@@ -26,7 +26,7 @@ export function JourneyMap() {
         >
           {/* Persona chip */}
           <div>
-            <div className="w-[240px] max-w-full">
+            <div className="w-[240px] max-w-full max-sm:mx-auto max-sm:w-[180px]">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={A("image-20.png")}
