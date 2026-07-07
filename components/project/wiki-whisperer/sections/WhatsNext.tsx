@@ -8,10 +8,11 @@ export function WhatsNext() {
   return (
     <section
       data-section="WhatsNext"
-      // max-lg:pb-24: NextProject overlaps this section by -mt-[64px] (the glass
-      // seam echo). On lg+ the copy block's min-h leaves room, but stacked/mobile
-      // the last paragraph sat flush at the bottom and got COVERED by the plate.
-      className="relative isolate overflow-hidden pt-[120px] pb-0 max-lg:pb-24"
+      // pb-0 everywhere: NextProject overlaps by -mt-[64px] (glass seam echo) and
+      // on mobile the full-bleed table is the LAST element, sitting flush so the
+      // plate's curved edge rides over its bottom (Caroline's ask). The paragraph
+      // it once covered now ends safely above the table.
+      className="relative isolate overflow-hidden pt-[120px] pb-0"
     >
       <Container>
         {/* eyebrow + heading in their normal place */}

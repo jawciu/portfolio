@@ -86,7 +86,7 @@ export function JourneyMap() {
 
         {/* Journey map table (exported image) */}
         <Reveal className="mt-12 w-full overflow-x-auto md:mt-16">
-          <div className="min-w-[900px]">
+          <div className="min-w-[900px] max-md:min-w-0">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={A("cog-clinic-current-journey-map.png")}

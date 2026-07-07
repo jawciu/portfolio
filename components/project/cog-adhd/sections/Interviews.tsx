@@ -134,7 +134,7 @@ export function Interviews() {
             keeps a visible 48px clear gap below the heading (80px − 32px = 48px). */}
         <Reveal
           stagger={0.12}
-          className="mt-20 flex flex-col items-center gap-6 sm:flex-row sm:items-stretch sm:justify-center sm:gap-12"
+          className="mt-20 flex flex-col items-center gap-20 sm:flex-row sm:items-stretch sm:justify-center sm:gap-12"
         >
           {PERSONAS.map((p) => (
             <div

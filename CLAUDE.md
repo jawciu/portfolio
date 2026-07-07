@@ -229,6 +229,21 @@ cards, element-screenshot. Delete the temp script after.
 > **`docs/CLAUDE-ARCHIVE.md`**. At the end of a session, append a new entry with: what changed,
 > current state (working / broken / in-progress), and explicit next steps for the next agent.
 
+### 2026-07-07 (later 2) — Wiki table-under-curve + cog mobile fixes. UNCOMMITTED. (Round 5 sizes pushed `255efcf`.)
+- **Wiki WhatsNext:** dropped `max-lg:pb-24` (added when TEXT was last; the full-bleed table is last
+  now) so the table sits flush and NextProject's `-mt-[64px]` curved plate rides over its bottom edge
+  — Caroline's ask. The once-covered paragraph ends safely above the table.
+- **Cog JourneyMap:** the map was a `min-w-[900px]` h-scroller that read as cut-off on phones →
+  `max-md:min-w-0` so it fits the 85% container width on mobile. Desktop identical.
+- **Cog Competitive:** the 4 app screenshots had unequal heights (per-pair `w-1/2 max-w-[220px]`,
+  differing aspects) → now `h-[280px] md:h-[420px] w-auto` — SAME height everywhere (desktop change
+  EXPLICITLY requested). Logos: one horizontal row on phones (`max-sm:flex justify-between`,
+  `max-sm:h-4 flex-1 min-w-0`), grid/flex unchanged ≥sm.
+- **Cog Interviews personas:** stacked cards overlapped (mascots overhang `-mt-14` = 56px > the
+  24px gap) → base gap `gap-6 → gap-20` (only effective <640; `sm:gap-12` unchanged).
+- Verified via mobile screenshots (curve over table ✓ map fits ✓ logo row ✓ equal shots ✓ card gap ✓)
+  + desktop Competitive (equal heights, new look approved-pending).
+
 ### 2026-07-07 (later) — Wiki mobile round 4 + type-size Q&A. PUSHED `cb13ea9`, verified live.
 - **Q&A for Caroline (from code):** body 16px all widths · callout 28→22(≤640)→18px(≤480) ·
   fuchsia Stats numbers 44px mobile / 66px md+ · bubble quote 15px (academy bubble 11px ≤sm).

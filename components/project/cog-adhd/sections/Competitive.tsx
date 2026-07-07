@@ -32,7 +32,7 @@ export function Competitive() {
         {/* Competitor logo row */}
         <Reveal
           stagger={0.06}
-          className="mt-12 grid grid-cols-2 items-center gap-8 sm:grid-cols-3 md:flex md:flex-wrap md:justify-between md:gap-10"
+          className="mt-12 grid grid-cols-2 items-center gap-8 max-sm:flex max-sm:justify-between max-sm:gap-3 sm:grid-cols-3 md:flex md:flex-wrap md:justify-between md:gap-10"
         >
           {LOGOS.map((logo) => (
             // eslint-disable-next-line @next/next/no-img-element
@@ -40,7 +40,7 @@ export function Competitive() {
               key={logo.file}
               src={A(logo.file)}
               alt={logo.alt}
-              className="h-8 w-auto object-contain opacity-80 grayscale md:h-9"
+              className="h-8 w-auto object-contain opacity-80 grayscale max-sm:h-4 max-sm:min-w-0 max-sm:flex-1 md:h-9"
             />
           ))}
         </Reveal>
@@ -55,13 +55,13 @@ export function Competitive() {
             <img
               src={A("image-11.png")}
               alt="Self-help app screen with a daily mood and emotion picker"
-              className="w-1/2 max-w-[220px] object-contain"
+              className="h-[280px] w-auto min-w-0 object-contain md:h-[420px]"
             />
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={A("image-10.png")}
               alt="Self-help app screen for picking guided journeys"
-              className="w-1/2 max-w-[220px] object-contain"
+              className="h-[280px] w-auto min-w-0 object-contain md:h-[420px]"
             />
           </div>
           <Body>
@@ -87,13 +87,13 @@ export function Competitive() {
             <img
               src={A("image-17.png")}
               alt="Inflow therapy platform screen matching a client with a coach"
-              className="w-1/2 max-w-[220px] object-contain"
+              className="h-[280px] w-auto min-w-0 object-contain md:h-[420px]"
             />
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={A("image-18.png")}
               alt="Shimmer therapy platform screen showing 1:1 coaching sessions"
-              className="w-1/2 max-w-[220px] object-contain"
+              className="h-[280px] w-auto min-w-0 object-contain md:h-[420px]"
             />
           </div>
         </Reveal>
