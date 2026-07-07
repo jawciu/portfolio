@@ -65,18 +65,21 @@ export function WhatsNext() {
         </Container>
 
         {/* below lg the absolute off-left bleed above is hidden entirely, which left
-            this section imageless on phones — show the table as a regular in-flow
-            visual instead (standard product-visual frame: 16px radius + hairline). */}
-        <Container className="lg:hidden">
-          <Reveal className="mt-10 overflow-hidden rounded-[16px] border-[1.5px] border-[#F7EBFF]">
+            this section imageless on phones — show the table as a FULL-BLEED visual:
+            edge-to-edge (no container padding), drawn 125% wide so the rightmost
+            "Complexity" column is always chopped by the screen edge (echoes the
+            desktop treatment, where the table bleeds off-screen too). The section's
+            own overflow-hidden clips the overflow, so no horizontal scroll. */}
+        <div className="mt-10 w-full overflow-hidden lg:hidden">
+          <Reveal>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={A("opportunities-table-crop.png")}
               alt="Prioritised opportunity backlog: Kraken integration, copy to clipboard and visual UI guidance scored by value and complexity"
-              className="block w-full"
+              className="block w-[125%] max-w-none"
             />
           </Reveal>
-        </Container>
+        </div>
       </div>
     </section>
   );

@@ -75,12 +75,12 @@ export function NavBar() {
         href="/"
         onClick={handle("/")}
         aria-label="Back to home"
-        className={`p-1 font-mono text-sm leading-none transition-colors sm:hidden ${pathColor} ${hover}`}
+        className={`p-1 font-mono text-base leading-none transition-colors sm:hidden ${pathColor} ${hover}`}
       >
         ⌂
       </Link>
       <nav
-        className={`flex gap-6 font-mono text-xs tracking-[0.25em] md:gap-10 md:text-sm ${navColor}`}
+        className={`flex gap-6 font-mono text-xs tracking-[0.25em] max-sm:text-sm md:gap-10 md:text-sm ${navColor}`}
       >
         <Link
           href="/#work"

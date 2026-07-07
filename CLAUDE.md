@@ -229,7 +229,19 @@ cards, element-screenshot. Delete the temp script after.
 > **`docs/CLAUDE-ARCHIVE.md`**. At the end of a session, append a new entry with: what changed,
 > current state (working / broken / in-progress), and explicit next steps for the next agent.
 
-### 2026-07-07 — iOS Safari SVG blank-outs: root-caused + hardened (SVG→PNG for risky assets). UNCOMMITTED.
+### 2026-07-07 (later) — Wiki mobile round 4 + type-size Q&A. PUSHED `cb13ea9`, verified live.
+- **Q&A for Caroline (from code):** body 16px all widths · callout 28→22(≤640)→18px(≤480) ·
+  fuchsia Stats numbers 44px mobile / 66px md+ · bubble quote 15px (academy bubble 11px ≤sm).
+- **Fixes (all `max-sm:` guarded):** callout spacing ×⅔ on phones (Problem/Redesign 104→70 + 24→16,
+  Measuring 64→44, Impact 56→36 both sides of the callout) · Redesign screenshot wrappers
+  `max-sm:rounded-[10px]` (20px clipped the in-image logo) · **WhatsNext table on mobile** — the
+  desktop image is an absolute off-left bleed `hidden lg:block`, phones had NO image; added an
+  in-flow `lg:hidden` copy in the standard 16px+hairline frame · Hero tools **Miro → LangGraph**.
+- **Vercel gotcha:** the `6b9f68f` push never triggered a build (GitHub had it; prod didn't —
+  diagnosed by curling prod for the new asset + grepping live HTML). Any next push deploys HEAD;
+  `cb13ea9` carried both. If it recurs, check the Vercel dashboard for the skipped build.
+
+### 2026-07-07 — iOS Safari SVG blank-outs: root-caused + hardened (SVG→PNG for risky assets). PUSHED `a7037a8` + `6b9f68f` (flag-form blur, same family).
 - **Symptom (Caroline's iPhone, prod):** parts of wiki images randomly blank — masked icon glyphs
   missing (background cards showed), pin/search panel content missing (frames showed), feedback.svg
   a giant blank. **Restarting Safari fixed it** → NOT a code regression from the mobile batch.

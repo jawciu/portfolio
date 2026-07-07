@@ -44,7 +44,7 @@ export function Impact() {
               width={500}
               // longest quote on the page — at mobile bubble scale the 15px text
               // spills out of the art, so this ONE bubble drops to 11px on phones
-              quoteClassName="max-sm:text-[11px] max-sm:leading-snug"
+              quoteClassName="max-sm:text-[14px] max-sm:leading-snug"
             />
           </div>
         </Reveal>

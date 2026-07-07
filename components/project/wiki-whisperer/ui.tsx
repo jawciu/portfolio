@@ -131,7 +131,7 @@ export function Stats({
           key={`${s.n}-${i}`}
           className="flex w-[150px] flex-col items-center text-center md:w-[190px]"
         >
-          <p className="font-[family-name:var(--font-body)] text-[44px] font-bold leading-none tabular-nums text-[#b52fa5] md:text-[66px]">
+          <p className="font-[family-name:var(--font-body)] text-[48px] font-bold leading-none tabular-nums text-[#b52fa5] md:text-[66px]">
             <CountUp value={s.n} />
           </p>
           <p className="case-study-body-md mt-3">{s.caption}</p>

@@ -151,13 +151,7 @@
 
 @media (max-width: 640px) {
   .case-study-callout {
-    font-size: 22px;
-  }
-}
-
-@media (max-width: 480px) {
-  .case-study-callout {
-    font-size: 18px;
+    font-size: 22px; /* single mobile tier, matches cog — Caroline 2026-07-07 */
   }
 }
 
