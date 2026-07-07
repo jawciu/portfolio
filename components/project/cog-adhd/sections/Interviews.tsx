@@ -163,10 +163,10 @@ export function Interviews() {
 
         {/* thought-bubble cluster — two tidy rows, no overlap:
             row 1 = purple · green, row 2 = green · purple · green. */}
-        <div className="mt-12 flex flex-col items-center gap-y-6 md:mt-16">
+        <div className="mt-12 flex flex-col items-center gap-y-6 max-sm:gap-y-0 md:mt-16">
           <Reveal
             stagger={0.1}
-            className="flex flex-wrap items-center justify-center gap-x-10 gap-y-6"
+            className="flex flex-wrap items-center justify-center gap-x-10 gap-y-6 max-sm:gap-y-0"
           >
             {BUBBLES.slice(0, 2).map((b, i) => (
               <Bubble key={i} b={b} />
@@ -174,7 +174,7 @@ export function Interviews() {
           </Reveal>
           <Reveal
             stagger={0.1}
-            className="flex flex-wrap items-center justify-center gap-x-10 gap-y-6"
+            className="flex flex-wrap items-center justify-center gap-x-10 gap-y-6 max-sm:gap-y-0"
           >
             {BUBBLES.slice(2).map((b, i) => (
               <Bubble key={i} b={b} />

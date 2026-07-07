@@ -9,7 +9,7 @@ export function NextProject() {
       // frosted glass band (same pattern as the wiki study) in the cog cream tone:
       // warm whisper tint, rim glint, and a soft shadow in the dark-ivory greige that is
       // the darkest stop of the glass-seam overlay (rgb(206,201,186)).
-      className="relative isolate overflow-hidden rounded-t-[2.5rem] bg-[#faf9f5] pt-[120px] pb-[160px] backdrop-blur-2xl backdrop-saturate-150 shadow-[0_-24px_60px_-20px_rgba(206,201,186,0.6)]"
+      className="relative isolate overflow-hidden rounded-t-[2.5rem] bg-[#faf9f5] pt-[120px] pb-[160px] max-sm:pt-[60px] backdrop-blur-2xl backdrop-saturate-150 shadow-[0_-24px_60px_-20px_rgba(206,201,186,0.6)]"
     >
       {/* glass rim glint along the top edge */}
       <div

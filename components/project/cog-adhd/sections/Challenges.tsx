@@ -5,7 +5,7 @@ import { StreamingQuote } from "../StreamingQuote";
 
 export function Challenges() {
   return (
-    <section data-section="Challenges" className="pt-[120px] pb-0 bg-[var(--cog-bg-section)]">
+    <section data-section="Challenges" className="pt-[120px] pb-0 max-sm:pb-10 bg-[var(--cog-bg-section)]">
       <Container>
         <Reveal stagger={0.08}>
           <Kicker>Challenges</Kicker>

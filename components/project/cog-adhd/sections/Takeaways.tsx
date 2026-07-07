@@ -23,7 +23,7 @@ export function Takeaways() {
   // pb-[120px]: this section's tinted background ends at a boundary with the cream
   // NextProject below, so its content needs bottom breathing space before that line.
   return (
-    <section data-section="Takeaways" className="pt-[120px] pb-[120px] bg-[var(--cog-bg-section)]">
+    <section data-section="Takeaways" className="pt-[120px] pb-[120px] max-sm:pb-[60px] bg-[var(--cog-bg-section)]">
       <Container>
         <Reveal stagger={0.08}>
           <Kicker>KEY TAKEAWAYS</Kicker>

@@ -121,7 +121,7 @@ export function Strategy() {
         {/* Row 2 — journal card cluster left, copy right */}
         <Reveal
           stagger={0.14}
-          className="mt-12 flex flex-col gap-12 md:mt-16 lg:grid lg:grid-cols-[auto_1fr] lg:items-center lg:gap-14"
+          className="mt-12 max-sm:mt-24 flex flex-col gap-12 md:mt-16 lg:grid lg:grid-cols-[auto_1fr] lg:items-center lg:gap-14"
         >
           <div className="flex justify-center max-sm:order-2 lg:justify-start">
             <Parallax speed={-32}>
