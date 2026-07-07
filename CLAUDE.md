@@ -229,7 +229,28 @@ cards, element-screenshot. Delete the temp script after.
 > **`docs/CLAUDE-ARCHIVE.md`**. At the end of a session, append a new entry with: what changed,
 > current state (working / broken / in-progress), and explicit next steps for the next agent.
 
-### 2026-07-06 (later 3) — Wiki mobile fixes (Feedback order, bubble overflow, cut paragraph) + mobile home dot. UNCOMMITTED.
+### 2026-07-07 — iOS Safari SVG blank-outs: root-caused + hardened (SVG→PNG for risky assets). UNCOMMITTED.
+- **Symptom (Caroline's iPhone, prod):** parts of wiki images randomly blank — masked icon glyphs
+  missing (background cards showed), pin/search panel content missing (frames showed), feedback.svg
+  a giant blank. **Restarting Safari fixed it** → NOT a code regression from the mobile batch.
+- **Root cause:** iOS Safari rasterizes SVG-in-`<img>` under a strict GPU/memory budget; under
+  memory pressure it silently drops the EXPENSIVE subtrees — `mask-type:luminance`, `feGaussianBlur`
+  filters, `<pattern>` fills referencing embedded `data:image` bitmaps. Diagnostic tell:
+  **research.svg (plain paths, no mask) was the ONLY MyRole icon that never broke.** Desktop
+  browsers (and desktop WebKit via Playwright — tested) have no such budget, so it never reproduces
+  off-device. Yesterday's resize just nudged rasterization sizes over the budget; flaky by session.
+- **Fix: bake risky SVGs to PNG via sharp** (`sharp(svg, { density: 72*scale }).png()` — sharp ships
+  with Next). Wiki: design/testing/launch (3x), pin/search/feedback (2x) — research.svg + flag-form.svg
+  kept as SVG (plain paths / 1 filter, survived on-device). Cog (same hazard class, found by audit):
+  journey-map, image-20/22/23/24/26/27/32 (all `<pattern>`+`data:image`) → 2x PNG. PNGs are all
+  SMALLER than the SVGs (feedback 604K→295K, journey-map 1.1M→604K). SVG sources kept on disk.
+- **Refs swapped** in wiki MyRole/Feedback + cog JourneyMap/Strategy/Solution. tsc+lint clean;
+  pixel-identical renders verified at 390px (wiki MyRole/panels/feedback + cog journey/strategy).
+- **RULE for future assets:** SVGs used via `<img>` must avoid luminance masks / filters /
+  pattern-image fills — iOS Safari drops them under memory pressure. Screenshot-like art → PNG;
+  SVG only for plain-path vector art.
+
+### 2026-07-06 (later 3) — Wiki mobile fixes (Feedback order, bubble overflow, cut paragraph) + mobile home dot. PUSHED `14167f9`.
 - **Feedback section mobile order** (`Feedback.tsx`): was header → images → speed/pin/search. Fixed
   with **CSS `order`** (`max-sm:order-2` on the images Reveal — grid respects order), NOT the
   duplicate-and-hide Caroline suggested (single markup, desktop provably untouched). Images now sit

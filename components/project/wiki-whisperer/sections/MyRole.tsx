@@ -3,7 +3,7 @@ import { Reveal } from "../Reveal";
 
 const ROLES = [
   {
-    icon: "design.svg",
+    icon: "design.png",
     label: "design",
     alt: "Design icon on a lilac card",
     body: "I designed the product within E.ON Next's design system, following users' mental models to make it easy to use.",
@@ -15,13 +15,13 @@ const ROLES = [
     body: "I interviewed users across the pilots to capture their experience with the tool and surface areas of friction and improvement.",
   },
   {
-    icon: "testing.svg",
+    icon: "testing.png",
     label: "testing",
     alt: "Testing icon on a lilac card",
     body: "I helped to evaluate the trial, pairing user interviews with the treatment-versus-control analysis and iterated on the design based on feedback.",
   },
   {
-    icon: "launch.svg",
+    icon: "launch.png",
     label: "launch",
     alt: "Launch icon on a peach card",
     body: "I drove adoption for the rollout, leading design on a feature-hype video that I scripted and art-directed.",

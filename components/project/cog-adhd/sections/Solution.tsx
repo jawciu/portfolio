@@ -44,7 +44,7 @@ export function Solution() {
           <div className="flex shrink-0 flex-col items-start text-left md:w-[160px]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={A("image-32.svg")}
+              src={A("image-32.png")}
               alt="Portrait of Katherine Bell, the therapy-client persona"
               className="w-[140px] h-auto select-none"
             />

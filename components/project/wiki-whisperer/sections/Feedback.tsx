@@ -59,14 +59,14 @@ export function Feedback() {
             {/* pin-conversation panel (left) */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={A("pin.svg")}
+              src={A("pin.png")}
               alt="Pinning a conversation from the chat list"
               className="h-full w-auto max-sm:h-auto max-sm:w-auto max-sm:min-w-0 max-sm:flex-1"
             />
             {/* search-history panel (right) */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={A("search.svg")}
+              src={A("search.png")}
               alt="Searchable chat history with pinned conversations"
               className="h-full w-auto max-sm:h-auto max-sm:w-auto max-sm:min-w-0 max-sm:flex-1"
             />
@@ -122,7 +122,7 @@ export function Feedback() {
             {/* routed to a Slack channel (flat screenshot — add rounded corners + lilac border) */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={A("feedback.svg")}
+              src={A("feedback.png")}
               alt="Feedback routed to a Slack channel for experts to action"
               className="h-full w-auto rounded-[16px] border-[1.5px] border-[#F7EBFF] max-sm:h-auto max-sm:w-full"
             />

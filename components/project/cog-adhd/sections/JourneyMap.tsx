@@ -29,7 +29,7 @@ export function JourneyMap() {
             <div className="w-[240px] max-w-full">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={A("image-20.svg")}
+                src={A("image-20.png")}
                 alt="Portrait of Katherine Bell, the persona for the journey map"
                 className="h-auto w-full"
               />
@@ -89,7 +89,7 @@ export function JourneyMap() {
           <div className="min-w-[900px]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={A("cog-clinic-current-journey-map.svg")}
+              src={A("cog-clinic-current-journey-map.png")}
               alt="Cog Clinic current therapy process journey map: stages, actions, thoughts, touchpoints, emotions and opportunities across choose, prepare, introduce, remember, recall and analyse phases"
               className="h-auto w-full"
             />

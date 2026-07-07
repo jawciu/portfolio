@@ -26,15 +26,15 @@ type StackCardData = {
 };
 
 const VISION_STACK: StackCardData[] = [
-  { src: "image-23.svg", alt: "Cog home screen - Hi Katherine, your daily practice", w: 320, h: 523, top: 0, left: 300, z: 10 },
+  { src: "image-23.png", alt: "Cog home screen - Hi Katherine, your daily practice", w: 320, h: 523, top: 0, left: 300, z: 10 },
   { src: "image-21.svg", alt: "Cog check-in - How is your focus?", w: 208, h: 321, top: 150, left: 0, z: 0 },
-  { src: "image-22.svg", alt: "Cog check-in - How is your punctuality?", w: 208, h: 320, top: 235, left: 170, z: 20 },
+  { src: "image-22.png", alt: "Cog check-in - How is your punctuality?", w: 208, h: 320, top: 235, left: 170, z: 20 },
 ];
 const VISION_STACK_W = 620;
 const VISION_STACK_H = 555;
 
 const JOURNAL_STACK: StackCardData[] = [
-  { src: "image-24.svg", alt: "Cog journal - What went well today?", w: 320, h: 523, top: 0, left: 0, z: 0 },
+  { src: "image-24.png", alt: "Cog journal - What went well today?", w: 320, h: 523, top: 0, left: 0, z: 0 },
   { src: "image-25.svg", alt: "Cog journal - What's been happening?", w: 300, h: 246, top: 55, left: 230, z: 10 },
 ];
 const JOURNAL_STACK_W = 530;
@@ -152,7 +152,7 @@ export function Strategy() {
             <DesignIdeaTag />
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={A("image-26.svg")}
+              src={A("image-26.png")}
               alt="Cog Clinic dashboard concept - Katherine Bell progress view with symptom-progress line chart and symptom-control donut charts"
               className="mt-3 w-full rounded-[20px] border border-[#E3E2DA] bg-[var(--cog-bg-alt)] shadow-[1px_1px_10px_2px_rgba(212,210,210,0.25)]"
             />
@@ -171,7 +171,7 @@ export function Strategy() {
             <DesignIdeaTag />
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={A("image-27.svg")}
+              src={A("image-27.png")}
               alt="Cog Clinic dashboard concept - Katherine Bell session view with an AI-drafted session summary"
               className="mt-3 w-full rounded-[20px] border border-[#E3E2DA] bg-[var(--cog-bg-alt)] shadow-[1px_1px_10px_2px_rgba(212,210,210,0.25)]"
             />
