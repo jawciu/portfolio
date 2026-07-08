@@ -23,7 +23,7 @@ export function Takeaways() {
   // pb-[120px]: this section's tinted background ends at a boundary with the cream
   // NextProject below, so its content needs bottom breathing space before that line.
   return (
-    <section data-section="Takeaways" className="pt-[120px] pb-[120px] max-sm:pb-[60px] bg-[var(--cog-bg-section)]">
+    <section data-section="Takeaways" className="pt-[120px] pb-[120px] max-sm:pb-[78px] bg-[var(--cog-bg-section)]">
       <Container>
         <Reveal stagger={0.08}>
           <Kicker>KEY TAKEAWAYS</Kicker>
@@ -36,7 +36,9 @@ export function Takeaways() {
 
         <Reveal
           stagger={0.12}
-          className="grid grid-cols-1 gap-x-10 gap-y-12 max-sm:mt-28 md:grid-cols-3"
+          // no max-sm mt: the heading's baked 48px margin-bottom alone sets the
+          // gap to the first icon — same rhythm as MyRole's heading -> icons.
+          className="grid grid-cols-1 gap-x-10 gap-y-12 md:grid-cols-3"
         >
           {TAKEAWAYS.map((item, i) => (
             <div key={i}>

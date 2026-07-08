@@ -112,7 +112,7 @@ export function Strategy() {
             </Body>
           </div>
           <div className="flex justify-center lg:justify-end">
-            <Parallax speed={40}>
+            <Parallax speed={40} mobile={false}>
               <CardStack cards={VISION_STACK} w={VISION_STACK_W} h={VISION_STACK_H} />
             </Parallax>
           </div>
@@ -121,10 +121,10 @@ export function Strategy() {
         {/* Row 2 — journal card cluster left, copy right */}
         <Reveal
           stagger={0.14}
-          className="mt-12 max-sm:mt-24 flex flex-col gap-12 md:mt-16 lg:grid lg:grid-cols-[auto_1fr] lg:items-center lg:gap-14"
+          className="mt-12 flex flex-col gap-12 md:mt-16 lg:grid lg:grid-cols-[auto_1fr] lg:items-center lg:gap-14"
         >
           <div className="flex justify-center max-sm:order-2 lg:justify-start">
-            <Parallax speed={-32}>
+            <Parallax speed={-32} mobile={false}>
               <CardStack cards={JOURNAL_STACK} w={JOURNAL_STACK_W} h={JOURNAL_STACK_H} />
             </Parallax>
           </div>
@@ -142,7 +142,7 @@ export function Strategy() {
         </Reveal>
 
         {/* Centralised hub — concept dashboard 1 */}
-        <Reveal className="mt-20 md:mt-28">
+        <Reveal className="mt-20 max-sm:mt-12 md:mt-28">
           <Body className="w-[510px] max-w-full">
             Additionally, a centralised hub would keep therapy organised; session
             summaries, homework, communication, reminders, and an archive all in
@@ -160,7 +160,7 @@ export function Strategy() {
         </Reveal>
 
         {/* Automating admin — concept dashboard 2 */}
-        <Reveal className="mt-20 md:mt-28">
+        <Reveal className="mt-20 max-sm:mt-12 md:mt-28">
           <Body className="w-[510px] max-w-full">
             Automating some of the admin work could further reduce clinician
             burnout. For example, after each session, AI could draft a session

@@ -12,8 +12,11 @@ const LOGOS = [
 export function Competitive() {
   return (
     <section data-section="Competitive" className="pt-[120px] pb-0">
-      <Container>
-        <Reveal stagger={0.08}>
+      {/* max-sm: the Container turns flex-col so CSS `order` can resequence the
+          blocks on phones: header → logos → the two intro paragraphs back to
+          back → screenshots. ≥sm the order classes are inert (block flow). */}
+      <Container className="max-sm:flex max-sm:flex-col">
+        <Reveal stagger={0.08} className="max-sm:order-1">
           <Kicker>Competitive Analysis</Kicker>
           <Title>
             SPACE FOR OPPORTUNITY
@@ -22,17 +25,19 @@ export function Competitive() {
           </Title>
         </Reveal>
 
-        <Reveal>
+        {/* max-sm:mt-4 + the Body's own mt-6 = 40px under the logo row (flex items
+            don't margin-collapse with their children) */}
+        <Reveal className="max-sm:order-3 max-sm:mt-4">
           <Body className="mt-6 max-w-2xl">
             I identified a variety of solutions for ADHD support, generally
             divided into two categories: self-help apps and therapy platforms.
           </Body>
         </Reveal>
 
-        {/* Competitor logo row */}
+        {/* Competitor logo row — on phones it sits directly under the heading */}
         <Reveal
           stagger={0.06}
-          className="mt-12 grid grid-cols-2 items-center gap-8 max-sm:flex max-sm:flex-wrap max-sm:justify-center max-sm:gap-x-[5%] max-sm:gap-y-7 sm:grid-cols-3 md:flex md:flex-wrap md:justify-between md:gap-10"
+          className="mt-12 max-sm:order-2 max-sm:mt-0 grid grid-cols-2 items-center gap-8 max-sm:flex max-sm:flex-wrap max-sm:justify-center max-sm:gap-x-[5%] max-sm:gap-y-7 sm:grid-cols-3 md:flex md:flex-wrap md:justify-between md:gap-10"
         >
           {LOGOS.map((logo) => (
             // eslint-disable-next-line @next/next/no-img-element
@@ -45,10 +50,12 @@ export function Competitive() {
           ))}
         </Reveal>
 
-        {/* Row 1 — two big self-help screenshots on the LEFT, text on the RIGHT */}
+        {/* Row 1 — two big self-help screenshots on the LEFT, text on the RIGHT.
+            max-sm:mt-6: reads straight on from the intro paragraph above;
+            max-sm:gap-12 = the 48px above/below rhythm around the screenshots. */}
         <Reveal
           stagger={0.14}
-          className="mt-16 grid items-center gap-8 md:grid-cols-2 md:gap-12"
+          className="mt-16 max-sm:order-4 max-sm:mt-6 grid items-center gap-8 max-sm:gap-12 md:grid-cols-2 md:gap-12"
         >
           <div className="flex items-start justify-center gap-4 max-sm:order-2 md:justify-start">
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -74,7 +81,7 @@ export function Competitive() {
         {/* Row 2 — text on the LEFT, two big therapy-platform screenshots on the RIGHT */}
         <Reveal
           stagger={0.14}
-          className="mt-16 grid items-center gap-8 md:grid-cols-2 md:gap-12"
+          className="mt-16 max-sm:order-5 max-sm:mt-12 grid items-center gap-8 max-sm:gap-12 md:grid-cols-2 md:gap-12"
         >
           <Body className="md:order-1">
             Therapy platforms generally offer access to coaches through monthly
@@ -99,7 +106,7 @@ export function Competitive() {
         </Reveal>
 
         {/* Gap callout */}
-        <div className="mt-16">
+        <div className="mt-16 max-sm:order-6 max-sm:mt-12">
           <CaseStudyCallout stream>
             This gap in therapy-support tools indicated a unique opportunity to
             develop features that actively support the therapeutic journey.

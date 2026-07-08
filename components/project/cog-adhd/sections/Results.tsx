@@ -99,8 +99,9 @@ export function Results() {
             </Parallax>
           </div>
 
-          {/* result clip — phone screen recording */}
-          <Reveal className="flex justify-center lg:justify-end">
+          {/* result clip — phone screen recording. max-sm:mt-10 tops the grid's
+              gap-10 up to ~80px so the video sits clear of the last bubble. */}
+          <Reveal className="flex justify-center max-sm:mt-10 lg:justify-end">
             {/* plays via IntersectionObserver too — bare autoPlay can silently
                 fail on Safari. iOS LOW POWER MODE still blocks it (tap to play). */}
             <AutoplayVideo

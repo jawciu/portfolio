@@ -100,18 +100,18 @@ export function Hero() {
             Heights match because the width ratio = aspect ratio (phone 0.497 :
             tablet 1.305 ≈ 20.3% : 53.5%); max-w caps deliver the desktop ×1.2
             (phone 210 / tablet 552 → all render ~422px tall). */}
-        <div className="mt-14 flex items-end justify-center gap-2 max-sm:flex-wrap md:gap-4 lg:gap-6">
+        <div className="mt-14 flex items-end justify-center gap-2 max-sm:gap-4 max-sm:flex-wrap md:gap-4 lg:gap-6">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={A("image-large-screens.png")}
             alt="Cog app phone - check-in history bar chart"
-            className="w-[20.3%] max-w-[210px] shrink-0 max-sm:w-[44%]"
+            className="w-[20.3%] max-w-[210px] shrink-0 max-sm:w-[calc(50%-8px)]"
           />
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={A("image-large-screens-1.png")}
             alt="Cog app phone - check-in history list"
-            className="w-[20.3%] max-w-[210px] shrink-0 max-sm:w-[44%]"
+            className="w-[20.3%] max-w-[210px] shrink-0 max-sm:w-[calc(50%-8px)]"
           />
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img

@@ -5,7 +5,7 @@ import { StreamingQuote } from "../StreamingQuote";
 
 export function Challenges() {
   return (
-    <section data-section="Challenges" className="pt-[120px] pb-0 max-sm:pb-10 bg-[var(--cog-bg-section)]">
+    <section data-section="Challenges" className="pt-[120px] pb-0 bg-[var(--cog-bg-section)]">
       <Container>
         <Reveal stagger={0.08}>
           <Kicker>Challenges</Kicker>
@@ -49,7 +49,7 @@ export function Challenges() {
 
           {/* Cluttered "Your tracker history" phone screen — cropped at the bottom */}
           <div className="order-1 max-sm:order-2 md:order-2 flex justify-center md:justify-end">
-            <Parallax speed={42} className="w-full max-w-[360px] max-sm:max-w-[250px]">
+            <Parallax speed={42} mobile={false} className="w-full max-w-[360px] max-sm:max-w-[250px]">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={A("image-31.png")}

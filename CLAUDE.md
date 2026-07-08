@@ -229,7 +229,76 @@ cards, element-screenshot. Delete the temp script after.
 > **`docs/CLAUDE-ARCHIVE.md`**. At the end of a session, append a new entry with: what changed,
 > current state (working / broken / in-progress), and explicit next steps for the next agent.
 
-### 2026-07-07 (later 3) — Cog mobile mega-batch (7 fixes). UNCOMMITTED.
+### 2026-07-08 — Cog mobile whitespace round 2 (Caroline's 13-item phone list). UNCOMMITTED.
+- **All 13 items applied, `max-sm:` guarded, desktop verified pixel-identical at 1440** (tsc+lint
+  clean; 390px walk + numeric gap ruler both re-run). Files: Hero/Interviews/Competitive/Challenges/
+  Solution/Results/Strategy/Takeaways sections + `ui.tsx` + `Parallax.tsx`. NOT committed (her rule).
+- **Highlights of how:** Hero phones now `max-sm:w-[calc(50%-4px)]` (pair spans the tablet's width) ·
+  Interviews callout air symmetric 64/64 (cluster `max-sm:mt-16`) · bubble gaps 2-3/3-4 pulled
+  `-mt-3`/`-mt-3.5` (30% of MEASURED whitespace bands 39/48px — measured by fullPage screenshot
+  row-scan, the alpha-bbox approach lies because cloud lobes aren't where the eye reads the gap) ·
+  Competitive reordered on phones via `max-sm:flex max-sm:flex-col` on Container + `order-*`
+  (header → logos → both intro paras → screenshots); NOTE: flex items don't margin-collapse with
+  children, so inner `mt-6` ADDS to item margins — compensate (para1 got `mt-4` not `mt-10`) ·
+  40px above/below every product image in Competitive/Strategy/Solution ("market research" rhythm,
+  = old 32 × 1.2) · InsightCard (INSIGHT + PROBLEM cards) padding ×0.6 on phones (`max-sm:px-[22px]
+  py-[19px]` in ui.tsx) · **`Parallax` got a `mobile={false}` prop** (adds `min-width:640px` to the
+  matchMedia) — used on BOTH Strategy stacks (asked) AND the Challenges tracker phone (not asked but
+  required: the drift made item 8's 120px boundary non-deterministic — FLAG to Caroline) ·
+  Challenges `max-sm:pb-10` removed → boundary exactly 120 · Solution clusters `max-sm:max-w-[310px]`
+  (Strategy-stack size); cluster-2's Highs card overhangs 49px above / 59px BELOW its box, so
+  neighbours use mt-12/mt-[100px] to land 40px VISUAL · TestimonialBubble width now a CSS var +
+  `max-sm:w-[280px]` cap → all Results bubbles uniform at the smallest size (all 4 quotes fit, checked)
+  · video gap doubled (`max-sm:mt-10` + gap-10) · Takeaways heading→grid 112→90 (`mt-[90px]`),
+  section pb 60→78 (paragraph→plate gap ×1.3).
+- **Measurement recipe that worked:** DOM gap-ruler for box gaps + sharp row-scan of a fullPage
+  390px screenshot for INK gaps (background-tolerance ±8 vs #f5f4ef) — needed wherever assets bake
+  transparent padding or absolute children overhang their container.
+- **Round 2 (same session, her tweaks):** hero phone gap 8→16 (`max-sm:gap-4`, phones
+  `calc(50%-8px)`) · bubble 3-4 pull-up −14→−22 (45% of the 48px band) · InsightCard mobile:
+  `max-sm:p-6` (24px) + cards HUG height on phones — minHeight moved off inline style to
+  `sm:min-h-[var(--ic-h)]` (desktop verified byte-identical: 420×320/380×260, pad 32/36) ·
+  the 40px image rhythm ramped to 48px across Competitive/Strategy/Solution (Strategy's base
+  `gap-12`/`mt-12` already = 48 so its round-1 max-sm overrides were DELETED as redundant;
+  Solution callout `max-sm:mt-[108px]` = 48 visual past the 59px Highs-card overhang) ·
+  Takeaways heading→grid mt removed entirely — the heading's baked 48px mb alone now matches
+  MyRole's heading→icon rhythm.
+
+### 2026-07-07 — SESSION HANDOFF (Caroline signed off for dinner)
+- **OPEN INTENT — READ FIRST: next session Caroline has WHITESPACE NOTES to give** — she's
+  reviewing the mobile spacing on her phone tonight and will come back with specific gaps to
+  adjust. Expect a list in the same style as today (per-spot, mobile-only). Everything is
+  `max-sm:`-guarded overrides; keep it that way (global rule: mobile changes must never affect
+  desktop).
+- **State: everything WORKING and PUSHED** through `aab9928` (prod = carolinejaworsky.com,
+  auto-deploys from main, ~2 min). Working tree clean except this CLAUDE.md entry + pre-existing
+  untracked assets/. Nothing broken, nothing in flight.
+- **Today's arc (details in the entries below):** wiki + cog mobile polish (type sizes, ordering,
+  spacing rhythm, full-bleed table, home ⌂), the iOS Safari SVG bake (blank-outs + blur — root rule:
+  SVGs used via <img> must avoid masks/filters/pattern-image fills), the AutoplayVideo component
+  (remember: iOS Low Power Mode blocks ALL autoplay — Caroline's phone was in LPM when she reported
+  the Results video "not playing"; retest charged), and the two-stage whitespace audit method.
+- **Also flagged, undecided:** cog Hero→MyRole reads 495px on mobile (glass-seam dwell choreography,
+  34vh in-hero spacer). Left intentionally; if Caroline wants it tighter, shrink the dwell
+  `max-sm` only in `app/project/cog-adhd/page.tsx` (`h-[34vh]` spacer inside StickyHero).
+
+### 2026-07-07 (later 4) — Cog mobile whitespace pass. PUSHED `aab9928` (mega-batch was `b2fd984`).
+- **Method (Caroline's call):** numeric gap-ruler script first, then a 31-frame Playwright visual
+  walkthrough at 390px — the visual pass caught what numbers couldn't: the Interviews **thought-bubble
+  cloud PNGs bake in big transparent margins**, so a 24px CSS gap read as 150-170px. Gap zeroed
+  `max-sm` (asset padding alone gives ~80px visual air).
+- Boundaries normalised to ~120px on phones: Takeaways→NextProject halved (240→120, double padding,
+  same fix as BookingDropoff→JourneyMap); Challenges→Solution topped up (78→~118, `max-sm:pb-10`);
+  Strategy vision-stack overflow (box is ~32px shorter than its cards) left 8px before row-2 copy →
+  row 2 `max-sm:mt-24`.
+- **Left alone deliberately:** Hero→MyRole 495px (glass-seam dwell choreography — flagged, Caroline
+  hasn't asked); Findings→Booking "157px" (false positive: empty interior of fixed-height cards);
+  Challenges→Solution slight variance (parallax drift ±40px is inherent).
+- **Audit recipe for next time:** measure text/img bounding-box gaps per section + BOUNDARY rows,
+  then scroll-walk screenshots every 800px and review by eye — assets with transparent padding and
+  absolute overhangs only show up visually.
+
+### 2026-07-07 (later 3) — Cog mobile mega-batch (7 fixes). PUSHED `b2fd984`.
 - **NextProject squiggle** `max-sm:w-[230%]` (bigger, chopped by section overflow-hidden).
 - **Takeaways**: MyRole centring pattern (icon `max-sm:justify-center`, label+body in
   `max-sm:mx-auto max-sm:max-w-[85%]`).
