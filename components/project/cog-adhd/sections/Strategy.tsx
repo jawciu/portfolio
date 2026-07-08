@@ -148,7 +148,7 @@ export function Strategy() {
             summaries, homework, communication, reminders, and an archive all in
             one place, so nothing ever gets lost.
           </Body>
-          <figure className="mt-3 flex flex-col">
+          <figure className="mt-3 max-sm:mt-10 flex flex-col">
             <DesignIdeaTag />
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -167,7 +167,7 @@ export function Strategy() {
             summary and risk assessment based on the user&rsquo;s data, allowing
             therapists to simply review it.
           </Body>
-          <figure className="mt-3 flex flex-col">
+          <figure className="mt-3 max-sm:mt-10 flex flex-col">
             <DesignIdeaTag />
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img

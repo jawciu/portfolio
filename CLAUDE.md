@@ -229,10 +229,10 @@ cards, element-screenshot. Delete the temp script after.
 > **`docs/CLAUDE-ARCHIVE.md`**. At the end of a session, append a new entry with: what changed,
 > current state (working / broken / in-progress), and explicit next steps for the next agent.
 
-### 2026-07-08 — Cog mobile whitespace round 2 (Caroline's 13-item phone list). UNCOMMITTED.
+### 2026-07-08 — Cog mobile whitespace round 2 (Caroline's 13-item phone list). PUSHED `22db709`.
 - **All 13 items applied, `max-sm:` guarded, desktop verified pixel-identical at 1440** (tsc+lint
   clean; 390px walk + numeric gap ruler both re-run). Files: Hero/Interviews/Competitive/Challenges/
-  Solution/Results/Strategy/Takeaways sections + `ui.tsx` + `Parallax.tsx`. NOT committed (her rule).
+  Solution/Results/Strategy/Takeaways sections + `ui.tsx` + `Parallax.tsx`.
 - **Highlights of how:** Hero phones now `max-sm:w-[calc(50%-4px)]` (pair spans the tablet's width) ·
   Interviews callout air symmetric 64/64 (cluster `max-sm:mt-16`) · bubble gaps 2-3/3-4 pulled
   `-mt-3`/`-mt-3.5` (30% of MEASURED whitespace bands 39/48px — measured by fullPage screenshot
