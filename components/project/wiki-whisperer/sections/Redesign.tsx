@@ -1,4 +1,4 @@
-import { A, Container, Kicker, Title, Body, CaseStudyCallout, InsightCard } from "../ui";
+import { A, Container, Kicker, Title, CaseStudyCallout, InsightCard } from "../ui";
 import { Reveal } from "../Reveal";
 
 const FEATURES: [string, string, string][] = [
@@ -44,18 +44,10 @@ export function Redesign() {
           <Title>building trust, usability and flexibility</Title>
         </Reveal>
 
-        {/* <Reveal className="max-w-[760px]">
-          <Body>
-            V2 had to undo V1&apos;s scars. I designed for trust and low effort first, so
-            an answer is fast to believe and easy to act on while still talking to a
-            customer.
-          </Body>
-        </Reveal> */}
-
         {/* all four principles */}
         <Reveal
           stagger={0.12}
-          className="mx-auto mt-12 grid max-w-[900px] auto-rows-fr gap-9 md:grid-cols-2"
+          className="mx-auto mt-12 grid max-w-[900px] auto-rows-fr max-sm:auto-rows-auto gap-9 md:grid-cols-2"
         >
           {FEATURES.map(([label, title, body]) => (
             <InsightCard key={label} label={label} title={title} width="auto" height="auto">

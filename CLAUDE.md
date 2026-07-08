@@ -254,6 +254,11 @@ cards, element-screenshot. Delete the temp script after.
 - **Measurement recipe that worked:** DOM gap-ruler for box gaps + sharp row-scan of a fullPage
   390px screenshot for INK gaps (background-tolerance ±8 vs #f5f4ef) — needed wherever assets bake
   transparent padding or absolute children overhang their container.
+- **Round 3:** cog card padding back to the FULL `px-9 py-8` at every width (matches wiki — she
+  prefers that look; hug-height kept). Wiki cards now hug vertically on phones too: the empty
+  bottoms came from `auto-rows-fr` on the Redesign/UnderTheHood grids (equal rows are meaningless
+  in a 1-col stack) → `max-sm:auto-rows-auto`; desktop rows measured still equal. Also deleted the
+  commented-out Body paragraph in wiki Redesign.tsx + its orphan import (was the lint warning).
 - **Round 2 (same session, her tweaks):** hero phone gap 8→16 (`max-sm:gap-4`, phones
   `calc(50%-8px)`) · bubble 3-4 pull-up −14→−22 (45% of the 48px band) · InsightCard mobile:
   `max-sm:p-6` (24px) + cards HUG height on phones — minHeight moved off inline style to

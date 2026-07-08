@@ -88,10 +88,10 @@ export function InsightCard({
 }) {
   return (
     // min-height rides a CSS var gated to sm+ so phones HUG the content; padding
-    // eases to 32/28px on phones.
+    // is the full 36/32px at every width (matches the wiki cards).
     <div
       style={{ width, "--ic-h": `${height}px` } as CSSProperties}
-      className="flex max-w-full flex-col rounded-2xl border border-[#f1f0ea] bg-[#fafafa] px-9 py-8 max-sm:px-8 max-sm:py-7 sm:min-h-[var(--ic-h)]"
+      className="flex max-w-full flex-col rounded-2xl border border-[#f1f0ea] bg-[#fafafa] px-9 py-8 sm:min-h-[var(--ic-h)]"
     >
       <p className="font-[family-name:var(--font-mono)] text-[15px] font-bold uppercase tracking-[0.02em] text-[var(--cog-ink)]">
         {label}

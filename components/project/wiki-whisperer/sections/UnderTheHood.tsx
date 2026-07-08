@@ -58,7 +58,7 @@ export function UnderTheHood() {
           </Body>
         </Reveal>
 
-        <Reveal stagger={0.12} className="mt-12 grid auto-rows-fr gap-8 md:grid-cols-3">
+        <Reveal stagger={0.12} className="mt-12 grid auto-rows-fr max-sm:auto-rows-auto gap-8 md:grid-cols-3">
           {PILLARS.map(({ num, buzz, body }) => (
             <InsightCard
               key={num}
