@@ -1,6 +1,6 @@
 ---
 name: responsive-design
-description: Make portfolio components adapt across viewport AND container sizes without breaking the desktop view — Tailwind v4 breakpoints, container queries, the flexbox min-width:0 shrink rule, and the duplicate-and-hide pattern. Use when a layout deforms as the screen narrows (text/buttons wrapping "fat", images overflowing), when adding tablet/mobile breakpoints, when an element must shrink to protect a sibling, or when Caroline mentions responsive, breakpoints, mobile, tablet, "smaller screen", stacking, or wrapping.
+description: Make portfolio components adapt across viewport AND container sizes without breaking the desktop view — Tailwind v4 breakpoints, container queries, the flexbox min-width:0 shrink rule, the duplicate-and-hide pattern, and the case-study mobile whitespace playbook (spacing rhythm, visual-gap measurement, asset/overhang gotchas). Use when a layout deforms as the screen narrows (text/buttons wrapping "fat", images overflowing), when adding tablet/mobile breakpoints, when an element must shrink to protect a sibling, when tuning mobile spacing/whitespace on a case study, or when Caroline mentions responsive, breakpoints, mobile, tablet, "smaller screen", stacking, wrapping, gaps, or whitespace.
 license: Proprietary
 metadata:
   project: portfolio
@@ -148,6 +148,107 @@ MCP/`networkidle` Playwright times out on the live-WebGL pages. Use a throwaway 
 `playwright` script from the **project root**, `waitUntil:'domcontentloaded'` +
 `waitForTimeout`, set an explicit `viewport`, hover to open a card, element-screenshot at each
 test width, then delete the script. Always run `tsc`/`lint` regardless.
+
+## Case-study mobile whitespace playbook
+
+Distilled from two full rounds of phone-by-phone tuning on the cog + wiki studies
+(2026-07-07/08). Build a NEW case study to these rules and the mobile pass should be
+right first time. Everything here is `max-sm:` guarded — desktop stays byte-identical.
+
+### The spacing rhythm (phones, <640px)
+
+| where | value |
+|---|---|
+| section boundary (end of one section → next section's kicker) | **120px**, exactly — no per-section extras |
+| around every product image / mockup cluster (copy→image, image→copy) | **48px** visual |
+| heading (kicker+title block) → first content below it | the title's **baked 48px** `margin-bottom` alone — don't add `mt` on top |
+| callout air | **symmetric**: gap below a `CaseStudyCallout` = gap above it (measure the above gap, match it) |
+| two consecutive paragraphs that should read as one thought | **24px** |
+| boundary where the bg colour changes | still 120 — split as pb 60 + pt 60 so the seam sits centred |
+
+- Content **order** on phones: copy first, then its images (CSS `order`, never duplicate markup);
+  logo rows sit directly under the section header.
+- **Uniform sizes**: elements that scatter at varied sizes on desktop (testimonial bubbles
+  280–340px) collapse to ONE size on phones — the smallest, if all copy still fits.
+- Paired images span the container together: `max-sm:w-[calc(50%-8px)]` each + `gap-4`.
+- Overlapping mockup collages: cap the cluster ~**310px** wide (`max-sm:max-w-[310px]`), matching
+  how the CardStack `--cs` clusters render on a 390px screen.
+- Cards (`InsightCard` etc.) **hug their content** on phones: no fixed height/min-height below
+  `sm`, full desktop padding kept (36/32px — Caroline rejected reduced mobile padding).
+
+### The icon + label + body centring pattern (MyRole / Takeaways)
+
+For grid items that are a small graphic over a labelled paragraph (MyRole's role cards,
+Takeaways), the phone treatment is: **the icon centres, the text block centres AS AN ELEMENT,
+but label and body stay left-aligned to each other** — never `text-center` the copy.
+
+```tsx
+<div>                                                {/* one grid item */}
+  <div className="flex h-20 items-end max-sm:justify-center">  {/* icon centres */}
+    <img … className="h-20 w-auto" />
+  </div>
+  <div className="max-sm:mx-auto max-sm:max-w-[85%]">          {/* BLOCK centres */}
+    <h3 className="case-study-label mt-4">{label}</h3>          {/* text stays left */}
+    <Body className="mt-3">{body}</Body>
+  </div>
+</div>
+```
+
+The `max-w-[85%]` inset is what makes the centring read — tune it by eye. Same idea applies to
+standalone persona chips / prompt cells: centre the element (`max-sm:items-center` on its flex
+wrapper or `max-sm:mx-auto` on the block), keep multi-line copy left-aligned. Only single short
+lines (a name + role caption under a portrait) may also take `max-sm:text-center`.
+
+### CSS gaps LIE on phones — measure the VISUAL gap
+
+Three things make a rendered gap differ from the CSS margin; all three bit us:
+
+1. **Baked transparent padding** in PNG art (thought-bubble clouds): a 0px CSS gap rendered as
+   ~40–80px of air. Negative margins are legitimate here — size them from measurement.
+2. **Absolute children overhanging their container** (an overlapped card at `top:-16%` sticks out
+   both above AND below the box): the margin you set is eaten by the overhang, or worse, content
+   collides. Rule: `margin = target visual gap + measured overhang`. Comment the arithmetic in
+   the code (`/* mt-[108px] ≈ 48px visual past the 59px overhang */`) or the next agent will
+   "fix" it back.
+3. **Parallax drift**: a scrubbed `y:±speed` offset makes every gap around that element
+   non-deterministic (±40px by scroll position). `Parallax` now takes **`mobile={false}`**
+   (gates the tween behind `min-width:640px`) — use it on phones for anything whose surrounding
+   whitespace you are tuning. Phones barely read parallax anyway.
+
+**How to measure** (numbers first, eyes second — the two-stage audit):
+- *Box gaps*: throwaway Playwright script at 390×844, `getBoundingClientRect()` deltas between
+  the real elements (run from the **project root** so `playwright` resolves — ESM resolves from
+  the script's location, so the temp file must live inside the project; delete it after).
+- *Ink gaps* (when assets have transparent padding): fullPage screenshot → **sharp row-scan** for
+  runs of background-only rows (tolerance ±8 per channel vs the section bg). Do NOT trust the
+  alpha-bbox of the source PNG — irregular art (cloud lobes) has its extremes away from where the
+  eye reads the gap.
+- Then a screenshot **walk** (every ~800px of scroll) reviewed by eye — transparent padding,
+  overhangs and colliding absolutes only show up visually.
+
+### Reordering blocks on phones: flex Container + `order`
+
+To resequence section-level blocks mobile-only: `<Container className="max-sm:flex max-sm:flex-col">`
++ `max-sm:order-N` on each child. **Gotcha:** flex items establish an independent formatting
+context, so a child's margin no longer collapses with its wrapper's — an inner `mt-6` now ADDS
+to the item's own `mt` instead of collapsing into it. Set the item's `max-sm:mt-*` to
+`target − inner margin`, and re-measure every gap in the section after the switch (block-flow
+collapsing was silently shaping several of them).
+
+### Breakpoint-gating values that live in inline styles
+
+Inline `style={{ width }}` / `{{ minHeight }}` can't be overridden by a breakpoint class. Move
+the value into a CSS custom property and consume it from a gated utility:
+
+```tsx
+<figure style={{ "--tb-w": `${width}px` } as CSSProperties}
+        className="w-[var(--tb-w)] max-sm:w-[280px]" />   // uniform on phones
+<div style={{ width, "--ic-h": `${height}px` } as CSSProperties}
+     className="sm:min-h-[var(--ic-h)]" />                 // hugs content below sm
+```
+
+Related: a grid with `auto-rows-fr` (equal-height card rows) is meaningless in a 1-column stack
+and pads every card to the tallest — add `max-sm:auto-rows-auto`.
 
 ## Worked example: the bento cards (ProjectCard)
 
