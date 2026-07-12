@@ -1,0 +1,227 @@
+/* Vector case study — DARK theme, scoped to .vector-root so it never touches the
+   other (light) case studies or the rest of the site. Palette lifted straight from
+   Vector's own design system (DESIGN.md in the vector repo): near-black surfaces,
+   a single warm-lilac action ramp (#C098FF) and the lilac→peach AI gradient. The
+   .case-study-* type rules are the shared TEMPLATE and are byte-identical to the cog
+   and wiki studies — only the colour tokens below and the light/dark polarity differ.
+
+   NOTE the scope is UNIQUE (.vector-root). Never reuse another study's scope class:
+   Next keeps a route's CSS loaded after client nav, so a shared scope would let one
+   study's tokens override another's. The token NAMES stay --cog-* so the copied
+   ui.tsx keeps resolving them; only their VALUES change. */
+
+.vector-root {
+  /* Surfaces (dark, stacked by elevation — mirrors Vector's bg / bgElevated / surface) */
+  --cog-bg: #18181e; /* page background (lowest) */
+  --cog-bg-alt: #1d1c24; /* elevated — cards */
+  --cog-bg-warm: #1d1c24; /* elevated band */
+  --cog-bg-section: #14141a; /* recessed band — the second, slightly darker zone */
+  --cog-card: #1d1c24; /* card / panel fill (bgElevated) */
+
+  /* Text (light on dark) */
+  --cog-ink: #f1eaf1; /* primary text + headings */
+  --cog-ink-soft: #cac7ca; /* secondary / paragraph body */
+  --soft-ink: #cac7ca; /* TEMPLATE: soft body-copy ink */
+  --cog-muted: #999599; /* labels / muted copy */
+  --cog-line: #25232d; /* hairlines / card + asset-frame borders */
+
+  /* Accent — Vector's single warm-lilac action ramp */
+  --green: #c098ff; /* TEMPLATE accent slot — lilac (dividers / rules / callout rule) */
+  --dark-green: #d3b5ff; /* TEMPLATE dark-accent slot — lighter lilac (emphasised labels, reads on dark) */
+  --cog-green: #c098ff; /* mapped to the lilac accent */
+  --cog-green-deep: #9e6cee; /* pressed / deeper lilac */
+
+  /* Vector's AI gradient + status spectrum (used sparingly for the sparkle / chips / blobs) */
+  --ai-from: #c098ff; /* lilac */
+  --ai-to: #ff9c7d; /* peach */
+  --vec-success: #9cffa6;
+  --vec-danger: #ff899b;
+  --vec-alert: #ffda91;
+  --vec-mint: #9dfff4;
+
+  background: var(--cog-bg);
+  color: var(--cog-ink);
+  font-family: var(--font-body), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---- shared type / layout helpers (TEMPLATE — identical across case studies) ---- */
+
+.cog-container {
+  width: 100%;
+  max-width: 1080px;
+  margin-inline: auto;
+  padding-inline: 24px;
+}
+
+/* CASE-STUDY EYEBROW HEADING — small uppercase label above a section heading. */
+.case-study-eyebrows-heading {
+  font-family: var(--font-body), sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--cog-ink);
+  margin-bottom: 0.75rem;
+}
+
+/* CASE-STUDY PAGE TITLE — the main H1. 48px desktop / 22px mobile. */
+.case-study-title {
+  font-family: var(--font-hero), monospace;
+  font-weight: 700;
+  -webkit-text-stroke: 0.6px currentColor;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  line-height: 1.08;
+  color: var(--cog-ink);
+  font-size: 48px;
+}
+
+@media (max-width: 640px) {
+  .case-study-title {
+    font-size: 22px;
+    -webkit-text-stroke: 0.35px currentColor;
+  }
+}
+
+/* CASE-STUDY SECTION HEADING — bold uppercase per-section heading. 36px desktop. */
+.case-study-section-heading {
+  font-family: var(--font-hero), monospace;
+  font-weight: 700;
+  -webkit-text-stroke: 0.6px currentColor;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  line-height: 1.08;
+  color: var(--cog-ink);
+  font-size: clamp(1.5rem, 1rem + 2vw, 2.25rem);
+  margin-bottom: 3rem;
+}
+
+@media (max-width: 640px) {
+  .case-study-section-heading {
+    -webkit-text-stroke: 0.4px currentColor;
+  }
+}
+
+/* mono kicker used for the tiny inline labels (brand / role / time / tools) */
+.cog-label {
+  font-family: var(--font-mono), monospace;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--cog-ink);
+}
+
+/* CASE-STUDY HERO LABELS — mono meta labels in the hero. 16px, extra-bold. */
+.case-study-hero-label {
+  font-family: var(--font-mono), monospace;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  color: var(--cog-ink);
+}
+
+/* CASE-STUDY LABEL — reusable bold inline label, ALWAYS lowercase. */
+.case-study-label {
+  font-family: var(--font-mono), monospace;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-transform: lowercase;
+  color: var(--cog-ink);
+}
+
+/* CASE-STUDY BODY (MD) — default reading size. 16px, line-height 1.4, soft ink. */
+.case-study-body-md {
+  font-family: var(--font-body), sans-serif;
+  font-size: 16px;
+  line-height: 1.4;
+  color: var(--soft-ink);
+}
+
+/* CASE-STUDY QUOTE — verbatim quotes: Geist italic, 15px / 1.5, ink. */
+.case-study-quote {
+  font-family: var(--font-body), sans-serif;
+  font-style: italic;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--cog-ink);
+}
+
+/* CASE-STUDY CALLOUT — left-ruled statement. Geist Mono 28px / 1.2, soft ink, lilac rule. */
+.case-study-callout {
+  font-family: var(--font-mono), monospace;
+  font-size: 28px;
+  line-height: 1.2;
+  color: var(--soft-ink);
+  border-left: 2px solid var(--green);
+  padding: 4px 0 4px 24px;
+}
+
+@media (max-width: 640px) {
+  .case-study-callout {
+    font-size: 22px;
+  }
+}
+
+@media (max-width: 480px) {
+  .case-study-callout {
+    font-size: 18px;
+  }
+}
+
+/* the framed monospace pull-quote callouts (left-bordered, typewriter feel) */
+.cog-callout {
+  font-family: var(--font-mono), monospace;
+  font-size: clamp(0.95rem, 0.85rem + 0.5vw, 1.15rem);
+  line-height: 1.6;
+  color: var(--cog-ink);
+  border-left: 2px solid var(--cog-ink);
+  padding: 4px 0 4px 24px;
+}
+
+/* heavy emphasised section sub-quotes */
+.cog-statement {
+  font-family: var(--font-mono), monospace;
+  font-size: clamp(1.05rem, 0.9rem + 0.7vw, 1.3rem);
+  line-height: 1.55;
+  color: var(--cog-ink);
+}
+
+/* CODE EMBED — the monospace source card used to show real Vector engineering
+   (e.g. the AI orchestration / grounding prompt). Vector-specific signature, but
+   scoped so it can't leak. Sits on the recessed surface with a hairline + soft
+   inner tint; the AI-gradient rule on the left ties it to the sparkle. */
+.vec-code {
+  font-family: var(--font-mono), monospace;
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--cog-ink-soft);
+  white-space: pre;
+  tab-size: 2;
+}
+.vec-code .tok-key {
+  color: #c9b6ff;
+} /* keywords / labels — lilac */
+.vec-code .tok-str {
+  color: #ffb59a;
+} /* strings — peach */
+.vec-code .tok-com {
+  color: #6f6a78;
+  font-style: italic;
+} /* comments — muted */
+.vec-code .tok-fn {
+  color: #9dfff4;
+} /* function / field names — mint */
+
+/* StreamingQuote — per-character fade reveal. The component renders `.cs-char`
+   spans and toggles data-stream on the wrapper; armed hides, play fades each char
+   in staggered by an inline transition-delay. Default / reduced-motion leaves the
+   text fully visible. (Matches the cog study's working streaming.) */
+[data-stream="armed"] .cs-char {
+  opacity: 0;
+}
+[data-stream="play"] .cs-char {
+  opacity: 1;
+  transition: opacity 0.12s ease;
+}

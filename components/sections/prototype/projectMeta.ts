@@ -43,7 +43,7 @@ const META: Record<string, ProjectMeta> = {
   },
   // Placeholders — open-card design coming soon.
   "project-04": { year: "2026", role: "Product Designer", stack: ["Figma", "Research"], status: "Concept", oneLiner: "Placeholder — drop in the real story.", name: "AI design system" },
-  "project-05": { year: "2026", role: "Product Designer", stack: ["Figma", "Branding"], status: "Concept", oneLiner: "Placeholder — drop in the real story.", name: "AI onboarding platform" },
+  "project-05": { year: "2026", role: "Design + Build (solo)", stack: ["Next.js", "Claude API", "Prisma", "Supabase"], status: "Shipped", oneLiner: "An AI-native onboarding platform, designed and built end to end.", name: "AI onboarding platform" },
 };
 
 export type EnrichedProject = Project & ProjectMeta;

@@ -172,6 +172,7 @@ export function VariantBentoSoft() {
                 imageClassName="pointer-events-none absolute right-[-15%] top-[calc(50%+32px)] h-[50%] max-[1520px]:h-[42%] max-[1150px]:h-[34%] w-auto max-w-none -translate-y-1/2 rounded-2xl bg-[#18181f] p-5 object-contain shadow-[0_20px_60px_rgba(0,0,0,0.45)]"
                 blob={{ core: "#f96a3f", edge: "#9059ee", fadeStop: 72 }}
                 actions={[
+                  { label: "MY CASE STUDY", href: "/project/vector" },
                   { label: "SOURCE CODE", href: "https://github.com/jawciu/vector" },
                   { label: "TRY IT", href: "https://vector.quest/" },
                 ]}

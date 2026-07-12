@@ -229,6 +229,125 @@ cards, element-screenshot. Delete the temp script after.
 > **`docs/CLAUDE-ARCHIVE.md`**. At the end of a session, append a new entry with: what changed,
 > current state (working / broken / in-progress), and explicit next steps for the next agent.
 
+### 2026-07-09 — Matching moved up, NEW Observability section (AI admin showcased), Collaboration section, Takeaways unmounted
+- **Status: DONE, staged not committed.** Verified live (0 errors, 0 stuck, all 1484 stream words
+  play, punctuation sweep clean). New order: … Health → **Matching** → AILayer → **Observability**
+  → Architecture (retitled **"Proper foundations, / fascinating to build"**, was "Boring
+  architecture, on purpose" which Caroline disliked; intro now carries her "fascinating" energy) →
+  **Collaboration** ("Working with AI" / "I made the calls, / it wrote the code" — the three
+  plan/tests/skills cards moved here from Takeaways, plus a short pairing intro) → WhatsNext.
+- **NEW `Observability.tsx`**: the AI admin story (per-feature cost/errors/p95/cache-hit rollup,
+  every call's token breakdown + request id, pipeline view filterable by processed/ambiguous/
+  stuck/errored with expandable extraction → tool calls → drafts). New asset
+  **`admin-usage.png`** captured from the live app's /admin/ai Usage tab at DPR 2, sidebar cropped
+  (e2e login, no data staging needed). AILayer's "observable" card trimmed to avoid duplicating it;
+  AILayer intro no longer says "That is the product story" (Matching now sits before it).
+- **Takeaways UNMOUNTED** from page.tsx (TODO comment in both page.tsx and Takeaways.tsx):
+  Caroline is writing fresh "Key takeaways" copy. Remount after Collaboration when it lands.
+- `VECTOR-COPY.md` restructured + renumbered (15 sections; §13 marked "copy pending").
+- **Open intent: Caroline to provide new Key takeaways copy** (she went to yoga mid-brief). Drop it
+  into Takeaways.tsx LESSONS and remount in page.tsx after `Collaboration`.
+
+### 2026-07-08 (later) — De-AI voice pass over the whole vector study + voice.md hard rules
+- **Status: DONE, staged not committed.** Verified live (0 console errors, all streams play) and a
+  rendered-DOM punctuation sweep confirms 0 appositive colons, 0 semicolons, 0 em dashes in copy.
+- Caroline audited the tone ("is it mine or AI at times?... I don't use many :"). Fixed her four
+  flagged patterns page-wide, **triads explicitly kept** (her call): (1) killed ~24 "X: Y" colon
+  hinges + 3 semicolons, (2) flattened aphoristic mic-drops ("no vibes", "An amber you can
+  interrogate…", "earned rather than assumed", "Old-school HTML, on purpose", "…a stuck third is a
+  stalled project"), (3) reduced "never X. It was Y" pivots (kept the load-bearing "review queue,
+  never the live board"), (4) stripped extended metaphors (tape, real bones, rope, swamp, fire,
+  seams, "half the calendar"). Also caught + fixed an em dash in the hero caption. Health heading
+  is now "On track, at risk or blocked, / with the reasons attached" (was "Never just amber…").
+- Both lines she flagged verbatim rewritten in Under the hood; What's next intro/callout rebuilt
+  without the rope metaphor.
+- **voice.md updated with 5 new hard rules** (almost-no colons/semicolons, no mic-drops, ration the
+  negation pivot, no extended metaphors, triads are fine) so future studies start in her register.
+- `VECTOR-COPY.md` regenerated to mirror the final copy exactly.
+
+### 2026-07-08 — Round 2 tweaks: Matching section, Results removed, takeaways/what's-next rewritten
+- **Status: DONE, staged not committed.** Verified again (0 console errors, 0 stuck reveals, all
+  streams play, 0 h-overflow); `tsc` + vector-scoped lint clean.
+- **NEW section `Matching.tsx`** (after AILayer): "The right board first, / drafts second". The four
+  deterministic match signals from `lib/integrations/miniti.js` (attendee domains from the calendar
+  invite → contact emails → title words → transcript mention), the ambiguous "Needs your input"
+  assign-then-draft flow, and the two-pass orchestrator highlight (pass 2 reads the board's open
+  tasks, "match before you create" — verified in `lib/ai/orchestrator.js`).
+- **Pillar #02 tweaks:** meeting → tasks now teases the board-scan ("becomes an update, not a
+  duplicate"); "the overview" rewritten around the two altitudes (portfolio triage vs granular
+  per-onboarding read).
+- **Results section REMOVED** (Caroline: "very fabricated") — `Results.tsx` deleted, stat row gone
+  with it. `Stats`/`CountUp` primitives kept in ui.tsx (unused, harmless).
+- **Under the hood expanded** 3 → 6 labels: + the stack (Next.js 16 plain JS, Tailwind v4, dnd-kit,
+  Vercel cron), + the data (Prisma 7 on Supabase Postgres, transaction vs session pooler), + two
+  kinds of auth (Supabase cookies vs magic links).
+- **Takeaways replaced** per her brief: plan first, prompt second · tests are the second pair of
+  eyes (TRUE: vector repo has Playwright e2e — `e2e/ai-drafts.spec.js`, `e2e/task-ids.spec.js`;
+  unit tests framed as upcoming) · when you hit a wall, write a skill.
+- **What's next:** "confidence-gated auto-execute" → "evals before autonomy" (evals over follow-ups
+  and actions scored against approve/edit/reject, feeding the prompts).
+- `VECTOR-COPY.md` synced (Matching = §9, Results gone, later numbering unchanged).
+- **Open intent:** Caroline reviewing in browser; may want the old auto-execute / Results copy back
+  — both recoverable from git history of the staged tree.
+
+### 2026-07-07 — Vector storytelling restructure: product pillars get their own sections
+- **Status: DONE, staged not committed.** Page verified with the standalone-Playwright pass
+  (0 console errors, 0 stuck reveals, all streams played, 0 horizontal overflow). `tsc` + lint clean
+  (the 2 lint problems are pre-existing in `HeroCopy.tsx` / wiki `Redesign.tsx`).
+- **New arc** (Caroline's brief: product first, then tech): Problem → My role → **The product**
+  (renamed from Strategy; heading now "Shared board, drafting AI, / predictive health"; keeps the
+  callout + 3 pillar cards, stays high level) → **Pillar #01 · Shared workspace** (board + portal +
+  notification centre shots, Resend `>` label trio incl. the bounce-webhook-becomes-AI-risk loop) →
+  **Pillar #02 · The AI** (follow-ups / meeting → tasks with the Miniti webhook tech bit / the
+  overview, each with a shot) → **Pillar #03 · Predictive health** (3 state cards with the real
+  computeHealth rules, workspace shot) → **The AI layer** (tech deep-dive: now TWO paired CodeCards,
+  the deterministic JSON snapshot from `lib/ai/context.js` beside the RULES prompt; "what ships"
+  grid removed, absorbed by Pillar #02) → Architecture → Results…
+- **Files:** `sections/Bet.tsx` deleted; `Product.tsx` rewritten (pillars); NEW `Workspace.tsx`,
+  `AIFeatures.tsx`, `Health.tsx`; `AILayer.tsx` reworked; `ui.tsx` gained a shared `ShotRow`
+  (Reveal → Parallax → Shot); `page.tsx` reordered + 6th ambient SoftBlob; **`VECTOR-COPY.md`
+  rewritten to match** (13 sections, new numbering).
+- **New assets** (`public/projects/vector/`): `portal.png`, `notifications.png`, `workspace.png`,
+  `followup.png` — real screenshots captured from the live onboarding app (port 3001) at
+  **deviceScaleFactor 2** (3284px, matching the existing shots). Demo data was staged for the
+  captures (Globex made On track, temp contacts Maya/Sam with magic links, real portal actions to
+  generate grouped notifications) and **fully reverted afterwards** from a before-state dump; the
+  e2e-account sidebar was cropped out of the three vendor shots. The snapshot JSON in the AILayer
+  CodeCard uses real Acme values queried from the DB (daysToTargetGoLive -102, AC-3 136d overdue).
+- **Open intent:** Caroline to review the new sections in the browser; retake any shot she dislikes
+  (the capture recipe is repeatable). Wins panel in `workspace.png` cites the staged completions —
+  if she wants a "quieter" wins panel, recapture after the portfolio insight cache regenerates.
+
+### 2026-07-01 — Built the **Vector** case study (DARK theme) on an isolated worktree/branch
+- **Status: DONE, staged not committed** (Caroline hasn't said commit). Lives in a **separate git
+  worktree** `../portfolio-vector` on branch **`vector-case-study`** (branched off `main` @ c77c3bf),
+  so it does NOT touch other agents' trees. `tsc` + `eslint` clean; Playwright motion pass green
+  (0 console errors, 0 stuck-hidden, all 6 streams reach `play`, reduced-motion safe).
+- **What it is:** `/project/vector` — a build-led AI product case study for Caroline's personal
+  project Vector (AI-native B2B onboarding platform, github.com/jawciu/vector, live at vector.quest).
+  Framed honestly for a personal project: impact = *what she shipped/engineered/proved*, NO invented
+  adoption metrics. Leans hard into the AI engineering (she's job-hunting AI roles).
+- **NEW DIRECTION — first DARK case study.** Caroline chose "dark, true to Vector" over the
+  cog/wiki light template. Own scope class **`.vector-root`** (never reuse), palette lifted from
+  Vector's real DS: bg `#18181e`, elevated `#1d1c24`, text `#f1eaf1`, single accent = Vector action
+  lilac **`#c098ff`** (the `--green`/callout-rule/divider/number slot), plus the lilac→peach AI
+  gradient (`--ai-from`/`--ai-to`). All shared `.case-study-*` type tokens kept byte-identical; only
+  palette + light/dark polarity differ. Glass seam, blobs, NextProject panel all retinted dark.
+- **Signature element:** a `CodeCard` primitive (in `ui.tsx`) that embeds **real Vector source**
+  (the grounding system-prompt rule from `lib/ai/insights.js`) with an AI-gradient rim + Vector
+  sparkle header + mono syntax tinting. Also added `Sparkle` + `Shot` primitives. Screenshots
+  (insights/board/ai-drafts) copied from the vector repo `docs/` into `public/projects/vector/`.
+- **Sections (11):** Hero · Problem · MyRole (one designer, whole stack) · Bet (AI drafts, human
+  approves) · **AILayer** (grounded/cheap/observable + code embed) · Architecture (built solo,
+  learnings) · Product (3 shots) · Results (stats: 4 caps / <$5 mo / 16 models / 1 designer) ·
+  Takeaways · WhatsNext · NextProject → cross-links to wiki-whisperer.
+- **Wiring:** bento Vector card (`VariantBentoSoft.tsx` i===3) gained a `MY CASE STUDY` →
+  `/project/vector` action (kept SOURCE CODE + TRY IT); `projectMeta.ts` project-05 de-placeholdered
+  (Shipped, real stack/role/oneLiner).
+- **To run the worktree:** it needs its own `npm install` (a symlinked node_modules breaks Turbopack;
+  dev works via `next dev --webpack`). **Open intent:** review the copy/visuals, then commit/merge
+  when Caroline's happy. No real portal screenshot exists (portal described in copy only).
+
 ### 2026-06-28 (later) — New `responsive-design` skill built + approved; bento responsive fix diagnosed, NOT yet applied
 - **Status: skill DONE + reviewer-APPROVED; no component code touched** (Caroline said "build the
   skill but stop before touching bento cards"). On `project-showcase-experiment`, uncommitted.

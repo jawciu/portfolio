@@ -31,9 +31,30 @@ story, tighten it or cut it.
 ## Hard rules (non-negotiable)
 
 - **Never use em dashes ( — ). Ever.** Not in any case-study copy, headings, or captions.
-  Rewrite with a full stop, a comma, a colon, parentheses, or by restructuring the sentence.
+  Rewrite with a full stop, a comma, parentheses, or by restructuring the sentence.
   Caroline's own writing uses commas, full stops, ellipses, and the `>` label device, and
   never an em dash. (En dashes in plain number ranges like "15–40 minutes" are fine.)
+- **Almost no colons or semicolons.** (Caroline, auditing the vector study 2026-07-08: "I
+  don't use many :".) The "X: Y" rhetorical hinge ("which is its own skill: knowing…") and
+  the semicolon are LLM tells, not her. Rewrite with a full stop, a comma, "so", "because",
+  "instead", or "from … to …". A list can ride a comma ("in one of three tones, friendly,
+  firmer or escalation"). Budget: a couple of truly functional colons across a whole page,
+  zero semicolons.
+- **No aphoristic mic-drops.** No polished quotable closers at the end of cards/paragraphs:
+  "One stuck task is a problem; a stuck third is a stalled project", "An amber you can
+  interrogate is an amber you act on", "earned rather than assumed", "no AI, no vibes",
+  "Old-school HTML, on purpose". State the fact plainly and move on; if a closing line is
+  needed, make it causal ("When you can see why the flag was raised, you can act on it").
+- **Ration the negation pivot.** "It was never X. It was Y" / "not X, but Y" reads as AI at
+  density. One per page is plenty; prefer stating what the thing IS. (Product-truth negations
+  that carry real meaning, e.g. "lands in a review queue, never the live board", survive.)
+- **No extended or vivid metaphors.** No "held together with tape", "real bones", "give the
+  machine more rope", "dying in a swamp", "scanning ten boards for the fire", "seams".
+  Caroline's register is plain product language (friction, drop-off, blocker, follow-up).
+  Common flat idioms ("second pair of eyes", "falls through the cracks") are acceptable.
+- **Triads are fine.** Gerund/adjective threes ("grounded, cheap and observable"; "know what
+  to ask for, read the output critically, and stay on top of the architecture") are a rhythm
+  Caroline explicitly kept. Don't strip them when de-AI-ing a draft.
 - **Never fabricate** findings, quotes, metrics, personas, or testimonials. Ask for the real
   material.
 - **British spelling** throughout (optimise, colour, prioritise, analyse, behaviour).
