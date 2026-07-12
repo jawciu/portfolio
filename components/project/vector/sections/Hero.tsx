@@ -7,6 +7,24 @@ import { A, Container, LinkIcon, Shot } from "../ui";
 export function Hero() {
   return (
     <section data-section="Hero" className="relative">
+      {/* Top wash — Vector's lilac→peach AI gradient bleeding in from the page's top
+          edge and dissolving into the near-black surface before the title. Masked to
+          fade out rather than stopping on a hard edge. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[300px] md:h-[380px]"
+        style={{
+          background:
+            "radial-gradient(150% 130% at 6% -30%, rgba(158,108,238,0.85), rgba(158,108,238,0) 72%)," +
+            "radial-gradient(140% 126% at 94% -24%, rgba(255,156,125,0.72), rgba(255,156,125,0) 70%)," +
+            "linear-gradient(180deg, rgba(192,152,255,0.26), rgba(192,152,255,0) 80%)",
+          maskImage:
+            "linear-gradient(180deg, #000 0%, #000 18%, rgba(0,0,0,0.72) 42%, rgba(0,0,0,0.34) 64%, rgba(0,0,0,0.12) 82%, transparent 100%)",
+          WebkitMaskImage:
+            "linear-gradient(180deg, #000 0%, #000 18%, rgba(0,0,0,0.72) 42%, rgba(0,0,0,0.34) 64%, rgba(0,0,0,0.12) 82%, transparent 100%)",
+        }}
+      />
+
       <Container className="pt-28 pb-[120px] md:pt-32">
         {/* Page title — H1, two lines via a manual break. */}
         <h1 className="case-study-title">

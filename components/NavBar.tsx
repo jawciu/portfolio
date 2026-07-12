@@ -8,9 +8,15 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
-// Routes that render on a LIGHT background want dark navbar text/glass.
+// Routes that render on a LIGHT background want dark navbar text/glass. Most case
+// studies are light, but Vector is a DARK study, so it takes the site's dark glass.
+const DARK_PROJECT_ROUTES = ["/project/vector"];
+
 function isLightRoute(pathname: string) {
-  return pathname.startsWith("/project");
+  return (
+    pathname.startsWith("/project") &&
+    !DARK_PROJECT_ROUTES.some((route) => pathname.startsWith(route))
+  );
 }
 
 export function NavBar() {

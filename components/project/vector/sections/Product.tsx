@@ -30,8 +30,8 @@ const BLOCKS: Block[] = [
   {
     subhead: "Vendor board",
     body: [
-      "The vendor works each onboarding as a Kanban board. Columns are the phases, from kickoff to go-live, and they flex to match how the company actually runs.",
-      "When the customer needs to see the work, the vendor shares the board as a portal with a magic link.",
+      "Every onboarding runs as a Kanban board. I made the columns phases instead of statuses, so the board reads as the journey from kickoff to go-live, and progress lives on the task as a tag.",
+      "Vendor and customer work from the same board. Both see the full plan, and the customer's portal focuses on their own tasks.",
     ],
     asset: "board-v2.png",
     band: "90",
@@ -41,7 +41,7 @@ const BLOCKS: Block[] = [
   {
     subhead: "Customer portal",
     body: [
-      "The customer sees their progress and what needs their attention this week. The tasks assigned to them are highlighted, so their work cuts through the noise.",
+      "The customer sees their progress and what needs their attention this week. The portal highlights their own tasks, so their work cuts through the noise.",
     ],
     asset: "portal-v2.png",
     band: "90",
@@ -53,8 +53,8 @@ const BLOCKS: Block[] = [
   {
     subhead: "Notifications centre",
     body: [
-      "Everything the customer does flows back. A completed task, a new comment and a first portal visit each land in the vendor's notification centre.",
-      "Portal invites, task assignments and comment alerts go out through Resend, so updates reach the customer in their inbox without them needing to check another tool.",
+      "Everything the customer does flows back. A completed task, a new comment and a first portal visit each land in the vendor's notification centre, and one person's changes collapse into a single entry to keep the noise down.",
+      "Email is saved for what needs the most visibility. Portal invites, task assignments and comment alerts go out through Resend, so they reach the customer where they already work.",
     ],
     asset: "notifications-v2.png",
     band: "70",
@@ -64,8 +64,8 @@ const BLOCKS: Block[] = [
   {
     subhead: "AI overview",
     body: [
-      "The overview runs at two altitudes, so vendors spend less time working out what to prioritise.",
-      "Across the whole business it is triage, a short read naming which onboardings deserve a closer look. Inside a single onboarding it gets granular: a headline, focus for today and this week, risks, wins and nudges, every claim anchored to a real task id.",
+      "The overview runs at two altitudes, because different roles need different depth and nobody needs everything at once.",
+      "Across the whole business it is triage, a short read naming which onboardings deserve a closer look. Inside a single onboarding it gets granular, with a headline, focus for today and this week, risks, wins and nudges. Every claim is anchored to a real task id.",
     ],
     asset: "insights-v2.png",
     band: "90",
@@ -76,7 +76,7 @@ const BLOCKS: Block[] = [
   {
     subhead: "Turning meetings into tasks",
     body: [
-      "Staying on top of what was agreed on a vendor and customer call is one of the hardest parts of onboarding, so Vector writes it up instead.",
+      "What was agreed on a call is the easiest thing to lose in an onboarding, so Vector writes it up instead.",
       "I integrated an AI notetaker, Miniti. When a call ends it fires a webhook with the transcript, and a tool-use orchestrator reads it and drafts task creations, status changes and reassignments. It reads the board first, so work you already track becomes an update to the existing task instead of a duplicate.",
     ],
     asset: "actions-v2.png",
@@ -87,8 +87,8 @@ const BLOCKS: Block[] = [
   {
     subhead: "Automated follow-ups",
     body: [
-      "Stale tasks are watched for the vendor. A scanner runs weekly on Vercel Cron, walks every active onboarding, and flags a task as stale when it is blocked or more than five days overdue.",
-      "Each one gets an AI-drafted email waiting in Actions, and the vendor only has to approve it to send. Any blocked or overdue task can be chased the same way, with one click.",
+      "A weekly scanner on Vercel Cron walks every active onboarding and flags any task blocked or more than five days overdue. Each flag becomes a drafted email that only the task's owner sees, one approval away from sending.",
+      "A task with no owner gets no follow-up. I chose clear responsibility over copying everyone in, and kept one plain tone for now. Mimicking each user's voice is its own project.",
     ],
     asset: "followup-v2.png",
     band: "70",
@@ -161,6 +161,14 @@ export function Product() {
         {BLOCKS.slice(1).map((b) => (
           <ProductBlock key={b.subhead} {...b} />
         ))}
+
+        <Container>
+          <Reveal className="max-w-[860px]">
+            <CaseStudyCallout stream>
+              {"Everything the AI drafts lands in a review queue, never the live board. Approve it, edit it first, or reject it. A person is always the last step while I test how accurate the retrieval is."}
+            </CaseStudyCallout>
+          </Reveal>
+        </Container>
       </div>
     </section>
   );
