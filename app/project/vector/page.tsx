@@ -7,7 +7,6 @@ import { Hero } from "../../../components/project/vector/sections/Hero";
 import { Problem } from "../../../components/project/vector/sections/Problem";
 import { MyRole } from "../../../components/project/vector/sections/MyRole";
 import { Product } from "../../../components/project/vector/sections/Product";
-import { Health } from "../../../components/project/vector/sections/Health";
 import { Matching } from "../../../components/project/vector/sections/Matching";
 import { AILayer } from "../../../components/project/vector/sections/AILayer";
 import { Observability } from "../../../components/project/vector/sections/Observability";
@@ -76,7 +75,6 @@ export default function VectorCaseStudy() {
         <div data-vec="MyRole"><MyRole /></div>
         <div data-vec="Problem"><Problem /></div>
         <div data-vec="Product"><Product /></div>
-        <div data-vec="Health"><Health /></div>
         <div data-vec="Matching"><Matching /></div>
         <div data-vec="AILayer"><AILayer /></div>
         <div data-vec="Observability"><Observability /></div>

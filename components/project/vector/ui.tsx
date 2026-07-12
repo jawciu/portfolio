@@ -229,6 +229,7 @@ const SHOT_DIMS: Record<string, { w: number; h: number }> = {
   "insights-v2.png": { w: 2676, h: 1793 },
   "actions-v2.png": { w: 1637, h: 1126 },
   "followup-v2.png": { w: 1462, h: 1245 },
+  "health-v2.png": { w: 1812, h: 972 },
   "insights.png": { w: 3284, h: 1784 },
   "ai-drafts.png": { w: 3290, h: 1696 },
   "board.png": { w: 3284, h: 1610 },

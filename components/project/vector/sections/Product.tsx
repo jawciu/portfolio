@@ -64,8 +64,8 @@ const BLOCKS: Block[] = [
   {
     subhead: "AI overview",
     body: [
-      "The overview runs at two altitudes, because different roles need different depth and nobody needs everything at once.",
-      "Across the whole business it is triage, a short read naming which onboardings deserve a closer look. Inside a single onboarding it gets granular, with a headline, focus for today and this week, risks, wins and nudges. Every claim is anchored to a real task id.",
+      "Two views, because different roles need different depth and nobody needs everything at once.",
+      "The portfolio high level view shows which onboardings need attention. Inside an onboarding it gets granular, with focus for today, this week, risks and wins. Every claim is anchored to a real task id.",
     ],
     asset: "insights-v2.png",
     band: "90",
@@ -95,6 +95,16 @@ const BLOCKS: Block[] = [
     width: 522,
     alt: "Vector's draft follow-up: an AI-written email grounded in a blocked task, with dismiss, open in mail and comment.",
     flip: true,
+  },
+  {
+    subhead: "Predictive health",
+    body: [
+      "Every onboarding is scored On track, At risk or Blocked. The triggers are all real task data, blocked or overdue work, a pace that overruns the go-live date, a third of the tasks stuck. I kept AI out of the scoring on purpose. It's deterministic JavaScript, so the same input always gives the same answer.",
+    ],
+    asset: "health-v2.png",
+    band: "70",
+    width: 580,
+    alt: "Vector's health table: each company scored On track, At risk or Blocked, with task counts and how many are blocked.",
   },
 ];
 
@@ -158,14 +168,29 @@ export function Product() {
           </Reveal>
         </Container>
 
-        {BLOCKS.slice(1).map((b) => (
+        {/* Customer portal → Notifications → AI overview → Turning meetings into tasks */}
+        {BLOCKS.slice(1, 5).map((b) => (
+          <ProductBlock key={b.subhead} {...b} />
+        ))}
+
+        {/* Between the two AI drafting tools: the human-in-the-loop stance they share. */}
+        <Container>
+          <Reveal className="max-w-[860px]">
+            <CaseStudyCallout stream>
+              {"I gave the AI a review queue instead of write access to the board. It drafts, and the user decides whether to approve, edit or reject any task or follow-up."}
+            </CaseStudyCallout>
+          </Reveal>
+        </Container>
+
+        {/* Automated follow-ups → Predictive health */}
+        {BLOCKS.slice(5).map((b) => (
           <ProductBlock key={b.subhead} {...b} />
         ))}
 
         <Container>
           <Reveal className="max-w-[860px]">
             <CaseStudyCallout stream>
-              {"Everything the AI drafts lands in a review queue, never the live board. Approve it, edit it first, or reject it. A person is always the last step while I test how accurate the retrieval is."}
+              {"Every flag arrives with its evidence. 3 of 9 tasks blocked, 8 tasks overdue, customer dark for 64 days. When you can see why the flag was raised, you can act on it."}
             </CaseStudyCallout>
           </Reveal>
         </Container>
