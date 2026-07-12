@@ -37,7 +37,7 @@ export function Observability() {
           className="mt-8"
         />
 
-        <Reveal className="mt-14">
+        <Reveal className="mt-14 max-w-[860px]">
           <CaseStudyCallout stream>
             {"This is the groundwork for the evals on the roadmap. Accuracy scoring only works if every call and every draft is already on record."}
           </CaseStudyCallout>

@@ -22,14 +22,14 @@ export function Hero() {
             <p className="case-study-hero-label">brand</p>
             <div className="mt-3 flex items-center gap-3">
               {/* Icon logo intentionally omitted until Vector has one of its own. */}
-              <span className="font-[family-name:var(--font-mono)] text-[28px] font-bold tracking-wide text-[var(--cog-ink)]">
+              <span className="font-[family-name:var(--font-mono)] text-[28px] font-bold tracking-wide text-[var(--case-study-ink)]">
                 VECTOR
               </span>
               <a
                 href="https://vector.quest"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="ml-1 inline-flex items-center gap-1.5 font-[family-name:var(--font-mono)] text-[13px] text-[var(--cog-muted)] underline decoration-[var(--cog-line)] underline-offset-4 transition-colors hover:text-[var(--dark-green)]"
+                className="ml-1 inline-flex items-center gap-1.5 font-[family-name:var(--font-mono)] text-[13px] text-[var(--case-study-muted)] underline decoration-[var(--case-study-line)] underline-offset-4 transition-colors hover:text-[var(--dark-green)]"
               >
                 <LinkIcon />
                 vector.quest
@@ -100,7 +100,7 @@ export function Hero() {
           src={A("hero-insights.png")}
           alt="Vector's AI Insights view: a streamed summary of one onboarding with risks, wins, focus for today and the week."
           className="mt-14"
-          captionAlign="left"
+          captionClassName="mt-9 opacity-60"
           caption="All data is fictional; company names and logos are used for illustrative purposes only and do not represent real customer endorsements"
         />
       </Container>

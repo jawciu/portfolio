@@ -45,7 +45,7 @@ export function WhatsNext() {
           ))}
         </Reveal>
 
-        <Reveal className="mt-16">
+        <Reveal className="mt-16 max-w-[860px]">
           <CaseStudyCallout stream>
             {"Vector can be useful long before it is fully trusted, because a person is always the one who says yes."}
           </CaseStudyCallout>

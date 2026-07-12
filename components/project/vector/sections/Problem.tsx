@@ -17,7 +17,7 @@ const GAP = [
 /* First section on the glass plate: pt-[88px] (the glass-seam exception). */
 export function Problem() {
   return (
-    <section data-section="Problem" className="pt-[88px] pb-0">
+    <section data-section="Problem" className="pt-[120px] pb-0">
       <Container>
         <Reveal>
           <Kicker>Problem space</Kicker>
@@ -37,7 +37,7 @@ export function Problem() {
 
         <Reveal
           stagger={0.12}
-          className="mx-auto mt-12 grid max-w-[900px] auto-rows-fr gap-9 md:grid-cols-2"
+          className="mx-auto mt-[72px] grid max-w-[900px] auto-rows-fr gap-9 md:grid-cols-2"
         >
           {GAP.map(([label, title, body]) => (
             <InsightCard key={label} label={label} title={title} width="auto" height="auto">
@@ -46,7 +46,7 @@ export function Problem() {
           ))}
         </Reveal>
 
-        <Reveal className="mt-14">
+        <Reveal className="mt-[84px] max-w-[860px]">
           <CaseStudyCallout stream>
             {"Most onboarding tools optimise for the vendor's internal project management. I optimised for the shared experience, and let AI handle the follow-up that usually falls through the cracks."}
           </CaseStudyCallout>

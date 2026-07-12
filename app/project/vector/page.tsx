@@ -7,8 +7,6 @@ import { Hero } from "../../../components/project/vector/sections/Hero";
 import { Problem } from "../../../components/project/vector/sections/Problem";
 import { MyRole } from "../../../components/project/vector/sections/MyRole";
 import { Product } from "../../../components/project/vector/sections/Product";
-import { Workspace } from "../../../components/project/vector/sections/Workspace";
-import { AIFeatures } from "../../../components/project/vector/sections/AIFeatures";
 import { Health } from "../../../components/project/vector/sections/Health";
 import { Matching } from "../../../components/project/vector/sections/Matching";
 import { AILayer } from "../../../components/project/vector/sections/AILayer";
@@ -47,7 +45,7 @@ export default function VectorCaseStudy() {
         className="relative isolate z-10 rounded-t-[2.5rem] backdrop-blur-2xl backdrop-saturate-150 shadow-[0_-24px_60px_-20px_rgba(192,152,255,0.18)]"
         style={{
           background:
-            "linear-gradient(180deg, rgba(24,24,30,0.55) 0px, rgba(24,24,30,0.78) 70px, rgba(24,24,30,0.93) 138px, rgba(24,24,30,0.98) 172px, #18181e 192px)",
+            "linear-gradient(180deg, rgba(20,20,26,0.55) 0px, rgba(20,20,26,0.78) 70px, rgba(20,20,26,0.93) 138px, rgba(20,20,26,0.98) 172px, #14141a 192px)",
         }}
       >
         {/* glass rim glint (white, reads on the dark seam) */}
@@ -75,11 +73,9 @@ export default function VectorCaseStudy() {
           <SoftBlob className="right-[6%] top-[84%] h-[860px] w-[1020px]" />
         </div>
 
-        <div data-vec="Problem"><Problem /></div>
         <div data-vec="MyRole"><MyRole /></div>
+        <div data-vec="Problem"><Problem /></div>
         <div data-vec="Product"><Product /></div>
-        <div data-vec="Workspace"><Workspace /></div>
-        <div data-vec="AIFeatures"><AIFeatures /></div>
         <div data-vec="Health"><Health /></div>
         <div data-vec="Matching"><Matching /></div>
         <div data-vec="AILayer"><AILayer /></div>

@@ -70,7 +70,7 @@ export function Matching() {
           </Body>
         </Reveal>
 
-        <Reveal className="mt-14">
+        <Reveal className="mt-14 max-w-[860px]">
           <CaseStudyCallout stream>
             {"Vector never guesses whose meeting it was. The matching is deterministic code, and when the evidence is thin, the meeting waits for a human to point at the right board."}
           </CaseStudyCallout>

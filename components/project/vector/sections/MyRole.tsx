@@ -1,4 +1,4 @@
-import { A, Container, Kicker, Title, Body } from "../ui";
+import { A, Container, Title, Body } from "../ui";
 import { Reveal } from "../Reveal";
 
 const HATS = [
@@ -30,15 +30,10 @@ const HATS = [
 
 export function MyRole() {
   return (
-    <section data-section="MyRole" className="pt-[120px] pb-0">
+    <section data-section="MyRole" className="pt-[88px] pb-0">
       <Container>
         <Reveal>
-          <Kicker>My role</Kicker>
-          <Title>
-            One designer + AI agents
-            <br />
-            = the whole stack
-          </Title>
+          <Title className="mb-12 md:mb-16">My role</Title>
         </Reveal>
 
         <Reveal

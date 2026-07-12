@@ -126,7 +126,7 @@ export function AILayer() {
           </CodeCard>
         </Reveal>
 
-        <Reveal className="mt-14">
+        <Reveal className="mt-14 max-w-[860px]">
           <CaseStudyCallout stream>
             {"The model never does the arithmetic. It reads numbers the code already computed, and cites the exact task behind every claim it makes."}
           </CaseStudyCallout>

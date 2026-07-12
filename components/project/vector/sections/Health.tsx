@@ -24,7 +24,7 @@ export function Health() {
     <section data-section="Health" className="pt-[120px] pb-0">
       <Container>
         <Reveal>
-          <Kicker>Pillar #03 · Predictive health</Kicker>
+          <Kicker>Predictive health</Kicker>
           <Title>
             On track, at risk or blocked,
             <br />
@@ -60,7 +60,7 @@ export function Health() {
           className="mt-16"
         />
 
-        <Reveal className="mt-16">
+        <Reveal className="mt-16 max-w-[860px]">
           <CaseStudyCallout stream>
             {"Every flag arrives with its evidence. 3 of 9 tasks blocked, 8 tasks overdue, customer dark for 64 days. When you can see why the flag was raised, you can act on it."}
           </CaseStudyCallout>

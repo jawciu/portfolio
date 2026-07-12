@@ -69,7 +69,7 @@ export function Architecture() {
           ))}
         </Reveal>
 
-        <Reveal className="mt-16">
+        <Reveal className="mt-16 max-w-[860px]">
           <CaseStudyCallout stream>
             {"I built this to grow my range as a designer who can also ship. Every architectural choice is now something I understand from the inside."}
           </CaseStudyCallout>

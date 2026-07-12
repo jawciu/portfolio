@@ -16,7 +16,7 @@ export function Container({
   children: ReactNode;
   className?: string;
 }) {
-  return <div className={`cog-container ${className}`}>{children}</div>;
+  return <div className={`case-study-container ${className}`}>{children}</div>;
 }
 
 /** small uppercase mono eyebrow heading, sits above a section heading */
@@ -33,6 +33,16 @@ export function Title({
   className?: string;
 }) {
   return <h2 className={`case-study-section-heading ${className}`}>{children}</h2>;
+}
+
+/** Sub-heading inside a section — names one product block (Vendor board, AI overview…)
+    in the alternating two-column flow. Sits a rung below <Title>. */
+export function Subhead({ children }: { children: ReactNode }) {
+  return (
+    <h3 className="font-[family-name:var(--font-mono)] text-[24px] font-extrabold uppercase tracking-[0.04em] text-[var(--case-study-ink)]">
+      {children}
+    </h3>
+  );
 }
 
 export function Body({
@@ -96,9 +106,9 @@ export function InsightCard({
         width: width === "auto" ? undefined : width,
         height: height === "auto" ? undefined : height,
       }}
-      className="flex h-full w-full max-w-full flex-col rounded-2xl border border-[var(--cog-line)] bg-[var(--cog-card)] px-9 py-8"
+      className="flex h-full w-full max-w-full flex-col rounded-2xl border border-[var(--case-study-line)] bg-[var(--case-study-card)] px-9 py-8"
     >
-      <p className="font-[family-name:var(--font-mono)] text-[15px] font-bold uppercase tracking-[0.02em] text-[var(--cog-ink)]">
+      <p className="font-[family-name:var(--font-mono)] text-[15px] font-bold uppercase tracking-[0.02em] text-[var(--case-study-ink)]">
         {label}
       </p>
       <h3 className="case-study-label mt-3 leading-[1.25]">{title}</h3>
@@ -212,6 +222,13 @@ export function Sparkle({
     aspect ratio, update its entry here. */
 const SHOT_DIMS: Record<string, { w: number; h: number }> = {
   "hero-insights.png": { w: 4291, h: 3105 },
+  // Product-section close-ups (cropped per block, no app chrome)
+  "board-v2.png": { w: 1992, h: 1923 },
+  "portal-v2.png": { w: 2439, h: 1885 },
+  "notifications-v2.png": { w: 994, h: 1224 },
+  "insights-v2.png": { w: 2676, h: 1793 },
+  "actions-v2.png": { w: 1637, h: 1126 },
+  "followup-v2.png": { w: 1462, h: 1245 },
   "insights.png": { w: 3284, h: 1784 },
   "ai-drafts.png": { w: 3290, h: 1696 },
   "board.png": { w: 3284, h: 1610 },
@@ -231,19 +248,33 @@ export function Shot({
   alt,
   caption,
   captionAlign = "center",
+  captionClassName = "",
+  bare = false,
   className = "",
 }: {
   src: string;
   alt: string;
   caption?: string;
   captionAlign?: "center" | "left";
+  /** extra classes on the <figcaption> — e.g. a bigger gap under the shot */
+  captionClassName?: string;
+  /** Skip the frame. For assets that already carry their own chrome (rounded corners,
+      shadow, transparent surround) — the shared panel would otherwise draw a second
+      box around a box, and fill the transparency with the card colour. */
+  bare?: boolean;
   className?: string;
 }) {
   const dims = SHOT_DIMS[src.split("/").pop() ?? ""];
 
   return (
     <figure className={className}>
-      <div className="overflow-hidden rounded-[14px] border border-[var(--cog-line)] bg-[var(--cog-card)] shadow-[0_24px_60px_-24px_rgba(0,0,0,0.65)]">
+      <div
+        className={
+          bare
+            ? ""
+            : "overflow-hidden rounded-[14px] border border-[var(--case-study-line)] bg-[var(--case-study-card)] shadow-[0_24px_60px_-24px_rgba(0,0,0,0.65)]"
+        }
+      >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={src}
@@ -255,9 +286,9 @@ export function Shot({
       </div>
       {caption && (
         <figcaption
-          className={`mt-3 font-[family-name:var(--font-mono)] text-[13px] text-[var(--cog-muted)] ${
+          className={`mt-3 font-[family-name:var(--font-mono)] text-[13px] text-[var(--case-study-muted)] ${
             captionAlign === "left" ? "text-left" : "text-center"
-          }`}
+          } ${captionClassName}`}
         >
           {caption}
         </figcaption>
@@ -305,7 +336,7 @@ export function CodeCard({
 }) {
   return (
     <div
-      className={`relative isolate overflow-hidden rounded-2xl border border-[var(--cog-line)] bg-[#14141a] ${className}`}
+      className={`relative isolate overflow-hidden rounded-2xl border border-[var(--case-study-line)] bg-[#14141a] ${className}`}
     >
       {/* AI-gradient rim glint */}
       <div
@@ -313,9 +344,9 @@ export function CodeCard({
         className="pointer-events-none absolute inset-x-0 top-0 h-px"
         style={{ background: "linear-gradient(90deg, var(--ai-from), var(--ai-to))" }}
       />
-      <div className="flex items-center gap-2 border-b border-[var(--cog-line)] px-5 py-3">
+      <div className="flex items-center gap-2 border-b border-[var(--case-study-line)] px-5 py-3">
         <Sparkle size={14} />
-        <span className="font-[family-name:var(--font-mono)] text-[13px] text-[var(--cog-muted)]">
+        <span className="font-[family-name:var(--font-mono)] text-[13px] text-[var(--case-study-muted)]">
           {file}
         </span>
       </div>
