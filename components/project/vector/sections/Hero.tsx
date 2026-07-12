@@ -1,4 +1,4 @@
-import { A, Container, Sparkle, Shot } from "../ui";
+import { A, Container, LinkIcon, Shot } from "../ui";
 
 /* Hero — mirrors the cog/wiki hero structure: 2-line title, a two-column meta block
    (LEFT: brand + role/tools lists; RIGHT: summary + setting the stage), then the
@@ -21,7 +21,7 @@ export function Hero() {
           <div>
             <p className="case-study-hero-label">brand</p>
             <div className="mt-3 flex items-center gap-3">
-              <Sparkle size={26} />
+              {/* Icon logo intentionally omitted until Vector has one of its own. */}
               <span className="font-[family-name:var(--font-mono)] text-[28px] font-bold tracking-wide text-[var(--cog-ink)]">
                 VECTOR
               </span>
@@ -29,8 +29,9 @@ export function Hero() {
                 href="https://vector.quest"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="ml-1 font-[family-name:var(--font-mono)] text-[13px] text-[var(--cog-muted)] underline decoration-[var(--cog-line)] underline-offset-4 transition-colors hover:text-[var(--dark-green)]"
+                className="ml-1 inline-flex items-center gap-1.5 font-[family-name:var(--font-mono)] text-[13px] text-[var(--cog-muted)] underline decoration-[var(--cog-line)] underline-offset-4 transition-colors hover:text-[var(--dark-green)]"
               >
+                <LinkIcon />
                 vector.quest
               </a>
             </div>
@@ -53,15 +54,19 @@ export function Hero() {
               <div>
                 <p className="case-study-hero-label">tools</p>
                 <p className="case-study-body-md mt-2">
+                  Cursor, Claude Code
+                  <br />
                   Next.js 16
+                  <br />
+                  React 19, Tailwind v4
                   <br />
                   Prisma &amp; Supabase
                   <br />
                   Claude API
                   <br />
-                  Tailwind v4
+                  Resend
                   <br />
-                  Cursor, Claude Code
+                  Playwright
                   <br />
                   Vercel
                 </p>

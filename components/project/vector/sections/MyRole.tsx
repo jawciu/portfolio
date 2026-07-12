@@ -6,25 +6,25 @@ const HATS = [
     icon: "product.svg",
     label: "product",
     alt: "Lightbulb icon on a lilac card",
-    body: "I set the ICP, scoped the product and made the feature bets, so every screen earned its place instead of chasing a spec.",
+    body: "I conducted market research, set the ICP, scoped the product and made the feature bets.",
   },
   {
     icon: "design-system.png",
     label: "design system",
     alt: "Paint palette icon on a pink card",
-    body: "I documented Vector's design system as a single source of truth that generates the runtime tokens, then built the primitives on top of it.",
+    body: "I created Vector's visual identity and a single source of truth for the design system.",
   },
   {
     icon: "built.svg",
     label: "architecture & build",
     alt: "Plug connector icon on a lilac card",
-    body: "I modelled 16 entities in Prisma, wrote the app on Next.js 16 and Supabase, and shipped it to Vercel.",
+    body: "Agents wrote the syntax. I researched and approved every architecture and build call.",
   },
   {
     icon: "ai-orchestration.png",
     label: "AI orchestration",
     alt: "Node diagram icon on a pink card",
-    body: "I designed and built the AI layer end to end, from grounded prompts and structured output to streaming, tool use and cost observability.",
+    body: "I designed the AI layer, from grounded prompts to streaming tool use and observability.",
   },
 ] as const;
 
@@ -35,9 +35,9 @@ export function MyRole() {
         <Reveal>
           <Kicker>My role</Kicker>
           <Title>
-            One designer,
+            One designer + AI agents
             <br />
-            the whole stack
+            = the whole stack
           </Title>
         </Reveal>
 

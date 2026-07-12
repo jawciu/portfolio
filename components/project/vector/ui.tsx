@@ -144,6 +144,29 @@ export function Stats({
     peach tip). Every surface where Vector "speaks" carries it. Gradient inlined
     (SVG <stop> doesn't reliably resolve CSS vars across browsers), matching the
     real component in the vector repo. */
+/** External-link glyph — sits before the vector.quest link in the hero. Plain
+    stroked paths only (no mask/filter), per the iOS Safari SVG rule. */
+export function LinkIcon({ size = 13 }: { size?: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      className="shrink-0"
+    >
+      <path d="M6.5 9.5 13.5 2.5" />
+      <path d="M9.5 2.5h4v4" />
+      <path d="M13 9.5v3.5a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h3.5" />
+    </svg>
+  );
+}
+
 export function Sparkle({
   size = 16,
   className = "",

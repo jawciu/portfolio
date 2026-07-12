@@ -32,15 +32,6 @@ export function Product() {
           </Title>
         </Reveal>
 
-        <Reveal className="max-w-[760px]">
-          <Body>
-            The work that slips is rarely the big stuff. It is the follow-ups, the actions
-            agreed in a meeting, the risk building on a board no one has opened today.
-            That is exactly what an LLM is good at, as long as it stays grounded and never
-            acts on its own.
-          </Body>
-        </Reveal>
-
         <Reveal className="mt-12">
           <CaseStudyCallout stream>
             {"Vector drafts. A person approves. Nothing is ever sent or changed autonomously, so the AI can be useful long before it has earned full trust."}

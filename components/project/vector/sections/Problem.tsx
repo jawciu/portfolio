@@ -5,12 +5,12 @@ const GAP = [
   [
     "too heavy",
     "Enterprise tools",
-    "Rocketlane and GuideCX are built for large implementation teams, priced near $30k a year, and take months to roll out. A Seed to Series B team cannot justify any of that.",
+    "Rocketlane and GuideCX are built for large implementation teams, they are expensive, and take months to roll out.",
   ],
   [
     "too manual",
-    "Spreadsheets and PM tools",
-    "So teams hack onboarding into Notion, Asana or a shared sheet. Nothing tracks health, the customer has no real view, and the follow-up work lives in someone's head.",
+    "Hacked PM tool",
+    "Teams hack onboarding into Notion, Linear or Asana. Nothing tracks health, the customer has no real view, and the follow-up work is lost.",
   ],
 ] as const;
 
@@ -22,21 +22,15 @@ export function Problem() {
         <Reveal>
           <Kicker>Problem space</Kicker>
           <Title>
-            Meetings eat the work,
+            Follow-up falls
             <br />
-            context evaporates
+            through the cracks
           </Title>
         </Reveal>
 
         <Reveal className="max-w-[760px] space-y-5">
           <Body>
-            Onboarding a new B2B tool is mostly follow-through. Half of it is agreed out
-            loud on a call (&quot;we&apos;ll send the SOW Friday&quot;, &quot;IT still
-            needs to provision SSO&quot;), and then it evaporates the second the call ends.
-          </Body>
-          <Body>
-            The teams who feel this most are small, Seed to Series B, running ten to fifty
-            onboardings at once with a handful of people. They are stuck between two bad
+            Onboarding a new B2B tool is follow-through. Most of it is agreed on calls and action points often get muddled and lost. The teams who feel this most are start-ups and scale ups that are stuck between two bad
             options.
           </Body>
         </Reveal>
