@@ -1,12 +1,15 @@
-import { A, CARD_FRAME, Container, Kicker, Title, Body, CaseStudyCallout, ShotRow } from "../ui";
+import { Fragment } from "react";
+import { CARD_FRAME, Container, Kicker, Title, Body } from "../ui";
 import { Reveal } from "../Reveal";
 import { Parallax } from "../Parallax";
+import { DotGlow } from "../DotGlow";
 
 /* PipelineView — the admin's Pipeline tab, recreated as a card (the live tab
    sits behind vendor auth, so this is a faithful rebuild of
    app/components/PipelineTimeline.js rather than a screenshot: same filter
-   chips, same states, same expanded trace). Data is fictional, matching the
-   demo book of business used across every other shot. */
+   chips, same states, same expanded trace with its collapsed raw-JSON and
+   transcript rows). Data is fictional, matching the demo book of business
+   used across every other shot. */
 
 const PIPE_FILTERS = [
   ["All", "24", true],
@@ -39,12 +42,17 @@ const PIPE_ROWS: PipeRow[] = [
   { title: "beehiiv dashboards review", state: "errored", date: "04/07/2026", error: "Pass 2 timed out after 60s" },
 ];
 
-/* the expanded trace under "Untitled meeting" — the transcript-match win */
+/* the expanded trace under "Untitled meeting" — the transcript-match win.
+   Open sections carry ▾; the collapsed rows nested under them (raw JSON,
+   transcript) carry ▸, mirroring the real tab's disclosure anatomy. */
 const PIPE_TRACE = [
-  ["matched", "Function Health, via the transcript (title gave nothing)"],
-  ["pass 1 / extraction", "5 claims, each with a verbatim source quote"],
-  ["pass 2 / tool calls", "create_task ×2 · match_existing ×2 · update_status ×1"],
-  ["drafts", "5 in the review queue · $0.036 · full transcript kept"],
+  { k: "matched", v: "Function Health, via the transcript (title gave nothing)" },
+  { k: "pass 1 / extraction", v: "5 claims, each with a verbatim source quote" },
+  { k: "raw extraction JSON", nested: true },
+  { k: "pass 2 / tool calls", v: "create_task ×2 · match_existing ×2 · update_status ×1" },
+  { k: "raw tool calls JSON", nested: true },
+  { k: "drafts", v: "5 in the review queue · $0.036" },
+  { k: "full transcript", v: "20 utterances", nested: true },
 ] as const;
 
 function PipelineView() {
@@ -95,12 +103,21 @@ function PipelineView() {
             )}
             {open && (
               <div className="mt-2.5 space-y-1.5 border-t border-[var(--case-study-line)] pt-2.5 pl-4">
-                {PIPE_TRACE.map(([k, v]) => (
-                  <p key={k} className={`${mono} text-[11.5px] leading-snug`}>
-                    <span className="text-[var(--case-study-ink)]">{k}</span>
-                    <span className="text-[var(--case-study-muted)]"> · {v}</span>
-                  </p>
-                ))}
+                {PIPE_TRACE.map((row) =>
+                  "nested" in row && row.nested ? (
+                    <p key={row.k} className={`${mono} pl-4 text-[11px] leading-snug text-[var(--case-study-muted)]`}>
+                      <span className="mr-1.5">▸</span>
+                      {row.k}
+                      {"v" in row && row.v ? ` · ${row.v}` : ""}
+                    </p>
+                  ) : (
+                    <p key={row.k} className={`${mono} text-[11.5px] leading-snug`}>
+                      <span className="mr-1.5 text-[var(--case-study-muted)]">▾</span>
+                      <span className="text-[var(--case-study-ink)]">{row.k}</span>
+                      <span className="text-[var(--case-study-muted)]">{"v" in row && row.v ? ` · ${row.v}` : ""}</span>
+                    </p>
+                  )
+                )}
               </div>
             )}
           </li>
@@ -110,56 +127,147 @@ function PipelineView() {
   );
 }
 
+/* UsageView — the admin's "By feature" usage table, rebuilt as a card in the
+   same family as PipelineView (the live tab sits behind vendor auth; same
+   columns and feature kinds as app/admin/ai/page.js, fictional numbers from
+   the demo book of business). The first row is expanded to the thing the
+   rollup is made of: one individual call's full receipt. */
+
+type UsageRow = {
+  kind: string;
+  calls: string;
+  errors?: string;
+  cost: string;
+  p95: string;
+  cache: string;
+  open?: boolean;
+};
+
+const USAGE_ROWS: UsageRow[] = [
+  { kind: "insight_onboarding", calls: "212", cost: "$1.84", p95: "3.1s", cache: "78%", open: true },
+  { kind: "insight_portfolio", calls: "64", cost: "$0.71", p95: "4.2s", cache: "81%" },
+  { kind: "miniti_extraction", calls: "58", errors: "1", cost: "$0.92", p95: "8.4s", cache: "46%" },
+  { kind: "miniti_orchestrator", calls: "58", cost: "$0.60", p95: "6.1s", cache: "52%" },
+  { kind: "scan_stale_followup", calls: "33", cost: "$0.19", p95: "2.3s", cache: "88%" },
+];
+
+/* the expanded receipt under insight_onboarding — one call, kept in full */
+const RECEIPT = [
+  ["tokens", "4 812 in · 3 921 cache read · 391 out"],
+  ["cost / duration", "$0.0041 · 2.9s"],
+  ["request id", "req_011CSHn3xAzKq…"],
+] as const;
+
+function UsageView() {
+  const mono = "font-[family-name:var(--font-mono)]";
+  const num = "text-right tabular-nums";
+  return (
+    <div className={CARD_FRAME}>
+      <p className={`${mono} mb-4 text-[11px] lowercase tracking-[0.14em] text-[var(--case-study-muted)]`}>
+        usage by feature / admin · last 30 days
+      </p>
+
+      <table className={`${mono} w-full border-collapse text-[12px]`}>
+        <thead>
+          <tr className="text-[11px] lowercase text-[var(--case-study-muted)]">
+            <th className="pb-2 text-left font-normal">kind</th>
+            <th className={`pb-2 ${num} font-normal`}>calls</th>
+            <th className={`pb-2 ${num} font-normal max-sm:hidden`}>errors</th>
+            <th className={`pb-2 ${num} font-normal`}>total cost</th>
+            <th className={`pb-2 ${num} font-normal max-sm:hidden`}>p95</th>
+            <th className={`pb-2 ${num} font-normal`}>cache hit</th>
+          </tr>
+        </thead>
+        <tbody>
+          {USAGE_ROWS.map(({ kind, calls, errors, cost, p95, cache, open }) => (
+            <Fragment key={kind}>
+              <tr className="border-t border-[var(--case-study-line)]">
+                <td className="py-2 pr-3 text-[var(--case-study-ink)]">
+                  <span className="mr-1.5 text-[var(--case-study-muted)]">{open ? "▾" : "▸"}</span>
+                  {kind}
+                </td>
+                <td className={`py-2 ${num} text-[var(--case-study-muted)]`}>{calls}</td>
+                <td className={`py-2 ${num} max-sm:hidden ${errors ? "text-[var(--vec-danger)]" : "text-[var(--case-study-muted)]"}`}>
+                  {errors ?? "—"}
+                </td>
+                <td className={`py-2 ${num} text-[var(--case-study-muted)]`}>{cost}</td>
+                <td className={`py-2 ${num} text-[var(--case-study-muted)] max-sm:hidden`}>{p95}</td>
+                <td className={`py-2 ${num} text-[var(--case-study-muted)]`}>{cache}</td>
+              </tr>
+              {open && (
+                <tr>
+                  <td colSpan={6} className="pt-0.5 pb-2.5">
+                    <div className="ml-4 space-y-1 border-l border-[var(--case-study-line)] py-1 pl-3.5">
+                      <p className="text-[11px] lowercase tracking-[0.14em] text-[var(--case-study-muted)]">
+                        one call, kept in full
+                      </p>
+                      {RECEIPT.map(([k, v]) => (
+                        <p key={k} className="text-[11.5px] leading-snug">
+                          <span className="text-[var(--case-study-ink)]">{k}</span>
+                          <span className="text-[var(--case-study-muted)]"> · {v}</span>
+                        </p>
+                      ))}
+                    </div>
+                  </td>
+                </tr>
+              )}
+            </Fragment>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+/* dots texture — keep in sync with Product's `dots` TEXTURES entry (22px
+   rhythm, same alpha) so the two rooms read as one system */
+const DOTS: React.CSSProperties = {
+  backgroundImage: "radial-gradient(rgba(241,234,241,0.11) 1px, transparent 1.4px)",
+  backgroundSize: "22px 22px",
+};
+
 export function Observability() {
   return (
     <section data-section="Observability" className="pt-[120px] pb-0">
-      <Container>
-        <Reveal>
-          <Kicker>Observability</Kicker>
-          <Title>
-            Every call logged,
-            <br />
-            every failure visible
-          </Title>
-        </Reveal>
+      {/* the textured room: hairlines exactly at the texture's edges, like
+          Product's subsections; content wrappers are relative so they paint
+          above the cursor glow */}
+      <div
+        className="relative border-y border-[rgba(241,234,241,0.14)] pb-[120px]"
+        style={DOTS}
+      >
+        <DotGlow pattern="dots" />
+        <Container className="relative pt-16 md:pt-24">
+          <Reveal>
+            <Kicker>Observability</Kicker>
+            <Title>
+              Every call logged,
+              <br />
+              every failure visible
+            </Title>
+          </Reveal>
 
-        <Reveal className="max-w-[760px] space-y-5">
-          <Body>
-            AI features fail quietly, so Vector ships with its own admin dashboard. Every
-            Claude call is rolled up by feature, with calls, errors, total cost, p95
-            latency and cache hit rate, and each individual call keeps its full token
-            breakdown, dollar cost, duration and Anthropic request id.
-          </Body>
-          <Body>
-            The pipeline view keeps every meeting event, filterable by processed, ambiguous,
-            stuck or errored. Expanding one shows the extraction, the tool calls and the
-            drafts it produced, next to the full transcript. When something goes wrong, I
-            can see exactly where.
-          </Body>
-        </Reveal>
+          <Reveal className="max-w-[760px] space-y-5">
+            <Body>
+            I built myself an admin dashboard to track Vector&apos;s AI features. It monitors latency and cost and helps me pinpoint and troubleshoot errors. The traces let me see where retrieval breaks down and which step to optimise.
+            </Body>
+          </Reveal>
 
-        {/* usage by feature, as a card… */}
-        <ShotRow
-          src={A("admin-usage-features.png")}
-          alt="Vector's AI usage by feature: calls, errors, total and average cost, p95 latency and cache hit rate for each AI surface."
-          caption="Usage by feature. Cost, latency and cache hits for every AI surface, over 30 days."
-          speed={-22}
-          className="mt-8"
-        />
-
-        {/* …and the pipeline itself, one event expanded to its full trace */}
-        <Reveal className="mt-14 md:ml-auto md:max-w-[760px]">
-          <Parallax speed={26}>
-            <PipelineView />
+          {/* the two admin cards as one overlapping cluster — the pipeline rides
+              over the usage card's bottom row (md+; phones stack normally). One
+              shared Parallax so the overlap never drifts apart. */}
+          <Parallax speed={-18}>
+            <div className="mt-12">
+              <Reveal className="md:max-w-[760px]">
+                <UsageView />
+              </Reveal>
+              <Reveal className="relative z-10 mt-8 md:-mt-16 md:ml-auto md:max-w-[760px]">
+                <PipelineView />
+              </Reveal>
+            </div>
           </Parallax>
-        </Reveal>
-
-        <Reveal className="mt-14 max-w-[860px]">
-          <CaseStudyCallout stream>
-            {"This is the groundwork for the evals on the roadmap. Accuracy scoring only works if every call and every draft is already on record."}
-          </CaseStudyCallout>
-        </Reveal>
-      </Container>
+        </Container>
+      </div>
     </section>
   );
 }

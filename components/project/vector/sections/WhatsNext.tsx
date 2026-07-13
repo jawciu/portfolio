@@ -14,7 +14,8 @@ const NEXT = [
 
 export function WhatsNext() {
   return (
-    <section data-section="WhatsNext" className="pt-[120px] pb-[120px]">
+    /* pt-[100px] = the plain half of the 200px gap to Collaboration's dots above */
+    <section data-section="WhatsNext" className="pt-[100px] pb-[120px]">
       <Container>
         <Reveal>
           <Kicker>What&apos;s next</Kicker>
@@ -23,13 +24,6 @@ export function WhatsNext() {
             <br />
             slice of trust
           </Title>
-        </Reveal>
-
-        <Reveal className="max-w-[760px]">
-          <Body>
-            The roadmap follows the same rule as the rest of the product. Vector only gets
-            more autonomy as it earns it.
-          </Body>
         </Reveal>
 
         <Reveal
@@ -45,11 +39,6 @@ export function WhatsNext() {
           ))}
         </Reveal>
 
-        <Reveal className="mt-16 max-w-[860px]">
-          <CaseStudyCallout stream>
-            {"Vector can be useful long before it is fully trusted, because a person is always the one who says yes."}
-          </CaseStudyCallout>
-        </Reveal>
       </Container>
     </section>
   );

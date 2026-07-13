@@ -11,7 +11,15 @@ export function NextProject() {
   return (
     <section
       data-section="NextProject"
-      className="relative isolate overflow-hidden rounded-t-[2.5rem] bg-[#1b1a22] pt-[120px] pb-[160px] backdrop-blur-2xl backdrop-saturate-150 shadow-[0_-24px_60px_-20px_rgba(192,152,255,0.18)]"
+      /* dark drop shadow above the plate (same recipe as the main glass seam
+         above MyRole) — was a lilac glow, Caroline wanted shadow not glow */
+      className="relative isolate overflow-hidden rounded-t-[2.5rem] bg-[#1b1a22] pt-[120px] pb-[160px] backdrop-blur-2xl backdrop-saturate-150 shadow-[0_-32px_70px_-16px_rgba(0,0,0,0.85)]"
+      /* dot texture = the shared `dots` recipe (22px rhythm, same dimness) —
+         keep in sync with Product/Collaboration/Observability */
+      style={{
+        backgroundImage: "radial-gradient(rgba(241,234,241,0.11) 1px, transparent 1.4px)",
+        backgroundSize: "22px 22px",
+      }}
     >
       {/* rim glint (white — reads on the dark tint) */}
       <div
@@ -23,17 +31,12 @@ export function NextProject() {
         }}
       />
 
+      {/* one toned-down blob (was two at opacity-90 — read as too much colour) */}
       <Parallax
         speed={130}
         className="absolute bottom-[0%] right-[1%] -z-10 h-[380px] w-[620px]"
       >
-        <SoftBlob className="inset-0 h-full w-full opacity-90 blur-[64px]" />
-      </Parallax>
-      <Parallax
-        speed={-90}
-        className="absolute bottom-[16%] right-[24%] -z-10 h-[300px] w-[460px]"
-      >
-        <SoftBlob className="inset-0 h-full w-full opacity-90 blur-[64px]" />
+        <SoftBlob className="inset-0 h-full w-full opacity-50 blur-[64px]" />
       </Parallax>
 
       <Container>

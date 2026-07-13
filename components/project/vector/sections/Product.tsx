@@ -33,6 +33,14 @@ type Block = {
       Off by default: these assets ship their own chrome, so the frame would box a box.
       The portal shot is the exception — it's a plain opaque rectangle. */
   framed?: boolean;
+  /** extra classes on the SHOT's inner wrapper (md-gated by the caller) — e.g.
+      inset the shot from its hugged edge without moving the companion, which
+      anchors to the COLUMN edges */
+  shotClassName?: string;
+  /** extra classes on the copy block (md-gated by the caller) — e.g. shift the
+      copy down to centre it on shot + companion as a GROUP (items-center only
+      sees the in-flow shot; absolute companions don't count) */
+  copyClassName?: string;
 };
 
 const BLOCKS: Block[] = [
@@ -69,8 +77,11 @@ const BLOCKS: Block[] = [
     companion: "flow",
     band: "90",
     /* widened column: the shot hugs the LEFT of it, so the routing card can
-       sit against the bottom-right corner instead of covering the front */
-    columnWidth: 560,
+       sit against the bottom-right corner instead of covering the front.
+       780 (was 560) pulls the shot well left of the routing card — closer to
+       the copy (a smaller copy gap is fine here, Caroline 2026-07-13) and
+       clearly separated from the routing card, which stays put at the right. */
+    columnWidth: 780,
     /* 392 = the old 435 −10%, ceded to the routing-flow companion */
     width: 392,
     alt: "Vector's notification centre: customer activity grouped by actor, showing completions, comments and first portal visits.",
@@ -84,6 +95,9 @@ const BLOCKS: Block[] = [
     companion: "health",
     band: "90",
     width: 580,
+    /* the snippet hangs 200px below the table; +100px centres the copy on the
+       table+snippet GROUP */
+    copyClassName: "md:translate-y-[100px]",
     alt: "Vector's health table: each company scored On track, At risk or Blocked, with task counts and how many are blocked.",
   },
   {
@@ -119,7 +133,15 @@ const BLOCKS: Block[] = [
     asset: "followup-v2.png",
     companion: "cron",
     band: "90",
+    /* widened column (flipped block: shot hugs the RIGHT of it) — pushes the
+       draft way over toward the copy so that gap gets much smaller, and frees
+       the column's left edge for the cron snippet so it can't overshoot the
+       band edge. */
+    columnWidth: 760,
     width: 522,
+    /* draft sits 150px in from the column's right edge; the cron snippet keeps
+       anchoring to the COLUMN corner, so it stays put while the shot moves left */
+    shotClassName: "md:mr-[150px]",
     alt: "Vector's draft follow-up: an AI-written email grounded in a blocked task, with dismiss, open in mail and comment.",
     flip: true,
   },
@@ -149,11 +171,18 @@ function SubSection({
   label,
   texture,
   last = false,
+  className = "",
+  bodyClassName = "",
   children,
 }: {
   label: string;
   texture?: Texture;
   last?: boolean;
+  /** extra classes on the room div — use `!` arbitrary utilities to override
+      the baked pb-[140px] (e.g. `pb-[190px]!` for a roomier room) */
+  className?: string;
+  /** extra classes on the content wrapper — override its mt the same way */
+  bodyClassName?: string;
   children: React.ReactNode;
 }) {
   return (
@@ -163,7 +192,7 @@ function SubSection({
     <div
       className={`relative border-t border-[rgba(241,234,241,0.14)] pb-[140px] ${
         last ? "border-b" : ""
-      }`}
+      } ${className}`}
       style={texture ? TEXTURES[texture] : undefined}
     >
       {/* cursor-following lilac glow over the texture; content wrappers below are
@@ -182,7 +211,7 @@ function SubSection({
           /{label}
         </p>
       </Container>
-      <div className="relative mt-16 space-y-[156px] md:mt-28">{children}</div>
+      <div className={`relative mt-16 space-y-[156px] md:mt-28 ${bodyClassName}`}>{children}</div>
     </div>
   );
 }
@@ -328,38 +357,26 @@ const COMPANIONS: Record<NonNullable<Block["companion"]>, React.ReactNode> = {
   miniti: <MinitiFlow />,
 };
 
-/* MinitiFlow — the data's journey from a Miniti call to the review queue,
-   straight from lib/ai/orchestrator.js: the webhook fires, Pass 1 extracts
-   facts (no tools), Pass 2 makes the calls (tool-use over the live board),
-   and every tool call lands as a draft a human approves. The split exists so
-   a wrong draft can be traced to the pass that caused it. */
+/* MinitiFlow — the data's journey from a Miniti call to the review queue.
+   Deliberately SLIM (Caroline 2026-07-13): step labels only, no file names,
+   no per-step captions — the copy beside it already tells the story, this is
+   just the shape of the pipeline. Keeps the card thin so it barely overlaps
+   the actions shot. */
 const MINITI_STEPS = [
-  {
-    label: "call ends",
-    detail: "Miniti fires a webhook, transcript attached",
-  },
-  {
-    label: "pass 1 / extraction",
-    detail: "facts only: claims + verbatim quotes, no tools",
-  },
-  {
-    label: "pass 2 / orchestrator",
-    detail: "tool-use over the live board: create_task, match_existing, update_status",
-  },
-  {
-    label: "review queue",
-    detail: "every tool call becomes a draft, a human approves it",
-  },
+  "call ends",
+  "pass 1 / extraction",
+  "pass 2 / orchestrator",
+  "review queue",
 ] as const;
 
 function MinitiFlow() {
   return (
     <div className={CARD_FRAME}>
       <p className="mb-4 font-[family-name:var(--font-mono)] text-[11px] lowercase tracking-[0.14em] text-[var(--case-study-muted)]">
-        miniti → vector / lib/ai/orchestrator.js
+        miniti → vector
       </p>
-      <ol className="relative ml-1 space-y-5 border-l border-[rgba(241,234,241,0.14)] pl-5">
-        {MINITI_STEPS.map(({ label, detail }, i) => (
+      <ol className="relative ml-1 space-y-4 border-l border-[rgba(241,234,241,0.14)] pl-5">
+        {MINITI_STEPS.map((label, i) => (
           <li key={label} className="relative">
             {/* node on the rail, tinted along the lilac→peach AI gradient */}
             <span
@@ -371,9 +388,6 @@ function MinitiFlow() {
             />
             <p className="font-[family-name:var(--font-mono)] text-[13px] font-bold text-[var(--case-study-ink)]">
               {label}
-            </p>
-            <p className="mt-1 font-[family-name:var(--font-mono)] text-[12px] leading-snug text-[var(--case-study-muted)]">
-              {detail}
             </p>
           </li>
         ))}
@@ -389,21 +403,24 @@ const COMPANION_POS: Record<NonNullable<Block["companion"]>, string> = {
   /* bottom-RIGHT corner: the shot hugs the left of its widened column and the
      card takes the freed corner */
   flow: "relative z-10 -mt-10 w-full max-w-[440px] md:absolute md:right-0 md:bottom-[-56px] md:mt-0 md:w-[440px]",
-  /* bottom-RIGHT corner of the health table (its left rows carry the text),
-     dropped low so it only kisses the bottom rows */
-  health: "relative z-10 -mt-10 w-[88%] max-w-[430px] md:absolute md:right-[-5%] md:bottom-[-96px] md:mt-0 md:w-[430px]",
-  /* bottom-LEFT corner of the follow-up draft, nudged out to the left */
-  cron: "relative z-10 -mt-10 w-[88%] max-w-[420px] md:absolute md:left-[-10%] md:bottom-[-56px] md:mt-0 md:w-[400px]",
-  /* bottom-LEFT corner of the actions queue, reaching well into the row's gap
-     (the actions shot is short, so most of the card hangs off it) */
-  miniti: "relative z-10 -mt-10 w-[88%] max-w-[430px] md:absolute md:left-[-30%] md:bottom-[-64px] md:mt-0 md:w-[430px]",
+  /* bottom-LEFT corner of the health table, dropped WELL below it — the card
+     mostly hangs off the table so the table's rows stay readable (it used to
+     cover the right side; Caroline 2026-07-13) */
+  health: "relative z-10 -mt-10 w-[88%] max-w-[430px] md:absolute md:left-[-24%] md:bottom-[-200px] md:mt-0 md:w-[430px]",
+  /* bottom-RIGHT corner of the follow-up draft, overhanging the shot edge
+     slightly (the copy gap absorbs it) */
+  cron: "relative z-10 -mt-10 w-[88%] max-w-[420px] md:absolute md:right-[-6%] md:bottom-[-56px] md:mt-0 md:w-[400px]",
+  /* bottom-LEFT corner of the actions queue — slimmed to labels only. md:z-0
+     drops it UNDER the actions shot (the shot's wrapper carries md:z-[5]), so
+     the overlapping corner tucks behind the card */
+  miniti: "relative z-10 -mt-10 w-[88%] max-w-[290px] md:absolute md:left-[calc(-34%_-_20px)] md:bottom-[-76px] md:mt-0 md:w-[290px] md:z-0",
 };
 
 /* Each row is a centred BAND with the copy at one end and the shot at the other, pushed
    apart (space-between). Big shots ride the full 90% band; the small panels tighten to a
    70% band so the pair doesn't strand itself at opposite edges of the screen. Below md
    the band collapses: one column, copy first, shot full width. */
-function ProductBlock({ subhead, body, asset, alt, companion, flip, width, columnWidth, band, framed }: Block) {
+function ProductBlock({ subhead, body, asset, alt, companion, flip, width, columnWidth, band, framed, shotClassName = "", copyClassName = "" }: Block) {
   return (
     <Reveal
       className={`mx-auto flex flex-col gap-10 px-6 md:flex-row md:items-center md:justify-between md:gap-6 md:px-0 ${
@@ -413,7 +430,7 @@ function ProductBlock({ subhead, body, asset, alt, companion, flip, width, colum
       {/* COPY — also the anchor the room's CircuitTrace lights a node against.
           Heading is static full-ink (the scroll-lit TabHead was tried and cut);
           the first paragraph gets double air under the heading. */}
-      <div data-trace-node className={`md:w-[424px] md:shrink-0 ${flip ? "md:order-2" : ""}`}>
+      <div data-trace-node className={`md:w-[424px] md:shrink-0 ${flip ? "md:order-2" : ""} ${copyClassName}`}>
         <h3 className="font-[family-name:var(--font-mono)] text-[24px] font-extrabold tracking-[0.04em] text-[var(--case-study-ink)]">
           {subhead}
         </h3>
@@ -434,7 +451,14 @@ function ProductBlock({ subhead, body, asset, alt, companion, flip, width, colum
         className={`relative w-full md:shrink-0 ${flip ? "md:order-1" : ""}`}
         style={{ maxWidth: columnWidth ?? width }}
       >
-        <div style={{ maxWidth: width }} className={columnWidth ? "md:mr-auto" : undefined}>
+        {/* in a widened column the shot hugs the copy-FAR side: left on normal
+            rows, right on flipped rows (so widening always moves it toward the copy).
+            md:z-[5] layers the shot BETWEEN the companions: above md:z-0 ones
+            (miniti tucks under it), below the default z-10 ones. */}
+        <div
+          style={{ maxWidth: width }}
+          className={`relative md:z-[5] ${columnWidth ? (flip ? "md:ml-auto" : "md:mr-auto") : ""} ${shotClassName}`}
+        >
           <Parallax speed={20}>
             <Shot src={A(asset)} alt={alt} bare={!framed} />
           </Parallax>
@@ -487,10 +511,16 @@ export function Product() {
           <ProductBlock {...BLOCKS[2]} />
         </SubSection>
 
-        <SubSection label="predictive health">
+        {/* roomier than the baked rhythm on both ends — the health room needs to
+            breathe (Caroline 2026-07-13) */}
+        <SubSection label="predictive health" className="pb-[190px]!" bodyClassName="md:mt-40!">
           <ProductBlock {...BLOCKS[3]} />
 
-          <Container>
+          {/* pt compensates for the health snippet hanging 200px below its block:
+              the room's 156px rhythm alone would put the callout UNDER the snippet.
+              144px of padding (padding never margin-collapses) lands the VISUAL
+              gap at ~100px. */}
+          <Container className="md:pt-[144px]">
             <Reveal className="max-w-[860px]">
               <CaseStudyCallout stream>
                 {"Every flag arrives with its evidence. 3 of 9 tasks blocked, 8 tasks overdue, customer dark for 64 days. When you can see why the flag was raised, you can act on it."}
@@ -502,9 +532,16 @@ export function Product() {
         <SubSection label="ai admin" texture="grid" last>
           <ProductBlock {...BLOCKS[4]} />
           <ProductBlock {...BLOCKS[5]} />
-          <ProductBlock {...BLOCKS[6]} />
+          {/* +100px over the room's 156px rhythm between tasks and follow-ups
+              (Caroline). Padding on a wrapper, NOT margin on the block — a
+              margin would collapse into space-y's 156 and change nothing. */}
+          <div className="md:pt-[100px]">
+            <ProductBlock {...BLOCKS[6]} />
+          </div>
 
-          <Container>
+          {/* +54px air both sides of the closing callout (Caroline) — padding,
+              not margin, so it stacks on the room rhythm instead of collapsing */}
+          <Container className="md:pt-[54px] md:pb-[54px]">
             <Reveal className="max-w-[860px]">
               <CaseStudyCallout stream>
                 {"I gave the AI a review queue instead of write access to the board. It drafts, and the user decides whether to approve, edit or reject any task or follow-up."}

@@ -1,4 +1,4 @@
-import { Container, Kicker, Title, Body, CaseStudyCallout } from "../ui";
+import { Container, Kicker, Title, CaseStudyCallout } from "../ui";
 import { Reveal } from "../Reveal";
 
 /* Under the hood — was six paragraphs of stack prose; now one short intro and
@@ -21,7 +21,9 @@ const STACK = [
 
 export function Architecture() {
   return (
-    <section data-section="Architecture" className="pt-[120px] pb-0">
+    /* pb-[100px] = the plain half of the 200px gap to Collaboration — its dots
+       texture owns the other 100px, so the texture edge sits exactly mid-gap */
+    <section data-section="Architecture" className="pt-[120px] pb-[100px]">
       <Container>
         <Reveal>
           <Kicker>Under the hood</Kicker>
@@ -32,17 +34,18 @@ export function Architecture() {
           </Title>
         </Reveal>
 
-        <Reveal className="max-w-[760px]">
-          <Body>
-            I did not want to build just another AI demo. I wanted to learn how a real
-            SaaS is put together, so Vector is built like one.
-          </Body>
+        {/* mt-24 = TRUE 96px above the callout: this margin collapses with the
+            heading's baked 48px mb (larger wins, they don't add). */}
+        <Reveal className="mt-24 max-w-[860px]">
+          <CaseStudyCallout stream>
+            {"I built Vector to grow my range as a designer who can also ship. Every architectural decision was a conscious choice and a learning experience."}
+          </CaseStudyCallout>
         </Reveal>
 
         {/* the stack, as tools rather than paragraphs */}
         <Reveal
           stagger={0.06}
-          className="mt-14 grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-3 lg:grid-cols-5"
+          className="mt-24 grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-3 lg:grid-cols-5"
         >
           {STACK.map(([icon, name, note]) => (
             <div key={name}>
@@ -60,21 +63,6 @@ export function Architecture() {
               </p>
             </div>
           ))}
-        </Reveal>
-
-        {/* the honest constraint stays: it is the credible part */}
-        <Reveal className="mt-14 max-w-[760px]">
-          <Body>
-            The compromises are in there too. Streaming runs on Edge Runtime, where Prisma
-            is not compatible, so those routes talk to Supabase directly. Real projects
-            have these tradeoffs, and I learned to make the call and move on.
-          </Body>
-        </Reveal>
-
-        <Reveal className="mt-16 max-w-[860px]">
-          <CaseStudyCallout stream>
-            {"I built this to grow my range as a designer who can also ship. Every architectural choice is now something I understand from the inside."}
-          </CaseStudyCallout>
         </Reveal>
       </Container>
     </section>

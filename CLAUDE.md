@@ -229,6 +229,63 @@ cards, element-screenshot. Delete the temp script after.
 > **`docs/CLAUDE-ARCHIVE.md`**. At the end of a session, append a new entry with: what changed,
 > current state (working / broken / in-progress), and explicit next steps for the next agent.
 
+### 2026-07-13 (later 3) — WhatsNext HIDDEN (not deleted) + hero texture settled on DOTS ONLY. COMMITTED+PUSHED.
+- **WhatsNext unmounted** from page.tsx (import + mount commented, same pattern as Takeaways) —
+  Caroline is still working on its content and wanted to push without it visible. The component
+  and its copy stay on disk untouched; remount = uncomment two spots in page.tsx.
+- **Hero texture final: dots only** (Product's TEXTURES.dots values) + the light/dark radial
+  patches, continuous across hero + dwell to the glass seam. The check, dots-on-crossings, and
+  20px blurred-bloom variants were all tried and REVERTED ("awful") — don't resurrect them.
+  Lesson kept for reference: a repeating background glow clips at its own tile; >tile radii need
+  staggered larger tiles.
+- Also this round: follow-ups draft inset 150px (was 100); +100px between tasks/follow-ups blocks
+  (padded wrapper, margins collapse); review-queue callout ±54px (md-gated padding); Collaboration
+  got the dots texture + Caroline's own pt-[200px] & Architecture pb-[100px] split-gap edits (a
+  JSX-comment-in-return syntax error from that edit was fixed); Observability copy apostrophe
+  escaped for lint.
+
+### 2026-07-13 (later 2) — Caroline's 8-item desktop polish batch. UNCOMMITTED.
+- **MARGIN-COLLAPSE DISCOVERY (matters for every heading→content gap):** the section heading's
+  baked 48px margin-bottom and the next block's `mt-*` are ADJACENT margins — CSS collapses them
+  to the LARGER, they never add. "heading mb 48 + mt-12 = 96" is wrong; it measures 48. For a true
+  96 gap use `mt-24` (96 wins the collapse). Fixed Collaboration cards (mt-12→mt-24, measured 96)
+  and Architecture callout (mt-16→mt-24, measured 96). Padding never collapses — use pt when a gap
+  must be additive (see health callout below).
+- **Glass-plate shadow** (page.tsx): lilac glow `rgba(192,152,255,0.18)` → real dark shadow
+  `0_-32px_70px_-16px rgba(0,0,0,0.85)` (her ask: "shadow, not glow"). NOTE: NextProject.tsx still
+  carries the old lilac shadow on its own plate — not asked, left alone, flag if she wants parity.
+- **Hero check runs to the glass now:** the 22px grid moved OFF the Hero section onto a wrapper in
+  page.tsx around `<Hero/>` + the 34vh dwell spacer, so one continuous pattern reaches the seam
+  (before: cut at the section edge, plain bg below). Plus TEXTURE: 4 soft radial patches (white
+  0.035–0.045 / black 0.34–0.4) layered UNDER the grid lines make the check read lighter/darker in
+  areas. Patches are viewport-relative (100% 100% backgroundSize entries).
+- **Product row dials** (all in Product.tsx, verified by screenshot at 1440):
+  · Notifications: columnWidth 560→780 — shot slides far left toward the copy (smaller copy gap
+    EXPLICITLY ok), routing card stays pinned right; overlap now a sliver.
+  · Follow-ups (flipped row): NEW columnWidth 760 + ProductBlock now hugs the shot to the RIGHT on
+    flipped rows (`flip ? ml-auto : mr-auto`) — draft sits ~115px from the copy ("way smaller" ✓);
+    cron snippet now at the draft's bottom-RIGHT corner (`right-[-6%] bottom-[-56px]`, her round-2
+    call; it covers the draft's Comment button corner — flagged, she's seen the layout). NOTE it
+    started at left-[-10%] which could overshoot the screen edge — don't return it past left-0.
+  · Health room: SubSection got `className`/`bodyClassName` props for per-room spacing; health uses
+    `pb-[190px]!` + `md:mt-40!` (breathing above/below). Snippet moved to bottom-LEFT of the table,
+    hanging 200px below (`left-[-24%] bottom-[-200px]`) so the table reads. Callout Container
+    `pt-[144px]`: 156 rhythm + 144 − 200 hang = measured 100px visual gap to the callout.
+  · Miniti flow SLIMMED: labels only (call ends / pass 1 / pass 2 / review queue), title just
+    "miniti → vector", no file names or captions; card 290px wide. Round 2: tucked UNDER the
+    actions shot (companion `md:z-0`, ProductBlock's shot wrapper `md:z-[5]` — sits between z-0
+    and the default z-10 companions) at `left-[calc(-34%_-_20px)] bottom-[-76px]`.
+- **Round 3 (same session):** ProductBlock gained `shotClassName`/`copyClassName` per-block
+  escape hatches. Follow-ups draft inset `md:mr-[100px]` from its hugged edge (cron snippet
+  anchors to the COLUMN corner so it stayed put on screen — that's WHY the inset is on the shot,
+  not the column width). Health copy `md:translate-y-[100px]` = centred on the table+snippet
+  GROUP (items-center only sees the in-flow shot; the absolute companion doesn't count).
+  Collaboration section got the dots texture (same values as Product's TEXTURES.dots — keep in
+  sync).
+- tsc + lint clean (pre-existing unused-import warning in Observability only). Numeric proof:
+  collab 96 / arch 96 / health-callout 100. Screenshots at 1440 of seam, hero texture, and all
+  four product rows.
+
 ### 2026-07-13 (later) — Matching rebuilt as a horizontal timeline. UNCOMMITTED.
 - **Caroline's ask:** turn the four signal InsightCards + the fallback paragraph into ONE
   horizontal timeline, the fallback text as the fifth stop (not named "signal"), copy tightened
@@ -268,6 +325,63 @@ cards, element-screenshot. Delete the temp script after.
   pinned to a JSON schema and logged with its cost, and an unchanged board never pays twice."
   Also **CodeCard bg #14141a → #18181E** (her spec) in ui.tsx — affects the Product.tsx
   CodeCard too, not just AILayer's pair.
+- **Round 4: Observability reworked** (she called the old one "a bit horseshit": too much text,
+  boring usage table, over-simplified pipeline). New shape: 1-sentence intro → **TrackedBoard**
+  (the tracked dimensions as BIG mono type, 24/34px, two rows with tiny eyebrows "rolled up by
+  feature" / "kept for every call"; `<wbr/>` after each separator is the ONLY break point —
+  zero width so desktop stays single-line, phones wrap between terms at 19px; "tokens
+  in/out/cached" compacted so row 2 fits 1440 on one line) → short pipeline para → enriched
+  PipelineView. **Usage-table ShotRow REMOVED** (`admin-usage-features.png` now unused → add to
+  the leftovers pile). PipelineView trace now mirrors the real admin's disclosure anatomy: ▾ on
+  open sections, nested ▸ collapsed rows "raw extraction JSON" / "raw tool calls JSON" / "full
+  transcript · 20 utterances". Whole section wrapped in a Product-style **dots room** (same 22px
+  texture + border-y hairlines + DotGlow; DOTS const has a keep-in-sync comment). Also killed
+  the LAST price claim: page metadata "for under $5 a month" trimmed ($0.036 in the pipeline
+  trace kept — it's demo data showing cost tracking, not a running-cost claim). tsc+lint clean;
+  verified 1440+390, 0px horizontal overflow both.
+- **Round 5: TrackedBoard KILLED (she hated the big-type rows) → `UsageView` card.** The
+  usage data is back as a table but REBUILT as a designed card in PipelineView's family (she
+  loves that treatment): same CARD_FRAME + mono mini-label ("usage by feature / admin · last
+  30 days"), REAL columns and feature kinds from the actual admin (`app/admin/ai/page.js`:
+  kind/calls/errors/total cost/p95/cache hit; kinds insight_onboarding, insight_portfolio,
+  miniti_extraction, miniti_orchestrator, scan_stale_followup), fictional demo numbers. The
+  insight_onboarding row is EXPANDED (▾) to "one call, kept in full": tokens in/cache-read/out,
+  $0.0041 · 2.9s, request id — the per-call receipt lives INSIDE the rollup, same disclosure
+  language as the pipeline card. Cards alternate: usage left, pipeline right (ml-auto), both
+  Parallax. Phones: errors + p95 columns `max-sm:hidden`. Verified 1440+390, 0 overflow, tsc+
+  lint clean. Table rows need `<Fragment key>` (fragments in a map can't take keys as `<>`).
+- **Round 6: copy above, cards overlap.** Both Observability paragraphs now sit together
+  above the cluster; the two cards form one overlapping collage on md+ (`md:-mt-16` +
+  `relative z-10` on the pipeline Reveal → pipeline covers the usage card's bottom-right;
+  scan_stale row still peeks left). BOTH cards share ONE `Parallax speed={-18}` wrapper —
+  two separate Parallaxes would counter-drift and make the overlap non-deterministic (the
+  cog-tracker lesson). Phones: normal stack (`mt-8`), no overlap. Verified 1440+390.
+- **Round 8: NextProject seam = shadow not glow, blobs toned down.** The plate's
+  `shadow-[0_-24px_60px_-20px_rgba(192,152,255,0.18)]` lilac glow swapped for the main glass
+  seam's dark recipe `0_-32px_70px_-16px_rgba(0,0,0,0.85)` (same as above MyRole). Of the two
+  opacity-90 SoftBlobs, the smaller (bottom-16% right-24%, speed -90) was DELETED and the
+  remaining one dropped to opacity-50. Verified: seam reads as depth, single subtle glow.
+- **Round 7b: Collaboration texture → CHECK (grid) + border-y hairlines.** Her follow-up:
+  swapped the dots for Product's `grid` TEXTURES recipe (matches the "ai admin" room —
+  thematically right for "Working with AI") and added `border-y border-[rgba(241,234,241,0.14)]`
+  on the section so the hairlines land exactly at the texture edges, the Product SubSection
+  move. NextProject keeps DOTS (glass plate, has its own rim glint; she didn't ask).
+  Verified both edges at 1440.
+- **Round 7: Collaboration dots-room boundaries split 100/100 + NextProject dots.** The
+  "Working with AI" dots texture used to start flush against Under-the-hood's last line (all
+  200px of air lived INSIDE the texture via pt-[200px], and pb-0 meant the texture stopped
+  dead before WhatsNext's 120). Now: Architecture `pb-[100px]` + Collaboration `pt-[100px]`,
+  Collaboration `pb-[100px]` + WhatsNext `pt-[100px]` (was pt-[120px]) — the texture edge sits
+  EXACTLY mid-gap on both sides (all four measured 100 via DOM ruler). NextProject's dark
+  glass plate got the same 22px dots recipe (style on the section, under the SoftBlobs).
+  Rule to keep: a textured section owns HALF its boundary gap; the plain neighbour owns the
+  other half.
+- **PROCESS RULE (learned the hard way): NEVER blind-kill port 3000.** Caroline usually has
+  her OWN dev server running there; `next dev` from an agent just exits ("Another next dev
+  server is already running") and the page you screenshot is HERS. My `lsof -ti:3000 | xargs
+  kill` cleanup killed her server mid-session (she saw it as a crash). Before killing:
+  check the PID is one YOU started (from your own dev.log); if the server was already up,
+  just use it and kill nothing.
 - **Round 3 RESOLVED — mix and match (her pick):** context.js keeps the PARAPHRASED snapshot
   card (compact, real field names, seed-true Initech values); insights.js now uses the
   VERBATIM ONBOARDING_RULES excerpt (real const name, real rule numbers 1/4/5 with dim ⋮

@@ -192,13 +192,13 @@ const WORKFLOWS = [
     label: "the pair",
     diagram: <PairDiagram />,
     caption:
-      "Most features ran as a loop. One agent built, a second reviewed the work against the plan, and nothing landed until the evaluator was satisfied.",
+      "Most features ran as a loop. One agent built, a second reviewed the work for issues and against the plan.",
   },
   {
     label: "the team",
     diagram: <TeamDiagram />,
     caption:
-      "For the calls that shaped the product I set up a team: a designer, a developer and a CEO agent, each judging the same decision from a different angle.",
+      "For the calls that shaped the product I set up a teams e.g. a designer, a developer and a CEO each judging from different angles.",
   },
   {
     label: "the fleet",
@@ -216,42 +216,51 @@ const WORKFLOWS = [
     label: "the net",
     diagram: <NetDiagram />,
     caption:
-      "Nobody reviews a solo build, so the flows I cannot afford to break run through Playwright end-to-end tests. The suite is the second pair of eyes.",
+      "The flows I cannot afford to break run through Playwright end-to-end tests. Vitest unit tests cover the logic underneath.",
   },
   {
     label: "the memory",
     diagram: <MemoryDiagram />,
     caption:
-      "Design rules and conventions became skills the AI loads every session, so it starts already knowing how Vector should work. The walls we did hit got written up the same way.",
+      "Design rules and conventions became skills the AI loads every session. The walls we hit got transformed into skills too.",
   },
 ] as const;
 
 export function Collaboration() {
   return (
-    <section data-section="Collaboration" className="pt-[120px] pb-0">
+    /* check texture = the Product section's `grid` TEXTURES entry (same 22px
+       rhythm and dimness) — keep the two in sync. Hairlines sit as the section's
+       own border-y, so they land EXACTLY at the texture's edges (the Product
+       SubSection move). */
+    /* both boundaries split 100/100: Architecture pb-[100px] + our textured
+       pt-[100px] above; our textured pb-[100px] + WhatsNext pt-[100px] below —
+       the texture edges land exactly mid-gap on both sides */
+    <section
+      data-section="Collaboration"
+      className="border-y border-[rgba(241,234,241,0.14)] pt-[100px] pb-[100px]"
+      style={{
+        backgroundImage:
+          "linear-gradient(rgba(241,234,241,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(241,234,241,0.035) 1px, transparent 1px)",
+        backgroundSize: "22px 22px",
+      }}
+    >
       <Container>
         <Reveal>
           <Kicker>Working with AI</Kicker>
           <Title>
-            I made the calls,
-            <br />
-            it wrote the code
+            Designing how
+            my team works
           </Title>
         </Reveal>
 
-        <Reveal className="max-w-[760px]">
-          <Body>
-            Vector was built as a pair, me and an AI coding agent, and the split of
-            responsibilities never moved. I owned the product, the decisions and the
-            review. The AI owned the typing. The shape of the collaboration changed
-            with the job.
-          </Body>
-        </Reveal>
 
         {/* how the collaboration actually ran: six cards, one visual language.
             Row 1 = the shapes of the teams, row 2 = the habits that kept the
             build honest (was three columns of prose, condensed 2026-07-13). */}
-        <Reveal stagger={0.1} className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3">
+        {/* mt-24 = a TRUE 96px gap: the heading's baked 48px margin-bottom and this
+            top margin are adjacent, so CSS collapses them to the LARGER of the two —
+            they never add. mt-12 measured 48px, not 96. */}
+        <Reveal stagger={0.1} className="mt-24 grid grid-cols-1 gap-6 md:grid-cols-3">
           {WORKFLOWS.map(({ label, diagram, caption }) => (
             <div key={label} className={CARD_FRAME}>
               <p className="case-study-label mb-4">{label} &gt;</p>

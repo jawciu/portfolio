@@ -12,14 +12,16 @@ import { AILayer } from "../../../components/project/vector/sections/AILayer";
 import { Observability } from "../../../components/project/vector/sections/Observability";
 import { Architecture } from "../../../components/project/vector/sections/Architecture";
 import { Collaboration } from "../../../components/project/vector/sections/Collaboration";
-import { WhatsNext } from "../../../components/project/vector/sections/WhatsNext";
+// WhatsNext unmounted 2026-07-13 (Caroline: still working on it) — NOT deleted,
+// component stays on disk; re-add the import + mount below when it's ready.
+// import { WhatsNext } from "../../../components/project/vector/sections/WhatsNext";
 import { NextProject } from "../../../components/project/vector/sections/NextProject";
 
 export const metadata: Metadata = {
   title:
     "Vector - Rethinking time-to-value in B2B SaaS onboarding | Caroline Jaworsky",
   description:
-    "Product case study: Vector, a shared vendor/customer workspace with an AI layer that cuts time-to-value in B2B SaaS onboarding. Designed and built solo, with grounded, human-in-the-loop AI running live for under $5 a month.",
+    "Product case study: Vector, a shared vendor/customer workspace with an AI layer that cuts time-to-value in B2B SaaS onboarding. Designed and built solo, with grounded, human-in-the-loop AI running live.",
 };
 
 export default function VectorCaseStudy() {
@@ -33,15 +35,33 @@ export default function VectorCaseStudy() {
           in view while the glass visibly climbs. Transparent over the .vector-root bg, so
           seamless. */}
       <StickyHero>
-        <Hero />
-        <div aria-hidden className="h-[34vh]" />
+        {/* DOTS TEXTURE — one continuous 22px dot field across the hero AND the
+            dwell space, so the pattern runs unbroken all the way down to the glass
+            seam. Dots only (the check + blurred-bloom variants were tried and
+            cut, 2026-07-13); values match Product's TEXTURES.dots — keep in sync.
+            The soft radial patches under the dots lighten/darken areas so it
+            reads as textured paper, not a flat repeat. */}
+        <div
+          style={{
+            backgroundImage:
+              "radial-gradient(rgba(241,234,241,0.11) 1px, transparent 1.4px)," +
+              "radial-gradient(900px 700px at 18% 14%, rgba(241,234,241,0.045), transparent 70%)," +
+              "radial-gradient(1100px 820px at 80% 36%, rgba(0,0,0,0.4), transparent 72%)," +
+              "radial-gradient(1000px 780px at 38% 64%, rgba(241,234,241,0.035), transparent 70%)," +
+              "radial-gradient(950px 720px at 86% 88%, rgba(0,0,0,0.34), transparent 74%)",
+            backgroundSize: "22px 22px, 100% 100%, 100% 100%, 100% 100%, 100% 100%",
+          }}
+        >
+          <Hero />
+          <div aria-hidden className="h-[34vh]" />
+        </div>
       </StickyHero>
 
       {/* GLASS SEAM — everything after the hero rides a frosted dark-glass plate that
           slides UP over the pinned hero (mirrors the homepage About-over-hero move).
           Gradient retinted to Vector's near-black surface, landing on solid bg fast. */}
       <div
-        className="relative isolate z-10 rounded-t-[2.5rem] backdrop-blur-2xl backdrop-saturate-150 shadow-[0_-24px_60px_-20px_rgba(192,152,255,0.18)]"
+        className="relative isolate z-10 rounded-t-[2.5rem] backdrop-blur-2xl backdrop-saturate-150 shadow-[0_-32px_70px_-16px_rgba(0,0,0,0.85)]"
         style={{
           background:
             "linear-gradient(180deg, rgba(20,20,26,0.55) 0px, rgba(20,20,26,0.78) 70px, rgba(20,20,26,0.93) 138px, rgba(20,20,26,0.98) 172px, #14141a 192px)",
@@ -82,7 +102,8 @@ export default function VectorCaseStudy() {
         <div data-vec="Collaboration"><Collaboration /></div>
         {/* Takeaways unmounted 2026-07-09 — its old copy moved into Collaboration;
             remounts once Caroline provides the new "Key takeaways" copy. */}
-        <div data-vec="WhatsNext"><WhatsNext /></div>
+        {/* WhatsNext unmounted 2026-07-13 — Caroline is still working on it;
+            remount when ready: <div data-vec="WhatsNext"><WhatsNext /></div> */}
         <div data-vec="NextProject"><NextProject /></div>
       </div>
     </main>

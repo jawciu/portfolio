@@ -10,7 +10,7 @@ import { Reveal } from "../Reveal";
 
 export function AILayer() {
   return (
-    <section data-section="AILayer" className="pt-[120px] pb-0">
+    <section data-section="AILayer" className="pt-[200px] pb-0">
       <Container>
         <Reveal>
           <Kicker>The AI layer</Kicker>

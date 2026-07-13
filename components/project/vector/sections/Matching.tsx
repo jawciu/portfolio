@@ -12,27 +12,27 @@ const STOPS = [
   [
     "signal #01",
     "Attendee domains",
-    "Every meeting arrives with its invite list. An attendee's email domain matching a customer's is the strongest signal.",
+    "When a meeting has an invite list, a matching customer email domain is the strongest signal.",
   ],
   [
     "signal #02",
     "Contact emails",
-    "Failing that, each attendee's email is looked up against every onboarding's contacts. Slower, but precise.",
+    "Failing that, each attendee's email is looked up against every onboarding's contacts.",
   ],
   [
     "signal #03",
     "The title",
-    "The title is scanned for the significant words of a company name: “Acme weekly sync” matches Acme Co through “Acme”, never through “Co”.",
+    "The title is scanned for the significant words of a company name e.g. “Raycast weekly sync”.",
   ],
   [
     "signal #04",
     "The transcript",
-    "The last resort, for meetings titled “Untitled meeting”. Summary, topics, notes and transcript are searched for a customer mention.",
+    "The last resort: summary, topics, notes and transcript are searched for a customer mention.",
   ],
   [
     "no signal",
     "Needs your input",
-    "Zero candidates, or more than one, and Vector refuses to pick. The meeting parks in the inbox, a person assigns it in one click, and only then does the drafting run.",
+    "Zero or more than one candidate and the meeting lands in “to assign the inbox”.",
   ],
 ] as const;
 
@@ -42,7 +42,7 @@ const RAMP = ["#c098ff", "#d099de", "#e09abe", "#ef9b9d", "#ff9c7d"];
 
 export function Matching() {
   return (
-    <section data-section="Matching" className="pt-[120px] pb-0">
+    <section data-section="Matching" className="pt-[160px] pb-0">
       <Container>
         <Reveal>
           <Kicker>The matching</Kicker>
