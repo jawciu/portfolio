@@ -6,7 +6,18 @@ import { A, Container, LinkIcon, Shot } from "../ui";
 
 export function Hero() {
   return (
-    <section data-section="Hero" className="relative">
+    /* The check texture matches the Product section's `grid` TEXTURES entry —
+       same 22px rhythm and dimness. It paints in the section's own background
+       layer, UNDER the -z-10 gradient wash. Keep the two in sync. */
+    <section
+      data-section="Hero"
+      className="relative"
+      style={{
+        backgroundImage:
+          "linear-gradient(rgba(241,234,241,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(241,234,241,0.035) 1px, transparent 1px)",
+        backgroundSize: "22px 22px",
+      }}
+    >
       {/* Top wash — Vector's lilac→peach AI gradient bleeding in from the page's top
           edge and dissolving into the near-black surface before the title. Masked to
           fade out rather than stopping on a hard edge. */}

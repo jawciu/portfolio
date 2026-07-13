@@ -3,7 +3,6 @@ import { Reveal } from "../Reveal";
 import { Parallax } from "../Parallax";
 import { DotGlow } from "../DotGlow";
 import { CircuitTrace } from "../CircuitTrace";
-import { TabHead } from "../TabHead";
 
 /* The product — one continuous walk through the product, replacing the old pillar
    cards + the separate Workspace / AIFeatures sections. Each block is a two-column
@@ -15,6 +14,10 @@ type Block = {
   body: string[];
   asset: string;
   alt: string;
+  /** small artifact clustered with the shot (cog-style stacked overlap):
+      a code snippet or the notification-routing flow. Only for the SMALL
+      shots — the big ones (board, portal, AI overview) speak for themselves. */
+  companion?: "health" | "cron" | "flow";
   /** true → visual on the LEFT, copy on the RIGHT (md+ only) */
   flip?: boolean;
   /** rendered width of the shot in px (md+). Tuned per shot by eye. */
@@ -60,8 +63,10 @@ const BLOCKS: Block[] = [
       "Email is saved for what needs the most visibility. Portal invites, task assignments and comment alerts go out through Resend, so they reach the customer where they already work.",
     ],
     asset: "notifications-v2.png",
+    companion: "flow",
     band: "70",
-    width: 435,
+    /* 392 = the old 435 −10%, ceded to the routing-flow companion */
+    width: 392,
     alt: "Vector's notification centre: customer activity grouped by actor, showing completions, comments and first portal visits.",
   },
   {
@@ -70,6 +75,7 @@ const BLOCKS: Block[] = [
       "Every onboarding is scored On track, At risk or Blocked. The triggers are all real task data, blocked or overdue work, a pace that overruns the go-live date, a third of the tasks stuck. I kept AI out of the scoring on purpose. It's deterministic JavaScript, so the same input always gives the same answer.",
     ],
     asset: "health-v2.png",
+    companion: "health",
     band: "70",
     width: 580,
     alt: "Vector's health table: each company scored On track, At risk or Blocked, with task counts and how many are blocked.",
@@ -104,6 +110,7 @@ const BLOCKS: Block[] = [
       "A task with no owner gets no follow-up. I chose clear responsibility over copying everyone in, and kept one plain tone for now. Mimicking each user's voice is its own project.",
     ],
     asset: "followup-v2.png",
+    companion: "cron",
     band: "70",
     width: 522,
     alt: "Vector's draft follow-up: an AI-written email grounded in a blocked task, with dismiss, open in mail and comment.",
@@ -126,7 +133,7 @@ const TEXTURES: Record<Texture, React.CSSProperties> = {
   },
   grid: {
     backgroundImage:
-      "linear-gradient(rgba(241,234,241,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(241,234,241,0.07) 1px, transparent 1px)",
+      "linear-gradient(rgba(241,234,241,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(241,234,241,0.035) 1px, transparent 1px)",
     backgroundSize: "22px 22px",
   },
 };
@@ -173,33 +180,204 @@ function SubSection({
   );
 }
 
+/* ---- companions: the small artifacts clustered with the small shots ---- */
+
+/* the companion cards share the framed Shot's EXACT surface (see ui.tsx):
+   same radius, hairline, card fill and shadow as the customer-portal frame,
+   so the cluster reads as one family of panels */
+const CARD_FRAME =
+  "rounded-[14px] border border-[var(--case-study-line)] bg-[var(--case-study-card)] p-5 shadow-[0_24px_60px_-24px_rgba(0,0,0,0.65)]";
+
+/* SnippetCard — a tiny real-engineering snippet, set in the .vec-code
+   treatment (theme.css). Kept to a handful of lines: it's a design artifact,
+   not documentation. (ui.tsx has the bigger windowed CodeCard; this is the
+   compact cluster variant.) */
+function SnippetCard({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div className={CARD_FRAME}>
+      <p className="mb-3 font-[family-name:var(--font-mono)] text-[10px] lowercase tracking-[0.14em] text-[var(--case-study-muted)]">
+        {title}
+      </p>
+      <pre className="vec-code overflow-x-auto">{children}</pre>
+    </div>
+  );
+}
+
+/* NotificationFlow — the REAL routing (lib/db.js): every mutation calls
+   emitActivity(), which writes one ActivityLog row and fans out to two
+   derivers. deriveNotifications: contact-authored events become vendor inbox
+   rows (grouped per actor in 10-minute buckets). deriveCustomerEmails:
+   high-signal vendor-authored events go to the customer through Resend.
+   WHO acted decides the channel. Static diagram (pulses tried, cut as
+   distracting); colours match the notifications asset — purple unread dots,
+   green + pink avatars. */
+const NF_ROWS = [
+  { label: "task completed", y: 24, dest: "app" },
+  { label: "new comment", y: 56, dest: "app" },
+  { label: "portal visit", y: 88, dest: "app" },
+  { label: "portal invite", y: 120, dest: "email" },
+  { label: "task assigned", y: 152, dest: "email" },
+  { label: "task commented", y: 184, dest: "email" },
+] as const;
+
+const NF_PURPLE = "var(--green)"; /* lilac accent — the asset's unread dots */
+const NF_GREEN = "var(--vec-success)"; /* the asset's green avatars */
+const NF_PINK = "#ff9ec4"; /* PINK like the asset's avatars (danger red was wrong) */
+const NF_DOT = "rgba(241,234,241,0.35)"; /* plain gray event dots */
+
+function NotificationFlow() {
+  const mono = "var(--font-mono), monospace";
+  const line = "rgba(241,234,241,0.16)";
+  return (
+    <div className={CARD_FRAME}>
+      <p className="mb-3 font-[family-name:var(--font-mono)] text-[11px] lowercase tracking-[0.14em] text-[var(--case-study-muted)]">
+        notification routing / lib/db.js
+      </p>
+      <svg
+        viewBox="0 0 480 208"
+        className="w-full"
+        role="img"
+        aria-label="Routing diagram: every event flows through emitActivity. Customer actions (task completed, new comment, portal visit) land in the vendor's notification centre; vendor actions (portal invite, task assigned, task commented) reach the customer as email through Resend."
+      >
+        {/* events → the emitActivity() hub */}
+        {NF_ROWS.map(({ label, y }, i) => (
+          <g key={label}>
+            <text x={12} y={y + 4} fontSize={13} fontFamily={mono} fill="var(--case-study-ink-soft)">
+              {label}
+            </text>
+            <circle cx={148} cy={y} r={2.5} fill={NF_DOT} />
+            <path
+              id={`vec-nf-in-${i}`}
+              d={`M148 ${y} C 166 ${y}, 160 104, 176 104`}
+              fill="none"
+              stroke={line}
+              strokeWidth={1}
+            />
+          </g>
+        ))}
+
+        {/* the hub: one writer, two derivers */}
+        <rect x={176} y={88} width={134} height={32} rx={8} fill="none" stroke="rgba(156,255,166,0.4)" />
+        <text x={243} y={108} textAnchor="middle" fontSize={13} fontFamily={mono} fill={NF_GREEN}>
+          emitActivity()
+        </text>
+
+        {/* hub → destinations */}
+        <path d="M310 104 C 320 104, 312 56, 324 56" fill="none" stroke={line} strokeWidth={1} />
+        <path d="M310 104 C 320 104, 312 152, 324 152" fill="none" stroke={line} strokeWidth={1} />
+
+        <rect x={324} y={38} width={150} height={36} rx={8} fill="none" stroke="rgba(192,152,255,0.45)" />
+        <text x={399} y={60} textAnchor="middle" fontSize={11} fontFamily={mono} fill={NF_PURPLE}>
+          notification centre
+        </text>
+        <rect x={324} y={134} width={150} height={36} rx={8} fill="none" stroke="rgba(255,158,196,0.45)" />
+        <text x={399} y={156} textAnchor="middle" fontSize={11} fontFamily={mono} fill={NF_PINK}>
+          email / resend
+        </text>
+      </svg>
+    </div>
+  );
+}
+
+/* Snippet contents are REAL lines from the vector repo (github.com/jawciu/vector)
+   — lib/health.js and lib/ai/scan-stale.js — trimmed, not paraphrased. If the
+   repo logic changes, re-check these against source before editing. */
+const COMPANIONS: Record<NonNullable<Block["companion"]>, React.ReactNode> = {
+  health: (
+    <SnippetCard title="lib/health.js">
+      <span className="tok-com">{"// no model in the loop, only task data\n"}</span>
+      <span className="tok-key">{"const"}</span>
+      {" BLOCKED_THRESHOLD = 0.3;\n\n"}
+      <span className="tok-key">{"if"}</span>
+      {" (blockedPct >= BLOCKED_THRESHOLD) {\n  status = "}
+      <span className="tok-str">{'"Blocked"'}</span>
+      {";\n  reasons."}
+      <span className="tok-fn">{"push"}</span>
+      {"(\n    "}
+      <span className="tok-str">{"`${blockedCount} of ${total} tasks blocked`"}</span>
+      {");\n}\n"}
+      <span className="tok-com">{"// every flag carries its evidence\n"}</span>
+      <span className="tok-key">{"return"}</span>
+      {" { status, reasons };"}
+    </SnippetCard>
+  ),
+  cron: (
+    <SnippetCard title="lib/ai/scan-stale.js">
+      <span className="tok-com">{'// vercel cron: Mondays 08:00, "0 8 * * 1"\n'}</span>
+      <span className="tok-key">{"const"}</span>
+      {" stale = tasks\n  ."}
+      <span className="tok-fn">{"map"}</span>
+      {"((t) => "}
+      <span className="tok-fn">{"withStaleness"}</span>
+      {"(t, today))\n  ."}
+      <span className="tok-fn">{"filter"}</span>
+      {"((t) => t.staleness !== "}
+      <span className="tok-key">{"null"}</span>
+      {")\n  "}
+      <span className="tok-com">{"// no owner, no follow-up\n"}</span>
+      {"  ."}
+      <span className="tok-fn">{"filter"}</span>
+      {"((t) => t.ownerId != "}
+      <span className="tok-key">{"null"}</span>
+      {")"}
+    </SnippetCard>
+  ),
+  flow: <NotificationFlow />,
+};
+
+/* Where each companion sits against its shot (md+; phones keep the simple
+   in-flow stack). The flow card outsizes its shrunk asset on purpose —
+   Caroline traded 10% of the shot for a bigger, readable diagram. */
+const COMPANION_POS: Record<NonNullable<Block["companion"]>, string> = {
+  /* bottom-RIGHT corner of the notifications shot, oversized, deep overlap
+     (~3× the original 56px) */
+  flow: "relative z-10 -mt-10 w-full md:-mt-40 md:ml-auto md:mr-[-30%] md:w-[118%] md:max-w-[500px]",
+  /* bottom-LEFT corner of the health table, a touch more overlap */
+  health: "relative z-10 -mt-10 w-[88%] max-w-[430px] ml-[-6%] md:-mt-16 md:ml-[-10%]",
+  /* bottom-LEFT corner of the follow-up draft */
+  cron: "relative z-10 -mt-10 w-[88%] max-w-[420px] ml-[-6%] md:-mt-14 md:ml-[-10%]",
+};
+
 /* Each row is a centred BAND with the copy at one end and the shot at the other, pushed
    apart (space-between). Big shots ride the full 90% band; the small panels tighten to a
    70% band so the pair doesn't strand itself at opposite edges of the screen. Below md
    the band collapses: one column, copy first, shot full width. */
-function ProductBlock({ subhead, body, asset, alt, flip, width, band, framed }: Block) {
+function ProductBlock({ subhead, body, asset, alt, companion, flip, width, band, framed }: Block) {
   return (
     <Reveal
       className={`mx-auto flex flex-col gap-10 px-6 md:flex-row md:items-center md:justify-between md:gap-6 md:px-0 ${
         band === "90" ? "md:w-[90%]" : band === "75" ? "md:w-[75%]" : "md:w-[70%]"
       }`}
     >
-      {/* COPY — also the anchor the room's CircuitTrace lights a node against,
-          and the scroll band TabHead lights up in. */}
+      {/* COPY — also the anchor the room's CircuitTrace lights a node against.
+          Heading is static full-ink (the scroll-lit TabHead was tried and cut);
+          the first paragraph gets double air under the heading. */}
       <div data-trace-node className={`md:w-[424px] md:shrink-0 ${flip ? "md:order-2" : ""}`}>
-        <TabHead>{subhead}</TabHead>
-        {body.map((p) => (
-          <Body key={p.slice(0, 24)} className="mt-4">
+        <h3 className="font-[family-name:var(--font-mono)] text-[24px] font-extrabold tracking-[0.04em] text-[var(--case-study-ink)]">
+          {subhead}
+        </h3>
+        {body.map((p, i) => (
+          <Body key={p.slice(0, 24)} className={i === 0 ? "mt-8" : "mt-4"}>
             {p}
           </Body>
         ))}
       </div>
 
-      {/* VISUAL — frameless unless the asset lacks its own chrome (see `framed`). */}
-      <div className={`w-full md:shrink-0 ${flip ? "md:order-1" : ""}`} style={{ maxWidth: width }}>
+      {/* VISUAL — frameless unless the asset lacks its own chrome (see `framed`).
+          A companion clusters against a corner of its shot (cog-style stacked
+          overlap) with its own parallax speed, so the pair floats apart as you
+          scroll. Each companion has a bespoke corner (COMPANION_POS): flow →
+          bottom-left, health → bottom-right, cron → top-right (empty space in
+          that asset). Below md they all stack in-flow. */}
+      <div className={`relative w-full md:shrink-0 ${flip ? "md:order-1" : ""}`} style={{ maxWidth: width }}>
         <Parallax speed={20}>
           <Shot src={A(asset)} alt={alt} bare={!framed} />
         </Parallax>
+        {companion && (
+          <Parallax speed={34} className={COMPANION_POS[companion]}>
+            {COMPANIONS[companion]}
+          </Parallax>
+        )}
       </div>
     </Reveal>
   );
@@ -215,7 +393,10 @@ export function Product() {
           rows sit outside the Container so their asset column can bleed out. */}
       <div>
         <SubSection label="shared board" texture="dots">
-          <Container>
+          {/* heading → first block gap is HALF the room's 156px rhythm. Tailwind
+              v4 space-y puts the margin on the PREVIOUS sibling's bottom, so the
+              override lives here (a mt-! on the block does nothing). */}
+          <Container className="mb-[78px]!">
             <Reveal>
               <Kicker>The product</Kicker>
               <Title>

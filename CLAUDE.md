@@ -229,6 +229,28 @@ cards, element-screenshot. Delete the temp script after.
 > **`docs/CLAUDE-ARCHIVE.md`**. At the end of a session, append a new entry with: what changed,
 > current state (working / broken / in-progress), and explicit next steps for the next agent.
 
+### 2026-07-13 (later) — Matching rebuilt as a horizontal timeline. UNCOMMITTED.
+- **Caroline's ask:** turn the four signal InsightCards + the fallback paragraph into ONE
+  horizontal timeline, the fallback text as the fifth stop (not named "signal"), copy tightened
+  (especially signal #03's).
+- **Built in `Matching.tsx`:** five stops on one rail. Dots + rail segments ramp through Vector's
+  AI gradient, lilac → peach, interpolated per stop (`RAMP` array in the file) — the four signals
+  are filled dots, the fifth stop lands on peach as a HOLLOW ring (the AI stops, a human steps in).
+  Labels stay `signal #01…#04`; the fifth is **`no signal` / "Needs your input"**. InsightCards gone
+  from this section; layout is open (mono label + `.case-study-label` title + Body per stop).
+- **Responsive:** ≥lg it's the horizontal 5-col grid; below lg it turns into a VERTICAL timeline
+  (dots left, gradient rail connecting them, copy right, 48px between stops) — five columns don't
+  fit at md. Both orientations are separate `lg:`-gated rail elements (a 1px gradient can't flip
+  direction by breakpoint without custom CSS).
+- **Copy trimmed** per her note, #03 the most: now "The title is scanned for the significant words
+  of a company name: 'Acme weekly sync' matches Acme Co through 'Acme', never through 'Co'."
+  `VECTOR-COPY.md` §8 stops synced (its extra two-pass BODY + CALLOUT left untouched — pending
+  copy, built nowhere).
+- **Asset slot kept as a comment:** the incoming "Needs your input" ambiguous-matching shot now
+  goes BELOW the timeline, full container width.
+- tsc + lint clean; standalone-Playwright verified at 1440 (rail + ramp + alignment ✓) and 390
+  (vertical rail ✓, spacing rhythm ✓).
+
 ### 2026-07-13 — AILayer shortened (Caroline's call: it repeated itself). UNCOMMITTED.
 - **AILayer.tsx cut to: intro (her new 2-para copy) → the two CodeCards → ONE streamed callout.**
   The old callout ("never does the arithmetic") and the whole grounded/efficient/observable
@@ -240,8 +262,24 @@ cards, element-screenshot. Delete the temp script after.
   Initech per seed: 9 tasks, 1 done, 3 blocked → health "Blocked" (30%+ rule), go-live
   2026-03-14 → daysToTargetGoLive -121 as of today. daysOverdue 12 is plausible-not-live;
   pin against the real board/logs if she wants exactness.
+- **Round 2 (same session): NO price claims.** Caroline: the "$5 a month" figure depends on
+  client/onboarding count, so never quote a cost anywhere in the study (Observability's
+  "dollar cost" as a logged FIELD name is fine). Callout now: "Every call is prompt-cached,
+  pinned to a JSON schema and logged with its cost, and an unchanged board never pays twice."
+  Also **CodeCard bg #14141a → #18181E** (her spec) in ui.tsx — affects the Product.tsx
+  CodeCard too, not just AILayer's pair.
+- **Round 3: TEMPORARY second pair of CodeCards in AILayer** ("option b: closer to the real
+  source" label) — Caroline asked how less-paraphrased versions would look side by side after
+  learning the originals editorialise the source (renamed const, renumbered rules, reworded).
+  Option b: snapshot card with the REAL buildSnapshot field set/order + seed-true Initech values
+  (owner Tom Okafor, velocity7d 1, full ISO targetGoLive) with dim ⋮ elisions; rules card is a
+  VERBATIM ONBOARDING_RULES excerpt (real const name, real rule numbers 1/4/5, the source's
+  em dash + \\` escapes intact, only hard-wrapped). **She picks a pair, the loser + the label
+  get deleted.** daysOverdue 12 still plausible-not-live in both. Verified at 1440 via
+  standalone Playwright (both pairs wrap clean, no overflow).
 - tsc + lint clean (a transient stale-buildinfo 'tags' error in Product.tsx self-resolved;
-  file never contained "tags"). Playwright skipped: removal + text swap, layout clear from code.
+  file never contained "tags"). Playwright skipped for rounds 1-2: removal + text swap, layout
+  clear from code.
 
 ### 2026-07-12 — SESSION HANDOFF (Caroline signed off). Product rebuilt as subsectioned walk. UNCOMMITTED WORK IN TREE.
 - **WHERE THIS LIVES:** all of today's work is in the `portfolio-vector` WORKTREE

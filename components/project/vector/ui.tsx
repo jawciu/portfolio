@@ -337,7 +337,7 @@ export function CodeCard({
 }) {
   return (
     <div
-      className={`relative isolate overflow-hidden rounded-2xl border border-[var(--case-study-line)] bg-[#14141a] ${className}`}
+      className={`relative isolate overflow-hidden rounded-2xl border border-[var(--case-study-line)] bg-[#18181E] ${className}`}
     >
       {/* AI-gradient rim glint */}
       <div
