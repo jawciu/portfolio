@@ -1,6 +1,9 @@
-import { A, Container, Kicker, Title, Subhead, Body, CaseStudyCallout, Shot } from "../ui";
+import { A, Container, Kicker, Title, Body, CaseStudyCallout, Shot } from "../ui";
 import { Reveal } from "../Reveal";
 import { Parallax } from "../Parallax";
+import { DotGlow } from "../DotGlow";
+import { CircuitTrace } from "../CircuitTrace";
+import { TabHead } from "../TabHead";
 
 /* The product — one continuous walk through the product, replacing the old pillar
    cards + the separate Workspace / AIFeatures sections. Each block is a two-column
@@ -109,17 +112,33 @@ const BLOCKS: Block[] = [
 ];
 
 /* Subsection wrapper — a thin hairline, a homepage-style /label, and an optional
-   dot texture behind everything in the group. Dots alternate down the section
-   (shared board dotted, predictive health plain, ai admin dotted) so the three
-   groups read as distinct rooms rather than one long corridor. */
+   background texture behind everything in the group. Textures vary down the
+   section (shared board dotted, predictive health plain, ai admin checked) so
+   the three groups read as distinct rooms rather than one long corridor. */
+type Texture = "dots" | "grid";
+
+/* both textures share the 22px rhythm; the grid's lines cover far more area per
+   cell than a dot does, so its alpha sits lower to read as the same dimness */
+const TEXTURES: Record<Texture, React.CSSProperties> = {
+  dots: {
+    backgroundImage: "radial-gradient(rgba(241,234,241,0.11) 1px, transparent 1.4px)",
+    backgroundSize: "22px 22px",
+  },
+  grid: {
+    backgroundImage:
+      "linear-gradient(rgba(241,234,241,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(241,234,241,0.07) 1px, transparent 1px)",
+    backgroundSize: "22px 22px",
+  },
+};
+
 function SubSection({
   label,
-  dots = false,
+  texture,
   last = false,
   children,
 }: {
   label: string;
-  dots?: boolean;
+  texture?: Texture;
   last?: boolean;
   children: React.ReactNode;
 }) {
@@ -128,25 +147,28 @@ function SubSection({
        starts and runs the full screen width. Each subsection's top border doubles
        as the previous one's bottom edge; `last` closes the final texture. */
     <div
-      className={`border-t border-[var(--case-study-line)] pb-[140px] ${
+      className={`relative border-t border-[rgba(241,234,241,0.14)] pb-[140px] ${
         last ? "border-b" : ""
       }`}
-      style={
-        dots
-          ? {
-              backgroundImage:
-                "radial-gradient(rgba(241,234,241,0.055) 1px, transparent 1.4px)",
-              backgroundSize: "22px 22px",
-            }
-          : undefined
-      }
+      style={texture ? TEXTURES[texture] : undefined}
     >
-      <Container>
+      {/* cursor-following lilac glow over the texture; content wrappers below are
+          `relative` so they paint ABOVE this overlay */}
+      {texture && <DotGlow pattern={texture} />}
+      {/* scroll-drawn circuit spine down the left edge, one node per block */}
+      <CircuitTrace />
+      {/* room label: on md+ it turns 90° and rides the circuit spine (between the
+          screen edge and the line, so it can never collide with the content bands);
+          below md the trace is hidden, so the label keeps its horizontal spot. */}
+      <p className="pointer-events-none absolute top-8 left-1.5 hidden rotate-180 font-[family-name:var(--font-mono)] text-sm tracking-[0.2em] text-[var(--case-study-muted)] [writing-mode:vertical-rl] md:block">
+        /{label}
+      </p>
+      <Container className="relative md:hidden">
         <p className="pt-6 pl-2 font-[family-name:var(--font-mono)] text-sm tracking-[0.2em] text-[var(--case-study-muted)]">
           /{label}
         </p>
       </Container>
-      <div className="mt-16 space-y-[156px]">{children}</div>
+      <div className="relative mt-16 space-y-[156px] md:mt-28">{children}</div>
     </div>
   );
 }
@@ -162,9 +184,10 @@ function ProductBlock({ subhead, body, asset, alt, flip, width, band, framed }: 
         band === "90" ? "md:w-[90%]" : band === "75" ? "md:w-[75%]" : "md:w-[70%]"
       }`}
     >
-      {/* COPY */}
-      <div className={`md:w-[424px] md:shrink-0 ${flip ? "md:order-2" : ""}`}>
-        <Subhead>{subhead}</Subhead>
+      {/* COPY — also the anchor the room's CircuitTrace lights a node against,
+          and the scroll band TabHead lights up in. */}
+      <div data-trace-node className={`md:w-[424px] md:shrink-0 ${flip ? "md:order-2" : ""}`}>
+        <TabHead>{subhead}</TabHead>
         {body.map((p) => (
           <Body key={p.slice(0, 24)} className="mt-4">
             {p}
@@ -187,21 +210,22 @@ export function Product() {
     /* overflow-x-hidden would BREAK the page's sticky glass seam (see CLAUDE.md), so the
        rows are padded, never translated — nothing can overflow horizontally. */
     <section data-section="Product" className="pt-[120px] pb-0">
-      {/* Heading rides the normal page grid… */}
-      <Container>
-        <Reveal>
-          <Kicker>The product</Kicker>
-          <Title>
-            Shared board, AI admin,
-            <br />
-            predictive health
-          </Title>
-        </Reveal>
-      </Container>
+      {/* The section heading lives INSIDE the first dotted room, so the texture
+          (and its boundary hairline) starts above the whole Product header. The
+          rows sit outside the Container so their asset column can bleed out. */}
+      <div>
+        <SubSection label="shared board" texture="dots">
+          <Container>
+            <Reveal>
+              <Kicker>The product</Kicker>
+              <Title>
+                Shared board, AI admin,
+                <br />
+                predictive health
+              </Title>
+            </Reveal>
+          </Container>
 
-      {/* …the rows sit OUTSIDE the container so their asset column can bleed out. */}
-      <div className="mt-14">
-        <SubSection label="shared board" dots>
           <ProductBlock {...BLOCKS[0]} />
 
           <Container>
@@ -228,7 +252,7 @@ export function Product() {
           </Container>
         </SubSection>
 
-        <SubSection label="ai admin" dots last>
+        <SubSection label="ai admin" texture="grid" last>
           <ProductBlock {...BLOCKS[4]} />
           <ProductBlock {...BLOCKS[5]} />
           <ProductBlock {...BLOCKS[6]} />

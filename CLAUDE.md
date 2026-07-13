@@ -229,6 +229,20 @@ cards, element-screenshot. Delete the temp script after.
 > **`docs/CLAUDE-ARCHIVE.md`**. At the end of a session, append a new entry with: what changed,
 > current state (working / broken / in-progress), and explicit next steps for the next agent.
 
+### 2026-07-13 — AILayer shortened (Caroline's call: it repeated itself). UNCOMMITTED.
+- **AILayer.tsx cut to: intro (her new 2-para copy) → the two CodeCards → ONE streamed callout.**
+  The old callout ("never does the arithmetic") and the whole grounded/efficient/observable
+  InsightCard grid are GONE — all three repeated the intro. The callout now carries the only
+  non-repeated substance in one sentence: prompt-cached + JSON-schema-pinned + per-call cost
+  logging + "$5 a month". Section title "Grounded, efficient and observable" kept (intro pays
+  off grounded; callout pays off the other two).
+- **Snapshot CodeCard example: Acme Co → Initech** — Caroline archived Acme in the live demo.
+  Initech per seed: 9 tasks, 1 done, 3 blocked → health "Blocked" (30%+ rule), go-live
+  2026-03-14 → daysToTargetGoLive -121 as of today. daysOverdue 12 is plausible-not-live;
+  pin against the real board/logs if she wants exactness.
+- tsc + lint clean (a transient stale-buildinfo 'tags' error in Product.tsx self-resolved;
+  file never contained "tags"). Playwright skipped: removal + text swap, layout clear from code.
+
 ### 2026-07-12 — SESSION HANDOFF (Caroline signed off). Product rebuilt as subsectioned walk. UNCOMMITTED WORK IN TREE.
 - **WHERE THIS LIVES:** all of today's work is in the `portfolio-vector` WORKTREE
   (`/Users/caro/Code/portfolio-vector`, branch `vector-case-study`, invisible from the main
