@@ -1,4 +1,4 @@
-import { A, Container, Kicker, Title, Body, CaseStudyCallout, Shot } from "../ui";
+import { A, CARD_FRAME, Container, Kicker, Title, Body, CaseStudyCallout, Shot } from "../ui";
 import { Reveal } from "../Reveal";
 import { Parallax } from "../Parallax";
 import { DotGlow } from "../DotGlow";
@@ -15,16 +15,19 @@ type Block = {
   asset: string;
   alt: string;
   /** small artifact clustered with the shot (cog-style stacked overlap):
-      a code snippet or the notification-routing flow. Only for the SMALL
-      shots — the big ones (board, portal, AI overview) speak for themselves. */
-  companion?: "health" | "cron" | "flow";
+      a code snippet, the notification routing or the Miniti pipeline. Only for
+      the SMALL shots — board, portal and AI overview speak for themselves. */
+  companion?: "health" | "cron" | "flow" | "miniti";
   /** true → visual on the LEFT, copy on the RIGHT (md+ only) */
   flip?: boolean;
   /** rendered width of the shot in px (md+). Tuned per shot by eye. */
   width: number;
+  /** widen the visual COLUMN past the shot (shot hugs one side, companion
+      takes the freed corner). md+ only. */
+  columnWidth?: number;
   /** how wide a band the row occupies before copy and shot are pushed apart.
-      Big shots get the full 90%; the small panels tighten to 70% so the pair
-      doesn't drift to opposite ends of the screen. */
+      All blocks ride the full 90% since the companion round (2026-07-13) —
+      the narrower bands are kept in the type for future small rows. */
   band: "90" | "75" | "70";
   /** Draw the shared product-visual frame (radius, hairline, card fill, shadow).
       Off by default: these assets ship their own chrome, so the frame would box a box.
@@ -64,7 +67,10 @@ const BLOCKS: Block[] = [
     ],
     asset: "notifications-v2.png",
     companion: "flow",
-    band: "70",
+    band: "90",
+    /* widened column: the shot hugs the LEFT of it, so the routing card can
+       sit against the bottom-right corner instead of covering the front */
+    columnWidth: 560,
     /* 392 = the old 435 −10%, ceded to the routing-flow companion */
     width: 392,
     alt: "Vector's notification centre: customer activity grouped by actor, showing completions, comments and first portal visits.",
@@ -76,7 +82,7 @@ const BLOCKS: Block[] = [
     ],
     asset: "health-v2.png",
     companion: "health",
-    band: "70",
+    band: "90",
     width: 580,
     alt: "Vector's health table: each company scored On track, At risk or Blocked, with task counts and how many are blocked.",
   },
@@ -99,7 +105,8 @@ const BLOCKS: Block[] = [
       "I integrated an AI notetaker, Miniti. When a call ends it fires a webhook with the transcript, and a tool-use orchestrator reads it and drafts task creations, status changes and reassignments. It reads the board first, so work you already track becomes an update to the existing task instead of a duplicate.",
     ],
     asset: "actions-v2.png",
-    band: "75",
+    companion: "miniti",
+    band: "90",
     width: 566,
     alt: "Vector's Actions queue: a task drafted from a meeting transcript, marked 'From miniti', with create, edit and dismiss.",
   },
@@ -111,7 +118,7 @@ const BLOCKS: Block[] = [
     ],
     asset: "followup-v2.png",
     companion: "cron",
-    band: "70",
+    band: "90",
     width: 522,
     alt: "Vector's draft follow-up: an AI-written email grounded in a blocked task, with dismiss, open in mail and comment.",
     flip: true,
@@ -181,12 +188,6 @@ function SubSection({
 }
 
 /* ---- companions: the small artifacts clustered with the small shots ---- */
-
-/* the companion cards share the framed Shot's EXACT surface (see ui.tsx):
-   same radius, hairline, card fill and shadow as the customer-portal frame,
-   so the cluster reads as one family of panels */
-const CARD_FRAME =
-  "rounded-[14px] border border-[var(--case-study-line)] bg-[var(--case-study-card)] p-5 shadow-[0_24px_60px_-24px_rgba(0,0,0,0.65)]";
 
 /* SnippetCard — a tiny real-engineering snippet, set in the .vec-code
    treatment (theme.css). Kept to a handful of lines: it's a design artifact,
@@ -323,26 +324,86 @@ const COMPANIONS: Record<NonNullable<Block["companion"]>, React.ReactNode> = {
     </SnippetCard>
   ),
   flow: <NotificationFlow />,
+  /* MinitiFlow hoists (function declaration), so the forward reference is fine */
+  miniti: <MinitiFlow />,
 };
 
-/* Where each companion sits against its shot (md+; phones keep the simple
-   in-flow stack). The flow card outsizes its shrunk asset on purpose —
-   Caroline traded 10% of the shot for a bigger, readable diagram. */
+/* MinitiFlow — the data's journey from a Miniti call to the review queue,
+   straight from lib/ai/orchestrator.js: the webhook fires, Pass 1 extracts
+   facts (no tools), Pass 2 makes the calls (tool-use over the live board),
+   and every tool call lands as a draft a human approves. The split exists so
+   a wrong draft can be traced to the pass that caused it. */
+const MINITI_STEPS = [
+  {
+    label: "call ends",
+    detail: "Miniti fires a webhook, transcript attached",
+  },
+  {
+    label: "pass 1 / extraction",
+    detail: "facts only: claims + verbatim quotes, no tools",
+  },
+  {
+    label: "pass 2 / orchestrator",
+    detail: "tool-use over the live board: create_task, match_existing, update_status",
+  },
+  {
+    label: "review queue",
+    detail: "every tool call becomes a draft, a human approves it",
+  },
+] as const;
+
+function MinitiFlow() {
+  return (
+    <div className={CARD_FRAME}>
+      <p className="mb-4 font-[family-name:var(--font-mono)] text-[11px] lowercase tracking-[0.14em] text-[var(--case-study-muted)]">
+        miniti → vector / lib/ai/orchestrator.js
+      </p>
+      <ol className="relative ml-1 space-y-5 border-l border-[rgba(241,234,241,0.14)] pl-5">
+        {MINITI_STEPS.map(({ label, detail }, i) => (
+          <li key={label} className="relative">
+            {/* node on the rail, tinted along the lilac→peach AI gradient */}
+            <span
+              aria-hidden
+              className="absolute top-[5px] -left-[24.5px] size-[7px] rounded-full"
+              style={{
+                backgroundColor: ["#c098ff", "#cf9cf5", "#e99ddb", "#ff9c7d"][i],
+              }}
+            />
+            <p className="font-[family-name:var(--font-mono)] text-[13px] font-bold text-[var(--case-study-ink)]">
+              {label}
+            </p>
+            <p className="mt-1 font-[family-name:var(--font-mono)] text-[12px] leading-snug text-[var(--case-study-muted)]">
+              {detail}
+            </p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  );
+}
+
+/* Where each companion sits against its shot: mobile keeps the simple in-flow
+   stack; md+ pins the card to a CORNER of the asset (absolute against the
+   visual column) so it reads as clustered, not covering. */
 const COMPANION_POS: Record<NonNullable<Block["companion"]>, string> = {
-  /* bottom-RIGHT corner of the notifications shot, oversized, deep overlap
-     (~3× the original 56px) */
-  flow: "relative z-10 -mt-10 w-full md:-mt-40 md:ml-auto md:mr-[-30%] md:w-[118%] md:max-w-[500px]",
-  /* bottom-LEFT corner of the health table, a touch more overlap */
-  health: "relative z-10 -mt-10 w-[88%] max-w-[430px] ml-[-6%] md:-mt-16 md:ml-[-10%]",
-  /* bottom-LEFT corner of the follow-up draft */
-  cron: "relative z-10 -mt-10 w-[88%] max-w-[420px] ml-[-6%] md:-mt-14 md:ml-[-10%]",
+  /* bottom-RIGHT corner: the shot hugs the left of its widened column and the
+     card takes the freed corner */
+  flow: "relative z-10 -mt-10 w-full max-w-[440px] md:absolute md:right-0 md:bottom-[-56px] md:mt-0 md:w-[440px]",
+  /* bottom-RIGHT corner of the health table (its left rows carry the text),
+     dropped low so it only kisses the bottom rows */
+  health: "relative z-10 -mt-10 w-[88%] max-w-[430px] md:absolute md:right-[-5%] md:bottom-[-96px] md:mt-0 md:w-[430px]",
+  /* bottom-LEFT corner of the follow-up draft, nudged out to the left */
+  cron: "relative z-10 -mt-10 w-[88%] max-w-[420px] md:absolute md:left-[-10%] md:bottom-[-56px] md:mt-0 md:w-[400px]",
+  /* bottom-LEFT corner of the actions queue, reaching well into the row's gap
+     (the actions shot is short, so most of the card hangs off it) */
+  miniti: "relative z-10 -mt-10 w-[88%] max-w-[430px] md:absolute md:left-[-30%] md:bottom-[-64px] md:mt-0 md:w-[430px]",
 };
 
 /* Each row is a centred BAND with the copy at one end and the shot at the other, pushed
    apart (space-between). Big shots ride the full 90% band; the small panels tighten to a
    70% band so the pair doesn't strand itself at opposite edges of the screen. Below md
    the band collapses: one column, copy first, shot full width. */
-function ProductBlock({ subhead, body, asset, alt, companion, flip, width, band, framed }: Block) {
+function ProductBlock({ subhead, body, asset, alt, companion, flip, width, columnWidth, band, framed }: Block) {
   return (
     <Reveal
       className={`mx-auto flex flex-col gap-10 px-6 md:flex-row md:items-center md:justify-between md:gap-6 md:px-0 ${
@@ -366,13 +427,18 @@ function ProductBlock({ subhead, body, asset, alt, companion, flip, width, band,
       {/* VISUAL — frameless unless the asset lacks its own chrome (see `framed`).
           A companion clusters against a corner of its shot (cog-style stacked
           overlap) with its own parallax speed, so the pair floats apart as you
-          scroll. Each companion has a bespoke corner (COMPANION_POS): flow →
-          bottom-left, health → bottom-right, cron → top-right (empty space in
-          that asset). Below md they all stack in-flow. */}
-      <div className={`relative w-full md:shrink-0 ${flip ? "md:order-1" : ""}`} style={{ maxWidth: width }}>
-        <Parallax speed={20}>
-          <Shot src={A(asset)} alt={alt} bare={!framed} />
-        </Parallax>
+          scroll. Corners live in COMPANION_POS; below md everything stacks
+          in-flow. With `columnWidth` the shot hugs the column's copy-far side
+          and the companion takes the freed corner. */}
+      <div
+        className={`relative w-full md:shrink-0 ${flip ? "md:order-1" : ""}`}
+        style={{ maxWidth: columnWidth ?? width }}
+      >
+        <div style={{ maxWidth: width }} className={columnWidth ? "md:mr-auto" : undefined}>
+          <Parallax speed={20}>
+            <Shot src={A(asset)} alt={alt} bare={!framed} />
+          </Parallax>
+        </div>
         {companion && (
           <Parallax speed={34} className={COMPANION_POS[companion]}>
             {COMPANIONS[companion]}

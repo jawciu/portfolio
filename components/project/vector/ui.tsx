@@ -9,6 +9,12 @@ import { CountUp } from "./CountUp";
 /** asset path helper — all case-study assets live in /public/projects/vector */
 export const A = (file: string) => `/projects/vector/${file}`;
 
+/** the framed Shot's exact surface (radius, hairline, card fill, shadow) as a
+    class string, for hand-built companion cards (diagrams, snippets) so every
+    panel in a cluster reads as one family. Keep in sync with <Shot>'s frame. */
+export const CARD_FRAME =
+  "rounded-[14px] border border-[var(--case-study-line)] bg-[var(--case-study-card)] p-5 shadow-[0_24px_60px_-24px_rgba(0,0,0,0.65)]";
+
 export function Container({
   children,
   className = "",
@@ -235,6 +241,7 @@ const SHOT_DIMS: Record<string, { w: number; h: number }> = {
   "board.png": { w: 3284, h: 1610 },
   "portal.png": { w: 3284, h: 1840 },
   "admin-usage.png": { w: 2804, h: 1840 },
+  "admin-usage-features.png": { w: 2180, h: 486 },
   "followup.png": { w: 2804, h: 1840 },
   "notifications.png": { w: 2804, h: 1840 },
   "workspace.png": { w: 2804, h: 1840 },

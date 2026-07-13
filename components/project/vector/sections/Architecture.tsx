@@ -1,31 +1,22 @@
 import { Container, Kicker, Title, Body, CaseStudyCallout } from "../ui";
 import { Reveal } from "../Reveal";
 
-const DECISIONS = [
-  [
-    "the stack",
-    "Next.js 16 in plain JavaScript, Tailwind v4 and dnd-kit for the board's drag and drop, deployed on Vercel with a weekly cron driving the stale-task scan.",
-  ],
-  [
-    "the data",
-    "Prisma 7 on Supabase Postgres, with a transaction pooler for the app and a session pooler for migrations, because the two jobs need different connection behaviour.",
-  ],
-  [
-    "two kinds of auth",
-    "Vendors sign in with Supabase cookie auth. Customers never sign up at all, because the portal runs on custom magic links with expiry, revocation and last-seen tracking.",
-  ],
-  [
-    "one data path",
-    "Every read and write goes through a single data layer, so validation and not-found handling stay consistent and the database stays swap-friendly. No component touches the ORM directly.",
-  ],
-  [
-    "a design system that compiles",
-    "Vector's design system lives in one documented file that generates the runtime tokens, with a linter that checks contrast and catches broken references. The docs cannot drift from the CSS.",
-  ],
-  [
-    "honest constraints",
-    "Streaming runs on Edge Runtime, where Prisma isn't compatible, so those routes talk to Supabase directly. Real projects have these compromises. I learned to make the call and move on.",
-  ],
+/* Under the hood — was six paragraphs of stack prose; now one short intro and
+   the stack itself as a wall of tools, each carrying ONE line of the judgement
+   that used to live in the text. Icons are mono-ink SVGs (plain paths only,
+   per the iOS Safari rule) in /public/projects/vector/stack. */
+
+const STACK = [
+  ["nextdotjs.svg", "next.js 16", "app router, plain JavaScript"],
+  ["react.svg", "react 19", "server components first"],
+  ["tailwindcss.svg", "tailwind v4", "tokens compiled from one documented file"],
+  ["prisma.svg", "prisma 7", "16 models, cascade deletes, one data path"],
+  ["supabase.svg", "supabase", "postgres + vendor auth (customers get magic links)"],
+  ["claude.svg", "claude api", "sonnet 4.6, prompt-cached, schema-pinned, streamed"],
+  ["resend.svg", "resend", "customer email, dark-theme templates"],
+  ["playwright.svg", "playwright", "e2e on the flows I cannot afford to break"],
+  ["vitest.svg", "vitest", "unit tests on the pure logic, green in CI"],
+  ["vercel.svg", "vercel", "deploys, plus the weekly cron"],
 ] as const;
 
 export function Architecture() {
@@ -41,32 +32,43 @@ export function Architecture() {
           </Title>
         </Reveal>
 
-        <Reveal className="max-w-[760px] space-y-5">
+        <Reveal className="max-w-[760px]">
           <Body>
             I did not want to build just another AI demo. I wanted to learn how a real
-            SaaS is put together, and that turned out to be the most fascinating part of
-            the project. So Vector is built like one. 16 Prisma models with cascade
-            deletes, cookie-based auth for vendors, custom magic links for customers, and
-            webhooks with idempotency keys.
-          </Body>
-          <Body>
-            I built most of it by pairing with AI coding tools, and that is a skill in
-            itself. I had to know exactly what to ask for, read the output critically, and
-            stay on top of the architecture so it never sprawled.
+            SaaS is put together, so Vector is built like one.
           </Body>
         </Reveal>
 
+        {/* the stack, as tools rather than paragraphs */}
         <Reveal
-          stagger={0.12}
-          className="mt-14 grid grid-cols-1 gap-x-10 gap-y-10 md:grid-cols-3"
+          stagger={0.06}
+          className="mt-14 grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-3 lg:grid-cols-5"
         >
-          {DECISIONS.map(([label, body]) => (
-            <div key={label}>
-              <div className="mb-4 h-px w-10 bg-[var(--green)]" />
-              <p className="case-study-label mb-3">{label} &gt;</p>
-              <Body>{body}</Body>
+          {STACK.map(([icon, name, note]) => (
+            <div key={name}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={`/projects/vector/stack/${icon}`}
+                alt=""
+                width={26}
+                height={26}
+                className="h-[26px] w-[26px] opacity-90"
+              />
+              <p className="case-study-label mt-3">{name}</p>
+              <p className="mt-1.5 font-[family-name:var(--font-mono)] text-[12px] leading-snug text-[var(--case-study-muted)]">
+                {note}
+              </p>
             </div>
           ))}
+        </Reveal>
+
+        {/* the honest constraint stays: it is the credible part */}
+        <Reveal className="mt-14 max-w-[760px]">
+          <Body>
+            The compromises are in there too. Streaming runs on Edge Runtime, where Prisma
+            is not compatible, so those routes talk to Supabase directly. Real projects
+            have these tradeoffs, and I learned to make the call and move on.
+          </Body>
         </Reveal>
 
         <Reveal className="mt-16 max-w-[860px]">

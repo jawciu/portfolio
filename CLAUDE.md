@@ -268,18 +268,42 @@ cards, element-screenshot. Delete the temp script after.
   pinned to a JSON schema and logged with its cost, and an unchanged board never pays twice."
   Also **CodeCard bg #14141a → #18181E** (her spec) in ui.tsx — affects the Product.tsx
   CodeCard too, not just AILayer's pair.
-- **Round 3: TEMPORARY second pair of CodeCards in AILayer** ("option b: closer to the real
-  source" label) — Caroline asked how less-paraphrased versions would look side by side after
-  learning the originals editorialise the source (renamed const, renumbered rules, reworded).
-  Option b: snapshot card with the REAL buildSnapshot field set/order + seed-true Initech values
-  (owner Tom Okafor, velocity7d 1, full ISO targetGoLive) with dim ⋮ elisions; rules card is a
-  VERBATIM ONBOARDING_RULES excerpt (real const name, real rule numbers 1/4/5, the source's
-  em dash + \\` escapes intact, only hard-wrapped). **She picks a pair, the loser + the label
-  get deleted.** daysOverdue 12 still plausible-not-live in both. Verified at 1440 via
-  standalone Playwright (both pairs wrap clean, no overflow).
+- **Round 3 RESOLVED — mix and match (her pick):** context.js keeps the PARAPHRASED snapshot
+  card (compact, real field names, seed-true Initech values); insights.js now uses the
+  VERBATIM ONBOARDING_RULES excerpt (real const name, real rule numbers 1/4/5 with dim ⋮
+  elisions for 2-3 and 6-10, the source's em dash + \\` escapes intact, only hard-wrapped).
+  The comparison pair + "option b" label were built, screenshotted at 1440 (both wrap clean),
+  then the losers deleted. Rationale: the rules card CLAIMS to quote the prompt so it must be
+  exact; the snapshot card is illustrative data so compact wins. daysOverdue 12 still
+  plausible-not-live (pin from her real board if she wants exactness).
 - tsc + lint clean (a transient stale-buildinfo 'tags' error in Product.tsx self-resolved;
   file never contained "tags"). Playwright skipped for rounds 1-2: removal + text swap, layout
   clear from code.
+
+### 2026-07-13 — IN PROGRESS: Product spice-up round (textures, trace, companions) + Observability/Architecture/Collaboration reworks. UNCOMMITTED.
+- **All in the vector worktree.** Product section: 3 "rooms" (SubSection: hairline `rgba(241,234,241,0.14)`,
+  vertical `/label` beside the CircuitTrace on md+, textures dots/GRID at 22px), scroll-drawn
+  lilac→peach CircuitTrace with per-block nodes, DotGlow cursor-lag highlight (dots-only, no halo,
+  EASE 0.08), heading lives INSIDE room 1 (texture starts above it; gap to first block `mb-[78px]!`
+  on the heading Container — Tailwind v4 space-y margins live on the PREVIOUS sibling's bottom).
+  Hero got the grid texture. TabHead (scroll-lit headings) + tag badges were tried and CUT on
+  Caroline's call (TabHead.tsx kept on disk, unmounted).
+- **Companions** (corner-pinned cards, md:absolute; mobile in-flow): notifications = NotificationFlow
+  (emitActivity() hub diagram, REAL routing from vector lib/db.js; asset 392 + columnWidth 560, card
+  bottom-right) · health = lib/health.js snippet (REAL code, bottom-right, dropped low) · follow-ups
+  = lib/ai/scan-stale.js snippet (REAL, bottom-left) · meetings = MinitiFlow 2-pass pipeline card
+  (bottom-left into the gap). All bands now 90. CARD_FRAME (the framed-Shot surface) exported from
+  ui.tsx, shared by every hand-built card. Snippets verified against github.com/jawciu/vector clone
+  + local ~/Code/onboarding — they are REAL lines, re-check source before editing them.
+- **Observability:** giant admin-usage ShotRow → cropped `admin-usage-features.png` (sharp crop,
+  added to SHOT_DIMS) + PipelineView card (recreation of the app's admin Pipeline tab — the live
+  tab is auth-gated so it could not be screenshotted; fictional demo data consistent with other shots).
+- **Architecture:** 6 prose decisions → 1-line intro + 10-tile mono-ink logo wall
+  (public/projects/vector/stack/, simple-icons at f1eaf1; playwright.svg is the OFFICIAL logo
+  hand-recoloured to ink duotone) + honest-constraints para + existing callout.
+- **Collaboration:** added 3 workflow diagram cards (the pair builder×evaluator / the team
+  designer·developer·CEO→decision / the fleet parallel worktrees→main) from Caroline's described
+  agentic patterns; METHOD grid kept. Section header unchanged (she wants alternatives proposed first).
 
 ### 2026-07-12 — SESSION HANDOFF (Caroline signed off). Product rebuilt as subsectioned walk. UNCOMMITTED WORK IN TREE.
 - **WHERE THIS LIVES:** all of today's work is in the `portfolio-vector` WORKTREE
