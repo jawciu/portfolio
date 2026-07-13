@@ -16,7 +16,7 @@ const PRINCIPLES = [
     "Plain JavaScript computes the hard signals (overdue counts, velocity, customer engagement) from a 2 to 5 KB snapshot. Claude only reasons over them in words, and the prompt forces every claim to cite a real taskId. It never does arithmetic it can get wrong.",
   ],
   [
-    "cheap",
+    "efficient",
     "Cached, structured, streamed",
     "The system prompt is prompt-cached, output is pinned to a JSON schema, and the result streams to the browser through Edge Runtime. Insights are also cached against a hash of the input state, so identical boards do not pay twice.",
   ],
@@ -34,7 +34,7 @@ export function AILayer() {
         <Reveal>
           <Kicker>The AI layer</Kicker>
           <Title>
-            Grounded, cheap
+            Grounded, efficient
             <br />
             and observable
           </Title>
@@ -42,9 +42,8 @@ export function AILayer() {
 
         <Reveal className="max-w-[760px] space-y-5">
           <Body>
-            Underneath all of it, the prompts were the easy part. The real engineering was
-            keeping a language model honest, affordable and inspectable at portfolio
-            scale.
+            The real engineering was keeping a language model honest and inspectable at
+            portfolio scale.
           </Body>
           <Body>
             The design is a three-layer split. Deterministic code owns the numbers, the

@@ -229,6 +229,45 @@ cards, element-screenshot. Delete the temp script after.
 > **`docs/CLAUDE-ARCHIVE.md`**. At the end of a session, append a new entry with: what changed,
 > current state (working / broken / in-progress), and explicit next steps for the next agent.
 
+### 2026-07-12 — SESSION HANDOFF (Caroline signed off). Product rebuilt as subsectioned walk. UNCOMMITTED WORK IN TREE.
+- **WHERE THIS LIVES:** all of today's work is in the `portfolio-vector` WORKTREE
+  (`/Users/caro/Code/portfolio-vector`, branch `vector-case-study`, invisible from the main
+  checkout). Pushed through `88c937a`; prod (main) untouched. Dev server: background-run servers
+  get reaped in agent sessions — have Caroline run `! cd /Users/caro/Code/portfolio-vector && npm
+  run dev` herself. Its `node_modules` is a REAL install (was a symlink; Turbopack refuses
+  symlinks out of root). `package-lock.json` has a stray fsevents diff from that install —
+  intentionally never committed; `git checkout package-lock.json` to clear.
+- **UNCOMMITTED (working, verified, tsc+lint clean — commit when Caroline says):**
+  Product.tsx (SubSection wrapper: full-bleed hairlines exactly at texture edges, homepage-style
+  `/label`, dot texture 22px/5.5% alpha on shared board + ai admin, plain on predictive health;
+  order now board → magic-link callout → portal → notifications ‖ health → evidence callout ‖
+  AI overview → meetings → follow-ups → review-queue callout; per-subsection L/R alternation) ·
+  Matching.tsx (title "Whose meeting was this?", 4 signals as `signal #01–04` InsightCards 2×2,
+  refusal para restored in a 2-col row with an EMPTY ASSET SLOT) · AILayer.tsx (title + card
+  "cheap"→"efficient", intro cut: no "prompts were the easy part", no "affordable").
+- **OPEN INTENT — next session:** (1) Caroline is sending an "ambiguous meeting matching /
+  Needs your input" asset → drop into the commented slot in Matching.tsx (`matching-v2.png`,
+  add to SHOT_DIMS in ui.tsx, use `bare` if corners transparent). (2) Dial dot texture by eye
+  in browser (opacity 0.055 / 22px grid are the knobs). (3) Decide the leftovers: 7 unused old
+  assets (~2.9 MB: workspace/board/portal/notifications/insights/ai-drafts/followup.png), dead
+  `.cog-label/.cog-callout/.cog-statement` classes + unused `Callout`/`Statement` components,
+  and the "I'm still testing retrieval accuracy" line (cut from the review callout — voice
+  guide loves it; candidate home: AILayer/Observability/Takeaways).
+- **Key decisions (why):** pillar cards + Workspace + AIFeatures + Health sections ALL folded
+  into one Product walk — each block now states the DECISION not the feature (phases-over-
+  statuses, notification grouping, email curation, two overview altitudes, owner-only
+  follow-ups, one-tone-for-now, AI-out-of-scoring). Product shots render FRAMELESS (`bare` on
+  Shot) because the v2 crops bake their own chrome — EXCEPTION portal-v2 (opaque, keeps frame);
+  this deliberately contradicts the digest's product-visual hard rule for this study. Vector's
+  tokens renamed `--cog-*` → `--case-study-*` and `.cog-container` → `.case-study-container`
+  (unscoped class was shared with cog's theme.css — route order decided the winner). Vector
+  container is 1200px (not the 1080 grid). Callouts capped `max-w-[860px]` at call sites like
+  wiki. Page bg `#14141a` — ALSO hardcoded in page.tsx's glass-seam gradient; move both or seam
+  lines appear. `Shot` needs every asset in `SHOT_DIMS` (ui.tsx) or reveals go stale on
+  client-nav (the wiki bug). Voice guide (case-study/voice.md) got a workout — "cheap" claims,
+  colon hinges, negation pivots and mic-drops were all cut on Caroline's instinct; check drafts
+  against it BEFORE showing her.
+
 ### 2026-07-09 — Matching moved up, NEW Observability section (AI admin showcased), Collaboration section, Takeaways unmounted
 - **Status: DONE, staged not committed.** Verified live (0 errors, 0 stuck, all 1484 stream words
   play, punctuation sweep clean). New order: … Health → **Matching** → AILayer → **Observability**

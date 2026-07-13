@@ -62,6 +62,16 @@ const BLOCKS: Block[] = [
     alt: "Vector's notification centre: customer activity grouped by actor, showing completions, comments and first portal visits.",
   },
   {
+    subhead: "Predictive health",
+    body: [
+      "Every onboarding is scored On track, At risk or Blocked. The triggers are all real task data, blocked or overdue work, a pace that overruns the go-live date, a third of the tasks stuck. I kept AI out of the scoring on purpose. It's deterministic JavaScript, so the same input always gives the same answer.",
+    ],
+    asset: "health-v2.png",
+    band: "70",
+    width: 580,
+    alt: "Vector's health table: each company scored On track, At risk or Blocked, with task counts and how many are blocked.",
+  },
+  {
     subhead: "AI overview",
     body: [
       "Two views, because different roles need different depth and nobody needs everything at once.",
@@ -96,17 +106,50 @@ const BLOCKS: Block[] = [
     alt: "Vector's draft follow-up: an AI-written email grounded in a blocked task, with dismiss, open in mail and comment.",
     flip: true,
   },
-  {
-    subhead: "Predictive health",
-    body: [
-      "Every onboarding is scored On track, At risk or Blocked. The triggers are all real task data, blocked or overdue work, a pace that overruns the go-live date, a third of the tasks stuck. I kept AI out of the scoring on purpose. It's deterministic JavaScript, so the same input always gives the same answer.",
-    ],
-    asset: "health-v2.png",
-    band: "70",
-    width: 580,
-    alt: "Vector's health table: each company scored On track, At risk or Blocked, with task counts and how many are blocked.",
-  },
 ];
+
+/* Subsection wrapper — a thin hairline, a homepage-style /label, and an optional
+   dot texture behind everything in the group. Dots alternate down the section
+   (shared board dotted, predictive health plain, ai admin dotted) so the three
+   groups read as distinct rooms rather than one long corridor. */
+function SubSection({
+  label,
+  dots = false,
+  last = false,
+  children,
+}: {
+  label: string;
+  dots?: boolean;
+  last?: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    /* The hairline is the div's own border, so it sits EXACTLY where the texture
+       starts and runs the full screen width. Each subsection's top border doubles
+       as the previous one's bottom edge; `last` closes the final texture. */
+    <div
+      className={`border-t border-[var(--case-study-line)] pb-[140px] ${
+        last ? "border-b" : ""
+      }`}
+      style={
+        dots
+          ? {
+              backgroundImage:
+                "radial-gradient(rgba(241,234,241,0.055) 1px, transparent 1.4px)",
+              backgroundSize: "22px 22px",
+            }
+          : undefined
+      }
+    >
+      <Container>
+        <p className="pt-6 pl-2 font-[family-name:var(--font-mono)] text-sm tracking-[0.2em] text-[var(--case-study-muted)]">
+          /{label}
+        </p>
+      </Container>
+      <div className="mt-16 space-y-[156px]">{children}</div>
+    </div>
+  );
+}
 
 /* Each row is a centred BAND with the copy at one end and the shot at the other, pushed
    apart (space-between). Big shots ride the full 90% band; the small panels tighten to a
@@ -157,43 +200,47 @@ export function Product() {
       </Container>
 
       {/* …the rows sit OUTSIDE the container so their asset column can bleed out. */}
-      <div className="mt-14 space-y-[156px]">
-        <ProductBlock {...BLOCKS[0]} />
+      <div className="mt-14">
+        <SubSection label="shared board" dots>
+          <ProductBlock {...BLOCKS[0]} />
 
-        <Container>
-          <Reveal className="max-w-[860px]">
-            <CaseStudyCallout stream>
-              {"The customer clicks a magic link and lands straight on their tasks. No account, no password, no training. Every visit is tracked, so the vendor knows the moment they go quiet."}
-            </CaseStudyCallout>
-          </Reveal>
-        </Container>
+          <Container>
+            <Reveal className="max-w-[860px]">
+              <CaseStudyCallout stream>
+                {"The customer clicks a magic link and lands straight on their tasks. No account, no password, no training. Every visit is tracked, so the vendor knows the moment they go quiet."}
+              </CaseStudyCallout>
+            </Reveal>
+          </Container>
 
-        {/* Customer portal → Notifications → AI overview → Turning meetings into tasks */}
-        {BLOCKS.slice(1, 5).map((b) => (
-          <ProductBlock key={b.subhead} {...b} />
-        ))}
+          <ProductBlock {...BLOCKS[1]} />
+          <ProductBlock {...BLOCKS[2]} />
+        </SubSection>
 
-        {/* Between the two AI drafting tools: the human-in-the-loop stance they share. */}
-        <Container>
-          <Reveal className="max-w-[860px]">
-            <CaseStudyCallout stream>
-              {"I gave the AI a review queue instead of write access to the board. It drafts, and the user decides whether to approve, edit or reject any task or follow-up."}
-            </CaseStudyCallout>
-          </Reveal>
-        </Container>
+        <SubSection label="predictive health">
+          <ProductBlock {...BLOCKS[3]} />
 
-        {/* Automated follow-ups → Predictive health */}
-        {BLOCKS.slice(5).map((b) => (
-          <ProductBlock key={b.subhead} {...b} />
-        ))}
+          <Container>
+            <Reveal className="max-w-[860px]">
+              <CaseStudyCallout stream>
+                {"Every flag arrives with its evidence. 3 of 9 tasks blocked, 8 tasks overdue, customer dark for 64 days. When you can see why the flag was raised, you can act on it."}
+              </CaseStudyCallout>
+            </Reveal>
+          </Container>
+        </SubSection>
 
-        <Container>
-          <Reveal className="max-w-[860px]">
-            <CaseStudyCallout stream>
-              {"Every flag arrives with its evidence. 3 of 9 tasks blocked, 8 tasks overdue, customer dark for 64 days. When you can see why the flag was raised, you can act on it."}
-            </CaseStudyCallout>
-          </Reveal>
-        </Container>
+        <SubSection label="ai admin" dots last>
+          <ProductBlock {...BLOCKS[4]} />
+          <ProductBlock {...BLOCKS[5]} />
+          <ProductBlock {...BLOCKS[6]} />
+
+          <Container>
+            <Reveal className="max-w-[860px]">
+              <CaseStudyCallout stream>
+                {"I gave the AI a review queue instead of write access to the board. It drafts, and the user decides whether to approve, edit or reject any task or follow-up."}
+              </CaseStudyCallout>
+            </Reveal>
+          </Container>
+        </SubSection>
       </div>
     </section>
   );
