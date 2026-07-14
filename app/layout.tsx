@@ -5,6 +5,7 @@ import { Providers } from "./providers";
 import { NavBar } from "@/components/NavBar";
 import { Footer } from "@/components/Footer";
 import { PersistentHero } from "@/components/PersistentHero";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 // Iosevka Charon — quasi-proportional, self-hosted. Not in Google's
@@ -70,6 +71,7 @@ export default function RootLayout({
           {children}
           <Footer />
         </Providers>
+        <Analytics />
       </body>
     </html>
   );
