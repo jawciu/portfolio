@@ -229,6 +229,30 @@ cards, element-screenshot. Delete the temp script after.
 > **`docs/CLAUDE-ARCHIVE.md`**. At the end of a session, append a new entry with: what changed,
 > current state (working / broken / in-progress), and explicit next steps for the next agent.
 
+### 2026-07-14 (later 2) — WhatsNext remounted + rebuilt as three PINS. UNCOMMITTED.
+- **Remounted** (import + mount restored in page.tsx) and redesigned per Caroline: the two text
+  blocks read as boring. Now **three dropped map pins** (her call: "like stops in a timeline but
+  NOT a timeline", equal weight, no order): **Linear · Attio · evals**. Iterated v1 hairline
+  teardrop → v2 gradient lollipop → v3 grey circle + coloured stem → v4 teardrop + coloured
+  outline → grey outline + dot behind tip → **v6 (FINAL, from her Matching screenshot): the
+  MATCHING RAIL layout** — grey icon circles as stops (48px, card fill + `--case-study-line`
+  hairline, white marks inside) joined by **DOTTED gradient rails** (lilac `#c098ff` → RAMP-mid
+  pink `#e09abe` → peach `#ff9c7d`; solid gradient span shown through a repeating radial-dot CSS
+  mask — `railStyle()`, both orientations). Phone = Matching's stacked pattern: stops left,
+  vertical dotted rails, copy right. Then `>` label + short Body per stop.
+- **Logos inline as SVG paths** (not `<img>`, so the iOS-Safari bake rule doesn't apply), filled
+  WHITE on the gradient: Linear from Simple Icons CDN; Attio's official double-slash mark is NOT
+  on Simple Icons (issue #12295 open) — path pulled from a GitHub mirror (onecli/onecli). Evals
+  pin = a drawn target, all-white strokes at 1.8 width so it's as "white-heavy" as the brand marks
+  (her ask).
+- **Copy grounded in the vector repo's plans** (PLAN.md ll.525-534 + EVALS_PLAN.md): Attio = deal
+  context (contacts, notes, deal detail) already lives in the CRM, pull it in so onboarding
+  doesn't start blank; Linear = two-way sync so tasks are never entered twice; evals = pipelines/
+  observability/30-case golden dataset BUILT, next is running them and iterating prompts —
+  "the agent earns autonomy when the numbers say it can" (her honesty framing: built, not done).
+- Verified 1440 + 390 via standalone Playwright (script run FROM WORKTREE ROOT — the scratchpad
+  path can't resolve the playwright dep); tsc + lint clean.
+
 ### 2026-07-14 (later) — Product band tightens on ultra-wide screens. UNCOMMITTED.
 - **Caroline's ask:** the 90%-wide ProductBlock rows get too spacey past 1624px. Band now steps
   90% → 80% (≥1624px) → 70% (≥1888px) → 60% (≥2000px, her "200px" read as 2000). Nothing below
@@ -247,6 +271,30 @@ cards, element-screenshot. Delete the temp script after.
   Probe gotcha: Playwright `newPage` takes `viewport:`, not `viewportSize:` (silently ignores the
   latter → everything measures at default 1280).
 - Only `Product.tsx` touched (the band ternary + comments). tsc + lint clean.
+- **Round 2 (same session): shots ×0.8 in the 768–1407px band** (Caroline's ask: images rode over
+  the copy below 1408 — that's exactly where the widest rows' fixed content, 424 copy + 24 gap +
+  828 shot = 1276px, outgrows the 90% band). The inline `style={{maxWidth}}` caps (shot + column)
+  moved to CSS vars (`--pb-shot`/`--pb-col`) consumed by tiered utilities: base = full (phones
+  unchanged), `min-[768px]:` ×0.8, `min-[1408px]:` full — min-[] variants throughout (the named/
+  arbitrary mixing gotcha above). Verified numerically at 900–1600px: shots 0.8× ≤1407, full ≥1408,
+  desktop byte-identical; copy overlap GONE from ~1234px up; eyeballed 1300px, reads clean.
+- ~~KNOWN REMAINDER: companions rode over copy below ~1230px~~ → **RESOLVED by round 3** (below).
+- **Round 3 (same session), Caroline's design: copy hugs 1230→1070, stack at 1070.** The Product
+  rows' full responsive ladder is now: **≤1069 stacked** (mobile layout, full-size shots) →
+  **1070–1229 copy column hugs** `w-[clamp(264px,calc(100vw-806px),424px)]` (424 at 1230, ceding
+  1:1 with the viewport; shots ×0.8) → **1230–1407 copy 424 + shots ×0.8** → **1408+ full size**,
+  then the wide-screen band steps (80/70/60%). Implementation: ALL row-layout gates in
+  ProductBlock + COMPANION_POS + per-block copyClassName/shotClassName moved `md:` →
+  `min-[1070px]:` (stack point promoted; min-[] group keeps ordering consistent).
+- **Also required (found by eyeball at 1000px):** `CircuitTrace` (hidden md:block, left-8) and the
+  vertical room label rode THROUGH the px-6 full-width copy in the new 768–1069 stacked band —
+  both re-gated `md:` → `min-[1070px]:`, and the horizontal mobile label now shows to 1070
+  (`min-[1070px]:hidden`). SubSection room spacing (`md:mt-28`, container pt) left at md — no
+  collision, purely spacing.
+- **Verified:** 11-width sweep 900→1440 — stacked ≤1069, copy 264/294/344/423/424 at
+  1070/1100/1150/1229/1230, shots 0.8×<1408, full ≥1408, **zero copy↔visual overlap at every
+  width**; eyeballed 1100 (all companion rows) + 1000 (stacked, spine gone). tsc + lint clean.
+  Desktop ≥1408 and phones <768 byte-identical throughout.
 
 ### 2026-07-14 — MyRole icon variants ×2 (OUTLINE + HAIRLINE), mounted as stacked comparison duplicates. UNCOMMITTED.
 - **Round 2 (same session):** linework thinned on the outline set at Caroline's ask (glyphs

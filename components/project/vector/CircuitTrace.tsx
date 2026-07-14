@@ -81,7 +81,7 @@ export function CircuitTrace() {
     <div
       ref={ref}
       aria-hidden
-      className="pointer-events-none absolute inset-y-0 left-8 hidden w-px md:block"
+      className="pointer-events-none absolute inset-y-0 left-8 hidden w-px min-[1070px]:block"
     >
       {/* unlit track */}
       <div className="absolute inset-0 w-px bg-[var(--case-study-line)]" />

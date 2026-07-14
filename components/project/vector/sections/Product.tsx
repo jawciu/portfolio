@@ -7,7 +7,8 @@ import { CircuitTrace } from "../CircuitTrace";
 /* The product — one continuous walk through the product, replacing the old pillar
    cards + the separate Workspace / AIFeatures sections. Each block is a two-column
    row: copy on one side, the product visual on the other, sides ALTERNATING down the
-   page (`flip`). Below md the grid collapses and copy always leads, then the visual. */
+   page (`flip`). Below 1070px the grid collapses and copy always leads, then the
+   visual (the mobile stack — promoted from md, where 768-1070 never fit). */
 
 type Block = {
   subhead: string;
@@ -99,7 +100,7 @@ const BLOCKS: Block[] = [
     width: 580,
     /* the snippet hangs 200px below the table; +100px centres the copy on the
        table+snippet GROUP */
-    copyClassName: "md:translate-y-[100px]",
+    copyClassName: "min-[1070px]:translate-y-[100px]",
     alt: "Vector's health table: each company scored On track, At risk or Blocked, with task counts and how many are blocked.",
   },
   {
@@ -143,7 +144,7 @@ const BLOCKS: Block[] = [
     width: 522,
     /* draft sits 150px in from the column's right edge; the cron snippet keeps
        anchoring to the COLUMN corner, so it stays put while the shot moves left */
-    shotClassName: "md:mr-[150px]",
+    shotClassName: "min-[1070px]:mr-[150px]",
     alt: "Vector's draft follow-up: an AI-written email grounded in a blocked task, with dismiss, open in mail and comment.",
     flip: true,
   },
@@ -202,13 +203,15 @@ function SubSection({
       {texture && <DotGlow pattern={texture} />}
       {/* scroll-drawn circuit spine down the left edge, one node per block */}
       <CircuitTrace />
-      {/* room label: on md+ it turns 90° and rides the circuit spine (between the
-          screen edge and the line, so it can never collide with the content bands);
-          below md the trace is hidden, so the label keeps its horizontal spot. */}
-      <p className="pointer-events-none absolute top-8 left-1.5 hidden rotate-180 font-[family-name:var(--font-mono)] text-sm tracking-[0.2em] text-[var(--case-study-muted)] [writing-mode:vertical-rl] md:block">
+      {/* room label: on the two-column layout (1070px+) it turns 90° and rides the
+          circuit spine (between the screen edge and the line, so it can never collide
+          with the 90% content band); below 1070 the rows use the mobile stack at px-6,
+          which would run into the spine/label — so trace + vertical label hide and the
+          label keeps its horizontal spot. Gates match ProductBlock's stack point. */}
+      <p className="pointer-events-none absolute top-8 left-1.5 hidden rotate-180 font-[family-name:var(--font-mono)] text-sm tracking-[0.2em] text-[var(--case-study-muted)] [writing-mode:vertical-rl] min-[1070px]:block">
         /{label}
       </p>
-      <Container className="relative md:hidden">
+      <Container className="relative min-[1070px]:hidden">
         <p className="pt-6 pl-2 font-[family-name:var(--font-mono)] text-sm tracking-[0.2em] text-[var(--case-study-muted)]">
           /{label}
         </p>
@@ -398,53 +401,58 @@ function MinitiFlow() {
   );
 }
 
-/* Where each companion sits against its shot: mobile keeps the simple in-flow
-   stack; md+ pins the card to a CORNER of the asset (absolute against the
-   visual column) so it reads as clustered, not covering. */
+/* Where each companion sits against its shot: the mobile-style in-flow stack
+   holds all the way to 1070px; above that the card pins to a CORNER of the
+   asset (absolute against the visual column) so it reads as clustered, not
+   covering. min-[1070px] everywhere, matching the row's stack point. */
 const COMPANION_POS: Record<NonNullable<Block["companion"]>, string> = {
   /* bottom-RIGHT corner: the shot hugs the left of its widened column and the
      card takes the freed corner */
-  flow: "relative z-10 -mt-10 w-full max-w-[440px] md:absolute md:right-0 md:bottom-[-56px] md:mt-0 md:w-[440px]",
+  flow: "relative z-10 -mt-10 w-full max-w-[440px] min-[1070px]:absolute min-[1070px]:right-0 min-[1070px]:bottom-[-56px] min-[1070px]:mt-0 min-[1070px]:w-[440px]",
   /* bottom-LEFT corner of the health table, dropped WELL below it — the card
      mostly hangs off the table so the table's rows stay readable (it used to
      cover the right side; Caroline 2026-07-13) */
-  health: "relative z-10 -mt-10 w-[88%] max-w-[430px] md:absolute md:left-[-24%] md:bottom-[-200px] md:mt-0 md:w-[430px]",
+  health: "relative z-10 -mt-10 w-[88%] max-w-[430px] min-[1070px]:absolute min-[1070px]:left-[-24%] min-[1070px]:bottom-[-200px] min-[1070px]:mt-0 min-[1070px]:w-[430px]",
   /* bottom-RIGHT corner of the follow-up draft, overhanging the shot edge
      slightly (the copy gap absorbs it) */
-  cron: "relative z-10 -mt-10 w-[88%] max-w-[420px] md:absolute md:right-[-6%] md:bottom-[-56px] md:mt-0 md:w-[400px]",
-  /* bottom-LEFT corner of the actions queue — slimmed to labels only. md:z-0
-     drops it UNDER the actions shot (the shot's wrapper carries md:z-[5]), so
+  cron: "relative z-10 -mt-10 w-[88%] max-w-[420px] min-[1070px]:absolute min-[1070px]:right-[-6%] min-[1070px]:bottom-[-56px] min-[1070px]:mt-0 min-[1070px]:w-[400px]",
+  /* bottom-LEFT corner of the actions queue — slimmed to labels only. z-0
+     drops it UNDER the actions shot (the shot's wrapper carries z-[5]), so
      the overlapping corner tucks behind the card */
-  miniti: "relative z-10 -mt-10 w-[88%] max-w-[290px] md:absolute md:left-[calc(-34%_-_20px)] md:bottom-[-76px] md:mt-0 md:w-[290px] md:z-0",
+  miniti: "relative z-10 -mt-10 w-[88%] max-w-[290px] min-[1070px]:absolute min-[1070px]:left-[calc(-34%_-_20px)] min-[1070px]:bottom-[-76px] min-[1070px]:mt-0 min-[1070px]:w-[290px] min-[1070px]:z-0",
 };
 
 /* Each row is a centred BAND with the copy at one end and the shot at the other, pushed
    apart (space-between). Big shots ride the full 90% band; the small panels tighten to a
-   70% band so the pair doesn't strand itself at opposite edges of the screen. Below md
-   the band collapses: one column, copy first, shot full width. */
+   70% band so the pair doesn't strand itself at opposite edges of the screen. Below
+   1070px the band collapses: one column, copy first, shot full width (the mobile stack,
+   promoted from md — the two-column row never fit 768-1070 without collisions). */
 function ProductBlock({ subhead, body, asset, alt, companion, flip, width, columnWidth, band, framed, shotClassName = "", copyClassName = "" }: Block) {
   return (
     <Reveal
-      className={`mx-auto flex flex-col gap-10 px-6 md:flex-row md:items-center md:justify-between md:gap-6 md:px-0 ${
+      className={`mx-auto flex flex-col gap-10 px-6 min-[1070px]:flex-row min-[1070px]:items-center min-[1070px]:justify-between min-[1070px]:gap-6 min-[1070px]:px-0 ${
         /* the 90 band tightens on very wide screens so the copy↔shot gap doesn't
-           balloon. All three tiers use min-[..px] variants: Tailwind v4 emits the
-           arbitrary min-[] group BEFORE the named md: block, so a md:w-[90%] here
-           would win over the wide tiers regardless of viewport (min-[768px] = md). */
+           balloon. All tiers use min-[..px] variants: Tailwind v4 emits the
+           arbitrary min-[] group BEFORE the named md: block, so a md:w- here
+           would win over the wide tiers regardless of viewport. */
         band === "90"
           /* the 60% tier is floored at 1280px: the widest rows (424 copy + 828
              shot + 24 gap = 1276) would spill past a bare 60% band until
              ~2130px viewport, reading off-centre. max() keeps every row on the
              same band edge instead. */
-          ? "min-[768px]:w-[90%] min-[1624px]:w-[80%] min-[1888px]:w-[70%] min-[2000px]:w-[max(60%,1280px)]"
+          ? "min-[1070px]:w-[90%] min-[1624px]:w-[80%] min-[1888px]:w-[70%] min-[2000px]:w-[max(60%,1280px)]"
           : band === "75"
-            ? "md:w-[75%]"
-            : "md:w-[70%]"
+            ? "min-[1070px]:w-[75%]"
+            : "min-[1070px]:w-[70%]"
       }`}
     >
       {/* COPY — also the anchor the room's CircuitTrace lights a node against.
           Heading is static full-ink (the scroll-lit TabHead was tried and cut);
-          the first paragraph gets double air under the heading. */}
-      <div data-trace-node className={`md:w-[424px] md:shrink-0 ${flip ? "md:order-2" : ""} ${copyClassName}`}>
+          the first paragraph gets double air under the heading. Width is 424px
+          from 1230px up, then hugs tighter 1:1 with the viewport down to the
+          1070px stack point (clamp floor 264 = 424 − 160) — Caroline's call:
+          the copy cedes width in that band so the visuals never ride over it. */}
+      <div data-trace-node className={`min-[1070px]:w-[clamp(264px,calc(100vw-806px),424px)] min-[1070px]:shrink-0 ${flip ? "min-[1070px]:order-2" : ""} ${copyClassName}`}>
         <h3 className="font-[family-name:var(--font-mono)] text-[24px] font-extrabold tracking-[0.04em] text-[var(--case-study-ink)]">
           {subhead}
         </h3>
@@ -458,20 +466,27 @@ function ProductBlock({ subhead, body, asset, alt, companion, flip, width, colum
       {/* VISUAL — frameless unless the asset lacks its own chrome (see `framed`).
           A companion clusters against a corner of its shot (cog-style stacked
           overlap) with its own parallax speed, so the pair floats apart as you
-          scroll. Corners live in COMPANION_POS; below md everything stacks
+          scroll. Corners live in COMPANION_POS; below 1070px everything stacks
           in-flow. With `columnWidth` the shot hugs the column's copy-far side
           and the companion takes the freed corner. */}
+      {/* the shot + column caps live in CSS vars so breakpoints can retier them:
+          full size below 1070px (stacked) and from 1408px up; ×0.8 in the
+          1070–1407px band, where full-size shots crowd the copy (424+24+828 =
+          1276px outgrows the 90% band ≈1418px down). min-[..px] not md:/lg: —
+          the arbitrary min-[] variant group is emitted before the named block,
+          so mixing them on one property lets the named rule win at every width
+          (see responsive-design skill). */}
       <div
-        className={`relative w-full md:shrink-0 ${flip ? "md:order-1" : ""}`}
-        style={{ maxWidth: columnWidth ?? width }}
+        className={`relative w-full max-w-[var(--pb-col)] min-[1070px]:shrink-0 min-[1070px]:max-w-[calc(var(--pb-col)*0.8)] min-[1408px]:max-w-[var(--pb-col)] ${flip ? "min-[1070px]:order-1" : ""}`}
+        style={{ "--pb-col": `${columnWidth ?? width}px` } as React.CSSProperties}
       >
         {/* in a widened column the shot hugs the copy-FAR side: left on normal
             rows, right on flipped rows (so widening always moves it toward the copy).
-            md:z-[5] layers the shot BETWEEN the companions: above md:z-0 ones
+            z-[5] layers the shot BETWEEN the companions: above z-0 ones
             (miniti tucks under it), below the default z-10 ones. */}
         <div
-          style={{ maxWidth: width }}
-          className={`relative md:z-[5] ${columnWidth ? (flip ? "md:ml-auto" : "md:mr-auto") : ""} ${shotClassName}`}
+          style={{ "--pb-shot": `${width}px` } as React.CSSProperties}
+          className={`relative max-w-[var(--pb-shot)] min-[1070px]:z-[5] min-[1070px]:max-w-[calc(var(--pb-shot)*0.8)] min-[1408px]:max-w-[var(--pb-shot)] ${columnWidth ? (flip ? "min-[1070px]:ml-auto" : "min-[1070px]:mr-auto") : ""} ${shotClassName}`}
         >
           <Parallax speed={20}>
             <Shot src={A(asset)} alt={alt} bare={!framed} />
@@ -504,9 +519,9 @@ export function Product() {
             <Reveal>
               <Kicker>The product</Kicker>
               <Title>
-                Shared board, AI admin,
+                Shared view and AI
                 <br />
-                predictive health
+                that keeps work on track
               </Title>
             </Reveal>
           </Container>

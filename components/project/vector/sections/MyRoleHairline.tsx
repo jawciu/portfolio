@@ -28,11 +28,11 @@ const HATS = [
     body: "Agents wrote the syntax. I researched and approved every architecture and build call.",
   },
   {
-    // ?v=2 = cache-bust: Caroline's Safari kept serving the round-4 translucent
-    // version of this one asset after the colour swap. Bump if it goes stale again.
-    icon: "ai-orchestration-hairline.svg?v=2",
+    // ?v = cache-bust: Caroline's Safari kept serving a stale copy of this one
+    // asset after a colour swap. Bump the number if it goes stale again.
+    icon: "ai-orchestration-hairline.svg?v=3",
     label: "AI orchestration",
-    alt: "Hairline node diagram icon with a pink junction dot on a faint outlined card",
+    alt: "Hairline node diagram icon, lilac squares with orange connectors, on a dark card",
     body: "I designed the AI layer, from grounded prompts to streaming tool use and observability.",
   },
 ] as const;
