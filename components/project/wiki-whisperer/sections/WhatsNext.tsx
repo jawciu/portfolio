@@ -8,6 +8,10 @@ export function WhatsNext() {
   return (
     <section
       data-section="WhatsNext"
+      // pb-0 everywhere: NextProject overlaps by -mt-[64px] (glass seam echo) and
+      // on mobile the full-bleed table is the LAST element, sitting flush so the
+      // plate's curved edge rides over its bottom (Caroline's ask). The paragraph
+      // it once covered now ends safely above the table.
       className="relative isolate overflow-hidden pt-[120px] pb-0"
     >
       <Container>
@@ -55,11 +59,28 @@ export function WhatsNext() {
           <Reveal stagger={0.1} className="max-w-[440px]">
             <Body>
             Two larger improvements surfaced in research. <br/>  <br/>
-            A CRM (Kraken) integration would connect Wiki Whisperer to customer data, pulling account-specific insights and resolving issues faster. <br/>  <br/> 
+            A CRM (Kraken) integration would connect Wiki Whisperer to customer data, pulling account-specific insights and resolving issues faster. <br/>  <br/>
             Energy specialists were also keen on images in responses. Particularly for questions about electricity meters, where a picture does a lot of the explaining.
             </Body>
           </Reveal>
         </Container>
+
+        {/* below lg the absolute off-left bleed above is hidden entirely, which left
+            this section imageless on phones — show the table as a FULL-BLEED visual:
+            edge-to-edge (no container padding), drawn 125% wide so the rightmost
+            "Complexity" column is always chopped by the screen edge (echoes the
+            desktop treatment, where the table bleeds off-screen too). The section's
+            own overflow-hidden clips the overflow, so no horizontal scroll. */}
+        <div className="mt-10 w-full overflow-hidden lg:hidden">
+          <Reveal>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={A("opportunities-table-crop.png")}
+              alt="Prioritised opportunity backlog: Kraken integration, copy to clipboard and visual UI guidance scored by value and complexity"
+              className="block w-[125%] max-w-none"
+            />
+          </Reveal>
+        </div>
       </div>
     </section>
   );

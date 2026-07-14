@@ -3,7 +3,7 @@ import { Reveal } from "../Reveal";
 
 export function BookingDropoff() {
   return (
-    <section data-section="BookingDropoff" className="pt-[120px] pb-[120px]">
+    <section data-section="BookingDropoff" className="pt-[120px] pb-[120px] max-sm:pb-[60px]">
       <Container>
         <Reveal>
           <Title>

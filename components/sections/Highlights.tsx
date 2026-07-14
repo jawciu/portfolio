@@ -57,7 +57,7 @@ export function Highlights() {
     // every directory label shares one left edge down the page.
     <section
       aria-labelledby="highlights-label"
-      className="px-8 pt-6 pb-20 md:px-12 md:pt-10 md:pb-28"
+      className="px-8 pt-6 pb-10 md:px-12 md:pt-10 md:pb-28"
     >
       <div className="mx-auto w-full max-w-7xl 2xl:max-w-[88rem]">
         <p
@@ -71,7 +71,7 @@ export function Highlights() {
         <ul
           ref={ref}
           role="list"
-          className="mt-9 grid grid-cols-2 gap-x-8 gap-y-12 pl-2 md:mt-12 md:grid-cols-4 md:gap-10"
+          className="mt-9 grid grid-cols-1 gap-x-8 gap-y-12 pl-2 sm:grid-cols-2 md:mt-12 md:grid-cols-4 md:gap-10"
         >
           {HIGHLIGHTS.map((item, i) => {
             const base = i * CARD_GAP;

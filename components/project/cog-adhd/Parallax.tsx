@@ -22,10 +22,14 @@ export function Parallax({
   className = "",
   /** px of travel; positive drifts up (feels faster), negative drifts down (lags) */
   speed = 50,
+  /** set false to disable the drift on phones (<640px) — the offset otherwise
+      distorts the carefully-tuned mobile whitespace around the image */
+  mobile = true,
 }: {
   children: ReactNode;
   className?: string;
   speed?: number;
+  mobile?: boolean;
 }) {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -34,7 +38,10 @@ export function Parallax({
       const el = ref.current;
       if (!el) return;
       const mm = gsap.matchMedia();
-      mm.add("(prefers-reduced-motion: no-preference)", () => {
+      const query = mobile
+        ? "(prefers-reduced-motion: no-preference)"
+        : "(prefers-reduced-motion: no-preference) and (min-width: 640px)";
+      mm.add(query, () => {
         gsap.fromTo(
           el,
           { y: speed },

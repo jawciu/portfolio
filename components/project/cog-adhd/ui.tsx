@@ -1,6 +1,6 @@
 // Shared read-only primitives for the Cog ADHD case study sections.
 // Builders IMPORT from here for consistency — do not edit per-section.
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { StreamingQuote } from "./StreamingQuote";
 
 /** asset path helper — all case-study assets live in /public/projects/cog-adhd */
@@ -87,9 +87,11 @@ export function InsightCard({
   height?: number;
 }) {
   return (
+    // min-height rides a CSS var gated to sm+ so phones HUG the content; padding
+    // is the full 36/32px at every width (matches the wiki cards).
     <div
-      style={{ width, minHeight: height }}
-      className="flex max-w-full flex-col rounded-2xl border border-[#f1f0ea] bg-[#fafafa] px-9 py-8"
+      style={{ width, "--ic-h": `${height}px` } as CSSProperties}
+      className="flex max-w-full flex-col rounded-2xl border border-[#f1f0ea] bg-[#fafafa] px-9 py-8 sm:min-h-[var(--ic-h)]"
     >
       <p className="font-[family-name:var(--font-mono)] text-[15px] font-bold uppercase tracking-[0.02em] text-[var(--cog-ink)]">
         {label}
@@ -124,7 +126,12 @@ export function TestimonialBubble({
   flip?: boolean;
 }) {
   return (
-    <figure className="relative min-w-0 max-w-full" style={{ width }}>
+    // width rides a CSS var so mobile can cap it: ≤640px every bubble renders at
+    // the smallest scatter size (280px) for a uniform stacked column.
+    <figure
+      className="relative min-w-0 max-w-full w-[var(--tb-w)] max-sm:w-[280px]"
+      style={{ "--tb-w": `${width}px` } as CSSProperties}
+    >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={A(asset)}

@@ -107,7 +107,7 @@ export function Methodology() {
             to fit (flex-1) so they stay usable on smaller screens. */}
         <Reveal
           stagger={0.12}
-          className="mt-6 flex items-stretch justify-center gap-4 overflow-hidden px-4 pb-2 max-sm:flex-col max-sm:items-center sm:gap-6 min-[1200px]:px-0"
+          className="mt-6 flex items-stretch justify-center gap-4 overflow-hidden px-4 pb-2 max-sm:gap-3 max-sm:px-0 sm:gap-6 min-[1200px]:px-0"
         >
           {SKETCHES.map((file, i) => (
             // eslint-disable-next-line @next/next/no-img-element
@@ -115,7 +115,7 @@ export function Methodology() {
               key={file}
               src={A(file)}
               alt={`Exploratory wireframe sketches ${i + 1}`}
-              className="h-auto min-w-0 flex-1 object-contain max-sm:w-full max-sm:flex-none min-[1200px]:w-[568px] min-[1200px]:flex-none"
+              className="h-auto min-w-0 flex-1 object-contain max-sm:w-[48%] max-sm:flex-none min-[1200px]:w-[568px] min-[1200px]:flex-none"
             />
           ))}
         </Reveal>

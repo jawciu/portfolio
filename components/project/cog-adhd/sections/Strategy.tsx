@@ -26,16 +26,16 @@ type StackCardData = {
 };
 
 const VISION_STACK: StackCardData[] = [
-  { src: "image-23.svg", alt: "Cog home screen - Hi Katherine, your daily practice", w: 320, h: 523, top: 0, left: 300, z: 10 },
-  { src: "image-21.svg", alt: "Cog check-in - How is your focus?", w: 208, h: 321, top: 150, left: 0, z: 0 },
-  { src: "image-22.svg", alt: "Cog check-in - How is your punctuality?", w: 208, h: 320, top: 235, left: 170, z: 20 },
+  { src: "image-23.png", alt: "Cog home screen - Hi Katherine, your daily practice", w: 320, h: 523, top: 0, left: 300, z: 10 },
+  { src: "image-21.png", alt: "Cog check-in - How is your focus?", w: 208, h: 321, top: 150, left: 0, z: 0 },
+  { src: "image-22.png", alt: "Cog check-in - How is your punctuality?", w: 208, h: 320, top: 235, left: 170, z: 20 },
 ];
 const VISION_STACK_W = 620;
 const VISION_STACK_H = 555;
 
 const JOURNAL_STACK: StackCardData[] = [
-  { src: "image-24.svg", alt: "Cog journal - What went well today?", w: 320, h: 523, top: 0, left: 0, z: 0 },
-  { src: "image-25.svg", alt: "Cog journal - What's been happening?", w: 300, h: 246, top: 55, left: 230, z: 10 },
+  { src: "image-24.png", alt: "Cog journal - What went well today?", w: 320, h: 523, top: 0, left: 0, z: 0 },
+  { src: "image-25.png", alt: "Cog journal - What's been happening?", w: 300, h: 246, top: 55, left: 230, z: 10 },
 ];
 const JOURNAL_STACK_W = 530;
 const JOURNAL_STACK_H = 523;
@@ -112,7 +112,7 @@ export function Strategy() {
             </Body>
           </div>
           <div className="flex justify-center lg:justify-end">
-            <Parallax speed={40}>
+            <Parallax speed={40} mobile={false}>
               <CardStack cards={VISION_STACK} w={VISION_STACK_W} h={VISION_STACK_H} />
             </Parallax>
           </div>
@@ -123,12 +123,12 @@ export function Strategy() {
           stagger={0.14}
           className="mt-12 flex flex-col gap-12 md:mt-16 lg:grid lg:grid-cols-[auto_1fr] lg:items-center lg:gap-14"
         >
-          <div className="flex justify-center lg:justify-start">
-            <Parallax speed={-32}>
+          <div className="flex justify-center max-sm:order-2 lg:justify-start">
+            <Parallax speed={-32} mobile={false}>
               <CardStack cards={JOURNAL_STACK} w={JOURNAL_STACK_W} h={JOURNAL_STACK_H} />
             </Parallax>
           </div>
-          <div className="space-y-6">
+          <div className="space-y-6 max-sm:order-1">
             <Body>
               This would also give therapists a better understanding of their
               patient&rsquo;s health and areas to focus on.
@@ -142,17 +142,17 @@ export function Strategy() {
         </Reveal>
 
         {/* Centralised hub — concept dashboard 1 */}
-        <Reveal className="mt-20 md:mt-28">
+        <Reveal className="mt-20 max-sm:mt-12 md:mt-28">
           <Body className="w-[510px] max-w-full">
             Additionally, a centralised hub would keep therapy organised; session
             summaries, homework, communication, reminders, and an archive all in
             one place, so nothing ever gets lost.
           </Body>
-          <figure className="mt-3 flex flex-col">
+          <figure className="mt-3 max-sm:mt-10 flex flex-col">
             <DesignIdeaTag />
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={A("image-26.svg")}
+              src={A("image-26.png")}
               alt="Cog Clinic dashboard concept - Katherine Bell progress view with symptom-progress line chart and symptom-control donut charts"
               className="mt-3 w-full rounded-[20px] border border-[#E3E2DA] bg-[var(--cog-bg-alt)] shadow-[1px_1px_10px_2px_rgba(212,210,210,0.25)]"
             />
@@ -160,18 +160,18 @@ export function Strategy() {
         </Reveal>
 
         {/* Automating admin — concept dashboard 2 */}
-        <Reveal className="mt-20 md:mt-28">
+        <Reveal className="mt-20 max-sm:mt-12 md:mt-28">
           <Body className="w-[510px] max-w-full">
             Automating some of the admin work could further reduce clinician
             burnout. For example, after each session, AI could draft a session
             summary and risk assessment based on the user&rsquo;s data, allowing
             therapists to simply review it.
           </Body>
-          <figure className="mt-3 flex flex-col">
+          <figure className="mt-3 max-sm:mt-10 flex flex-col">
             <DesignIdeaTag />
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={A("image-27.svg")}
+              src={A("image-27.png")}
               alt="Cog Clinic dashboard concept - Katherine Bell session view with an AI-drafted session summary"
               className="mt-3 w-full rounded-[20px] border border-[#E3E2DA] bg-[var(--cog-bg-alt)] shadow-[1px_1px_10px_2px_rgba(212,210,210,0.25)]"
             />

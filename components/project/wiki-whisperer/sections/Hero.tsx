@@ -10,9 +10,12 @@ export function Hero() {
     <section data-section="Hero" className="relative">
       <Container className="pt-28 pb-[120px] md:pt-32">
         {/* Page title — H1, two lines via a manual break. */}
+        {/* The break is DESKTOP-ONLY (hidden ≤640px so the 32px mobile title flows
+            naturally). The explicit {" "} matters: JSX drops the newline between
+            text and <br/>, so without it mobile would render "Brainfor". */}
         <h1 className="case-study-title">
-          Designing an AI Brain
-          <br />
+          Designing an AI Brain{" "}
+          <br className="max-sm:hidden" />
           for a Support Call Centre
         </h1>
 
@@ -55,7 +58,7 @@ export function Hero() {
                   <br />
                   Hey Marvin
                   <br />
-                  Miro
+                  LangGraph
                   <br />
                   Mixpanel
                   <br />
@@ -102,11 +105,22 @@ export function Hero() {
             <video
               id="hero-promo"
               src={A("promo.mp4")}
+              // 1920x1080 -> reserve the 16:9 box up front. Without this the video
+              // is a ~150px-tall placeholder until its metadata loads (a 29MB file,
+              // so LATE on a real network), then pops to full height. That growth is
+              // at the TOP of the page, so it shifts every section below it AFTER the
+              // Reveal ScrollTriggers have cached their "top 85%" start positions. On
+              // a hard load fonts.ready/window-load fire a ScrollTrigger.refresh() to
+              // recompute; on a CLIENT-SIDE nav neither re-fires, so the cached starts
+              // stay stale-too-early and every reveal completes off-screen (looks
+              // "already revealed, no animation"). Reserving the box kills the shift.
+              width={1920}
+              height={1080}
               autoPlay
               loop
               muted
               playsInline
-              className="block h-auto w-full"
+              className="block aspect-video h-auto w-full"
             />
           </div>
         </div>

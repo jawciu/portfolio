@@ -29,7 +29,7 @@ const FEATURES: [string, string][] = [
 
 export function Feedback() {
   return (
-    <section data-section="Feedback" className="pt-[120px] pb-0">
+    <section data-section="Feedback" className="pt-[120px] pb-0 max-sm:pt-[100px]">
       <Container>
         <Reveal>
           <Kicker>User-led refinement</Kicker>
@@ -52,20 +52,23 @@ export function Feedback() {
           {/* two equal-height panels, tight gap so the pinned tooltip stays visible.
               The SVGs bake in their own frame + shadow (and pin's tooltip overhangs
               the frame), so no wrapper card/background here. */}
-          <Reveal className="flex h-[380px] items-stretch justify-start gap-3 max-sm:h-auto max-sm:flex-col max-sm:items-center max-sm:gap-5 sm:h-[440px] lg:h-[500px] xl:h-[572px]">
+          {/* MOBILE (max-sm): order-2 sends the panels BELOW the speed/pin/search copy
+              (grid respects CSS order — no duplicated markup, desktop untouched), and
+              the two panels sit side by side at 1/3 width each, centred. */}
+          <Reveal className="flex h-[380px] items-stretch justify-start gap-3 max-sm:order-2 max-sm:h-auto max-sm:items-start max-sm:justify-center max-sm:gap-4 sm:h-[440px] lg:h-[500px] xl:h-[572px]">
             {/* pin-conversation panel (left) */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={A("pin.svg")}
+              src={A("pin.png")}
               alt="Pinning a conversation from the chat list"
-              className="h-full w-auto max-sm:h-auto max-sm:w-full"
+              className="h-full w-auto max-sm:h-auto max-sm:w-auto max-sm:min-w-0 max-sm:flex-1"
             />
             {/* search-history panel (right) */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={A("search.svg")}
+              src={A("search.png")}
               alt="Searchable chat history with pinned conversations"
-              className="h-full w-auto max-sm:h-auto max-sm:w-full"
+              className="h-full w-auto max-sm:h-auto max-sm:w-auto max-sm:min-w-0 max-sm:flex-1"
             />
           </Reveal>
 
@@ -112,14 +115,14 @@ export function Feedback() {
             {/* flag-content form (vector card — already framed) */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={A("flag-form.svg")}
+              src={A("flag-form.png")}
               alt="Flag-content form where agents say what was wrong and flag the source"
               className="h-[77%] w-auto max-sm:h-auto max-sm:w-full"
             />
             {/* routed to a Slack channel (flat screenshot — add rounded corners + lilac border) */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={A("feedback.svg")}
+              src={A("feedback.png")}
               alt="Feedback routed to a Slack channel for experts to action"
               className="h-full w-auto rounded-[16px] border-[1.5px] border-[#F7EBFF] max-sm:h-auto max-sm:w-full"
             />

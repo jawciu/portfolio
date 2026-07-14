@@ -72,8 +72,21 @@ export function NavBar() {
       >
         ~/caro/portfolio/2026
       </Link>
+      {/* MOBILE-ONLY home affordance: the path label above is hidden ≤sm (no room),
+          which left phones with no way back to the root. ⌂ (U+2302 HOUSE) reads as
+          "home" in the same mono/terminal voice as the rest of the nav; it takes the
+          nav link colours so it flips with the light/dark theme. p-1 pads the glyph
+          toward a usable tap target. */}
+      <Link
+        href="/"
+        onClick={handle("/")}
+        aria-label="Back to home"
+        className={`p-1 font-mono text-base leading-none transition-colors sm:hidden ${pathColor} ${hover}`}
+      >
+        ⌂
+      </Link>
       <nav
-        className={`flex gap-6 font-mono text-xs tracking-[0.25em] md:gap-10 md:text-sm ${navColor}`}
+        className={`flex gap-6 font-mono text-xs tracking-[0.25em] max-sm:text-sm md:gap-10 md:text-sm ${navColor}`}
       >
         <Link
           href="/#work"

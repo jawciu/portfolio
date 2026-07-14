@@ -5,7 +5,7 @@ export function JourneyMap() {
   return (
     <section
       data-section="JourneyMap"
-      className="pt-[120px] pb-0 bg-[var(--cog-bg-section)]"
+      className="pt-[120px] pb-0 max-sm:pt-[60px] bg-[var(--cog-bg-section)]"
     >
       <Container>
         <Reveal>
@@ -26,10 +26,10 @@ export function JourneyMap() {
         >
           {/* Persona chip */}
           <div>
-            <div className="w-[240px] max-w-full">
+            <div className="w-[240px] max-w-full max-sm:mx-auto max-sm:w-[180px]">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={A("image-20.svg")}
+                src={A("image-20.png")}
                 alt="Portrait of Katherine Bell, the persona for the journey map"
                 className="h-auto w-full"
               />
@@ -86,10 +86,10 @@ export function JourneyMap() {
 
         {/* Journey map table (exported image) */}
         <Reveal className="mt-12 w-full overflow-x-auto md:mt-16">
-          <div className="min-w-[900px]">
+          <div className="min-w-[900px] max-md:min-w-0">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={A("cog-clinic-current-journey-map.svg")}
+              src={A("cog-clinic-current-journey-map.png")}
               alt="Cog Clinic current therapy process journey map: stages, actions, thoughts, touchpoints, emotions and opportunities across choose, prepare, introduce, remember, recall and analyse phases"
               className="h-auto w-full"
             />

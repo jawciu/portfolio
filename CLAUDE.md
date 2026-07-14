@@ -139,6 +139,12 @@ it's a deliberate call.
 **Git / working style**
 - **Commit/push ONLY when Caroline asks in the moment** (global rule); staging is fine. Multiple
   agents share this working tree — `git add` specific files, **never `-A`**.
+- **Root `assets/` is gitignored raw material (2026-07-14)** — source PDFs/SVGs/exports, never
+  served (the site loads from `public/assets/` only). It got swept into a commit by Cursor's
+  stage-all, and two 100MB+ Wiki V2 PDFs made GitHub reject the push (the editor's "pull first"
+  dialog was a misdiagnosis). Untracked via `git rm -r --cached assets` + `/assets` in
+  `.gitignore`; files stay on disk. Never commit from `assets/` — copy what the site needs into
+  `public/` first.
 - When Caroline asks a *question*, answer it and change nothing; act only on explicit instructions.
 - **No em dashes ever** in copy written for her; British spelling throughout.
 
@@ -153,7 +159,7 @@ it's a deliberate call.
   qual + adoption; quant directional, tests still running); all names anonymised.
 - **Type template** (classes in each `theme.css`, load AFTER Tailwind so they BEAT utilities —
   apply ALONE, never stack `text-*`/`leading-*`/colour utilities on them):
-  `.case-study-title` (H1, Iosevka, 48px/22px mobile, faux-extrabold via `-webkit-text-stroke`
+  `.case-study-title` (H1, Iosevka, 48px/32px mobile, faux-extrabold via `-webkit-text-stroke`
   since Charon has no 800 cut), `.case-study-section-heading` (36px, stroke, baked 48px
   margin-bottom; use `mb-0!` if a button follows since margins don't collapse on inline-flex),
   `.case-study-eyebrows-heading` (Geist sans, uppercase, 13px/700, baked 12px gap to heading),
@@ -741,6 +747,335 @@ cards, element-screenshot. Delete the temp script after.
 - **To run the worktree:** it needs its own `npm install` (a symlinked node_modules breaks Turbopack;
   dev works via `next dev --webpack`). **Open intent:** review the copy/visuals, then commit/merge
   when Caroline's happy. No real portal screenshot exists (portal described in copy only).
+> **Merge note (2026-07-14):** entries below this line are from main's parallel
+> cog/wiki mobile sessions, union-merged when main was synced into `vector-case-study`.
+
+### 2026-07-08 — Cog mobile whitespace round 2 (Caroline's 13-item phone list). PUSHED `22db709`.
+- **All 13 items applied, `max-sm:` guarded, desktop verified pixel-identical at 1440** (tsc+lint
+  clean; 390px walk + numeric gap ruler both re-run). Files: Hero/Interviews/Competitive/Challenges/
+  Solution/Results/Strategy/Takeaways sections + `ui.tsx` + `Parallax.tsx`.
+- **Highlights of how:** Hero phones now `max-sm:w-[calc(50%-4px)]` (pair spans the tablet's width) ·
+  Interviews callout air symmetric 64/64 (cluster `max-sm:mt-16`) · bubble gaps 2-3/3-4 pulled
+  `-mt-3`/`-mt-3.5` (30% of MEASURED whitespace bands 39/48px — measured by fullPage screenshot
+  row-scan, the alpha-bbox approach lies because cloud lobes aren't where the eye reads the gap) ·
+  Competitive reordered on phones via `max-sm:flex max-sm:flex-col` on Container + `order-*`
+  (header → logos → both intro paras → screenshots); NOTE: flex items don't margin-collapse with
+  children, so inner `mt-6` ADDS to item margins — compensate (para1 got `mt-4` not `mt-10`) ·
+  40px above/below every product image in Competitive/Strategy/Solution ("market research" rhythm,
+  = old 32 × 1.2) · InsightCard (INSIGHT + PROBLEM cards) padding ×0.6 on phones (`max-sm:px-[22px]
+  py-[19px]` in ui.tsx) · **`Parallax` got a `mobile={false}` prop** (adds `min-width:640px` to the
+  matchMedia) — used on BOTH Strategy stacks (asked) AND the Challenges tracker phone (not asked but
+  required: the drift made item 8's 120px boundary non-deterministic — FLAG to Caroline) ·
+  Challenges `max-sm:pb-10` removed → boundary exactly 120 · Solution clusters `max-sm:max-w-[310px]`
+  (Strategy-stack size); cluster-2's Highs card overhangs 49px above / 59px BELOW its box, so
+  neighbours use mt-12/mt-[100px] to land 40px VISUAL · TestimonialBubble width now a CSS var +
+  `max-sm:w-[280px]` cap → all Results bubbles uniform at the smallest size (all 4 quotes fit, checked)
+  · video gap doubled (`max-sm:mt-10` + gap-10) · Takeaways heading→grid 112→90 (`mt-[90px]`),
+  section pb 60→78 (paragraph→plate gap ×1.3).
+- **Measurement recipe that worked:** DOM gap-ruler for box gaps + sharp row-scan of a fullPage
+  390px screenshot for INK gaps (background-tolerance ±8 vs #f5f4ef) — needed wherever assets bake
+  transparent padding or absolute children overhang their container.
+- **Round 3:** cog card padding back to the FULL `px-9 py-8` at every width (matches wiki — she
+  prefers that look; hug-height kept). Wiki cards now hug vertically on phones too: the empty
+  bottoms came from `auto-rows-fr` on the Redesign/UnderTheHood grids (equal rows are meaningless
+  in a 1-col stack) → `max-sm:auto-rows-auto`; desktop rows measured still equal. Also deleted the
+  commented-out Body paragraph in wiki Redesign.tsx + its orphan import (was the lint warning).
+- **Round 2 (same session, her tweaks):** hero phone gap 8→16 (`max-sm:gap-4`, phones
+  `calc(50%-8px)`) · bubble 3-4 pull-up −14→−22 (45% of the 48px band) · InsightCard mobile:
+  `max-sm:p-6` (24px) + cards HUG height on phones — minHeight moved off inline style to
+  `sm:min-h-[var(--ic-h)]` (desktop verified byte-identical: 420×320/380×260, pad 32/36) ·
+  the 40px image rhythm ramped to 48px across Competitive/Strategy/Solution (Strategy's base
+  `gap-12`/`mt-12` already = 48 so its round-1 max-sm overrides were DELETED as redundant;
+  Solution callout `max-sm:mt-[108px]` = 48 visual past the 59px Highs-card overhang) ·
+  Takeaways heading→grid mt removed entirely — the heading's baked 48px mb alone now matches
+  MyRole's heading→icon rhythm.
+
+### 2026-07-07 — SESSION HANDOFF (Caroline signed off for dinner)
+- **OPEN INTENT — READ FIRST: next session Caroline has WHITESPACE NOTES to give** — she's
+  reviewing the mobile spacing on her phone tonight and will come back with specific gaps to
+  adjust. Expect a list in the same style as today (per-spot, mobile-only). Everything is
+  `max-sm:`-guarded overrides; keep it that way (global rule: mobile changes must never affect
+  desktop).
+- **State: everything WORKING and PUSHED** through `aab9928` (prod = carolinejaworsky.com,
+  auto-deploys from main, ~2 min). Working tree clean except this CLAUDE.md entry + pre-existing
+  untracked assets/. Nothing broken, nothing in flight.
+- **Today's arc (details in the entries below):** wiki + cog mobile polish (type sizes, ordering,
+  spacing rhythm, full-bleed table, home ⌂), the iOS Safari SVG bake (blank-outs + blur — root rule:
+  SVGs used via <img> must avoid masks/filters/pattern-image fills), the AutoplayVideo component
+  (remember: iOS Low Power Mode blocks ALL autoplay — Caroline's phone was in LPM when she reported
+  the Results video "not playing"; retest charged), and the two-stage whitespace audit method.
+- **Also flagged, undecided:** cog Hero→MyRole reads 495px on mobile (glass-seam dwell choreography,
+  34vh in-hero spacer). Left intentionally; if Caroline wants it tighter, shrink the dwell
+  `max-sm` only in `app/project/cog-adhd/page.tsx` (`h-[34vh]` spacer inside StickyHero).
+
+### 2026-07-07 (later 4) — Cog mobile whitespace pass. PUSHED `aab9928` (mega-batch was `b2fd984`).
+- **Method (Caroline's call):** numeric gap-ruler script first, then a 31-frame Playwright visual
+  walkthrough at 390px — the visual pass caught what numbers couldn't: the Interviews **thought-bubble
+  cloud PNGs bake in big transparent margins**, so a 24px CSS gap read as 150-170px. Gap zeroed
+  `max-sm` (asset padding alone gives ~80px visual air).
+- Boundaries normalised to ~120px on phones: Takeaways→NextProject halved (240→120, double padding,
+  same fix as BookingDropoff→JourneyMap); Challenges→Solution topped up (78→~118, `max-sm:pb-10`);
+  Strategy vision-stack overflow (box is ~32px shorter than its cards) left 8px before row-2 copy →
+  row 2 `max-sm:mt-24`.
+- **Left alone deliberately:** Hero→MyRole 495px (glass-seam dwell choreography — flagged, Caroline
+  hasn't asked); Findings→Booking "157px" (false positive: empty interior of fixed-height cards);
+  Challenges→Solution slight variance (parallax drift ±40px is inherent).
+- **Audit recipe for next time:** measure text/img bounding-box gaps per section + BOUNDARY rows,
+  then scroll-walk screenshots every 800px and review by eye — assets with transparent padding and
+  absolute overhangs only show up visually.
+
+### 2026-07-07 (later 3) — Cog mobile mega-batch (7 fixes). PUSHED `b2fd984`.
+- **NextProject squiggle** `max-sm:w-[230%]` (bigger, chopped by section overflow-hidden).
+- **Takeaways**: MyRole centring pattern (icon `max-sm:justify-center`, label+body in
+  `max-sm:mx-auto max-sm:max-w-[85%]`).
+- **Results video**: new `AutoplayVideo.tsx` client component (IntersectionObserver `.play()`
+  nudge + pause off-screen; bare `autoPlay` can silently fail on Safari). NOTE: Caroline's phone
+  was in **Low Power Mode** (yellow battery, 10-13%) — iOS blocks ALL autoplay in LPM, no API can
+  override; retest charged. Video verified playing headless.
+- **Solution**: persona chip + prompt cells centred on phones; BOTH clusters reordered `max-sm`
+  via CSS order → copy first then mockups (weekly/two-tab text → imgs → symptom/journal text → imgs).
+- **Challenges**: bubble first (`max-sm:order-1`), tracker phone `max-sm:max-w-[250px]` (was 360).
+- **Methodology sketches**: one horizontal row on phones (dropped `max-sm:flex-col`), each frame
+  `max-sm:w-[48%]` → centre frame full, outer two chopped by overflow-hidden.
+- **Strategy row 2**: copy above the journal card stack on phones (CSS order).
+- All `max-sm:` guarded; desktop untouched. tsc+lint clean; verified via mobile screenshots.
+- **Round 2 (same session):** Takeaways grid `max-sm:mt-8` (heading air) · Solution cluster-2
+  collage `max-sm:mt-16` (the symptom card's `-16%` overhang ate the 40px grid gap → overlap) +
+  callout `max-sm:mt-28` · JourneyMap Katherine photo `max-sm:mx-auto max-sm:w-[180px]` ·
+  Challenges bubble `max-sm:max-w-[320px]` + quote `max-sm:text-[13px]` · Competitive row-1 copy
+  above the screenshots (`max-sm:order-*`).
+
+### 2026-07-07 (later 2) — Wiki table-under-curve + cog mobile fixes. PUSHED (`0901892`→`6801809` incl. hero SVG bake + logos).
+- **Wiki WhatsNext:** dropped `max-lg:pb-24` (added when TEXT was last; the full-bleed table is last
+  now) so the table sits flush and NextProject's `-mt-[64px]` curved plate rides over its bottom edge
+  — Caroline's ask. The once-covered paragraph ends safely above the table.
+- **Cog JourneyMap:** the map was a `min-w-[900px]` h-scroller that read as cut-off on phones →
+  `max-md:min-w-0` so it fits the 85% container width on mobile. Desktop identical.
+- **Cog Competitive:** the 4 app screenshots had unequal heights (per-pair `w-1/2 max-w-[220px]`,
+  differing aspects) → now `h-[280px] md:h-[420px] w-auto` — SAME height everywhere (desktop change
+  EXPLICITLY requested). Logos: one horizontal row on phones (`max-sm:flex justify-between`,
+  `max-sm:h-4 flex-1 min-w-0`), grid/flex unchanged ≥sm.
+- **Cog Interviews personas:** stacked cards overlapped (mascots overhang `-mt-14` = 56px > the
+  24px gap) → base gap `gap-6 → gap-20` (only effective <640; `sm:gap-12` unchanged).
+- Verified via mobile screenshots (curve over table ✓ map fits ✓ logo row ✓ equal shots ✓ card gap ✓)
+  + desktop Competitive (equal heights, new look approved-pending).
+
+### 2026-07-07 (later) — Wiki mobile round 4 + type-size Q&A. PUSHED `cb13ea9`, verified live.
+- **Q&A for Caroline (from code):** body 16px all widths · callout 28→22(≤640)→18px(≤480) ·
+  fuchsia Stats numbers 44px mobile / 66px md+ · bubble quote 15px (academy bubble 11px ≤sm).
+- **Fixes (all `max-sm:` guarded):** callout spacing ×⅔ on phones (Problem/Redesign 104→70 + 24→16,
+  Measuring 64→44, Impact 56→36 both sides of the callout) · Redesign screenshot wrappers
+  `max-sm:rounded-[10px]` (20px clipped the in-image logo) · **WhatsNext table on mobile** — the
+  desktop image is an absolute off-left bleed `hidden lg:block`, phones had NO image; added an
+  in-flow `lg:hidden` copy in the standard 16px+hairline frame · Hero tools **Miro → LangGraph**.
+- **Vercel gotcha:** the `6b9f68f` push never triggered a build (GitHub had it; prod didn't —
+  diagnosed by curling prod for the new asset + grepping live HTML). Any next push deploys HEAD;
+  `cb13ea9` carried both. If it recurs, check the Vercel dashboard for the skipped build.
+
+### 2026-07-07 — iOS Safari SVG blank-outs: root-caused + hardened (SVG→PNG for risky assets). PUSHED `a7037a8` + `6b9f68f` (flag-form blur, same family).
+- **Symptom (Caroline's iPhone, prod):** parts of wiki images randomly blank — masked icon glyphs
+  missing (background cards showed), pin/search panel content missing (frames showed), feedback.svg
+  a giant blank. **Restarting Safari fixed it** → NOT a code regression from the mobile batch.
+- **Root cause:** iOS Safari rasterizes SVG-in-`<img>` under a strict GPU/memory budget; under
+  memory pressure it silently drops the EXPENSIVE subtrees — `mask-type:luminance`, `feGaussianBlur`
+  filters, `<pattern>` fills referencing embedded `data:image` bitmaps. Diagnostic tell:
+  **research.svg (plain paths, no mask) was the ONLY MyRole icon that never broke.** Desktop
+  browsers (and desktop WebKit via Playwright — tested) have no such budget, so it never reproduces
+  off-device. Yesterday's resize just nudged rasterization sizes over the budget; flaky by session.
+- **Fix: bake risky SVGs to PNG via sharp** (`sharp(svg, { density: 72*scale }).png()` — sharp ships
+  with Next). Wiki: design/testing/launch (3x), pin/search/feedback (2x) — research.svg + flag-form.svg
+  kept as SVG (plain paths / 1 filter, survived on-device). Cog (same hazard class, found by audit):
+  journey-map, image-20/22/23/24/26/27/32 (all `<pattern>`+`data:image`) → 2x PNG. PNGs are all
+  SMALLER than the SVGs (feedback 604K→295K, journey-map 1.1M→604K). SVG sources kept on disk.
+- **Refs swapped** in wiki MyRole/Feedback + cog JourneyMap/Strategy/Solution. tsc+lint clean;
+  pixel-identical renders verified at 390px (wiki MyRole/panels/feedback + cog journey/strategy).
+- **RULE for future assets:** SVGs used via `<img>` must avoid luminance masks / filters /
+  pattern-image fills — iOS Safari drops them under memory pressure. Screenshot-like art → PNG;
+  SVG only for plain-path vector art.
+
+### 2026-07-06 (later 3) — Wiki mobile fixes (Feedback order, bubble overflow, cut paragraph) + mobile home dot. PUSHED `14167f9`.
+- **Feedback section mobile order** (`Feedback.tsx`): was header → images → speed/pin/search. Fixed
+  with **CSS `order`** (`max-sm:order-2` on the images Reveal — grid respects order), NOT the
+  duplicate-and-hide Caroline suggested (single markup, desktop provably untouched). Images now sit
+  BELOW the copy, side by side at **1/3 width each** (`max-sm:w-1/3`, container `max-sm:justify-center`;
+  removed `max-sm:flex-col`).
+- **Academy bubble overflow** (`ui.tsx` + `Impact.tsx`): `TestimonialBubble` art scales down but the
+  15px quote text doesn't → the long academy quote spilled out of the bubble on phones. Added
+  `quoteClassName` prop; the academy bubble passes `max-sm:text-[11px] max-sm:leading-snug`.
+  Other bubbles untouched.
+- **WhatsNext last paragraph cut** (`WhatsNext.tsx`): `NextProject` overlaps upward by `-mt-[64px]`
+  (glass seam echo); on stacked layouts the flush-bottom copy got covered. Fix: `max-lg:pb-24` on
+  the section (lg+ has `lg:min-h` room, unchanged).
+- **Mobile home link** (`NavBar.tsx`): the `~/caro/...` path label is `max-sm:hidden`, leaving no
+  route home on phones. Added a mobile-only (`sm:hidden`) home Link, left side. First tried the
+  favicon orb; Caroline swapped it for **⌂ U+2302 HOUSE** in `font-mono text-sm` (matches the nav
+  links' cap height — the glyph draws small in Geist Mono, so text-xs looked undersized), taking
+  the shared `pathColor`/`hover` so it flips with the light/dark theme.
+- **Verified:** tsc + eslint clean; mobile shots (order ✓ bubble text inside ✓ paragraph clear of the
+  plate ✓ dot ✓) + desktop Feedback/navbar unchanged.
+
+### 2026-07-06 (later 2) — Case-study mobile type + MyRole centring. PUSHED `87abb90`.
+- **Section headings 28px on phones:** `.case-study-section-heading` clamp floor 1.5rem → **1.75rem**
+  in BOTH theme.css files (desktop still 36px; floor holds below ~600px). DESIGN.md updated.
+- **H1 32px on phones:** `.case-study-title` mobile (≤640px) 22px → **32px** in both themes.
+  DESIGN.md + digest updated.
+- **No more unconditional forced breaks in H1s:** Caroline wanted max-width breaks, but MEASURED
+  widths prove it impossible (wiki line2 536px > line1+next-word 488px; cog 534 > 510 — any width
+  fitting line 2 moves the break). Her pick from options: **responsive break** — keep `<br>` but
+  `className="max-sm:hidden"`, plus an explicit `{" "}` before it (JSX drops the newline between
+  text and element; without the space mobile renders "Brainfor"). Desktop pixel-identical; mobile
+  flows naturally at 32px. Same pattern as the homepage headline.
+- **MyRole mobile centring (both studies):** icon `flex h-[72px] justify-center sm:justify-start`
+  (cog had it; wiki brought to parity); label+Body wrapped in `max-sm:mx-auto max-sm:max-w-[85%]`
+  — the text block centres AS AN ELEMENT while label + copy stay left-aligned to each other.
+  sm+ grid untouched. Tune the 85% by eye if she wants more/less inset.
+- **Verified:** tsc + eslint clean; 390px + 1440px shots of both studies (desktop breaks identical,
+  mobile flows, MyRole centred).
+
+### 2026-07-06 (later) — Mobile polish round 2 (fireball crop-in, card tags/gaps, cog corners, section gaps). PUSHED `9873240`.
+- Round 1 committed as `285b415` (main, NOT pushed). Caroline's workflow now: keep committing to
+  main, push everything at once when she says. Round 2 changes (all guarded, desktop untouched):
+- **Fireball crop-in (mobile ONLY, her explicit choice):** `uCometShift` uniform in
+  `heroShaders.ts` (`P.x += uCometShift` right after P) slides the whole comet LEFT so the nose
+  gets a slight chop by the screen edge. `Backdrop.tsx`: `MOBILE_COMET_SHIFT = 0.13` below 768px,
+  exactly `0` on desktop (bit-identical). Knobs at top of Backdrop.tsx.
+- **Card tags fix (stacked layout):** the `■ RESEARCH · UX/UI …` row in `ProjectCard.tsx` was
+  `flex flex-wrap` — the joined tags string is ONE anonymous flex item, so on overflow the whole
+  text wrapped BELOW the square (square stranded alone). Now normal inline flow: square stays on
+  line 1, individual tags wrap word-by-word. (lg+ absolute tags row untouched.)
+- **Cog mobile image corners:** `mobileImage` prop gained optional `flushBottom` —
+  `rounded-b-none` on the stacked-image wrapper. Set on cog only (its artwork is bottom-cropped
+  phones; rounded bottom corners read as a mistake). Other cards keep full `rounded-2xl`.
+- **Bento card gaps on phones:** `VariantBentoSoft` stacked column `gap-3` → `max-md:gap-6`.
+- **Section gaps halved below md:** Highlights `pb-20→pb-10`; Toolkit `py-24→py-12`; `#work`
+  `py-12→pt-6` (desktop `md:pt-20` == old `md:py-20` top, bottom still `md:pb-[168px]`).
+- **Verified:** tsc + eslint clean; 390px shots (chop ✓ tags inline ✓ sharp cog corners ✓ bigger
+  card gaps ✓ tighter section gaps ✓); 1440px hero (nose NOT chopped, desktop identical).
+
+### 2026-07-06 — Mobile polish round 1 (hero orb row 2x smaller, headline wrap, highlights 1x4). COMMITTED `285b415` (main, not pushed).
+- **NEW GLOBAL RULE (added to `~/.claude/CLAUDE.md`):** mobile/responsive changes must NEVER affect
+  desktop — always guarded overrides (`max-md:`, width-gated uniform), never rewrites of shipping
+  desktop classes/values. Verify widest layout first.
+- **Orb row 2x smaller on mobile:** Caroline wanted the BOTTOM orbs (the `DistortedOrb` watercolour
+  crescents) halved — NOT the top fireball (I first shrank the Backdrop comet via a `uCometScale`
+  shader uniform; she said the fireball was fine before → REVERTED that entirely, `git checkout` of
+  `Backdrop.tsx` + `heroShaders.ts` back to HEAD). Final fix: `DistortedOrb.tsx` group gets
+  `scale={orbScale}` where `orbScale = canvasWidth < 768 ? MOBILE_ORB_SCALE : 1` via
+  `useThree(s => s.size.width)` (reactive on resize). Knobs `MOBILE_ORB_SCALE = 0.5` /
+  `MOBILE_MAX_WIDTH = 768` at top of file. Desktop passes exactly 1 = identical. Result: crescents
+  sit compactly at the bottom edge on phones instead of flooding up behind the headline.
+- **Hero headline mobile wrap:** `HeroCopy.tsx` h1 got `max-md:whitespace-normal` — desktop keeps the
+  authored `\n` break after "into" (pre-line); below md the `\n` collapses to a space so it wraps
+  naturally ("I TURN EARLY CONCEPTS / INTO LAUNCH-READY / PRODUCTS"), no more stranded INTO.
+- **Highlights 1x4 on phones:** `Highlights.tsx` grid `grid-cols-2` → `grid-cols-1 sm:grid-cols-2`
+  (md:grid-cols-4 untouched). Bonus: stacked cards give the 0.2em-tracked detail line room — now
+  single-line on mobile (the previously-flagged wrap).
+- **Verified:** tsc clean; eslint clean except the PRE-EXISTING `set-state-in-effect` in HeroCopy
+  (untouched, noted since 2026-06-09). Playwright at 390×844 (all three confirmed) + 1440×900
+  (desktop identical). **State: working, UNCOMMITTED** (HeroCopy, Backdrop, heroShaders, Highlights).
+
+### 2026-07-01 (later) — SOLVED (root cause found + fixed): wiki reveals-on-client-nav = unsized hero video
+> **2026-07-06: CONFIRMED FIXED by Caroline on prod** (commit `2914006` deployed to carolinejaworsky.com —
+> reveals animate correctly on client-nav from the bento card). Bug closed.
+- **Root cause (finally):** the wiki hero's promo video (`components/project/wiki-whisperer/sections/Hero.tsx`,
+  `public/projects/wiki-whisperer/promo.mp4` = **29 MB, 1920×1080**) was rendered with **no reserved box**
+  (`className="block h-auto w-full"`, no width/height/aspect). Until its metadata loads (LATE on a real
+  network), the `<video>` is a ~150px placeholder; on load it pops to full 16:9 height. Measured shift:
+  **document grows ~930px**. That growth is at the TOP of the page, so it moves every section below it AFTER
+  the `Reveal` ScrollTriggers have cached their `"top 85%"` start pixels. On a hard **refresh**,
+  `SmoothScroll`'s `document.fonts.ready`/`window load` fire a `ScrollTrigger.refresh()` that recomputes the
+  starts once the video settled — so refresh worked. On a **client-side nav** neither re-fires (they're
+  registered once in the persistent root layout), and `ScrollReset` refreshes BEFORE the triggers exist +
+  BEFORE the video grows (its rAF re-assert uses `update()`, not `refresh()`). So the cached starts stayed
+  stale-too-early and every reveal's `gsap.from` completed **off-screen, below the fold** → sections looked
+  "already revealed, no animation". Matches Caroline's exact real-browser data ("played climbs 0→2 by y=782
+  yet sections look pre-revealed" = the first 1–2 whose start is near scroll 0 still animate; the rest fired
+  unseen). **cog works** because its hero is aspect-sized SVG (stable at first paint) — no late shift.
+  **Streaming (`StreamingQuote`) survives** because it uses a live `IntersectionObserver` (no cached pixel
+  start). **Why nobody reproduced it headless:** on localhost the video loads instantly, so the box never
+  goes stale — the bug is *network-timing* dependent, not code-logic dependent.
+- **How it was found:** launched a 5-lens multi-agent workflow (GSAP internals / React-Next lifecycle /
+  sticky-geometry / web research / differential) → adversarial refute pass → synthesis. The differential +
+  research lenses converged on the unsized video. Independently verified locally: (1) reveals ARM (57 hidden)
+  and animate fine in dev, prod, and even under 8× CPU throttle → not a logic/position bug in automation;
+  (2) **deterministic proof** via a Playwright probe that route-DELAYS `promo.mp4`: old build → video 150→1080,
+  **doc grows 930px**; fixed build → video **579→579, doc grows 0px**.
+- **THE FIX (applied, NOT committed):** in `Hero.tsx` gave the `<video>` `width={1920} height={1080}` +
+  `aspect-video` (kept `h-auto w-full`). Reserves the 16:9 box at first paint → **zero layout shift** when the
+  video loads → cached ScrollTrigger starts can never go stale → reveals fire in view on client-nav, no
+  refresh needed. Kept Hero a **server component** (dropped an `onLoadedMetadata` refresh idea that would have
+  forced `"use client"`). tsc + eslint clean; no visual regression (the video always rendered at this size
+  once loaded — now the box is just correct from frame 1, which also kills the CLS jump).
+- **State: fix applied + verified locally, UNCOMMITTED** (`M Hero.tsx` only). Per Caroline's rule, not
+  committed/pushed. **Next step:** Caroline verifies on a Vercel deploy (real network is where it repro'd).
+  A copy-paste console diagnostic (armed-hidden count + snap-vs-animate verdict, survives the client-nav) was
+  handed to her in chat if she wants to confirm before/after.
+- **Open intent (2026-07-06):** Caroline went to work mid-review — she'll catch up later. IMPORTANT for
+  next agent: the bug does NOT reproduce in dev/localhost (video loads instantly there); tell her to test
+  either (a) after commit+push+Vercel deploy (the real test), or (b) locally with DevTools Network throttling
+  set to "Slow 4G" during the home → wiki-card client-nav. Waiting on her go-ahead to commit `Hero.tsx`.
+- **If any residual reveal still misbehaves (belt-and-braces, NOT yet applied):** 2 wiki `<img>` also lack
+  explicit width; and the general gap is "no `ScrollTrigger.refresh()` fires after content settles on a
+  client-side nav." Optional hardening = add a deferred per-route `refresh()` in `ScrollReset` after
+  images/fonts settle. Deferred unless needed (video was the 930px dominant cause; don't thrash).
+
+### 2026-07-01 — HANDOFF: wiki case-study reveals don't animate on client-side nav (UNSOLVED). Responsive pass + scroll fixes DONE.
+> Caroline is handing to a fresh agent. Read this whole entry before touching the reveal bug — a LOT has been
+> tried and ruled out. All work below is committed + pushed to `main` and deployed on Vercel (prod =
+> **carolinejaworsky.com**, direct Vercel, auto-deploys from `main`, ~2 min/build). Latest commit `b0d55d9`.
+
+**DONE + shipped this session (working):**
+- **Responsive pass** (PR #5, merged): bento stacks below `lg` + shrinks card images (`max-[1520px]`/`max-[1150px]`)
+  + dedicated mobile images (`mobileImage` prop on `ProjectCard`); homepage NavBar/About/hero/telemetry;
+  wiki + cog case-study mobile fixes. Desktop untouched. See `.claude/skills/responsive-design/SKILL.md`.
+- **WebGL hero persisted** across routes: `components/PersistentHero.tsx` (mounted in `app/layout.tsx`), shown
+  only on `/`, paused (`frameloop:"never"`) + INSTANT `opacity:0` off-home (z-0, no fade). Deleted old
+  `components/Hero.tsx`. This KILLED the `THREE.WebGLRenderer: Context Lost` freeze on nav (it used to unmount
+  the canvas every nav → GPU teardown → main-thread hang). Scene takes a `paused` prop now.
+- **Scroll-reset on case-study entry**: `components/ScrollReset.tsx` rendered as the FIRST child of BOTH
+  `app/project/{wiki-whisperer,cog-adhd}/page.tsx`. Hard-resets scroll to 0 before the reveals init. Uses
+  `ScrollTrigger.clearScrollMemory("manual")` (ScrollTrigger restores saved scroll on refresh() by default —
+  that was firing reveals), Lenis nudge-to-1px-then-0 (bypass Lenis' `scrollTo` early-return), `window.scrollTo`.
+- **`SmoothScroll.tsx`**: added `history.scrollRestoration="manual"`, Lenis `autoRaf:false` (was double-driving
+  its own rAF), exposes `getLenis()`. Still sets `gsap.ticker.lagSmoothing(0)`.
+
+**THE UNSOLVED BUG:** entering the **wiki** case study from the homepage bento card (client-side nav) → the
+`Reveal` scroll-in animations DON'T play; sections are **"already fully visible"** before they enter view (no
+fade/rise/blur). **Streaming (`StreamingQuote`, IntersectionObserver) DOES work.** **cog works perfectly** with
+the SAME `Reveal` component. On a hard **REFRESH** of the wiki URL, reveals work fine. So: client-nav-specific
+AND wiki-specific.
+
+**Real-browser diagnostic data (from Caroline's console; my headless tests could NEVER reproduce it):**
+- Landing on wiki via card: `scrollY=0, played=0` → GOOD, scroll reset works, reveals hidden at landing.
+- Scrolling down: `played` climbs slowly (0→2 by y=782) → reveals DO fire progressively, not all-at-once.
+- BUT she reports sections are already fully visible with no animation. `reducedMotion:false`. Console: only
+  `THREE.Clock` deprecation + preload warnings (both harmless); `Context Lost` is GONE.
+- **KEY DATA STILL NOT GATHERED:** the `hidden` count (elements with inline `visibility:hidden`) on wiki
+  landing. I only ever got `played` (visibility:inherit). If `hidden` is high (~57, like headless) the reveals
+  ARE hiding → it's an animation-JUMP problem; if `hidden`≈0 they never hide → a different bug. GET THIS FIRST.
+
+**RULED OUT:** scroll position (y=0 confirmed) · ScrollTrigger scroll-memory (clearScrollMemory added) · the
+WebGL freeze (Context Lost gone) · reduced-motion · Parallax (cog uses MORE and works) · the wiki **ambient
+blob layer** (removed it → no change, then restored) · component logic (`Reveal.tsx`, `StreamingQuote.tsx`,
+`StickyHero.tsx` are byte-identical wiki vs cog — diffed).
+
+**Remaining wiki-vs-cog structural diff:** wiki's glass plate is `relative isolate z-10` (cog: `relative z-10`,
+no `isolate`) in `app/project/wiki-whisperer/page.tsx`. Both have `backdrop-blur-2xl`. Wiki page is longer/heavier.
+
+**Leading hypotheses for next agent:**
+1. Reveals FIRE but GSAP JUMPS them to done instantly (no visible animation) after a main-thread hitch —
+   worsened by `gsap.ticker.lagSmoothing(0)` in `SmoothScroll.tsx`. Try a real `lagSmoothing` value (default
+   `500,33`) so GSAP caps catch-up instead of skipping — but watch Lenis sync.
+2. Wiki's `isolate` (last structural diff) — try removing it and test on prod.
+3. Rendering-perf: profile the wiki scroll in Caroline's REAL browser (Performance tab) for long tasks/dropped
+   frames while a reveal should animate. The reveal animates `filter:blur(6px)`; wiki's backdrop-blur over a
+   tall page may make that filter animation skip.
+
+**CRITICAL PROCESS NOTE:** this bug is **NOT reproducible in headless Playwright** — cog AND wiki both animate
+correctly headless (even throttled, even with a "used session" that builds scroll memory). Every fix I verified
+headless still failed in Caroline's browser. **Do NOT trust headless for this; get real-browser data from
+Caroline each iteration** (diagnostic snippet: a `setInterval` logging `scrollY` + counts of `main *` with
+inline `visibility:hidden` vs `inherit`). Each fix = deploy to prod + she tests (~2-3 min/cycle).
 
 ### 2026-06-28 (later) — New `responsive-design` skill built + approved; bento responsive fix diagnosed, NOT yet applied
 - **Status: skill DONE + reviewer-APPROVED; no component code touched** (Caroline said "build the

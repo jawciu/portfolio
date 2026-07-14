@@ -84,7 +84,10 @@ export function HeroCopy() {
           {INTRO.slice(0, introLen)}
           {caretOnIntro && <Caret blink={!introTyping} />}
         </p>
-        <h1 className="font-bold uppercase text-[clamp(2rem,5.2vw,4.25rem)] leading-[1.02] tracking-tight text-fg whitespace-pre-line min-h-[2.04em]">
+        {/* Desktop keeps the authored break after "into" (pre-line renders the \n).
+            Below md the \n collapses to a space (whitespace-normal) so the headline
+            wraps naturally to three lines instead of stranding INTO alone. */}
+        <h1 className="font-bold uppercase text-[clamp(2rem,5.2vw,4.25rem)] leading-[1.02] tracking-tight text-fg whitespace-pre-line max-md:whitespace-normal min-h-[2.04em]">
           {HEADLINE.slice(0, headLen)}
           {headlineStarted && <Caret blink={done} />}
         </h1>

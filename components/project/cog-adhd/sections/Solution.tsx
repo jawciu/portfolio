@@ -41,10 +41,10 @@ export function Solution() {
           className="mt-14 md:mt-20 flex flex-col gap-10 md:flex-row md:items-start md:gap-12"
         >
           {/* Katherine Bell persona */}
-          <div className="flex shrink-0 flex-col items-start text-left md:w-[160px]">
+          <div className="flex shrink-0 flex-col items-start text-left max-sm:items-center max-sm:text-center md:w-[160px]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={A("image-32.svg")}
+              src={A("image-32.png")}
               alt="Portrait of Katherine Bell, the therapy-client persona"
               className="w-[140px] h-auto select-none"
             />
@@ -57,9 +57,9 @@ export function Solution() {
           </div>
 
           {/* Question prompts, one per upcoming feature */}
-          <div className="grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-4 md:flex-1">
+          <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-4 md:flex-1">
             {PROMPTS.map((p) => (
-              <div key={p.text} className="flex flex-col items-start">
+              <div key={p.text} className="flex flex-col items-start max-sm:items-center max-sm:text-center">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={A(p.icon)}
@@ -78,10 +78,11 @@ export function Solution() {
         {/* Cluster 1 — mockups left, copy right */}
         <Reveal
           stagger={0.14}
-          className="mt-16 md:mt-24 grid grid-cols-1 items-center gap-10 md:grid-cols-2 md:gap-14"
+          className="mt-16 md:mt-24 grid grid-cols-1 items-center gap-10 max-sm:gap-12 md:grid-cols-2 md:gap-14"
         >
-          {/* Overview bar chart + overlapping Daily card — smaller + spread apart */}
-          <div className="relative mx-auto w-full max-w-[460px]">
+          {/* Overview bar chart + overlapping Daily card — smaller + spread apart.
+              max-sm:order-2: on phones the copy reads FIRST, then the mockups. */}
+          <div className="relative mx-auto w-full max-w-[460px] max-sm:order-2 max-sm:max-w-[310px]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={A("image-38.svg")}
@@ -96,7 +97,7 @@ export function Solution() {
             />
           </div>
 
-          <div className="space-y-10">
+          <div className="space-y-10 max-sm:order-1">
             <div className="space-y-3">
               <FeatureLabel>weekly overview graph</FeatureLabel>
               <Body>
@@ -119,9 +120,9 @@ export function Solution() {
         {/* Cluster 2 — copy left, mockups right */}
         <Reveal
           stagger={0.14}
-          className="mt-16 md:mt-24 grid grid-cols-1 items-center gap-10 md:grid-cols-2 md:gap-14"
+          className="mt-16 max-sm:mt-12 md:mt-24 grid grid-cols-1 items-center gap-10 max-sm:gap-12 md:grid-cols-2 md:gap-14"
         >
-          <div className="order-2 space-y-10 md:order-1">
+          <div className="order-2 space-y-10 max-sm:order-1 md:order-1">
             <div className="space-y-3">
               <FeatureLabel>symptom ranking</FeatureLabel>
               <Body>
@@ -141,10 +142,12 @@ export function Solution() {
           </div>
 
           {/* Journal/wins card + overlapping Highs/Lows card */}
-          <div className="relative order-1 mx-auto w-full max-w-[420px] md:order-2">
+          {/* max-sm:mt-12 + the grid's gap-12 ≈ 48px VISUAL gap: the Highs card
+              overhangs the cluster top by ~49px (top-[-16%]), eating one of them. */}
+          <div className="relative order-1 mx-auto w-full max-w-[420px] max-sm:order-2 max-sm:mt-12 max-sm:max-w-[310px] md:order-2">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={A("image-40.svg")}
+              src={A("image-40.png")}
               alt="Journal entries screen with your journal comments, wins, and a 'You practiced self-help!' note"
               className="w-[64%] h-auto select-none rounded-[20px] border border-[#E3E2DA] shadow-[1px_1px_10px_2px_rgba(212,210,210,0.25)]"
             />
@@ -157,8 +160,9 @@ export function Solution() {
           </div>
         </Reveal>
 
-        {/* Batch-booking callout */}
-        <div className="mt-20 md:mt-28 max-w-[760px]">
+        {/* Batch-booking callout — the Highs card overhangs ~59px BELOW cluster 2's
+            box on phones, so 108px CSS ≈ the 48px visual rhythm. */}
+        <div className="mt-20 max-sm:mt-[108px] md:mt-28 max-w-[760px]">
           <CaseStudyCallout stream>
             In parallel, I also addressed session booking drop-off by introducing
             a batch booking feature, allowing users to schedule multiple therapy

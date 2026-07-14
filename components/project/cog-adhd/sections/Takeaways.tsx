@@ -3,7 +3,7 @@ import { Reveal } from "../Reveal";
 
 const TAKEAWAYS = [
   {
-    icon: "image-41.svg",
+    icon: "image-41.png",
     label: "prioritisation",
     body: "Business goals, budgets, and timelines shape decisions. We prioritised feasible solutions with the highest user value.",
   },
@@ -23,7 +23,7 @@ export function Takeaways() {
   // pb-[120px]: this section's tinted background ends at a boundary with the cream
   // NextProject below, so its content needs bottom breathing space before that line.
   return (
-    <section data-section="Takeaways" className="pt-[120px] pb-[120px] bg-[var(--cog-bg-section)]">
+    <section data-section="Takeaways" className="pt-[120px] pb-[120px] max-sm:pb-[78px] bg-[var(--cog-bg-section)]">
       <Container>
         <Reveal stagger={0.08}>
           <Kicker>KEY TAKEAWAYS</Kicker>
@@ -36,11 +36,15 @@ export function Takeaways() {
 
         <Reveal
           stagger={0.12}
+          // no max-sm mt: the heading's baked 48px margin-bottom alone sets the
+          // gap to the first icon — same rhythm as MyRole's heading -> icons.
           className="grid grid-cols-1 gap-x-10 gap-y-12 md:grid-cols-3"
         >
           {TAKEAWAYS.map((item, i) => (
             <div key={i}>
-              <div className="flex h-20 items-end">
+              {/* Mobile (1-col): icon centred; the label+body block is centred AS AN
+                  ELEMENT while its text stays left-aligned (same pattern as MyRole). */}
+              <div className="flex h-20 items-end max-sm:justify-center">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={A(item.icon)}
@@ -49,8 +53,10 @@ export function Takeaways() {
                   className="h-20 w-auto"
                 />
               </div>
-              <h3 className="case-study-label mt-4">{item.label}</h3>
-              <Body className="mt-3 text-[var(--cog-ink-soft)]">{item.body}</Body>
+              <div className="max-sm:mx-auto max-sm:max-w-[85%]">
+                <h3 className="case-study-label mt-4">{item.label}</h3>
+                <Body className="mt-3 text-[var(--cog-ink-soft)]">{item.body}</Body>
+              </div>
             </div>
           ))}
         </Reveal>

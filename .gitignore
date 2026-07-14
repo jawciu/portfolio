@@ -47,3 +47,6 @@ next-env.d.ts
 
 # playwright MCP session artifacts
 /.playwright-mcp
+
+# raw working assets (source material, never served — site uses public/assets)
+/assets

@@ -114,7 +114,7 @@ export function Toolkit() {
   }, []);
 
   return (
-    <section ref={rootRef} aria-label="Toolkit" className="py-24 md:py-32">
+    <section ref={rootRef} aria-label="Toolkit" className="py-12 md:py-32">
       {/* identical column geometry to the #work /projects label (full-width px
           box → centred max-w-7xl/88rem → pl-2) so the two line up at every width */}
       <div className="mb-8 px-8 md:px-12">

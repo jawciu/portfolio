@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useMemo } from "react";
-import { useFrame } from "@react-three/fiber";
+import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 
 // ---------------------------------------------------------------------------
@@ -378,6 +378,12 @@ function MergedOrbs({
 const ORB_BASE_Y = -1.15;
 const ORB_RISE = 1.5;
 
+// Mobile: the orb row reads huge on a narrow phone (its quads are sized for a
+// wide desktop frame), so shrink the whole group 2x below the md breakpoint.
+// Desktop always gets exactly 1 (identical rendering). Tune the 0.5 by eye.
+const MOBILE_ORB_SCALE = 0.5;
+const MOBILE_MAX_WIDTH = 768;
+
 export function DistortedOrb({
   mouse,
   progress,
@@ -388,6 +394,9 @@ export function DistortedOrb({
   reduced?: boolean;
 }) {
   const groupRef = useRef<THREE.Group>(null);
+  // Canvas width (reactive on resize) -> halve the row on phones, 1 on desktop.
+  const canvasWidth = useThree((s) => s.size.width);
+  const orbScale = canvasWidth < MOBILE_MAX_WIDTH ? MOBILE_ORB_SCALE : 1;
   // Smoothed cursor shared by the orbs. `pointermove` fires irregularly, so reading the
   // raw ref every frame makes the parallax JUMP between events (reads as stutter/glitch).
   // Lerp it per-frame for fluid motion — kept snappy (0.25) so it doesn't feel laggy.
@@ -400,7 +409,7 @@ export function DistortedOrb({
     smoothMouse.current.lerp(mouse.current, 0.25);
   });
   return (
-    <group ref={groupRef} position={[-0.12, ORB_BASE_Y, 0]}>
+    <group ref={groupRef} position={[-0.12, ORB_BASE_Y, 0]} scale={orbScale}>
       {LEFT_ORBS.map((def, i) => (
         <Orb key={i} def={def} order={i} mouse={smoothMouse} reduced={reduced} />
       ))}

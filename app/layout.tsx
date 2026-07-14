@@ -4,6 +4,7 @@ import localFont from "next/font/local";
 import { Providers } from "./providers";
 import { NavBar } from "@/components/NavBar";
 import { Footer } from "@/components/Footer";
+import { PersistentHero } from "@/components/PersistentHero";
 import "./globals.css";
 
 // Iosevka Charon — quasi-proportional, self-hosted. Not in Google's
@@ -64,6 +65,7 @@ export default function RootLayout({
     <html lang="en" className={`${display.variable} ${body.variable} ${mono.variable} ${hero.variable}`}>
       <body className="bg-bg text-fg antialiased">
         <Providers>
+          <PersistentHero />
           <NavBar />
           {children}
           <Footer />

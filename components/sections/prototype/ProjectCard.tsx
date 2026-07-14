@@ -39,8 +39,11 @@ export type ProjectCardProps = {
   /** optional product visual; when present the card uses the split layout */
   image?: { src: string; alt: string };
   /** optional mobile-specific visual shown ONLY in the stacked (below-lg) layout,
-      where the desktop `image` would be cut. Falls back to `image` when omitted. */
-  mobileImage?: { src: string; alt: string };
+      where the desktop `image` would be cut. Falls back to `image` when omitted.
+      `flushBottom` keeps the bottom corners SHARP — for artwork that is itself
+      cropped at its bottom edge (e.g. cog's cut-off phones), where rounding
+      reads as a mistake. */
+  mobileImage?: { src: string; alt: string; flushBottom?: boolean };
   /** override the product-visual positioning classes (default: floats centred off
       the right edge). e.g. pass a bottom/right-anchored variant for device shots. */
   imageClassName?: string;
@@ -328,7 +331,11 @@ export function ProjectCard({
           </span>
         )}
         {(mobileImage ?? image) && (
-          <div className="mt-6 overflow-hidden rounded-2xl">
+          <div
+            className={`mt-6 overflow-hidden rounded-2xl ${
+              mobileImage?.flushBottom ? "rounded-b-none" : ""
+            }`}
+          >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={(mobileImage ?? image)!.src}
@@ -337,9 +344,13 @@ export function ProjectCard({
             />
           </div>
         )}
+        {/* NOT flex: in a flex-wrap row the joined tags string is ONE anonymous
+            flex item, so when it overflows it wraps as a whole BELOW the square
+            (square stranded alone on line 1). Normal inline flow keeps the square
+            on the first line and lets individual tags wrap word-by-word. */}
         {tags && tags.length > 0 && (
-          <p className="mt-6 flex flex-wrap items-center gap-x-2 font-mono text-xs uppercase tracking-[0.1em] text-fg">
-            <span aria-hidden className="mr-1 inline-block h-2 w-2 bg-fg/60" />
+          <p className="mt-6 font-mono text-xs uppercase leading-relaxed tracking-[0.1em] text-fg">
+            <span aria-hidden className="mr-2 inline-block h-2 w-2 bg-fg/60" />
             {tags.join(" · ")}
           </p>
         )}

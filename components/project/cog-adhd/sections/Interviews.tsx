@@ -98,9 +98,9 @@ const BUBBLES: Bubble[] = [
 
 /** one cloud with its question centred over the main lobe (the per-bubble `box`
     frames the lobe, biased away from the trailing dots), text left-aligned. */
-function Bubble({ b }: { b: Bubble }) {
+function Bubble({ b, className = "" }: { b: Bubble; className?: string }) {
   return (
-    <div className="relative w-[300px] max-w-full">
+    <div className={`relative w-[300px] max-w-full ${className}`}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={A(b.img)}
@@ -134,7 +134,7 @@ export function Interviews() {
             keeps a visible 48px clear gap below the heading (80px − 32px = 48px). */}
         <Reveal
           stagger={0.12}
-          className="mt-20 flex flex-col items-center gap-6 sm:flex-row sm:items-stretch sm:justify-center sm:gap-12"
+          className="mt-20 flex flex-col items-center gap-20 sm:flex-row sm:items-stretch sm:justify-center sm:gap-12"
         >
           {PERSONAS.map((p) => (
             <div
@@ -162,22 +162,27 @@ export function Interviews() {
         </div>
 
         {/* thought-bubble cluster — two tidy rows, no overlap:
-            row 1 = purple · green, row 2 = green · purple · green. */}
-        <div className="mt-12 flex flex-col items-center gap-y-6 md:mt-16">
+            row 1 = purple · green, row 2 = green · purple · green.
+            max-sm:mt-16 = 64px: matches the measured 64px gap ABOVE the callout
+            (persona card -> callout) so the callout sits symmetrically. */}
+        <div className="mt-12 max-sm:mt-16 flex flex-col items-center gap-y-6 max-sm:gap-y-0 md:mt-16">
           <Reveal
             stagger={0.1}
-            className="flex flex-wrap items-center justify-center gap-x-10 gap-y-6"
+            className="flex flex-wrap items-center justify-center gap-x-10 gap-y-6 max-sm:gap-y-0"
           >
             {BUBBLES.slice(0, 2).map((b, i) => (
               <Bubble key={i} b={b} />
             ))}
           </Reveal>
+          {/* max-sm negative margins: bubble gaps 2→3 (on the row wrapper) and
+              3→4 pulled ~30% tighter on phones — measured whitespace bands were
+              39px and 48px; the pull-ups take 30% off each. */}
           <Reveal
             stagger={0.1}
-            className="flex flex-wrap items-center justify-center gap-x-10 gap-y-6"
+            className="max-sm:-mt-3 flex flex-wrap items-center justify-center gap-x-10 gap-y-6 max-sm:gap-y-0"
           >
             {BUBBLES.slice(2).map((b, i) => (
-              <Bubble key={i} b={b} />
+              <Bubble key={i} b={b} className={i === 1 ? "max-sm:-mt-5.5" : ""} />
             ))}
           </Reveal>
         </div>

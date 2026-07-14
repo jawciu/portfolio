@@ -3,7 +3,7 @@ import { Reveal } from "../Reveal";
 
 const ROLES = [
   {
-    icon: "design.svg",
+    icon: "design.png",
     label: "design",
     alt: "Design icon on a lilac card",
     body: "I designed the product within E.ON Next's design system, following users' mental models to make it easy to use.",
@@ -15,13 +15,13 @@ const ROLES = [
     body: "I interviewed users across the pilots to capture their experience with the tool and surface areas of friction and improvement.",
   },
   {
-    icon: "testing.svg",
+    icon: "testing.png",
     label: "testing",
     alt: "Testing icon on a lilac card",
     body: "I helped to evaluate the trial, pairing user interviews with the treatment-versus-control analysis and iterated on the design based on feedback.",
   },
   {
-    icon: "launch.svg",
+    icon: "launch.png",
     label: "launch",
     alt: "Launch icon on a peach card",
     body: "I drove adoption for the rollout, leading design on a feature-hype video that I scripted and art-directed.",
@@ -43,12 +43,17 @@ export function MyRole() {
         >
           {ROLES.map((r) => (
             <div key={r.label}>
-              <div className="mb-4 h-[72px]">
+              {/* Mobile (1-col): icon centred; the label+copy block is centred AS AN
+                  ELEMENT (max-w + mx-auto) while its text stays left-aligned, so the
+                  label and copy share a left edge. sm+ keeps the original left grid. */}
+              <div className="mb-4 flex h-[72px] justify-center sm:justify-start">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={A(r.icon)} alt={r.alt} className="h-[72px] w-auto" />
               </div>
-              <p className="case-study-label mb-3">{r.label} &gt;</p>
-              <Body>{r.body}</Body>
+              <div className="max-sm:mx-auto max-sm:max-w-[85%]">
+                <p className="case-study-label mb-3">{r.label} &gt;</p>
+                <Body>{r.body}</Body>
+              </div>
             </div>
           ))}
         </Reveal>

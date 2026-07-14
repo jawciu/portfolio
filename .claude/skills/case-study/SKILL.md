@@ -18,6 +18,12 @@ into a finished case-study page that matches the portfolio's voice and build sys
 The reference implementation is **Cog ADHD** (`/project/cog-adhd`). Read its files when
 you need a concrete example of any pattern — it is the canonical, working case study.
 
+**Mobile:** before building any section, read the **"Case-study mobile whitespace playbook"**
+in `.claude/skills/responsive-design/SKILL.md` — it encodes the phone spacing rhythm (120px
+boundaries, 48px image air, hug-height cards, copy-before-images order) and the measurement
+gotchas (baked asset padding, overhangs, parallax) learned tuning cog + wiki. Building to it
+from the start avoids a whole round of phone-by-phone fixes.
+
 ## Before you start
 
 Read these in order, then read the cog reference:
