@@ -108,7 +108,7 @@ export function Hero() {
             <div>
               <p className="case-study-hero-label">setting the stage</p>
               <p className="case-study-body-md mt-2">
-              I noticed an interesting problem, procured tools promise value, then lose momentum at onboarding, where context gets lost and time-to-value slips. While playing with agentic engineering tools and wanting to get better at building, I jumped into Claude Code and built a tool to help with the problem I saw.
+              I noticed a problem: procured tools promise value, then lose momentum at onboarding. Vendor-customer context gets lost in a sea of meetings and time-to-value slips. While playing with agentic engineering tools and wanting to get better at building, I jumped into Claude Code and built a tool to tackle the problem I saw.
               </p>
             </div>
           </div>

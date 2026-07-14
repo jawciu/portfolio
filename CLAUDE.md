@@ -229,6 +229,44 @@ cards, element-screenshot. Delete the temp script after.
 > **`docs/CLAUDE-ARCHIVE.md`**. At the end of a session, append a new entry with: what changed,
 > current state (working / broken / in-progress), and explicit next steps for the next agent.
 
+### 2026-07-14 — MyRole icon variants ×2 (OUTLINE + HAIRLINE), mounted as stacked comparison duplicates. UNCOMMITTED.
+- **Round 2 (same session):** linework thinned on the outline set at Caroline's ask (glyphs
+  5.6→3.6, cards 3→2, palette dots scaled to match — hierarchy preserved).
+- **Round 3 (same session):** Caroline asked for a variant matching Collaboration's "Working
+  with AI" diagrams. New `*-hairline.svg` set (product/design-system/built/ai-orchestration):
+  uniform 1.3px strokes, translucent accents lifted verbatim from Collaboration.tsx
+  (lilac rgba(192,152,255,0.45), mint rgba(157,255,244,0.4), neutral rgba(241,234,241,0.3)
+  card/connector lines), and the ONLY solid elements are small r=2 colour dots at 0.9 opacity
+  (bulb rays → mint dots, paint wells → the fleet-diagram dot palette #c098ff/#e99ddb/#9dfff4/
+  #ff9c7d, plug sparks → peach dots, node junction → pink dot). Section `MyRoleHairline.tsx`
+  mounted under MyRoleOutline — page now shows MyRole → MyRoleOutline → MyRoleHairline for a
+  three-way compare. Delete the two losers (sections + assets) once she picks.
+- **Round 4 (same session, her tweaks to the hairline set):** trapezoid cards now FILLED with the
+  Working-with-AI card surface (fill `#1d1c24` + hairline stroke `#25232d` — CARD_FRAME's exact
+  tokens) so they read as the same elevated plates the diagrams live in · glyph linework doubled
+  1.3→2.6 (card border stays 1.3, like the real cards' 1px hairline) · bulb back to ORANGE
+  (rgba(255,156,125,0.5)), ray dots stay mint.
+- **Caroline's ask:** the MyRole hat icons (filled lilac/pink cards + chunky glyphs, the wiki/cog
+  style) don't sit right on Vector's dark theme — redraw them as OUTLINES in the Vector palette
+  (lilac `#C098FF`, orange/peach `#FF9C7D`, plus mint `#9DFFF4`), and duplicate the section so she
+  can compare side by side. Original section NOT touched.
+- **New assets** in `public/projects/vector/`: `product-outline.svg`, `design-system-outline.svg`,
+  `built-outline.svg`, `ai-orchestration-outline.svg`. Same tilted-card composition as the filled
+  set but stroke-only: card quad = 3px outline in one colour, glyph = 5.6px strokes (matches the
+  original bulb's stroke weight) in a second, small accents (rays / paint dots / sparks /
+  connectors) in mint or peach as the third. Colour rotation: product lilac-card/orange-bulb/
+  mint-rays · design-system orange-card/lilac-palette/mint-dots · build lilac-card/mint-plug/
+  orange-sparks · AI orchestration orange-card/lilac-nodes/mint-links. Product reuses the original
+  SVG's stroke path verbatim (recoloured, rays split out); palette is a scaled lucide-palette path;
+  plug + node diagram redrawn from scratch. Plain paths only — safe for the iOS Safari SVG-in-img
+  rule (no masks/filters/patterns).
+- **Comparison mount:** `sections/MyRoleOutline.tsx` (exact copy of MyRole, only icons/alts differ,
+  `data-section="MyRoleOutline"`), mounted in page.tsx directly under `<MyRole/>` with a TEMP
+  comment. **Once Caroline picks a winner: delete the losing section + its icon assets.**
+- tsc + eslint clean; verified via Playwright on the running dev server (port 3000 serves THIS
+  worktree) at 1440 + 390 — both sections render, outline set reads cohesively at 72px.
+- NOTE: pre-existing uncommitted `M Hero.tsx` in the tree was left alone.
+
 ### 2026-07-13 (later 3) — WhatsNext HIDDEN (not deleted) + hero texture settled on DOTS ONLY. COMMITTED+PUSHED.
 - **WhatsNext unmounted** from page.tsx (import + mount commented, same pattern as Takeaways) —
   Caroline is still working on its content and wanted to push without it visible. The component

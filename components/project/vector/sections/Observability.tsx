@@ -249,7 +249,7 @@ export function Observability() {
 
           <Reveal className="max-w-[760px] space-y-5">
             <Body>
-            I built myself an admin dashboard to track Vector&apos;s AI features. It monitors latency and cost and helps me pinpoint and troubleshoot errors. The traces let me see where retrieval breaks down and which step to optimise.
+            I shipped backend dashboards to track Vector&apos;s AI features. It monitors latency and cost and helps me pinpoint and troubleshoot errors. The traces let me see where retrieval breaks down and which step to optimise.
             </Body>
           </Reveal>
 

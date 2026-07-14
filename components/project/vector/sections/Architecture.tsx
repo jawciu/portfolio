@@ -28,9 +28,8 @@ export function Architecture() {
         <Reveal>
           <Kicker>Under the hood</Kicker>
           <Title>
-            Proper foundations,
-            <br />
-            fascinating to build
+            Putting together Saas <br/>
+            product from scratch
           </Title>
         </Reveal>
 

@@ -6,6 +6,10 @@ import { SoftBlob } from "../../../components/project/vector/SoftBlob";
 import { Hero } from "../../../components/project/vector/sections/Hero";
 import { Problem } from "../../../components/project/vector/sections/Problem";
 import { MyRole } from "../../../components/project/vector/sections/MyRole";
+// TEMP comparison duplicate (2026-07-14): outline-style icon variant of MyRole,
+// mounted directly below the original so Caroline can compare — delete the loser.
+import { MyRoleOutline } from "../../../components/project/vector/sections/MyRoleOutline";
+import { MyRoleHairline } from "../../../components/project/vector/sections/MyRoleHairline";
 import { Product } from "../../../components/project/vector/sections/Product";
 import { Matching } from "../../../components/project/vector/sections/Matching";
 import { AILayer } from "../../../components/project/vector/sections/AILayer";
@@ -93,6 +97,8 @@ export default function VectorCaseStudy() {
         </div>
 
         <div data-vec="MyRole"><MyRole /></div>
+        <div data-vec="MyRoleOutline"><MyRoleOutline /></div>
+        <div data-vec="MyRoleHairline"><MyRoleHairline /></div>
         <div data-vec="Problem"><Problem /></div>
         <div data-vec="Product"><Product /></div>
         <div data-vec="Matching"><Matching /></div>
