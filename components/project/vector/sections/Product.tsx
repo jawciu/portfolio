@@ -131,7 +131,7 @@ const BLOCKS: Block[] = [
     subhead: "Automated follow-ups",
     body: [
       "A weekly scanner on Vercel Cron walks every active onboarding and flags any task blocked or more than five days overdue. Each flag becomes a drafted email that only the task's owner sees, one approval away from sending.",
-      "A task with no owner gets no follow-up. I chose clear responsibility over copying everyone in, and kept one plain tone for now. Mimicking each user's voice is its own project.",
+      "A task with no owner gets no follow-up. I chose clear responsibility over copying everyone in, and kept one plain tone for now. Adapting the writing to each user's voice is on the roadmap.",
     ],
     asset: "followup-v2.png",
     companion: "cron",
