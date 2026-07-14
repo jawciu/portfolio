@@ -139,6 +139,12 @@ it's a deliberate call.
 **Git / working style**
 - **Commit/push ONLY when Caroline asks in the moment** (global rule); staging is fine. Multiple
   agents share this working tree — `git add` specific files, **never `-A`**.
+- **Root `assets/` is gitignored raw material (2026-07-14)** — source PDFs/SVGs/exports, never
+  served (the site loads from `public/assets/` only). It got swept into a commit by Cursor's
+  stage-all, and two 100MB+ Wiki V2 PDFs made GitHub reject the push (the editor's "pull first"
+  dialog was a misdiagnosis). Untracked via `git rm -r --cached assets` + `/assets` in
+  `.gitignore`; files stay on disk. Never commit from `assets/` — copy what the site needs into
+  `public/` first.
 - When Caroline asks a *question*, answer it and change nothing; act only on explicit instructions.
 - **No em dashes ever** in copy written for her; British spelling throughout.
 
