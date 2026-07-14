@@ -229,6 +229,25 @@ cards, element-screenshot. Delete the temp script after.
 > **`docs/CLAUDE-ARCHIVE.md`**. At the end of a session, append a new entry with: what changed,
 > current state (working / broken / in-progress), and explicit next steps for the next agent.
 
+### 2026-07-14 (later) — Product band tightens on ultra-wide screens. UNCOMMITTED.
+- **Caroline's ask:** the 90%-wide ProductBlock rows get too spacey past 1624px. Band now steps
+  90% → 80% (≥1624px) → 70% (≥1888px) → 60% (≥2000px, her "200px" read as 2000). Nothing below
+  1624 changes.
+- **60% tier is `w-[max(60%,1280px)]`, not bare 60%:** the widest rows (424 copy + 828 shot +
+  24 gap = 1276px) spill 76px past a bare 60% band at 2000px (measured), reading off-centre until
+  ~2130px. The max() floor keeps every row on the same band edge; band eases 64%→60% over
+  2000→2133px.
+- **TAILWIND v4 GOTCHA (cost a debug round):** `md:w-[90%] min-[1624px]:w-[80%]` does NOT work —
+  v4 emits the whole arbitrary `min-[...]` variant group BEFORE the named-breakpoint (`md:`) block
+  in the stylesheet, so the `md:` rule wins at every width regardless of viewport. Fix: put ALL
+  tiers in the same group — `min-[768px]:w-[90%] min-[1624px]:w-[80%] min-[1888px]:w-[70%]`
+  (min-[768px] ≡ md; within the min-[] group rules sort ascending by value, so later tiers win).
+- Verified via measurement probe at 1500/1623/1624/1887/1888/1920 (90/90/80/80/70/70 exact) +
+  eyeballed Customer portal / AI overview / Predictive health blocks at 1700 and 1920 — clean.
+  Probe gotcha: Playwright `newPage` takes `viewport:`, not `viewportSize:` (silently ignores the
+  latter → everything measures at default 1280).
+- Only `Product.tsx` touched (the band ternary + comments). tsc + lint clean.
+
 ### 2026-07-14 — MyRole icon variants ×2 (OUTLINE + HAIRLINE), mounted as stacked comparison duplicates. UNCOMMITTED.
 - **Round 2 (same session):** linework thinned on the outline set at Caroline's ask (glyphs
   5.6→3.6, cards 3→2, palette dots scaled to match — hierarchy preserved).
@@ -241,6 +260,22 @@ cards, element-screenshot. Delete the temp script after.
   #ff9c7d, plug sparks → peach dots, node junction → pink dot). Section `MyRoleHairline.tsx`
   mounted under MyRoleOutline — page now shows MyRole → MyRoleOutline → MyRoleHairline for a
   three-way compare. Delete the two losers (sections + assets) once she picks.
+- **Round 5 (same session) — HAIRLINE PICKED (with tweaks); MyRole + MyRoleOutline HIDDEN, not
+  deleted** (imports + mounts commented in page.tsx, same pattern as WhatsNext; components +
+  assets stay on disk). Colour pass on the hairline set, ALL accents now FULL-OPACITY hexes (the
+  translucent rgba versions read dimmed, her call): product = orange #FF9C7D bulb + mint dots ·
+  design-system = lilac #C098FF palette + ALL-ORANGE paint dots · built = ORANGE plug + MINT
+  spark dots (swapped) · ai-orchestration = orange LEFT square, lilac RIGHT squares, pink centre
+  dot DELETED (connectors stay neutral rgba(241,234,241,0.35)). Verified: probe shows
+  filled/outline gone + hairline mounted; tsc + lint clean.
+- **Round 6 (same session):** icon `<img>`s got a CSS `drop-shadow` (two stacked:
+  0 18px 30px 0.65 + 0 6px 12px 0.4 — echoes CARD_FRAME's shadow; CSS-side filter, NOT in-SVG,
+  so iOS-safe) — the trapezoid plates were already the exact CARD_FRAME tokens, the missing
+  shadow was why they read flatter than real cards. Also: the "ai orchestration still faint"
+  report was Caroline's Safari serving a STALE CACHED round-4 SVG (her screenshot showed the old
+  translucent squares + pink dot; disk + fresh browsers had the new art) — src bumped to
+  `ai-orchestration-hairline.svg?v=2` to cache-bust; connectors also went solid mint #9DFFF4
+  this round. Bump ?v again if a stale asset recurs.
 - **Round 4 (same session, her tweaks to the hairline set):** trapezoid cards now FILLED with the
   Working-with-AI card surface (fill `#1d1c24` + hairline stroke `#25232d` — CARD_FRAME's exact
   tokens) so they read as the same elevated plates the diagrams live in · glyph linework doubled

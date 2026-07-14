@@ -5,10 +5,10 @@ import { StickyHero } from "../../../components/project/vector/StickyHero";
 import { SoftBlob } from "../../../components/project/vector/SoftBlob";
 import { Hero } from "../../../components/project/vector/sections/Hero";
 import { Problem } from "../../../components/project/vector/sections/Problem";
-import { MyRole } from "../../../components/project/vector/sections/MyRole";
-// TEMP comparison duplicate (2026-07-14): outline-style icon variant of MyRole,
-// mounted directly below the original so Caroline can compare — delete the loser.
-import { MyRoleOutline } from "../../../components/project/vector/sections/MyRoleOutline";
+// MyRole (filled icons) + MyRoleOutline HIDDEN 2026-07-14 (not deleted) — Caroline picked
+// the hairline variant; the originals stay on disk in case she wants them back.
+// import { MyRole } from "../../../components/project/vector/sections/MyRole";
+// import { MyRoleOutline } from "../../../components/project/vector/sections/MyRoleOutline";
 import { MyRoleHairline } from "../../../components/project/vector/sections/MyRoleHairline";
 import { Product } from "../../../components/project/vector/sections/Product";
 import { Matching } from "../../../components/project/vector/sections/Matching";
@@ -16,9 +16,7 @@ import { AILayer } from "../../../components/project/vector/sections/AILayer";
 import { Observability } from "../../../components/project/vector/sections/Observability";
 import { Architecture } from "../../../components/project/vector/sections/Architecture";
 import { Collaboration } from "../../../components/project/vector/sections/Collaboration";
-// WhatsNext unmounted 2026-07-13 (Caroline: still working on it) — NOT deleted,
-// component stays on disk; re-add the import + mount below when it's ready.
-// import { WhatsNext } from "../../../components/project/vector/sections/WhatsNext";
+import { WhatsNext } from "../../../components/project/vector/sections/WhatsNext";
 import { NextProject } from "../../../components/project/vector/sections/NextProject";
 
 export const metadata: Metadata = {
@@ -96,8 +94,8 @@ export default function VectorCaseStudy() {
           <SoftBlob className="right-[6%] top-[84%] h-[860px] w-[1020px]" />
         </div>
 
-        <div data-vec="MyRole"><MyRole /></div>
-        <div data-vec="MyRoleOutline"><MyRoleOutline /></div>
+        {/* hidden, not deleted (2026-07-14): <div data-vec="MyRole"><MyRole /></div>
+            <div data-vec="MyRoleOutline"><MyRoleOutline /></div> */}
         <div data-vec="MyRoleHairline"><MyRoleHairline /></div>
         <div data-vec="Problem"><Problem /></div>
         <div data-vec="Product"><Product /></div>
@@ -108,8 +106,7 @@ export default function VectorCaseStudy() {
         <div data-vec="Collaboration"><Collaboration /></div>
         {/* Takeaways unmounted 2026-07-09 — its old copy moved into Collaboration;
             remounts once Caroline provides the new "Key takeaways" copy. */}
-        {/* WhatsNext unmounted 2026-07-13 — Caroline is still working on it;
-            remount when ready: <div data-vec="WhatsNext"><WhatsNext /></div> */}
+        <div data-vec="WhatsNext"><WhatsNext /></div>
         <div data-vec="NextProject"><NextProject /></div>
       </div>
     </main>

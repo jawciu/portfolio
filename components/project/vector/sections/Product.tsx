@@ -27,7 +27,9 @@ type Block = {
   columnWidth?: number;
   /** how wide a band the row occupies before copy and shot are pushed apart.
       All blocks ride the full 90% since the companion round (2026-07-13) —
-      the narrower bands are kept in the type for future small rows. */
+      the narrower bands are kept in the type for future small rows. On very
+      wide screens the 90% band steps down (80% ≥1624px, 70% ≥1888px, 60%
+      ≥2000px) so the copy↔shot gap doesn't balloon. */
   band: "90" | "75" | "70";
   /** Draw the shared product-visual frame (radius, hairline, card fill, shadow).
       Off by default: these assets ship their own chrome, so the frame would box a box.
@@ -424,7 +426,19 @@ function ProductBlock({ subhead, body, asset, alt, companion, flip, width, colum
   return (
     <Reveal
       className={`mx-auto flex flex-col gap-10 px-6 md:flex-row md:items-center md:justify-between md:gap-6 md:px-0 ${
-        band === "90" ? "md:w-[90%]" : band === "75" ? "md:w-[75%]" : "md:w-[70%]"
+        /* the 90 band tightens on very wide screens so the copy↔shot gap doesn't
+           balloon. All three tiers use min-[..px] variants: Tailwind v4 emits the
+           arbitrary min-[] group BEFORE the named md: block, so a md:w-[90%] here
+           would win over the wide tiers regardless of viewport (min-[768px] = md). */
+        band === "90"
+          /* the 60% tier is floored at 1280px: the widest rows (424 copy + 828
+             shot + 24 gap = 1276) would spill past a bare 60% band until
+             ~2130px viewport, reading off-centre. max() keeps every row on the
+             same band edge instead. */
+          ? "min-[768px]:w-[90%] min-[1624px]:w-[80%] min-[1888px]:w-[70%] min-[2000px]:w-[max(60%,1280px)]"
+          : band === "75"
+            ? "md:w-[75%]"
+            : "md:w-[70%]"
       }`}
     >
       {/* COPY — also the anchor the room's CircuitTrace lights a node against.

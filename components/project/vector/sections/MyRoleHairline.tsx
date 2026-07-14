@@ -28,7 +28,9 @@ const HATS = [
     body: "Agents wrote the syntax. I researched and approved every architecture and build call.",
   },
   {
-    icon: "ai-orchestration-hairline.svg",
+    // ?v=2 = cache-bust: Caroline's Safari kept serving the round-4 translucent
+    // version of this one asset after the colour swap. Bump if it goes stale again.
+    icon: "ai-orchestration-hairline.svg?v=2",
     label: "AI orchestration",
     alt: "Hairline node diagram icon with a pink junction dot on a faint outlined card",
     body: "I designed the AI layer, from grounded prompts to streaming tool use and observability.",
@@ -53,8 +55,19 @@ export function MyRoleHairline() {
                   ELEMENT (max-w + mx-auto) while its text stays left-aligned, so the
                   label and copy share a left edge. sm+ keeps the original left grid. */}
               <div className="mb-4 flex h-[72px] justify-center sm:justify-start">
+                {/* CSS drop-shadow (NOT an in-SVG filter — iOS Safari drops those in
+                    <img>): echoes CARD_FRAME's 0_24px_60px_-24px shadow so the card
+                    plates lift off the page like every other card in the study. */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={A(h.icon)} alt={h.alt} className="h-[72px] w-auto" />
+                <img
+                  src={A(h.icon)}
+                  alt={h.alt}
+                  className="h-[72px] w-auto"
+                  style={{
+                    filter:
+                      "drop-shadow(0 18px 30px rgba(0,0,0,0.65)) drop-shadow(0 6px 12px rgba(0,0,0,0.4))",
+                  }}
+                />
               </div>
               <div className="max-sm:mx-auto max-sm:max-w-[85%]">
                 <p className="case-study-label mb-3">{h.label} &gt;</p>
