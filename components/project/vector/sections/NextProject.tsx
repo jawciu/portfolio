@@ -5,8 +5,9 @@ import { SoftBlob } from "../SoftBlob";
 import { CaseStudyButton } from "../../CaseStudyButton";
 
 /* Closing "View next project" — the frosted glass panel echoing the hero glass seam,
-   retinted dark for Vector. Two parallax SoftBlobs drift low on the right; the copy +
-   CTA cross-link to the real next study (wiki-whisperer). */
+   retinted dark for Vector. One parallax SoftBlob drifts low on the right; the copy +
+   CTA cross-link to the real next study (wiki-whisperer). (A "move the blob up into
+   WhatsNext" experiment was tried and reverted same-day, 2026-07-14.) */
 export function NextProject() {
   return (
     <section

@@ -117,7 +117,7 @@ export function AILayer() {
           </CodeCard>
         </Reveal>
 
-        <Reveal className="mt-14 max-w-[860px]">
+        <Reveal className="mt-28 max-w-[860px]">
           <CaseStudyCallout stream>
             {"Every call is prompt-cached, pinned to a JSON schema and logged with its cost, and an unchanged board never pays twice."}
           </CaseStudyCallout>

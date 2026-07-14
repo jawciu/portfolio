@@ -1,5 +1,6 @@
 import { CARD_FRAME, Container, Kicker, Title, Body } from "../ui";
 import { Reveal } from "../Reveal";
+import { DotGlow } from "../DotGlow";
 
 /* Working with AI — the paragraphs stay lean; the WAY the collaboration ran is
    shown as three small workflow diagrams (Caroline's actual patterns building
@@ -232,19 +233,24 @@ export function Collaboration() {
        rhythm and dimness) — keep the two in sync. Hairlines sit as the section's
        own border-y, so they land EXACTLY at the texture's edges (the Product
        SubSection move). */
-    /* both boundaries split 100/100: Architecture pb-[100px] + our textured
-       pt-[100px] above; our textured pb-[100px] + WhatsNext pt-[100px] below —
-       the texture edges land exactly mid-gap on both sides */
+    /* boundary zones retuned on Caroline's 2026-07-14 spacing pass (the old
+       symmetric 100/100 splits are deliberately gone): above = Architecture
+       pb-[150px] plain + our checked pt-[120px]; below = our checked pb-[170px]
+       + WhatsNext's plain pt-[130px] */
     <section
       data-section="Collaboration"
-      className="border-y border-[rgba(241,234,241,0.14)] pt-[100px] pb-[100px]"
+      className="relative border-y border-[rgba(241,234,241,0.14)] pt-[140px] pb-[170px]"
       style={{
         backgroundImage:
           "linear-gradient(rgba(241,234,241,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(241,234,241,0.035) 1px, transparent 1px)",
         backgroundSize: "22px 22px",
       }}
     >
-      <Container>
+      {/* cursor-following lit check near the pointer — same DotGlow as the
+          Product/Observability textures (grid variant); Container below is
+          `relative` so the content paints ABOVE the overlay */}
+      <DotGlow pattern="grid" />
+      <Container className="relative">
         <Reveal>
           <Kicker>Working with AI</Kicker>
           <Title>
@@ -260,7 +266,7 @@ export function Collaboration() {
         {/* mt-24 = a TRUE 96px gap: the heading's baked 48px margin-bottom and this
             top margin are adjacent, so CSS collapses them to the LARGER of the two —
             they never add. mt-12 measured 48px, not 96. */}
-        <Reveal stagger={0.1} className="mt-24 grid grid-cols-1 gap-6 md:grid-cols-3">
+        <Reveal stagger={0.1} className="mt-16 grid grid-cols-1 gap-6 md:grid-cols-3">
           {WORKFLOWS.map(({ label, diagram, caption }) => (
             <div key={label} className={CARD_FRAME}>
               <p className="case-study-label mb-4">{label} &gt;</p>

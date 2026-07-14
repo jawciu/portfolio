@@ -21,9 +21,10 @@ const STACK = [
 
 export function Architecture() {
   return (
-    /* pb-[100px] = the plain half of the 200px gap to Collaboration — its dots
-       texture owns the other 100px, so the texture edge sits exactly mid-gap */
-    <section data-section="Architecture" className="pt-[120px] pb-[100px]">
+    /* pb-[150px] = the plain zone between the stack logos and Collaboration's
+       check-texture edge (was 100, +50% on Caroline's 2026-07-14 spacing pass —
+       the old "texture edge exactly mid-gap" split is deliberately gone) */
+    <section data-section="Architecture" className="pt-[120px] pb-[150px]">
       <Container>
         <Reveal>
           <Kicker>Under the hood</Kicker>
@@ -35,7 +36,7 @@ export function Architecture() {
 
         {/* mt-24 = TRUE 96px above the callout: this margin collapses with the
             heading's baked 48px mb (larger wins, they don't add). */}
-        <Reveal className="mt-24 max-w-[860px]">
+        <Reveal className="mt-16 max-w-[860px]">
           <CaseStudyCallout stream>
             {"I built Vector to grow my range as a designer who can also ship. Every architectural decision was a conscious choice and a learning experience."}
           </CaseStudyCallout>

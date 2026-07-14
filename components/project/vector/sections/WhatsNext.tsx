@@ -86,6 +86,12 @@ function railStyle(from: string, to: string, vertical: boolean): React.CSSProper
 
 const NEXT = [
   {
+    label: "AI accuracy",
+    title: "Evals",
+    mark: <EvalsMark />,
+    body: "The pipelines, the observability and a 30-case golden dataset are already built. The next step is measuring how accurate the drafts really are and iterating on the prompts.",
+  },
+  {
     label: "sync with linear",
     title: "Linear",
     mark: <LinearMark />,
@@ -97,25 +103,20 @@ const NEXT = [
     mark: <AttioMark />,
     body: "By the time onboarding kicks off, the customer's story already lives in the CRM. Pulling that context in from Attio means every onboarding starts informed.",
   },
-  {
-    label: "AI accuracy",
-    title: "Evals",
-    mark: <EvalsMark />,
-    body: "The pipelines, the observability and a 30-case golden dataset are already built. The next step is measuring how accurate the drafts really are and iterating on the prompts.",
-  },
 ] as const;
 
 export function WhatsNext() {
   return (
-    /* pt-[100px] = the plain half of the 200px gap to Collaboration's dots above */
-    <section data-section="WhatsNext" className="pt-[100px] pb-[120px]">
+    /* pt-[130px] = the plain dark zone below Collaboration's check texture
+       (was 100, +30% on Caroline's 2026-07-14 spacing pass) */
+    <section data-section="WhatsNext" className="pt-[130px] pb-[180px]">
       <Container>
         <Reveal>
           <Kicker>What&apos;s next</Kicker>
           <Title>
-            Earning the next
+            Measured accuracy,
             <br />
-            slice of trust
+            connected tools
           </Title>
         </Reveal>
 
@@ -146,7 +147,8 @@ export function WhatsNext() {
                     </>
                   )}
                 </div>
-                <div className={`min-w-0 flex-1 md:mt-6 md:flex-none md:pr-8 ${last ? "" : "pb-12 md:pb-0"}`}>
+                {/* pr-12 / pb-18 = the old pr-8 / pb-12 column gaps + 50% (her ask) */}
+                <div className={`min-w-0 flex-1 md:mt-6 md:flex-none md:pr-12 ${last ? "" : "pb-18 md:pb-0"}`}>
                   <p className="case-study-label mb-3">{label} &gt;</p>
                   <Body>{body}</Body>
                 </div>

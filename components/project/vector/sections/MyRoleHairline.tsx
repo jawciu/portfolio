@@ -65,7 +65,7 @@ export function MyRoleHairline() {
                   className="h-[72px] w-auto"
                   style={{
                     filter:
-                      "drop-shadow(0 18px 30px rgba(0,0,0,0.65)) drop-shadow(0 6px 12px rgba(0,0,0,0.4))",
+                      "drop-shadow(0 18px 30px rgba(0,0,0,0.33)) drop-shadow(0 6px 12px rgba(0,0,0,0.2))",
                   }}
                 />
               </div>

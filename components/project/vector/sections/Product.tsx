@@ -401,25 +401,37 @@ function MinitiFlow() {
   );
 }
 
-/* Where each companion sits against its shot: the mobile-style in-flow stack
-   holds all the way to 1070px; above that the card pins to a CORNER of the
-   asset (absolute against the visual column) so it reads as clustered, not
-   covering. min-[1070px] everywhere, matching the row's stack point. */
+/* Where each companion sits against its shot: below 1070px the cluster is an
+   in-flow stack that MIRRORS the desktop stagger (Caroline 2026-07-14: same
+   alignment as desktop, group centred but pieces staggered) — the column gets
+   a 140px stagger budget (see ProductBlock), the shot slides to its desktop
+   side and the companion takes the opposite one via ml-auto. From 1070px up
+   the card pins absolutely to a CORNER of the asset. min-[1070px] everywhere,
+   matching the row's stack point. */
 const COMPANION_POS: Record<NonNullable<Block["companion"]>, string> = {
-  /* bottom-RIGHT corner: the shot hugs the left of its widened column and the
-     card takes the freed corner */
-  flow: "relative z-10 -mt-10 w-full max-w-[440px] min-[1070px]:absolute min-[1070px]:right-0 min-[1070px]:bottom-[-56px] min-[1070px]:mt-0 min-[1070px]:w-[440px]",
-  /* bottom-LEFT corner of the health table, dropped WELL below it — the card
+  /* desktop: bottom-RIGHT corner (the shot hugs the left of its widened column
+     and the card takes the freed corner) → stacked: card right, shot left */
+  flow: "relative z-10 -mt-10 w-full max-w-[440px] max-[1069px]:ml-auto min-[1070px]:absolute min-[1070px]:right-0 min-[1070px]:bottom-[-56px] min-[1070px]:mt-0 min-[1070px]:w-[440px]",
+  /* desktop: bottom-LEFT of the health table, dropped WELL below it — the card
      mostly hangs off the table so the table's rows stay readable (it used to
-     cover the right side; Caroline 2026-07-13) */
+     cover the right side; Caroline 2026-07-13) → stacked: card left, table right */
   health: "relative z-10 -mt-10 w-[88%] max-w-[430px] min-[1070px]:absolute min-[1070px]:left-[-24%] min-[1070px]:bottom-[-200px] min-[1070px]:mt-0 min-[1070px]:w-[430px]",
-  /* bottom-RIGHT corner of the follow-up draft, overhanging the shot edge
-     slightly (the copy gap absorbs it) */
-  cron: "relative z-10 -mt-10 w-[88%] max-w-[420px] min-[1070px]:absolute min-[1070px]:right-[-6%] min-[1070px]:bottom-[-56px] min-[1070px]:mt-0 min-[1070px]:w-[400px]",
-  /* bottom-LEFT corner of the actions queue — slimmed to labels only. z-0
-     drops it UNDER the actions shot (the shot's wrapper carries z-[5]), so
-     the overlapping corner tucks behind the card */
-  miniti: "relative z-10 -mt-10 w-[88%] max-w-[290px] min-[1070px]:absolute min-[1070px]:left-[calc(-34%_-_20px)] min-[1070px]:bottom-[-76px] min-[1070px]:mt-0 min-[1070px]:w-[290px] min-[1070px]:z-0",
+  /* desktop: bottom-RIGHT of the follow-up draft, overhanging the shot edge
+     slightly (the copy gap absorbs it) → stacked: card right, draft left */
+  cron: "relative z-10 -mt-10 w-[88%] max-w-[420px] max-[1069px]:ml-auto min-[1070px]:absolute min-[1070px]:right-[-6%] min-[1070px]:bottom-[-56px] min-[1070px]:mt-0 min-[1070px]:w-[400px]",
+  /* desktop: bottom-LEFT of the actions queue — slimmed to labels only. z-0 (all
+     widths) drops it UNDER the actions shot (the shot's wrapper carries z-[5]),
+     so the overlapping corner tucks behind the card in the stack too */
+  miniti: "relative z-0 -mt-10 w-[88%] max-w-[290px] min-[1070px]:absolute min-[1070px]:left-[calc(-34%_-_20px)] min-[1070px]:bottom-[-76px] min-[1070px]:mt-0 min-[1070px]:w-[290px]",
+};
+
+/* stacked-only (≤1069px) shot alignment inside the stagger-widened column: the
+   shot takes its DESKTOP side, the companion (above) takes the other corner */
+const COMPANION_STACK_SHOT: Record<NonNullable<Block["companion"]>, string> = {
+  flow: "max-[1069px]:mr-auto",   // shot left, routing card right
+  health: "max-[1069px]:ml-auto", // table right, snippet left
+  cron: "max-[1069px]:mr-auto",   // draft left, cron snippet right
+  miniti: "max-[1069px]:ml-auto", // actions right, pipeline card left
 };
 
 /* Each row is a centred BAND with the copy at one end and the shot at the other, pushed
@@ -475,10 +487,18 @@ function ProductBlock({ subhead, body, asset, alt, companion, flip, width, colum
           1276px outgrows the 90% band ≈1418px down). min-[..px] not md:/lg: —
           the arbitrary min-[] variant group is emitted before the named block,
           so mixing them on one property lets the named rule win at every width
-          (see responsive-design skill). */}
+          (see responsive-design skill).
+          Stacked (<1070) the column caps at the SHOT width (not the widened
+          columnWidth — that's dead space reserved for corner-anchoring, which is
+          row-mode only) and centres via mx-auto: shot + companion move as ONE
+          centred cluster. Companion rows widen that cap by a 140px stagger
+          budget so the pieces can take opposite sides, mirroring the desktop
+          arrangement (shot side in COMPANION_STACK_SHOT, companion side in
+          COMPANION_POS); on phones the container is narrower than the shot, so
+          the budget never bites and the stagger degrades gracefully to zero. */}
       <div
-        className={`relative w-full max-w-[var(--pb-col)] min-[1070px]:shrink-0 min-[1070px]:max-w-[calc(var(--pb-col)*0.8)] min-[1408px]:max-w-[var(--pb-col)] ${flip ? "min-[1070px]:order-1" : ""}`}
-        style={{ "--pb-col": `${columnWidth ?? width}px` } as React.CSSProperties}
+        className={`relative mx-auto w-full ${companion ? "max-w-[calc(var(--pb-shot)+140px)]" : "max-w-[var(--pb-shot)]"} min-[1070px]:mx-0 min-[1070px]:shrink-0 min-[1070px]:max-w-[calc(var(--pb-col)*0.8)] min-[1408px]:max-w-[var(--pb-col)] ${flip ? "min-[1070px]:order-1" : ""}`}
+        style={{ "--pb-col": `${columnWidth ?? width}px`, "--pb-shot": `${width}px` } as React.CSSProperties}
       >
         {/* in a widened column the shot hugs the copy-FAR side: left on normal
             rows, right on flipped rows (so widening always moves it toward the copy).
@@ -486,7 +506,7 @@ function ProductBlock({ subhead, body, asset, alt, companion, flip, width, colum
             (miniti tucks under it), below the default z-10 ones. */}
         <div
           style={{ "--pb-shot": `${width}px` } as React.CSSProperties}
-          className={`relative max-w-[var(--pb-shot)] min-[1070px]:z-[5] min-[1070px]:max-w-[calc(var(--pb-shot)*0.8)] min-[1408px]:max-w-[var(--pb-shot)] ${columnWidth ? (flip ? "min-[1070px]:ml-auto" : "min-[1070px]:mr-auto") : ""} ${shotClassName}`}
+          className={`relative z-[5] max-w-[var(--pb-shot)] min-[1070px]:max-w-[calc(var(--pb-shot)*0.8)] min-[1408px]:max-w-[var(--pb-shot)] ${companion ? COMPANION_STACK_SHOT[companion] : ""} ${columnWidth ? (flip ? "min-[1070px]:ml-auto" : "min-[1070px]:mr-auto") : ""} ${shotClassName}`}
         >
           <Parallax speed={20}>
             <Shot src={A(asset)} alt={alt} bare={!framed} />
@@ -506,7 +526,7 @@ export function Product() {
   return (
     /* overflow-x-hidden would BREAK the page's sticky glass seam (see CLAUDE.md), so the
        rows are padded, never translated — nothing can overflow horizontally. */
-    <section data-section="Product" className="pt-[120px] pb-0">
+    <section data-section="Product" className="pt-[156px] pb-0">
       {/* The section heading lives INSIDE the first dotted room, so the texture
           (and its boundary hairline) starts above the whole Product header. The
           rows sit outside the Container so their asset column can bleed out. */}

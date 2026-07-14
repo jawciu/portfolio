@@ -240,6 +240,10 @@ cards, element-screenshot. Delete the temp script after.
   pink `#e09abe` → peach `#ff9c7d`; solid gradient span shown through a repeating radial-dot CSS
   mask — `railStyle()`, both orientations). Phone = Matching's stacked pattern: stops left,
   vertical dotted rails, copy right. Then `>` label + short Body per stop.
+- **Her follow-ups (same session):** stop order now **AI accuracy → Linear → Attio** (she renamed
+  "evals before autonomy" to "ai accuracy" herself); column gaps +50% (`md:pr-12`, phone `pb-18`);
+  **heading replaced** — "Earning the next slice of trust" (written for the trust/autonomy angle)
+  → **"Measured accuracy, connected tools"** (her pick from four options, goal-list shape).
 - **Logos inline as SVG paths** (not `<img>`, so the iOS-Safari bake rule doesn't apply), filled
   WHITE on the gradient: Linear from Simple Icons CDN; Attio's official double-slash mark is NOT
   on Simple Icons (issue #12295 open) — path pulled from a GitHub mirror (onecli/onecli). Evals
@@ -295,6 +299,25 @@ cards, element-screenshot. Delete the temp script after.
   1070/1100/1150/1229/1230, shots 0.8×<1408, full ≥1408, **zero copy↔visual overlap at every
   width**; eyeballed 1100 (all companion rows) + 1000 (stacked, spine gone). tsc + lint clean.
   Desktop ≥1408 and phones <768 byte-identical throughout.
+- **Round 5 (same session): stacked clusters STAGGER like desktop** (Caroline sent desktop refs:
+  health snippet offset LEFT of the table, miniti pipeline offset left + tucked UNDER, cron
+  snippet offset RIGHT of the draft, flow routing card RIGHT of the panel — the flat left-aligned
+  stack was wrong). Mechanism: companion rows widen the stacked column cap by a **140px stagger
+  budget** (`max-w-[calc(var(--pb-shot)+140px)]`), the shot slides to its desktop side
+  (`COMPANION_STACK_SHOT` map, `max-[1069px]:ml/mr-auto`) and the companion takes the opposite
+  side (`max-[1069px]:ml-auto` on flow/cron in COMPANION_POS). miniti's z-0 + the shot's z-[5]
+  are now UNGATED so the tuck-under reads at all widths (phones included — deliberate). On
+  phones the container < shot width, so the budget never bites and the stagger degrades to ~0.
+  Verified: all four clusters mirror their desktop refs at 800px; 11-width overlap sweep still
+  zero everywhere; cron row at 1440 unchanged.
+- **Round 4 (same session): stacked visuals centre as a CLUSTER.** Below 1070 the visual column
+  now caps at the SHOT width (`max-w-[var(--pb-shot)]`, not the widened `--pb-col` — that width
+  is dead space reserved for row-mode corner-anchoring) and centres via `mx-auto`
+  (`min-[1070px]:mx-0` restores row mode). Shot + companion move as ONE centred unit, keeping
+  their left-anchored offset and `-mt-10` overlap to each other — Caroline: centre the group,
+  never the pieces relative to each other. Verified: centring error 0px at 390/800/1000/1069,
+  row mode untouched at 1070/1440; eyeballed notifications + health clusters at 800. Phones
+  unchanged (container width < shot width there, so the cap never bit).
 
 ### 2026-07-14 — MyRole icon variants ×2 (OUTLINE + HAIRLINE), mounted as stacked comparison duplicates. UNCOMMITTED.
 - **Round 2 (same session):** linework thinned on the outline set at Caroline's ask (glyphs
@@ -316,6 +339,27 @@ cards, element-screenshot. Delete the temp script after.
   spark dots (swapped) · ai-orchestration = orange LEFT square, lilac RIGHT squares, pink centre
   dot DELETED (connectors stay neutral rgba(241,234,241,0.35)). Verified: probe shows
   filled/outline gone + hairline mounted; tsc + lint clean.
+- **Desktop spacing pass, 9 changes (2026-07-14, same session, Caroline's list — all applied
+  as padding/margin bumps, computed values verified in-browser):** Problem pt 120→240 (MyRole→
+  Problem gap 2x) · Product pt 120→156 (+30% after the Problem callout) · AILayer callout mt-14→
+  mt-28 (2x above "Every call is prompt-cached…") · Observability pt 120→144 (+20% below that
+  callout) · Observability dotted-room pb 120→168 (+40% below the Usage/Pipeline assets) ·
+  Architecture pb 100→150 (+50% after the stack logos) · Collaboration pt 100→120 (+20% above
+  the Working-with-AI kicker) + pb 100→170 (+70% below the checked cards) · WhatsNext pt
+  100→130 (+30% plain dark above What's next). NOTE: the old symmetric "texture edge mid-gap"
+  100/100 splits around Collaboration are deliberately gone. Icon drop-shadow also halved this
+  round (0.33/0.2). MyRole hairline icon shadows + these spacings all UNCOMMITTED.
+- **Collaboration got the DotGlow hover (2026-07-14, same session):** the cursor-following
+  lit-texture effect (Product/Observability's `DotGlow`) was missing on Working with AI's check —
+  added `<DotGlow pattern="grid" />` as first child of the (now `relative`) section, Container
+  made `relative` so cards paint above the overlay. Same 22px grid geometry, so the lit pattern
+  aligns perfectly. Verified with a real hover at 1440.
+- **NextProject blob move TRIED AND REVERTED (2026-07-14, same session):** the "darken the
+  closing plate by moving its SoftBlob up into WhatsNext" idea looked bad in situ ("upsy looks
+  shit") — blob restored verbatim to NextProject (Parallax speed 130, bottom-[0%] right-[1%],
+  opacity-50 blur-[64px]); WhatsNext back to its untouched state. Don't re-try this without
+  a new design idea. Also that round: ai-orchestration icon = ALL-lilac squares + orange
+  connectors (?v=3).
 - **Round 6 (same session):** icon `<img>`s got a CSS `drop-shadow` (two stacked:
   0 18px 30px 0.65 + 0 6px 12px 0.4 — echoes CARD_FRAME's shadow; CSS-side filter, NOT in-SVG,
   so iOS-safe) — the trapezoid plates were already the exact CARD_FRAME tokens, the missing
