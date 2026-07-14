@@ -50,6 +50,13 @@ Mobile-first, **min-width** semantics. Unprefixed = all sizes; `md:` = "768px **
 - **Mobile (the gap below the smallest custom bp):** style unprefixed, override up.
   Do NOT write `sm:` to mean "on mobile" — `sm:` is ≥640px.
 - **One-off width** without editing the theme: `max-[900px]:flex-col`, `min-[475px]:flex-row`.
+- **GOTCHA — never mix named + arbitrary min variants on the SAME property:**
+  `md:w-[90%] min-[1624px]:w-[80%]` fails silently — Tailwind v4 emits the whole arbitrary
+  `min-[...]` group BEFORE the named-breakpoint block in the stylesheet, so the `md:` rule wins
+  at EVERY width (same specificity, later source order). Fix: put all tiers in one group —
+  `min-[768px]:w-[90%] min-[1624px]:w-[80%] min-[1888px]:w-[70%]` (`min-[768px]` ≡ `md:`;
+  within the group, rules sort ascending by value so wider tiers win). Proven on the vector
+  Product band, 2026-07-14.
 - **Custom named breakpoint:** add `--breakpoint-tablet: 60rem;` in `app/globals.css` `@theme`
   (then `touch` globals.css — Turbopack serves stale CSS).
 
