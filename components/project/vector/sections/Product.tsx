@@ -412,8 +412,10 @@ function MinitiFlow() {
    matching the row's stack point. */
 const COMPANION_POS: Record<NonNullable<Block["companion"]>, string> = {
   /* desktop: bottom-RIGHT corner (the shot hugs the left of its widened column
-     and the card takes the freed corner) → stacked: card right, shot left */
-  flow: "relative z-10 -mt-10 w-full max-w-[440px] max-[1069px]:ml-auto min-[1070px]:absolute min-[1070px]:right-0 min-[1070px]:bottom-[-56px] min-[1070px]:mt-0 min-[1070px]:w-[440px]",
+     and the card takes the freed corner) → stacked: card right, shot left.
+     w-[88%] not w-full so the card can actually sit right of the shot on phones
+     (max-w-440 caps it to the same size in the 640-1069 band as before) */
+  flow: "relative z-10 -mt-10 w-[88%] max-w-[440px] max-[1069px]:ml-auto min-[1070px]:absolute min-[1070px]:right-0 min-[1070px]:bottom-[-56px] min-[1070px]:mt-0 min-[1070px]:w-[440px]",
   /* desktop: bottom-LEFT of the health table, dropped WELL below it — the card
      mostly hangs off the table so the table's rows stay readable (it used to
      cover the right side; Caroline 2026-07-13) → stacked: card left, table right */
@@ -496,8 +498,11 @@ function ProductBlock({ subhead, body, asset, alt, companion, flip, width, colum
           centred cluster. Companion rows widen that cap by a 140px stagger
           budget so the pieces can take opposite sides, mirroring the desktop
           arrangement (shot side in COMPANION_STACK_SHOT, companion side in
-          COMPANION_POS); on phones the container is narrower than the shot, so
-          the budget never bites and the stagger degrades gracefully to zero. */}
+          COMPANION_POS). Where the container is narrower than the shot (phones,
+          and the bottom of the 640-1069 band) that budget can't bite — so on
+          companion rows the SHOT also caps at 85% of the column, keeping a
+          real opposite-sides stagger at every width instead of flattening into
+          one full-width stack (Caroline 2026-07-15). */}
       <div
         className={`relative mx-auto w-full ${companion ? "max-w-[calc(var(--pb-shot)+140px)]" : "max-w-[var(--pb-shot)]"} min-[1070px]:mx-0 min-[1070px]:shrink-0 min-[1070px]:max-w-[calc(var(--pb-col)*0.8)] min-[1408px]:max-w-[var(--pb-col)] ${flip ? "min-[1070px]:order-1" : ""}`}
         style={{ "--pb-col": `${columnWidth ?? width}px`, "--pb-shot": `${width}px` } as React.CSSProperties}
@@ -508,7 +513,7 @@ function ProductBlock({ subhead, body, asset, alt, companion, flip, width, colum
             (miniti tucks under it), below the default z-10 ones. */}
         <div
           style={{ "--pb-shot": `${width}px` } as React.CSSProperties}
-          className={`relative z-[5] max-w-[var(--pb-shot)] min-[1070px]:max-w-[calc(var(--pb-shot)*0.8)] min-[1408px]:max-w-[var(--pb-shot)] ${companion ? COMPANION_STACK_SHOT[companion] : ""} ${columnWidth ? (flip ? "min-[1070px]:ml-auto" : "min-[1070px]:mr-auto") : ""} ${shotClassName}`}
+          className={`relative z-[5] ${companion ? "max-w-[min(var(--pb-shot),85%)]" : "max-w-[var(--pb-shot)]"} min-[1070px]:max-w-[calc(var(--pb-shot)*0.8)] min-[1408px]:max-w-[var(--pb-shot)] ${companion ? COMPANION_STACK_SHOT[companion] : ""} ${columnWidth ? (flip ? "min-[1070px]:ml-auto" : "min-[1070px]:mr-auto") : ""} ${shotClassName}`}
         >
           <Parallax speed={20}>
             <Shot src={A(asset)} alt={alt} bare={!framed} />
@@ -533,7 +538,8 @@ export function Product() {
           (and its boundary hairline) starts above the whole Product header. The
           rows sit outside the Container so their asset column can bleed out. */}
       <div>
-        <SubSection label="shared board" texture="dots">
+        {/* max-sm:pb = the dotted gap below the notification centre −30% on phones (baked pb 140) */}
+        <SubSection label="shared board" texture="dots" className="max-sm:pb-[98px]!">
           {/* heading → first block gap is HALF the room's 156px rhythm. Tailwind
               v4 space-y puts the margin on the PREVIOUS sibling's bottom, so the
               override lives here (a mt-! on the block does nothing). */}
@@ -550,9 +556,10 @@ export function Product() {
 
           <ProductBlock {...BLOCKS[0]} />
 
-          {/* phone gaps ÷2 (Caroline 2026-07-15): -mt collapses against the room's
-              156px space-y (156 − 78 = 78); the mb! beats space-y for the gap below */}
-          <Container className="max-sm:-mt-[78px] max-sm:mb-[78px]!">
+          {/* phone gaps (Caroline 2026-07-15): -mt collapses against the room's
+              156px space-y (156 − 78 = 78); the mb! beats space-y for the gap below
+              (78 + 20% = 94, her round-2 bump above the portal) */}
+          <Container className="max-sm:-mt-[78px] max-sm:mb-[94px]!">
             <Reveal className="max-w-[860px]">
               <CaseStudyCallout stream>
                 {"The customer clicks a magic link and lands straight on their tasks. No account, no password, no training. Every visit is tracked, so the vendor knows the moment they go quiet."}
@@ -577,7 +584,8 @@ export function Product() {
               the room's 156px rhythm alone would put the callout UNDER the snippet.
               144px of padding (padding never margin-collapses) lands the VISUAL
               gap at ~100px. */}
-          <Container className="md:pt-[144px]">
+          {/* max-sm:-mt = gap above the evidence callout −40% on phones (156 − 62 = 94) */}
+          <Container className="md:pt-[144px] max-sm:-mt-[62px]">
             <Reveal className="max-w-[860px]">
               <CaseStudyCallout stream>
                 {"Every flag arrives with its evidence. 3 of 9 tasks blocked, 8 tasks overdue, customer dark for 64 days. When you can see why the flag was raised, you can act on it."}
