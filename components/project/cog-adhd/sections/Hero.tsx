@@ -1,3 +1,4 @@
+import { HeroFade, HeroStream } from "../../HeroIntro";
 import { A, Container } from "../ui";
 
 export function Hero() {
@@ -5,27 +6,31 @@ export function Hero() {
     <section data-section="Hero" className="relative">
       {/* Confetti band — full-bleed transparent streamers (no background), tucked
           flush to the top edge of the screen under the transparent navbar. */}
-      <div className="relative w-full overflow-hidden">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={A("image-5.svg")}
-          alt="Orange confetti streamers"
-          className="block w-full h-[120px] opacity-80 md:h-[180px] object-cover object-top"
-        />
-      </div>
+      <HeroFade duration={0.5}>
+        <div className="relative w-full overflow-hidden">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={A("image-5.svg")}
+            alt="Orange confetti streamers"
+            className="block w-full h-[120px] opacity-80 md:h-[180px] object-cover object-top"
+          />
+        </div>
+      </HeroFade>
 
       <Container className="pt-10 pb-[120px] md:pt-14">
         {/* Page title — main H1. See `.case-study-title` (template token).
             The break is DESKTOP-ONLY (hidden ≤640px so the 32px mobile title flows
-            naturally). The explicit {" "} matters: JSX drops the newline between
-            text and <br/>, so without it mobile would render "Opportunitiesin". */}
+            naturally). The space BEFORE the \n matters: with the <br/> hidden on
+            phones, it's what keeps "Opportunities in" from becoming one word. */}
         <h1 className="case-study-title">
-          Gaps and Opportunities{" "}
-          <br className="max-sm:hidden" />
-          in ADHD Therapy Processes
+          <HeroStream step={0.01} breakClassName="max-sm:hidden">
+            {"Gaps and Opportunities \nin ADHD Therapy Processes"}
+          </HeroStream>
         </h1>
 
-        {/* Meta block: two columns */}
+        {/* Meta block: two columns. Only the H1 streams — everything else in the
+            hero fades in as one unit, same recipe as the hero imagery. */}
+        <HeroFade delay={150} duration={0.5}>
         <div className="mt-10 grid grid-cols-1 gap-10 md:grid-cols-2 md:gap-16">
           {/* LEFT: brand + mini role/time/tools table */}
           <div>
@@ -94,31 +99,40 @@ export function Hero() {
             </div>
           </div>
         </div>
+        </HeroFade>
 
         {/* Device row: two phones + wide tablet — all three matched to the SAME
             HEIGHT (phones sized to the tablet's height via aspect), then ×1.2.
             Heights match because the width ratio = aspect ratio (phone 0.497 :
             tablet 1.305 ≈ 20.3% : 53.5%); max-w caps deliver the desktop ×1.2
             (phone 210 / tablet 552 → all render ~422px tall). */}
+        {/* Each HeroFade is a display:contents wrapper, so the imgs stay the flex
+            items and keep their % sizing; the three fades stagger left to right. */}
         <div className="mt-14 flex items-end justify-center gap-2 max-sm:gap-4 max-sm:flex-wrap md:gap-4 lg:gap-6">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={A("image-large-screens.png")}
-            alt="Cog app phone - check-in history bar chart"
-            className="w-[20.3%] max-w-[210px] shrink-0 max-sm:w-[calc(50%-8px)]"
-          />
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={A("image-large-screens-1.png")}
-            alt="Cog app phone - check-in history list"
-            className="w-[20.3%] max-w-[210px] shrink-0 max-sm:w-[calc(50%-8px)]"
-          />
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={A("image.png")}
-            alt="Cog Clinic dashboard - Katherine Bell overview"
-            className="w-[53.5%] max-w-[552px] shrink-0 max-sm:mt-4 max-sm:w-full"
-          />
+          <HeroFade delay={150} duration={0.5}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={A("image-large-screens.png")}
+              alt="Cog app phone - check-in history bar chart"
+              className="w-[20.3%] max-w-[210px] shrink-0 max-sm:w-[calc(50%-8px)]"
+            />
+          </HeroFade>
+          <HeroFade delay={250} duration={0.5}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={A("image-large-screens-1.png")}
+              alt="Cog app phone - check-in history list"
+              className="w-[20.3%] max-w-[210px] shrink-0 max-sm:w-[calc(50%-8px)]"
+            />
+          </HeroFade>
+          <HeroFade delay={350} duration={0.5}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={A("image.png")}
+              alt="Cog Clinic dashboard - Katherine Bell overview"
+              className="w-[53.5%] max-w-[552px] shrink-0 max-sm:mt-4 max-sm:w-full"
+            />
+          </HeroFade>
         </div>
       </Container>
     </section>

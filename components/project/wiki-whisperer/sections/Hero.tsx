@@ -1,3 +1,4 @@
+import { HeroFade, HeroStream } from "../../HeroIntro";
 import { A, Container } from "../ui";
 
 /* Hero — mirrors the cog hero structure: 2-line title, then a two-column meta block
@@ -11,15 +12,17 @@ export function Hero() {
       <Container className="pt-28 pb-[120px] md:pt-32">
         {/* Page title — H1, two lines via a manual break. */}
         {/* The break is DESKTOP-ONLY (hidden ≤640px so the 32px mobile title flows
-            naturally). The explicit {" "} matters: JSX drops the newline between
-            text and <br/>, so without it mobile would render "Brainfor". */}
+            naturally). The space BEFORE the \n matters: with the <br/> hidden on
+            phones, it's what keeps "Brain for" from becoming one word. */}
         <h1 className="case-study-title">
-          Designing an AI Brain{" "}
-          <br className="max-sm:hidden" />
-          for a Support Call Centre
+          <HeroStream step={0.01} breakClassName="max-sm:hidden">
+            {"Designing an AI Brain \nfor a Support Call Centre"}
+          </HeroStream>
         </h1>
 
-        {/* Meta block: two columns */}
+        {/* Meta block: two columns. Only the H1 streams — everything else in the
+            hero fades in as one unit, same recipe as the hero imagery. */}
+        <HeroFade delay={150} duration={0.5}>
         <div className="mt-10 grid grid-cols-1 gap-10 md:grid-cols-2 md:gap-16">
           {/* LEFT: brand + mini role/tools table */}
           <div>
@@ -91,10 +94,14 @@ export function Hero() {
             </div>
           </div>
         </div>
+        </HeroFade>
 
         {/* Promo video — the hero hook (autoplay, muted, loop). The making-of story
             lives in the Rollout section. The "shadow" is a soft pink-to-lavender
             gradient glow behind the card (box-shadow can't take a gradient). */}
+        {/* HeroFade is a display:contents wrapper — the video's reserved 16:9 box
+            (the client-nav reveal fix below) is untouched; only opacity animates. */}
+        <HeroFade delay={150} duration={0.5}>
         <div className="relative mt-14">
           <div
             aria-hidden
@@ -124,6 +131,7 @@ export function Hero() {
             />
           </div>
         </div>
+        </HeroFade>
       </Container>
     </section>
   );

@@ -1,3 +1,4 @@
+import { HeroFade, HeroStream } from "../../HeroIntro";
 import { A, Container, LinkIcon, Shot } from "../ui";
 
 /* Hero — mirrors the cog/wiki hero structure: 2-line title, a two-column meta block
@@ -31,12 +32,14 @@ export function Hero() {
       <Container className="pt-28 pb-[120px] md:pt-32 max-sm:pt-[112px] max-sm:pb-[120px]">
         {/* Page title — H1, two lines via a manual break. */}
         <h1 className="case-study-title">
-          Rethinking time-to-value
-          <br />
-          in B2B SaaS onboarding
+          <HeroStream step={0.01}>
+            {"Rethinking time-to-value\nin B2B SaaS onboarding"}
+          </HeroStream>
         </h1>
 
-        {/* Meta block: two columns */}
+        {/* Meta block: two columns. Only the H1 streams — everything else in the
+            hero fades in as one unit, same recipe as the hero imagery. */}
+        <HeroFade delay={150} duration={0.5}>
         <div className="mt-10 grid grid-cols-1 gap-10 md:grid-cols-2 md:gap-16">
           {/* LEFT: brand + mini role/tools table */}
           <div>
@@ -109,21 +112,30 @@ export function Hero() {
             <div>
               <p className="case-study-hero-label">setting the stage</p>
               <p className="case-study-body-md mt-2">
-              I noticed a problem: procured tools promise value, then lose momentum at onboarding. Vendor-customer context gets lost in a sea of meetings and time-to-value slips. While playing with agentic engineering tools and wanting to get better at building, I jumped into Claude Code and built a tool to tackle the problem I saw.
+                I noticed a problem: procured tools promise value, then lose momentum at
+                onboarding. Vendor-customer context gets lost in a sea of meetings and
+                time-to-value slips. While playing with agentic engineering tools and
+                wanting to get better at building, I jumped into Claude Code and built a
+                tool to tackle the problem I saw.
               </p>
             </div>
           </div>
         </div>
+        </HeroFade>
 
         {/* Hero visual — the AI Insights view, the clearest proof of the product. Sits in
             the same framed treatment every Vector screenshot uses. */}
-        <Shot
-          src={A("hero-insights.png")}
-          alt="Vector's AI Insights view: a streamed summary of one onboarding with risks, wins, focus for today and the week."
-          className="mt-14"
-          captionClassName="mt-9 opacity-60"
-          caption="All data is fictional; company names and logos are used for illustrative purposes only and do not represent real customer endorsements"
-        />
+        {/* HeroFade is a display:contents wrapper, so Shot's figure stays the
+            in-flow block and keeps its full container width. */}
+        <HeroFade delay={150} duration={0.5}>
+          <Shot
+            src={A("hero-insights.png")}
+            alt="Vector's AI Insights view: a streamed summary of one onboarding with risks, wins, focus for today and the week."
+            className="mt-14"
+            captionClassName="mt-9 opacity-60"
+            caption="All data is fictional; company names and logos are used for illustrative purposes only and do not represent real customer endorsements"
+          />
+        </HeroFade>
       </Container>
     </section>
   );

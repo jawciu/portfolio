@@ -301,8 +301,12 @@ cards, element-screenshot. Delete the temp script after.
   children re RSC hydration; inline styles not `[data-stream]` CSS re dev stylesheet timing;
   forced reflow between hide and play). Wiki theme.css also gained the `.cs-char` rules (it only
   had `.cs-word`) for parity.
-- **Timings:** title step 0.01 (typed feel), labels ~200-650ms staggered, paras step 0.0025,
-  images delay 450+ / 0.5s fade (cog's 3 device shots stagger 450/570/690). Whole intro ~1.5s.
+- **Timings (rounds 2+3, her calls):** round 2 dropped the cascade (everything at once); round 3
+  is the FINAL shape — **only the H1 streams** (step 0.01, delay 0); ALL other hero text (brand,
+  role/tools lists, summary, stage) is back to plain markup wrapped in ONE meta-block `HeroFade`
+  (delay 150 / 0.5s, same recipe as the imagery — the separate logo fades were dropped, the group
+  fade carries them). Visuals unchanged: cog devices stagger 150/250/350, wiki video + vector
+  shot 150. Whole intro lands well under 1s now.
 - **Verified** (standalone Playwright on the already-running :3001 dev server): all 3 pages
   0 console errors / 0 hydration warnings, stream visibly progresses (668→0 hidden over ~1.4s on
   cog), all wrappers reach `data-stream="play"`, no inline leftovers, reduced-motion shows all

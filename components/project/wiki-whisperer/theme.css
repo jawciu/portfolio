@@ -188,3 +188,13 @@
   filter: none;
   transition: opacity 0.5s ease, transform 0.5s ease, filter 0.5s ease;
 }
+
+/* HeroStream — per-character load-time reveal on the hero (same mechanism the
+   cog/vector studies use for their quotes; quotes here keep .cs-word above). */
+[data-stream="armed"] .cs-char {
+  opacity: 0;
+}
+[data-stream="play"] .cs-char {
+  opacity: 1;
+  transition: opacity 0.12s ease;
+}
