@@ -55,7 +55,8 @@ export default function VectorCaseStudy() {
           }}
         >
           <Hero />
-          <div aria-hidden className="h-[34vh]" />
+          {/* 2026-07-15: dwell trimmed — was 34vh everywhere; phones ½ (17vh), desktop −30% (24vh) */}
+          <div aria-hidden className="h-[17vh] sm:h-[24vh]" />
         </div>
       </StickyHero>
 
