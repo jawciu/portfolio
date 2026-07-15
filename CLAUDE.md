@@ -172,6 +172,16 @@ it's a deliberate call.
   self-wrap so don't double-wrap), `Parallax` drift, `StreamingQuote`/`CaseStudyCallout stream`
   word-reveal, and the glass seam. Acceptance: 0 console errors, 0 stuck-hidden, all `.cs-char`
   reach `data-stream="play"`, reduced-motion pass.
+- **Hero load-in (2026-07-15, shared `components/project/HeroIntro.tsx`):** heroes are NOT
+  Reveal-wrapped (in view at scroll 0), they play a load-time intro instead — `HeroStream`
+  (fast char stream, same `.cs-char` contract as StreamingQuote but time-driven on mount;
+  children must be a PLAIN STRING, `\n` renders `<br/>` via `breakClassName`) + `HeroFade`
+  (quick image fade via a `display:contents` wrapper). BOTH drive hide/reveal with INLINE
+  styles, never the theme.css `[data-stream]` rules: the effect runs during hydration and in
+  dev the route CSS can land AFTER it (armed rule matches nothing → text pops in at once).
+  Element children are unsupported by design — walking element trees across the RSC boundary
+  hydration-mismatches (server/client see different node shapes). Also needs the forced-reflow
+  (`getBoundingClientRect`) between hide and play or the browser coalesces them into one recalc.
 - **Glass seam** (`case-study-glass-seam`): `StickyHero` pins the hero at a **measured negative
   `top`** (`-(heroHeight - viewportHeight)`, ResizeObserver) so the taller-than-viewport hero
   scrolls until the device mockups are fully seen, THEN pins while a cream frosted glass plate
@@ -265,9 +275,42 @@ cards, element-screenshot. Delete the temp script after.
 - **Round 3 (same session): cron snippet joined the family at ×0.6** (Caroline's "40% smaller"):
   `max-sm:[zoom:0.6] max-sm:w-[52.8%]` → 301→181 measured at 390, right-anchored beside the
   draft; 800 + 1440 unchanged. Committed + pushed on her ask.
-- **State: working, committed + pushed** (round 1 rode along in the parallel session's phone-gaps
-  commit; rounds 2-3 + this entry in this session's commit). Caroline approved the round-1/2 look
-  from screenshots; on-device pass on her phone still the real test.
+- **Round 4 (same session): the zoom approach BROKE on Caroline's iPhone → replaced with
+  explicit sizes.** On-device iOS Safari rendered the zoomed cards as narrow boxes full of
+  GIANT wrapped text (screenshots from her phone), while Chromium/dev looked perfect — iOS
+  keeps/boosts the type inside a `zoom`ed box. **RULE: don't use CSS `zoom` for shrink-to-fit
+  cards; iOS is the audience and it can't be verified headless** (desktop WebKit ≠ iOS, same
+  lesson as the SVG bake). Rework: zoom classes deleted; the max-sm widths stay (they resolve
+  to the same px without zoom), and the cards' INSIDES are now scaled explicitly by new
+  `vec-card-m-{health,cron,flow,miniti}` classes in theme.css (@media ≤640px: padding, radius,
+  title, .vec-code font 6.5/8px, miniti list metrics; + text-size-adjust 100% to pin iOS font
+  boosting). Overlap retuned to the approved look (`max-sm:-mt-5` / flow `-mt-8`). Measured at
+  390: identical geometry to the approved zoom round (flow 241 / health 150 / miniti 150 /
+  cron 181, fonts 6.5-9px); 800 + 1440 byte-identical (13px, same rects). tsc + lint clean.
+- **State: rounds 1-3 committed + pushed** (round 1 rode along in the parallel session's
+  phone-gaps commit; rounds 2-3 in `83d3c99`). **Round 4 (the iOS fix) UNCOMMITTED, awaiting
+  Caroline's go — prod's phone view shows the broken zoom cards until it ships.** Then she
+  re-tests on the iPhone (the only place this bug reproduces).
+
+### 2026-07-15 — Case-study heroes get a load-in intro (char stream + image fade). UNCOMMITTED.
+- **Caroline's ask:** the heroes had no reveal on page open (deliberate before — Reveal is
+  scroll-triggered and heroes sit at scroll 0). Now the hero TEXT streams in very fast and the
+  hero IMAGES/video quick-fade, on all three studies (cog, wiki, vector), playing once on mount.
+- **New shared `components/project/HeroIntro.tsx`** (next to CaseStudyButton): `HeroStream` +
+  `HeroFade` — see the new Decision Log digest entry for the three hard-won rules (string-only
+  children re RSC hydration; inline styles not `[data-stream]` CSS re dev stylesheet timing;
+  forced reflow between hide and play). Wiki theme.css also gained the `.cs-char` rules (it only
+  had `.cs-word`) for parity.
+- **Timings:** title step 0.01 (typed feel), labels ~200-650ms staggered, paras step 0.0025,
+  images delay 450+ / 0.5s fade (cog's 3 device shots stagger 450/570/690). Whole intro ~1.5s.
+- **Verified** (standalone Playwright on the already-running :3001 dev server): all 3 pages
+  0 console errors / 0 hydration warnings, stream visibly progresses (668→0 hidden over ~1.4s on
+  cog), all wrappers reach `data-stream="play"`, no inline leftovers, reduced-motion shows all
+  text instantly (a cleanup bug where the reduced flip froze chars hidden was found + fixed),
+  client-side nav home→wiki plays correctly, 390px title flows ("BRAIN FOR" space intact).
+  tsc + lint clean. Files: HeroIntro.tsx (new), 3× sections/Hero.tsx, wiki theme.css.
+- NOTE: port 3000 currently hosts an UNRELATED pages-router app (500s); the portfolio dev server
+  was already up on **:3001** — used it, killed nothing.
 
 ### 2026-07-14 (later 4) — Promo video V2 swap, GH file-size push fix, assets/ gitignored, vector copy tweak. ALL PUSHED.
 - **Wiki promo video V2**: replaced `public/projects/wiki-whisperer/promo.mp4` with

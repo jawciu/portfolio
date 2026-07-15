@@ -218,6 +218,79 @@
   }
 }
 
+/* PHONE-SIZE COMPANION CARDS (Caroline 2026-07-15) — the Product clusters' DOM
+   cards shrink to match their zoomed-down PNG shots: health + miniti ×0.5,
+   cron ×0.6, flow ×0.8 of the desktop card. CSS `zoom` was tried first and
+   REVERTED: desktop browsers rendered it perfectly, but iOS Safari kept/boosted
+   the text size inside the shrunk box (giant wrapped words on her iPhone) —
+   so every internal size is scaled EXPLICITLY here instead. Classes live on the
+   companion Parallax wrappers in Product.tsx COMPANION_POS; `> div` is the
+   CARD_FRAME card. Keep the factors in sync with the max-sm widths there
+   (88% × factor). text-size-adjust pins iOS font boosting off the small type. */
+@media (max-width: 640px) {
+  .vec-card-m-health,
+  .vec-card-m-cron,
+  .vec-card-m-flow,
+  .vec-card-m-miniti {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+  .vec-card-m-health > div,
+  .vec-card-m-miniti > div {
+    padding: 10px;
+    border-radius: 7px;
+  }
+  .vec-card-m-cron > div {
+    padding: 12px;
+    border-radius: 8px;
+  }
+  .vec-card-m-flow > div {
+    padding: 16px;
+    border-radius: 11px;
+  }
+  /* card titles (the mono mini-label is the card's first child) */
+  .vec-card-m-health > div > p:first-child,
+  .vec-card-m-cron > div > p:first-child {
+    font-size: 6px; /* 10px × ~0.55 splits the two snippet factors */
+    margin-bottom: 6px;
+  }
+  .vec-card-m-miniti > div > p:first-child {
+    font-size: 5.5px;
+    margin-bottom: 8px;
+  }
+  .vec-card-m-flow > div > p:first-child {
+    font-size: 9px;
+    margin-bottom: 10px;
+  }
+  /* snippet code */
+  .vec-card-m-health .vec-code {
+    font-size: 6.5px;
+  }
+  .vec-card-m-cron .vec-code {
+    font-size: 8px;
+  }
+  /* miniti pipeline internals (the flow card's svg scales itself via viewBox) */
+  .vec-card-m-miniti ol {
+    margin-left: 2px;
+    padding-left: 10px;
+  }
+  .vec-card-m-miniti ol > li {
+    margin-block: 0;
+  }
+  .vec-card-m-miniti ol > li:not(:last-child) {
+    margin-block-end: 8px; /* space-y-4 ÷2 */
+  }
+  .vec-card-m-miniti ol > li > p {
+    font-size: 6.5px;
+  }
+  .vec-card-m-miniti ol > li > span {
+    width: 3.5px;
+    height: 3.5px;
+    top: 2.5px;
+    left: -11.75px;
+  }
+}
+
 /* StreamingQuote — per-character fade reveal. The component renders `.cs-char`
    spans and toggles data-stream on the wrapper; armed hides, play fades each char
    in staggered by an inline transition-delay. Default / reduced-motion leaves the

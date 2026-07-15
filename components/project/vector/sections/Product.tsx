@@ -410,30 +410,30 @@ function MinitiFlow() {
    side and the companion takes the opposite one via ml-auto. From 1070px up
    the card pins absolutely to a CORNER of the asset. min-[1070px] everywhere,
    matching the row's stack point.
-   On phones the cards ZOOM down (Caroline 2026-07-15: the DOM cards kept their
-   full-size type next to the shrunk PNGs and read out of proportion) — zoom,
-   not transform scale, so the layout box shrinks with the card: miniti + health
-   ×0.5, flow ×0.8, cron ×0.6. GOTCHA: percentage widths self-compensate under zoom (they
-   resolve against parent ÷ zoom), so each zoomed card also gets a max-sm width
-   of 88% × its zoom factor to make the BOX shrink with the type. max-sm only;
-   nothing ≥640px changes. */
+   On phones the cards shrink to match the zoomed-down PNGs (Caroline
+   2026-07-15): miniti + health ×0.5, cron ×0.6, flow ×0.8. The box shrinks via
+   the max-sm width (88% × factor) and the INSIDES via the vec-card-m-* classes
+   in theme.css. Do NOT use CSS `zoom` for this — it looked perfect in desktop
+   browsers but iOS Safari kept/boosted the text inside the shrunk box (giant
+   wrapped words); everything must be sized explicitly. max-sm only; nothing
+   ≥640px changes. */
 const COMPANION_POS: Record<NonNullable<Block["companion"]>, string> = {
   /* desktop: bottom-RIGHT corner (the shot hugs the left of its widened column
      and the card takes the freed corner) → stacked: card right, shot left.
      w-[88%] not w-full so the card can actually sit right of the shot on phones
      (max-w-440 caps it to the same size in the 640-1069 band as before) */
-  flow: "relative z-10 -mt-10 w-[88%] max-w-[440px] max-[1069px]:ml-auto max-sm:[zoom:0.8] max-sm:w-[70.4%] min-[1070px]:absolute min-[1070px]:right-0 min-[1070px]:bottom-[-56px] min-[1070px]:mt-0 min-[1070px]:w-[440px]",
+  flow: "relative z-10 -mt-10 w-[88%] max-w-[440px] max-[1069px]:ml-auto vec-card-m-flow max-sm:w-[70.4%] max-sm:-mt-8 min-[1070px]:absolute min-[1070px]:right-0 min-[1070px]:bottom-[-56px] min-[1070px]:mt-0 min-[1070px]:w-[440px]",
   /* desktop: bottom-LEFT of the health table, dropped WELL below it — the card
      mostly hangs off the table so the table's rows stay readable (it used to
      cover the right side; Caroline 2026-07-13) → stacked: card left, table right */
-  health: "relative z-10 -mt-10 w-[88%] max-w-[430px] max-sm:[zoom:0.5] max-sm:w-[44%] min-[1070px]:absolute min-[1070px]:left-[-24%] min-[1070px]:bottom-[-200px] min-[1070px]:mt-0 min-[1070px]:w-[430px]",
+  health: "relative z-10 -mt-10 w-[88%] max-w-[430px] vec-card-m-health max-sm:w-[44%] max-sm:-mt-5 min-[1070px]:absolute min-[1070px]:left-[-24%] min-[1070px]:bottom-[-200px] min-[1070px]:mt-0 min-[1070px]:w-[430px]",
   /* desktop: bottom-RIGHT of the follow-up draft, overhanging the shot edge
      slightly (the copy gap absorbs it) → stacked: card right, draft left */
-  cron: "relative z-10 -mt-10 w-[88%] max-w-[420px] max-[1069px]:ml-auto max-sm:[zoom:0.6] max-sm:w-[52.8%] min-[1070px]:absolute min-[1070px]:right-[-6%] min-[1070px]:bottom-[-56px] min-[1070px]:mt-0 min-[1070px]:w-[400px]",
+  cron: "relative z-10 -mt-10 w-[88%] max-w-[420px] max-[1069px]:ml-auto vec-card-m-cron max-sm:w-[52.8%] max-sm:-mt-5 min-[1070px]:absolute min-[1070px]:right-[-6%] min-[1070px]:bottom-[-56px] min-[1070px]:mt-0 min-[1070px]:w-[400px]",
   /* desktop: bottom-LEFT of the actions queue — slimmed to labels only. z-0 (all
      widths) drops it UNDER the actions shot (the shot's wrapper carries z-[5]),
      so the overlapping corner tucks behind the card in the stack too */
-  miniti: "relative z-0 -mt-10 w-[88%] max-w-[290px] max-sm:[zoom:0.5] max-sm:w-[44%] min-[1070px]:absolute min-[1070px]:left-[calc(-34%_-_20px)] min-[1070px]:bottom-[-76px] min-[1070px]:mt-0 min-[1070px]:w-[290px]",
+  miniti: "relative z-0 -mt-10 w-[88%] max-w-[290px] vec-card-m-miniti max-sm:w-[44%] max-sm:-mt-5 min-[1070px]:absolute min-[1070px]:left-[calc(-34%_-_20px)] min-[1070px]:bottom-[-76px] min-[1070px]:mt-0 min-[1070px]:w-[290px]",
 };
 
 /* stacked-only (≤1069px) shot alignment inside the stagger-widened column: the
