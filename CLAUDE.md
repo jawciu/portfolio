@@ -235,6 +235,43 @@ cards, element-screenshot. Delete the temp script after.
 > **`docs/CLAUDE-ARCHIVE.md`**. At the end of a session, append a new entry with: what changed,
 > current state (working / broken / in-progress), and explicit next steps for the next agent.
 
+### 2026-07-14 (later 4) — Promo video V2 swap, GH file-size push fix, assets/ gitignored, vector copy tweak. ALL PUSHED.
+- **Wiki promo video V2**: replaced `public/projects/wiki-whisperer/promo.mp4` with
+  `~/Downloads/Wiki_Whisperer_V2_promo.mp4` (same 1920×1080, 71s, 34.8MB) — no code change, the
+  hero's reserved 16:9 box is unaffected. Shipped in `43e4ca7`.
+- **Caroline's push was rejected by GitHub, NOT a pull problem**: Cursor's "try running Pull first"
+  dialog was a misdiagnosis — the real error (Show Command Output) was GH001: two Wiki V2 PDFs in
+  `assets/` over the hard 100MB limit, swept in by Cursor's stage-all commit. Fixed by amending to
+  drop them, untracking ALL of root `assets/` (`git rm -r --cached`), and gitignoring `/assets`
+  (see the new Decision Log digest entry). Verified every code-referenced `/assets/...` path
+  resolves to a tracked `public/` file — the site never read from root `assets/`.
+- **Vector copy** (`Product.tsx` Automated follow-ups): "Mimicking each user's voice is its own
+  project." → "Adapting the writing to each user's voice is on the roadmap." (too informal for
+  the paragraph). Pushed as `bfc9030` on main.
+- **Branch hygiene**: fast-forwarded `vector-case-study` (+ its worktree) to main's tip and pushed,
+  so branch == worktree == main == `358c1ff` (which also includes the parallel session's Vercel
+  Analytics commit). Working tree clean everywhere except THIS CLAUDE.md (mine + the later-3
+  entry below, both uncommitted).
+- **State: everything working and deployed.** No open intent from this session.
+
+### 2026-07-14 (later 3) — VECTOR SHIPPED: branch synced, merged to main, deployed.
+- **The Vector case study is LIVE**: `vector-case-study` was synced (main's 30 commits merged in;
+  only CLAUDE.md conflicted — session logs union-merged with a seam note), verified (tsc, lint
+  [only the known pre-existing HeroCopy error], full `next build`, all 4 routes 200), pushed,
+  then **fast-forward merged into main (`fc5953b`) and pushed** → Vercel deploy. The bento
+  card's `MY CASE STUDY → /project/vector` action was already on the branch, so page + button
+  shipped atomically.
+- **The portfolio-vector worktree is now merged into main** — future vector tweaks can happen in
+  either checkout; keep using the worktree only if parallel work needs isolating again.
+- **Deploy VERIFIED live:** www.carolinejaworsky.com/project/vector → 200 with content, hairline
+  icon assets serving (apex URL 308-redirects to www — normal).
+- **OPEN INTENT — next session:** (1) Caroline still needs to do the on-device pass: the live
+  page on her iPhone + the homepage→vector-card client-side nav (the two historically
+  device-only failure modes); expect feedback from that. (2) Housekeeping pending her call:
+  `MyRole.tsx` + `MyRoleOutline.tsx` are HIDDEN (commented in page.tsx) not deleted, and the
+  old filled/outline icon assets are still in public/projects/vector — delete once she's sure
+  the hairline set is final. Only uncommitted change in the main checkout: this CLAUDE.md entry.
+
 ### 2026-07-14 (later 2) — WhatsNext remounted + rebuilt as three PINS. UNCOMMITTED.
 - **Remounted** (import + mount restored in page.tsx) and redesigned per Caroline: the two text
   blocks read as boring. Now **three dropped map pins** (her call: "like stops in a timeline but
