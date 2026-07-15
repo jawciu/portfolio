@@ -235,6 +235,40 @@ cards, element-screenshot. Delete the temp script after.
 > **`docs/CLAUDE-ARCHIVE.md`**. At the end of a session, append a new entry with: what changed,
 > current state (working / broken / in-progress), and explicit next steps for the next agent.
 
+### 2026-07-15 — Vector product clusters STAGGER on phones (no more flat vertical stack). COMMITTED+PUSHED.
+- **Caroline's ask:** on phones the shot+companion clusters in Product collapsed into full-width
+  vertical blobs. Wanted one piece a bit left, the other a bit right, direction alternating per
+  section; shrinking the assets a little is fine.
+- **Fix (Product.tsx only):** the desktop side assignments already existed
+  (`COMPANION_STACK_SHOT` / `COMPANION_POS` ml/mr-auto) — they degraded to zero because the shot's
+  `max-w-[var(--pb-shot)]` never bites below the shot's px width. On companion rows the shot now
+  caps at `max-w-[min(var(--pb-shot),85%)]`, so wherever the 140px stagger budget can't bite
+  (phones + the bottom of the 640-1069 band) the shot cedes 15% and slides to its desktop side.
+  The flow companion also went `w-full` → `w-[88%]` (its `max-w-[440px]` caps it identically in
+  the 640-1069 band, so only phones change) so it can take the opposite side like its siblings.
+- **Measured at 390:** every cluster staggers shot 291px on its side / companion ~301px opposite
+  (~92px relative offset), directions mirroring desktop: notifications shot L + routing card R ·
+  health table R + snippet L · actions R + miniti card tucked-under L · draft L + cron snippet R.
+  800px band and 1440 desktop measured byte-identical to before. tsc + lint clean. NOTE: this
+  session also found many vector section files already modified in the tree (another 2026-07-15
+  session's phone-gap tweaks, "Caroline 2026-07-15" comments) — left untouched.
+- **Round 2 (same session): companion cards ZOOM down on phones.** Caroline: the DOM-built cards
+  (SnippetCard / NotificationFlow / MinitiFlow) kept full-size type next to the shrunk PNGs and
+  read out of proportion. Her numbers: miniti flow ×0.5, health snippet ×0.5, notifications
+  routing ×0.8. Done with CSS `zoom` (`max-sm:[zoom:0.5]` etc. in COMPANION_POS) — zoom shrinks
+  layout + typography together, unlike transform scale which leaves a full-size layout box.
+  **ZOOM GOTCHA (measured):** percentage widths self-compensate under zoom — they resolve against
+  parent ÷ zoom, so `w-[88%]` renders at 88% of the parent at ANY zoom, and px max-w caps bite in
+  the inflated layout space. Each zoomed card therefore also gets a phone width of 88% × its zoom
+  (`max-sm:w-[44%]` / `max-sm:w-[70.4%]`) so the box shrinks with the type. Measured at 390:
+  flow 301→241, health 301→150, miniti 290→145; 800 + 1440 byte-identical. tsc + lint clean.
+- **Round 3 (same session): cron snippet joined the family at ×0.6** (Caroline's "40% smaller"):
+  `max-sm:[zoom:0.6] max-sm:w-[52.8%]` → 301→181 measured at 390, right-anchored beside the
+  draft; 800 + 1440 unchanged. Committed + pushed on her ask.
+- **State: working, committed + pushed** (round 1 rode along in the parallel session's phone-gaps
+  commit; rounds 2-3 + this entry in this session's commit). Caroline approved the round-1/2 look
+  from screenshots; on-device pass on her phone still the real test.
+
 ### 2026-07-14 (later 4) — Promo video V2 swap, GH file-size push fix, assets/ gitignored, vector copy tweak. ALL PUSHED.
 - **Wiki promo video V2**: replaced `public/projects/wiki-whisperer/promo.mp4` with
   `~/Downloads/Wiki_Whisperer_V2_promo.mp4` (same 1920×1080, 71s, 34.8MB) — no code change, the
