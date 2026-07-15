@@ -228,12 +228,12 @@ const DOTS: React.CSSProperties = {
 
 export function Observability() {
   return (
-    <section data-section="Observability" className="pt-[144px] pb-0">
+    <section data-section="Observability" className="pt-[144px] max-sm:pt-[72px] pb-0">
       {/* the textured room: hairlines exactly at the texture's edges, like
           Product's subsections; content wrappers are relative so they paint
           above the cursor glow */}
       <div
-        className="relative border-y border-[rgba(241,234,241,0.14)] pb-[168px]"
+        className="relative border-y border-[rgba(241,234,241,0.14)] pb-[168px] max-sm:pb-[118px]"
         style={DOTS}
       >
         <DotGlow pattern="dots" />

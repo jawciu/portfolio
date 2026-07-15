@@ -39,7 +39,7 @@ const HATS = [
 
 export function MyRoleHairline() {
   return (
-    <section data-section="MyRoleHairline" className="pt-[88px] pb-0">
+    <section data-section="MyRoleHairline" className="pt-[88px] max-sm:pt-[88px] pb-0">
       <Container>
         <Reveal>
           <Title className="mb-12 md:mb-16">My role</Title>

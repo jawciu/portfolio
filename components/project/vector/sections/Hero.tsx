@@ -27,7 +27,8 @@ export function Hero() {
         }}
       />
 
-      <Container className="pt-28 pb-[120px] md:pt-32">
+      {/* max-sm:* = mobile spacing knobs (currently == desktop values; pt-28 = 112px) */}
+      <Container className="pt-28 pb-[120px] md:pt-32 max-sm:pt-[112px] max-sm:pb-[120px]">
         {/* Page title — H1, two lines via a manual break. */}
         <h1 className="case-study-title">
           Rethinking time-to-value

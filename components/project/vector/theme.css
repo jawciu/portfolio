@@ -210,6 +210,14 @@
   color: #9dfff4;
 } /* function / field names — mint */
 
+/* phones: the snippets wrap instead of h-scrolling (Caroline 2026-07-15) */
+@media (max-width: 640px) {
+  .vec-code {
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+}
+
 /* StreamingQuote — per-character fade reveal. The component renders `.cs-char`
    spans and toggles data-stream on the wrapper; armed hides, play fades each char
    in staggered by an inline transition-delay. Default / reduced-motion leaves the

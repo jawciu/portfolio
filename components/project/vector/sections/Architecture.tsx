@@ -24,7 +24,7 @@ export function Architecture() {
     /* pb-[150px] = the plain zone between the stack logos and Collaboration's
        check-texture edge (was 100, +50% on Caroline's 2026-07-14 spacing pass —
        the old "texture edge exactly mid-gap" split is deliberately gone) */
-    <section data-section="Architecture" className="pt-[120px] pb-[150px]">
+    <section data-section="Architecture" className="pt-[120px] pb-[150px] max-sm:pt-[102px] max-sm:pb-[75px]">
       <Container>
         <Reveal>
           <Kicker>Under the hood</Kicker>

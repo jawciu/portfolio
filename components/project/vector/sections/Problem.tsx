@@ -17,7 +17,7 @@ const GAP = [
 /* First section on the glass plate: pt-[88px] (the glass-seam exception). */
 export function Problem() {
   return (
-    <section data-section="Problem" className="pt-[140px] pb-0">
+    <section data-section="Problem" className="pt-[140px] max-sm:pt-[140px] pb-0">
       <Container>
         <Reveal>
           <Kicker>Problem space</Kicker>

@@ -211,7 +211,9 @@ function SubSection({
       <p className="pointer-events-none absolute top-8 left-1.5 hidden rotate-180 font-[family-name:var(--font-mono)] text-sm tracking-[0.2em] text-[var(--case-study-muted)] [writing-mode:vertical-rl] min-[1070px]:block">
         /{label}
       </p>
-      <Container className="relative min-[1070px]:hidden">
+      {/* max-sm:hidden — on phones the horizontal label is gone too (Caroline 2026-07-15);
+          it still shows in the 640-1069 stacked band */}
+      <Container className="relative max-sm:hidden min-[1070px]:hidden">
         <p className="pt-6 pl-2 font-[family-name:var(--font-mono)] text-sm tracking-[0.2em] text-[var(--case-study-muted)]">
           /{label}
         </p>
@@ -526,7 +528,7 @@ export function Product() {
   return (
     /* overflow-x-hidden would BREAK the page's sticky glass seam (see CLAUDE.md), so the
        rows are padded, never translated — nothing can overflow horizontally. */
-    <section data-section="Product" className="pt-[156px] pb-0">
+    <section data-section="Product" className="pt-[156px] max-sm:pt-[120px] pb-0">
       {/* The section heading lives INSIDE the first dotted room, so the texture
           (and its boundary hairline) starts above the whole Product header. The
           rows sit outside the Container so their asset column can bleed out. */}
@@ -548,7 +550,9 @@ export function Product() {
 
           <ProductBlock {...BLOCKS[0]} />
 
-          <Container>
+          {/* phone gaps ÷2 (Caroline 2026-07-15): -mt collapses against the room's
+              156px space-y (156 − 78 = 78); the mb! beats space-y for the gap below */}
+          <Container className="max-sm:-mt-[78px] max-sm:mb-[78px]!">
             <Reveal className="max-w-[860px]">
               <CaseStudyCallout stream>
                 {"The customer clicks a magic link and lands straight on their tasks. No account, no password, no training. Every visit is tracked, so the vendor knows the moment they go quiet."}
@@ -557,12 +561,16 @@ export function Product() {
           </Container>
 
           <ProductBlock {...BLOCKS[1]} />
-          <ProductBlock {...BLOCKS[2]} />
+          {/* portal → notifications gap −30% on phones (156 − 47 = 109) */}
+          <div className="max-sm:-mt-[47px]">
+            <ProductBlock {...BLOCKS[2]} />
+          </div>
         </SubSection>
 
         {/* roomier than the baked rhythm on both ends — the health room needs to
             breathe (Caroline 2026-07-13) */}
-        <SubSection label="predictive health" className="pb-[190px]!" bodyClassName="md:mt-40!">
+        {/* max-sm:pb = the gap AFTER the evidence callout ÷2 on phones (Caroline 2026-07-15) */}
+        <SubSection label="predictive health" className="pb-[190px]! max-sm:pb-[95px]!" bodyClassName="md:mt-40!">
           <ProductBlock {...BLOCKS[3]} />
 
           {/* pt compensates for the health snippet hanging 200px below its block:
@@ -578,19 +586,26 @@ export function Product() {
           </Container>
         </SubSection>
 
-        <SubSection label="ai admin" texture="grid" last>
+        {/* max-sm:pb = the gap BELOW the review-queue callout ÷2 on phones (baked pb is 140) */}
+        <SubSection label="ai admin" texture="grid" last className="max-sm:pb-[70px]!">
           <ProductBlock {...BLOCKS[4]} />
-          <ProductBlock {...BLOCKS[5]} />
+          {/* AI overview → meetings gap ÷2 on phones (156 − 78 = 78) */}
+          <div className="max-sm:-mt-[78px]">
+            <ProductBlock {...BLOCKS[5]} />
+          </div>
           {/* +100px over the room's 156px rhythm between tasks and follow-ups
               (Caroline). Padding on a wrapper, NOT margin on the block — a
               margin would collapse into space-y's 156 and change nothing. */}
-          <div className="md:pt-[100px]">
+          {/* max-sm: meetings → follow-ups gap ÷2 on phones */}
+          <div className="md:pt-[100px] max-sm:-mt-[78px]">
             <ProductBlock {...BLOCKS[6]} />
           </div>
 
           {/* +54px air both sides of the closing callout (Caroline) — padding,
               not margin, so it stacks on the room rhythm instead of collapsing */}
-          <Container className="md:pt-[54px] md:pb-[54px]">
+          {/* max-sm: review-queue callout gap above ÷2 on phones (below = the room's
+              max-sm:pb on the SubSection) */}
+          <Container className="md:pt-[54px] md:pb-[54px] max-sm:-mt-[78px]">
             <Reveal className="max-w-[860px]">
               <CaseStudyCallout stream>
                 {"I gave the AI a review queue instead of write access to the board. It drafts, and the user decides whether to approve, edit or reject any task or follow-up."}

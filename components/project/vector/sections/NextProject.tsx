@@ -14,7 +14,7 @@ export function NextProject() {
       data-section="NextProject"
       /* dark drop shadow above the plate (same recipe as the main glass seam
          above MyRole) — was a lilac glow, Caroline wanted shadow not glow */
-      className="relative isolate overflow-hidden rounded-t-[2.5rem] bg-[#1b1a22] pt-[120px] pb-[160px] backdrop-blur-2xl backdrop-saturate-150 shadow-[0_-32px_70px_-16px_rgba(0,0,0,0.85)]"
+      className="relative isolate overflow-hidden rounded-t-[2.5rem] bg-[#1b1a22] pt-[120px] pb-[160px] max-sm:pt-[120px] max-sm:pb-[160px] backdrop-blur-2xl backdrop-saturate-150 shadow-[0_-32px_70px_-16px_rgba(0,0,0,0.85)]"
       /* dot texture = the shared `dots` recipe (22px rhythm, same dimness) —
          keep in sync with Product/Collaboration/Observability */
       style={{

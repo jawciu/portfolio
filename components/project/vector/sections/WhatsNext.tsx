@@ -109,7 +109,7 @@ export function WhatsNext() {
   return (
     /* pt-[130px] = the plain dark zone below Collaboration's check texture
        (was 100, +30% on Caroline's 2026-07-14 spacing pass) */
-    <section data-section="WhatsNext" className="pt-[130px] pb-[180px]">
+    <section data-section="WhatsNext" className="pt-[130px] pb-[180px] max-sm:pt-[65px] max-sm:pb-[126px]">
       <Container>
         <Reveal>
           <Kicker>What&apos;s next</Kicker>

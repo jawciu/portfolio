@@ -239,7 +239,7 @@ export function Collaboration() {
        + WhatsNext's plain pt-[130px] */
     <section
       data-section="Collaboration"
-      className="relative border-y border-[rgba(241,234,241,0.14)] pt-[140px] pb-[170px]"
+      className="relative border-y border-[rgba(241,234,241,0.14)] pt-[140px] pb-[170px] max-sm:pt-[70px] max-sm:pb-[85px]"
       style={{
         backgroundImage:
           "linear-gradient(rgba(241,234,241,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(241,234,241,0.035) 1px, transparent 1px)",

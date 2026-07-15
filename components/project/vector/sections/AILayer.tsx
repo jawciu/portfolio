@@ -10,7 +10,7 @@ import { Reveal } from "../Reveal";
 
 export function AILayer() {
   return (
-    <section data-section="AILayer" className="pt-[200px] pb-0">
+    <section data-section="AILayer" className="pt-[200px] max-sm:pt-[100px] pb-0">
       <Container>
         <Reveal>
           <Kicker>The AI layer</Kicker>
@@ -117,7 +117,8 @@ export function AILayer() {
           </CodeCard>
         </Reveal>
 
-        <Reveal className="mt-28 max-w-[860px]">
+        {/* max-sm:mt = gap above the callout ÷2 on phones (desktop mt-28 = 112px) */}
+        <Reveal className="mt-28 max-sm:mt-[56px] max-w-[860px]">
           <CaseStudyCallout stream>
             {"Every call is prompt-cached, pinned to a JSON schema and logged with its cost, and an unchanged board never pays twice."}
           </CaseStudyCallout>

@@ -42,7 +42,7 @@ const RAMP = ["#c098ff", "#d099de", "#e09abe", "#ef9b9d", "#ff9c7d"];
 
 export function Matching() {
   return (
-    <section data-section="Matching" className="pt-[160px] pb-0">
+    <section data-section="Matching" className="pt-[160px] max-sm:pt-[80px] pb-0">
       <Container>
         <Reveal>
           <Kicker>The matching</Kicker>
