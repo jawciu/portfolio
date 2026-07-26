@@ -5,6 +5,13 @@
    are byte-identical to the cog case study — only the colour tokens below differ. */
 
 .ww-root {
+  /* SCROLL RAIL — the shared component reads the --case-study-* names (Vector's
+     naming, since it was built there). Alias them onto this theme's tokens so the
+     rail retints itself per study instead of hardcoding a colour. */
+  --case-study-ink: var(--cog-ink);
+  --case-study-muted: var(--cog-muted);
+  --case-study-green: var(--cog-green);
+
   --cog-bg: #fefcff; /* page — cool near-white */
   --cog-bg-alt: #fffafa; /* warm near-white — cards / placeholders */
   --cog-bg-warm: #fffafa; /* warm near-white band */

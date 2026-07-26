@@ -4,6 +4,13 @@
    Geist Mono `--font-mono`). See SPEC + DESIGN.md › Cog ADHD case study. */
 
 .cog-root {
+  /* SCROLL RAIL — the shared component reads the --case-study-* names (Vector's
+     naming, since it was built there). Alias them onto this theme's tokens so the
+     rail retints itself per study instead of hardcoding a colour. */
+  --case-study-ink: var(--cog-ink);
+  --case-study-muted: var(--cog-muted);
+  --case-study-green: var(--cog-green);
+
   --cog-bg: #f5f4ef; /* page cream */
   --cog-bg-alt: #faf9f5; /* slightly lighter band */
   --cog-bg-warm: #f6efe2; /* hero confetti band */

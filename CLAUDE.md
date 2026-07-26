@@ -245,6 +245,151 @@ cards, element-screenshot. Delete the temp script after.
 > **`docs/CLAUDE-ARCHIVE.md`**. At the end of a session, append a new entry with: what changed,
 > current state (working / broken / in-progress), and explicit next steps for the next agent.
 
+### 2026-07-26 — Scroll rail (case-study progress indicator) prototyped, 2 variants. Branch `scroll-progress`, UNCOMMITTED.
+- **Caroline's brief:** right-edge scroll feedback on case studies — how far you've scrolled, which
+  section you're in, and how many sections remain. Dots per section, the section's EYEBROW (not the
+  title) as the label. Grilled via `/grill-me`; her decisions: every mounted section gets a dot
+  (NextProject included, labels authored for the ones with no `Kicker`) · label travels with the
+  active dot, dots stay put · even dot spacing + a connecting line · clickable dots with hover
+  preview · fades in after the hero · hidden below `md`.
+- **Built `components/project/ScrollRail.tsx`** (shared, takes `sections` + the page's section
+  attribute) + `components/project/vector/railSections.ts` (the roster), mounted on
+  `/project/vector` only, `variant="b"`. Flip variants with `?rail=a` / `?rail=b` or the temp
+  on-page switch. **Both the switch and the `?rail` override come out before merge.**
+- **The anchors already existed** — every case-study page wraps sections in
+  `<div data-vec="Product">` / `data-cog=` / `data-ww=`. The rail resolves those, so porting to
+  another study is a mount plus a label map, no markup churn.
+- **DELIBERATELY NOT ScrollTrigger.** Positions are read live from `getBoundingClientRect()` in a
+  rAF-throttled scroll handler, so there is no cached pixel geometry to go stale after a late
+  layout shift — the exact failure that broke the wiki reveals on client-nav. Progress is measured
+  in DOT UNITS (`activeIndex + intraSectionProgress`) so the fill and the active dot can never
+  disagree; a true-scroll-% fill would drift away from the dots on Vector's very uneven sections.
+- **VARIANT A HAS A REAL COLLISION PROBLEM.** Measured at 1440 over 30 scroll frames (ink only,
+  not layout boxes — full-width wrappers give false positives): A's label block reaches x≈1283 and
+  page ink reaches x≈1296, so it overlaps in 28/30 frames, and in Product it lands squarely on the
+  `email / resend` companion card. B is 50px wide at x≈1366 and grazes only the deliberately
+  full-bleed Product shots by ~2px in 5/30 frames. A would be worse on cog (13 dots, labels as long
+  as "KEY RESEARCH FINDINGS"). If Caroline wants A, it needs the type tightened AND a plan for
+  full-bleed sections.
+- **Verified:** tsc + lint clean, 0 console errors, opacity 0 at scroll 0 for both variants, label
+  tracks correctly (Problem space → The matching → Working with AI), `writing-mode: vertical-rl`
+  confirmed, hover on dot 2 shows "Problem space", `display:none` at 390px.
+- **CAROLINE PICKED VARIANT B** (her reasoning: A makes more UX sense but clutters the image- and
+  copy-heavy sections). Then sized up, her call after asking what the values were: label 10 → 12px
+  (one step under the 13px section eyebrow it mirrors), dots 6/8 → 7/9, gap 22 → 24 (which also
+  brings the dot tap target to 24×24), hollow-dot opacity 0.5 → 0.7. Rail is now 216px tall at
+  x=1362, still 66px clear of page ink. Label column widened 16 → 18px to fit the 12px vertical
+  type. Variant A left in the file for now, unsized — it goes when the toggle does.
+- **Round 3 (same session, her list):** rail is now **present on the hero too** — the earlier
+  "fades in after the hero" decision is REVERSED. It's on screen from scroll 0, but a `started`
+  flag (first section's top has crossed the reading line) keeps every dot hollow and the label at
+  opacity 0 until section one is actually reached, so on the hero it reads as a quiet preview of
+  how many sections are coming rather than claiming you're in "my role". Also: **hover outline on
+  any dot** (accent border + a 3px ring at 30% — lilac on Vector, and it will pick up cog/wiki's
+  green automatically since it reads `--case-study-green`, not a hex), dots up again to **9px /
+  11px active**, gap **24 → 30** (rail 270px tall on Vector's 10 sections), and the label is now
+  **lowercase** (`text-transform`, matching the house `.case-study-label` convention).
+- **Verified round 3:** at scroll 0 nav opacity 1 / 0 filled dots / label opacity 0; mid-page 3
+  filled + label "The product" lowercase 12px; hovering dot 9 gives border `rgb(192,152,255)` and
+  previews "what's next"; `display:none` at 390px; tsc + lint clean, 0 console errors.
+- **Round 4 (same session): sizing up again + THREE bugs found while verifying.** Her sizes: label
+  12 → **14px** (now a step ABOVE the 13px section eyebrow; label column 18 → 21px to fit the
+  taller vertical type), dots 9/11 → **11/13**, gap 30 → **36** (rail 360px tall on Vector's 11
+  dots). Rail's left edge moved 1362 → 1347; measured over 30 scroll frames it still clears
+  everything except the deliberately full-bleed Product shots, whose image BOXES reach 1368 in
+  8/30 frames — on screen the label sits clear of the board content, so accepted.
+- **BUG 1 — the rail was dead.** `setStarted` was never called anywhere, so `started` stayed false
+  forever and `activeIndex` was pinned at -1: no dot ever filled, label always opacity 0. Only the
+  fill LINE worked (it read `progress` directly), which is why round 3 looked verified. Round 3's
+  "always present on the hero" edit introduced it. Lint had been warning `'setStarted' is assigned
+  a value but never used` — **that warning was the bug, not noise.**
+- **BUG 2 + 3 were one root cause: `Math.round(progress)`.** progress is `sectionIndex +
+  howFarThroughIt`, so rounding made a section become "current" at its HALFWAY point (Caroline:
+  "the mapping kicks in half way through the product") while the line only reached that dot at
+  100% (her "the line lags behind the dots"). Now **`Math.floor`** — the floor IS the section
+  you're in. Verified: the label flips at all 10 real section tops, none early.
+- **Hero is now a dot** (`{ label: "Intro" }`, authored — the hero has no eyebrow). It carries NO
+  `id`: the hero lives inside `StickyHero` and wrapping it in a `data-vec` div would change the
+  sticky containing block, so the rail synthesises its span as document-top → first section (the
+  `RailSection.id?` optional was always designed for this). The old preview state (all hollow
+  until section one) now only applies to rosters WITHOUT a hero entry, so cog/wiki can still use it.
+- **The line is now STEPPED, and sequenced with the dot** (her round-4 brief): it sits ON a dot
+  instead of creeping between them, and the pair fires as a one-two in the direction of travel —
+  scrolling down the line runs to the new dot first, dot lights `STEP_DELAY` 130ms later;
+  scrolling up the dot goes dark first, line retreats 130ms later. Hence TWO indices (`litIndex`
+  for the dots/label, `fillIndex` for the line) rather than one.
+- **Two React gotchas that cost rounds here:** (1) direction must come from a **ref**, not from
+  `litIndex` as an effect dependency — the leader's own setState re-ran the effect and the cleanup
+  cancelled the follower's timeout before it fired, so going UP the line never retreated at all
+  (measured: dot dimmed, fill stayed put). (2) The whole sequencer then had to move OUT of an
+  effect into the scroll rAF (`applyIndex`), because `react-hooks/set-state-in-effect` rightly
+  rejects synchronous setState in an effect body; a `reducedRef` written during render also trips
+  `react-hooks/refs`, so `reduced` is just a `useCallback` dep. `progress`/`started` state deleted
+  — the rail now stores only the two indices.
+- **Verified round 4:** frame-accurate trace of the toggling dot vs the line confirms LINE-then-DOT
+  going down and DOT-then-LINE going up; fill lands exactly on `index * 36` at all 10 boundaries;
+  scroll 0 = hero dot lit + "intro"; page end 11/11 at 360/360 (fill clamped so it can't run past
+  the last dot); hover preview intact; reduced-motion snaps both together; `display:none` at 390px;
+  tsc + lint clean, 0 console errors.
+- **Round 5 (same session): VARIANT A DELETED.** Her call. Gone with it: the `variant` prop, the
+  `?rail=a|b` URL override (and its `useSyncExternalStore`/`noSubscribe`/`readRailParam` plumbing,
+  which only existed to stay SSR-safe while switching), and the temp on-page `RAIL: B` switch.
+  The redundant double wrapper collapsed into one flex row. 403 → 319 lines; the mount is now just
+  `<ScrollRail sections={VECTOR_RAIL} attr="data-vec" />`. The A-vs-B rationale is preserved in the
+  component docblock so nobody re-prototypes it. **The pre-merge cleanup list is now done.**
+- **Verified round 5:** geometry byte-identical to round 4 (x=1347, 69×360), 11 buttons in the nav
+  (i.e. the dots only, switch gone), click-to-jump lands correctly, hover preview intact,
+  `?rail=a` now inert, 0 console errors, tsc + lint clean.
+- **Round 6 (same session): RAIL PORTED TO ALL FOUR STUDIES.** Each gets its own
+  `railSections.ts` next to its sections dir, plus a two-line mount beside `<ScrollReset/>`.
+  Dot counts (hero included): vector 11 · cog 14 · wiki 12 · gateway 11.
+- **The colour port needed a token bridge.** The rail reads `--case-study-ink/muted/green`, but
+  ONLY vector defines those (it renamed `--cog-*` → `--case-study-*` when it was built); cog, wiki
+  and gateway still use `--cog-ink/muted/green`. Rather than hardcode or fork the component, each
+  of the three themes gained three **scoped aliases** at the top of its `.cog-root`/`.ww-root`/
+  `.gw-root` block (`--case-study-ink: var(--cog-ink)` etc). The rail now retints itself per study
+  with no per-study code: verified live as vector lilac `#c098ff` · cog green `#1e7a4d` · wiki pink
+  `#e15bad` · gateway purple `#6a3fd6`.
+- **Labels authored where there's no `Kicker`:** cog's MyRole ("My role"), BookingDropoff
+  ("Booking drop-off", from its title) and JourneyMap ("Client journey map", the identifying half
+  of its two-line title); wiki's MyRole; gateway's MyRole. Gateway's four product sections also
+  needed authored labels: their eyebrows are the counter "the product · 01…04", which tells you
+  nothing about where you are, so those come from the section titles. Every study's NextProject is
+  trimmed "View next project" → "Next project". Wiki's Takeaways is deliberately NOT in the roster
+  (it's commented out in page.tsx) — a note in the file says to re-add it if it's ever remounted.
+- **Verified all four:** dot counts correct, every label steps in page order with no skips or
+  repeats across a 27-frame scroll walk, 0 console errors each, `display:none` at 390px, reduced
+  motion snaps dot and line together (fill == (filled-1)×36 on all four), `npm run build` green
+  with all 4 routes prerendering, tsc + lint clean.
+- **⚠ ONE REAL COLLISION, needs Caroline's call: cog's Methodology "exploratory sketches" row.**
+  That row is DELIBERATELY cropped by the screen edges (documented in Methodology.tsx: the centred
+  flex row overflows on purpose), so at 1440 its 568px sketches bleed to x=1596 and the rail sits
+  directly on the artwork — the "methodology" label is unreadable over the drawing. It is the ONLY
+  such spot on any study (measured across 26 frames per page: wiki's tightest is 1px of BOX overlap
+  in Feedback with real whitespace between the ink and the rail, so it reads fine; gateway clears
+  by 35px). Options: a soft frosted plate behind the rail (idiomatic for the site, but changes the
+  approved bare look everywhere), right padding on that one cog row (changes an approved,
+  deliberately-bleeding desktop layout), or accept it.
+- **Open:** the cog Methodology collision above. Nothing else blocks merge.
+
+### 2026-07-22 — NEW case study SCAFFOLD: Gateway (E.ON developer handovers). UNCOMMITTED.
+- **What**: 4th case study scaffolded per the plan agreed in the job-search repo session
+  (fills the dense-data B2B gap; the site already has 3 AI credits: wiki, vector, synapse link).
+  `app/project/gateway/page.tsx` + `components/project/gateway/` (support kit cloned from
+  wiki-whisperer, rescoped `.ww-root`→`.gw-root`, accent slots switched to E.ON purple
+  `#6a3fd6`/`#3c1d7a` pending Caroline's pick) + 11 section stubs: Hero, MyRole, Problem
+  (step-up story + spreadsheet-debt problem), Research, HandoverFlow (autofill), Hub,
+  BulkUpload (CSV→validated table, the money shot), Roles, WorkingWithAI ("How I got up to
+  speed, and where AI didn't help"), Status (in build + baseline TODOs), NextProject.
+- **Read `components/project/gateway/OUTLINE.md` FIRST** — framing decisions, 7 open facts
+  (CSV-vs-"SVG" confirm, baseline numbers, notetaker name, anonymisation…), shot list.
+- **State**: WORKING — `tsc` clean, `npm run build` green, `/project/gateway` prerenders.
+  All copy is DRAFT with `TODO(caro)` markers; PlaceholderShot frames stand in for assets.
+  Page is `robots: noindex` and NOT linked from homepage carousel/nav on purpose.
+- **Next steps**: Caroline confirms the open facts + supplies screens → write real copy
+  (her voice skill lives in the job-search repo: `.claude/skills/caroline-voice/`) → real
+  hero after wiki's mockup pattern → link from `lib/projects.ts` carousel + drop noindex.
+
 ### 2026-07-15 — Vector product clusters STAGGER on phones (no more flat vertical stack). COMMITTED+PUSHED.
 - **Caroline's ask:** on phones the shot+companion clusters in Product collapsed into full-width
   vertical blobs. Wanted one piece a bit left, the other a bit right, direction alternating per
@@ -292,7 +437,7 @@ cards, element-screenshot. Delete the temp script after.
   Caroline's go — prod's phone view shows the broken zoom cards until it ships.** Then she
   re-tests on the iPhone (the only place this bug reproduces).
 
-### 2026-07-15 — Case-study heroes get a load-in intro (char stream + image fade). UNCOMMITTED.
+### 2026-07-15 — Case-study heroes get a load-in intro (H1 stream + image/meta fade). PUSHED `7a947d2`.
 - **Caroline's ask:** the heroes had no reveal on page open (deliberate before — Reveal is
   scroll-triggered and heroes sit at scroll 0). Now the hero TEXT streams in very fast and the
   hero IMAGES/video quick-fade, on all three studies (cog, wiki, vector), playing once on mount.

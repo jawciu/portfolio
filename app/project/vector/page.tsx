@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import "../../../components/project/vector/theme.css";
 import { ScrollReset } from "../../../components/ScrollReset";
+import { ScrollRail } from "../../../components/project/ScrollRail";
+import { VECTOR_RAIL } from "../../../components/project/vector/railSections";
 import { StickyHero } from "../../../components/project/vector/StickyHero";
 import { SoftBlob } from "../../../components/project/vector/SoftBlob";
 import { Hero } from "../../../components/project/vector/sections/Hero";
@@ -30,6 +32,9 @@ export default function VectorCaseStudy() {
   return (
     <main className="vector-root min-h-screen w-full">
       <ScrollReset />
+      {/* SCROLL RAIL — right-edge section progress. Roster + labels live in
+          railSections.ts; the anchors are the data-vec wrappers below. */}
+      <ScrollRail sections={VECTOR_RAIL} attr="data-vec" />
       {/* PINNED HERO — taller than the viewport, pinned at a measured negative top so
           the hero visual scrolls into FULL view before the glass plate rises over it. */}
       {/* DWELL SPACE — near-black room BELOW the visual, INSIDE the pinned hero, so the

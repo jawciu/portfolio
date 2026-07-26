@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import "../../../components/project/wiki-whisperer/theme.css";
 import { ScrollReset } from "../../../components/ScrollReset";
+import { ScrollRail } from "../../../components/project/ScrollRail";
+import { WIKI_RAIL } from "../../../components/project/wiki-whisperer/railSections";
 import { StickyHero } from "../../../components/project/wiki-whisperer/StickyHero";
 import { SoftBlob } from "../../../components/project/wiki-whisperer/SoftBlob";
 import { Hero } from "../../../components/project/wiki-whisperer/sections/Hero";
@@ -29,6 +31,9 @@ export default function WikiWhispererCaseStudy() {
   return (
     <main className="ww-root min-h-screen w-full">
       <ScrollReset />
+      {/* SCROLL RAIL — right-edge section progress. Roster + labels live in
+          railSections.ts; the anchors are the data-ww wrappers below. */}
+      <ScrollRail sections={WIKI_RAIL} attr="data-ww" />
       {/* PINNED HERO — taller than the viewport, pinned at a measured negative top so
           the device mockups scroll into FULL view before the glass plate rises over it. */}
       {/* DWELL SPACE — near-white room BELOW the mockups, INSIDE the pinned hero, so
