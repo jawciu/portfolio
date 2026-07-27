@@ -17,7 +17,6 @@
 
   --case-study-accent: #19a072; /* TEMPLATE green — dividers / rules (matches case-study-callout) */
   --case-study-accent-strong: #006b4b; /* TEMPLATE dark green — emphasised labels (e.g. persona name) */
-  --cog-accent-deep: #1e7a4d; /* dark green — bars, headers, links */
   --cog-mint: #b3e0c6; /* thought bubbles, journey headers */
   --cog-mint-soft: #d6efe0;
   --cog-orange: #e5851e; /* mascots, accent bars */
@@ -53,7 +52,7 @@
   font-weight: 700; /* bolder (was 600) */
   letter-spacing: 0.18em;
   text-transform: uppercase; /* always all-caps regardless of markup casing */
-  color: var(--case-study-ink); /* match the section headings (was --cog-accent-deep) */
+  color: var(--case-study-ink); /* match the section headings (was the dark green) */
   margin-bottom: 0.75rem; /* the ONE consistent eyebrow→heading gap (= old mt-3) */
 }
 

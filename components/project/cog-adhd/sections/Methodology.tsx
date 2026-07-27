@@ -95,7 +95,7 @@ export function Methodology() {
           in green (matches the PDF band). */}
       <div className="mt-16 md:mt-20">
         <Container>
-          <p className="cog-label inline-block float-right border-b-2 border-[var(--cog-accent-deep)] pb-1 text-[var(--case-study-ink)]">
+          <p className="cog-label inline-block float-right border-b-2 border-[var(--case-study-accent-strong)] pb-1 text-[var(--case-study-ink)]">
             exploratory sketches
           </p>
           <div className="clear-both" />

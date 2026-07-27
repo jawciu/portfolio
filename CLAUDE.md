@@ -385,9 +385,19 @@ cards, element-screenshot. Delete the temp script after.
   `--vec-success`) — the prefix is only wrong on a template slot. `--soft-ink` untouched: it lives
   in globals.css and is consumed site-wide.
 - **Dead tokens deleted (0 consumers, proven by grep):** `--cog-green-deep`,
-  `--case-study-green-deep`, wiki's `--cog-green`, vector's `--case-study-green`. cog's second
-  green IS live (5 uses: JourneyMap ·, Methodology underline, Solution >) so it survives as
-  `--cog-accent-deep: #1e7a4d` — genuinely cog-only now, so it keeps a study prefix.
+  `--case-study-green-deep`, wiki's `--cog-green`, vector's `--case-study-green`.
+- **cog's THIRD green merged away (Caroline's call, round 2).** cog had `--case-study-accent`
+  `#19a072` + `--case-study-accent-strong` `#006b4b` + a live third green `#1e7a4d` (5 uses:
+  JourneyMap ·, Methodology underline, Solution >). No design reason for three, so the third is
+  GONE and its five consumers now use `--case-study-accent-strong` `#006b4b`. cog is down to the
+  two template accent slots and has no bespoke accent token at all. Visual change: those five
+  marks go `#1e7a4d` → `#006b4b` (darker). Verified live: Solution's > and JourneyMap's · both
+  compute to `rgb(0, 107, 75)`.
+- **Vector's `vector.quest` hero link hover moved to `--case-study-accent`** (her call) — it was
+  the only `-accent-strong` consumer on vector. Verified live: hover computes `rgb(211, 181, 255)`
+  = `#d3b5ff`. NOTE this leaves `--case-study-accent-strong` with ZERO consumers on vector and
+  wiki; kept defined in both because it IS a template slot (every study defines every slot, per
+  the new skill) and shared code may read it later.
 - **THE SCROLL RAIL WAS READING A DEAD TOKEN.** `--case-study-green` had zero consumers before the
   rail; on cog it resolved to `#1e7a4d` while every other rule on the page used `#19a072`. Rail
   repointed to `--case-study-accent` (the live slot). **This is the ONLY intended pixel change in

@@ -13,7 +13,7 @@ const PROMPTS = [
 function FeatureLabel({ children }: { children: React.ReactNode }) {
   return (
     <p className="font-[family-name:var(--font-mono)] text-[15px] font-bold lowercase tracking-tight text-[var(--case-study-ink)]">
-      {children} <span className="text-[var(--cog-accent-deep)]">&gt;</span>
+      {children} <span className="text-[var(--case-study-accent-strong)]">&gt;</span>
     </p>
   );
 }

@@ -60,21 +60,21 @@ export function JourneyMap() {
             <p className="case-study-label">expectations</p>
             <ul className="mt-3 space-y-2 text-sm text-[var(--soft-ink)]">
               <li className="flex gap-2">
-                <span className="text-[var(--cog-accent-deep)]">·</span>
+                <span className="text-[var(--case-study-accent-strong)]">·</span>
                 <span>
                   She wants to manage her ADHD effectively and work with a
                   therapist she can build rapport with.
                 </span>
               </li>
               <li className="flex gap-2">
-                <span className="text-[var(--cog-accent-deep)]">·</span>
+                <span className="text-[var(--case-study-accent-strong)]">·</span>
                 <span>
                   She seeks structured therapy with clear progress tracking to
                   stay motivated.
                 </span>
               </li>
               <li className="flex gap-2">
-                <span className="text-[var(--cog-accent-deep)]">·</span>
+                <span className="text-[var(--case-study-accent-strong)]">·</span>
                 <span>
                   She hopes her therapist will help identify key focus areas,
                   reducing the burden of recall.
