@@ -96,7 +96,7 @@ export function Findings() {
                 >
                   {`“${q.text}”`}
                 </StreamingQuote>
-                <figcaption className="text-right text-sm text-[var(--cog-ink-soft)]">
+                <figcaption className="text-right text-sm text-[var(--case-study-ink-soft)]">
                   {q.by}
                 </figcaption>
               </figure>

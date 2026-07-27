@@ -108,7 +108,7 @@ function Bubble({ b, className = "" }: { b: Bubble; className?: string }) {
         className="block h-auto w-full select-none"
       />
       <div className={`absolute flex items-center justify-center ${b.box}`}>
-        <span className="text-left text-[15px] leading-[1.4] text-[var(--cog-ink)]">
+        <span className="text-left text-[15px] leading-[1.4] text-[var(--case-study-ink)]">
           {b.text}
         </span>
       </div>
@@ -139,7 +139,7 @@ export function Interviews() {
           {PERSONAS.map((p) => (
             <div
               key={p.label}
-              className="w-full max-w-[260px] rounded-xl border border-[#f1f0ea] bg-[var(--cog-card)] p-6"
+              className="w-full max-w-[260px] rounded-xl border border-[#f1f0ea] bg-[var(--case-study-card)] p-6"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img

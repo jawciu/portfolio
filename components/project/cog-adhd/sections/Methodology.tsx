@@ -38,7 +38,7 @@ const SKETCHES = [
 
 export function Methodology() {
   return (
-    <section data-section="Methodology" className="pt-[120px] pb-0 bg-[var(--cog-bg-section)]">
+    <section data-section="Methodology" className="pt-[120px] pb-0 bg-[var(--case-study-bg-section)]">
       <Container>
         <Reveal stagger={0.08}>
           <Kicker>METHODOLOGY</Kicker>
@@ -50,7 +50,7 @@ export function Methodology() {
         </Reveal>
 
         <Reveal>
-          <Body className="mt-6 max-w-2xl text-[var(--cog-muted)]">
+          <Body className="mt-6 max-w-2xl text-[var(--case-study-muted)]">
             With this big vision in place, I focused on prioritising ideas.
             Transforming check in entries (symptoms, emotions, wins, and daily
             journals) into actionable insights would address key issues
@@ -95,7 +95,7 @@ export function Methodology() {
           in green (matches the PDF band). */}
       <div className="mt-16 md:mt-20">
         <Container>
-          <p className="cog-label inline-block float-right border-b-2 border-[var(--cog-green)] pb-1 text-[var(--cog-ink)]">
+          <p className="cog-label inline-block float-right border-b-2 border-[var(--cog-accent-deep)] pb-1 text-[var(--case-study-ink)]">
             exploratory sketches
           </p>
           <div className="clear-both" />

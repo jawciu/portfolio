@@ -5,7 +5,7 @@ export function JourneyMap() {
   return (
     <section
       data-section="JourneyMap"
-      className="pt-[120px] pb-0 max-sm:pt-[60px] bg-[var(--cog-bg-section)]"
+      className="pt-[120px] pb-0 max-sm:pt-[60px] bg-[var(--case-study-bg-section)]"
     >
       <Container>
         <Reveal>
@@ -34,7 +34,7 @@ export function JourneyMap() {
                 className="h-auto w-full"
               />
             </div>
-            <p className="mt-4 font-[family-name:var(--font-body)] text-xl font-bold text-[var(--dark-green)]">
+            <p className="mt-4 font-[family-name:var(--font-body)] text-xl font-bold text-[var(--case-study-accent-strong)]">
               Katherine Bell
             </p>
             <Body className="mt-2 pl-8 text-sm italic">
@@ -60,21 +60,21 @@ export function JourneyMap() {
             <p className="case-study-label">expectations</p>
             <ul className="mt-3 space-y-2 text-sm text-[var(--soft-ink)]">
               <li className="flex gap-2">
-                <span className="text-[var(--cog-green)]">·</span>
+                <span className="text-[var(--cog-accent-deep)]">·</span>
                 <span>
                   She wants to manage her ADHD effectively and work with a
                   therapist she can build rapport with.
                 </span>
               </li>
               <li className="flex gap-2">
-                <span className="text-[var(--cog-green)]">·</span>
+                <span className="text-[var(--cog-accent-deep)]">·</span>
                 <span>
                   She seeks structured therapy with clear progress tracking to
                   stay motivated.
                 </span>
               </li>
               <li className="flex gap-2">
-                <span className="text-[var(--cog-green)]">·</span>
+                <span className="text-[var(--cog-accent-deep)]">·</span>
                 <span>
                   She hopes her therapist will help identify key focus areas,
                   reducing the burden of recall.

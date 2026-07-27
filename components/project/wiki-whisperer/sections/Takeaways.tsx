@@ -27,7 +27,7 @@ export function Takeaways() {
 
         <Reveal stagger={0.12} className="grid gap-8 md:grid-cols-3">
           {TAKEAWAYS.map(([label, body]) => (
-            <div key={label} className="border-t-2 border-[var(--green)] pt-4">
+            <div key={label} className="border-t-2 border-[var(--case-study-accent)] pt-4">
               <p className="case-study-label">{label}</p>
               <Body className="mt-3">{body}</Body>
             </div>

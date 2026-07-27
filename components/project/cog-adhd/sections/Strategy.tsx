@@ -5,7 +5,7 @@ import { Parallax } from "../Parallax";
 /** small mono caption tag used on the dashboard concept mockups */
 function DesignIdeaTag() {
   return (
-    <span className="cog-label self-end border-b-2 border-[var(--green)] pb-2 pl-[84px] pr-3 text-right text-[var(--cog-ink)]">
+    <span className="cog-label self-end border-b-2 border-[var(--case-study-accent)] pb-2 pl-[84px] pr-3 text-right text-[var(--case-study-ink)]">
       design idea
     </span>
   );
@@ -77,7 +77,7 @@ function CardStack({
 
 export function Strategy() {
   return (
-    <section data-section="Strategy" className="pt-[120px] pb-0 bg-[var(--cog-bg-section)]">
+    <section data-section="Strategy" className="pt-[120px] pb-0 bg-[var(--case-study-bg-section)]">
       <Container>
         <Reveal stagger={0.08}>
           <Kicker>Strategy</Kicker>
@@ -154,7 +154,7 @@ export function Strategy() {
             <img
               src={A("image-26.png")}
               alt="Cog Clinic dashboard concept - Katherine Bell progress view with symptom-progress line chart and symptom-control donut charts"
-              className="mt-3 w-full rounded-[20px] border border-[#E3E2DA] bg-[var(--cog-bg-alt)] shadow-[1px_1px_10px_2px_rgba(212,210,210,0.25)]"
+              className="mt-3 w-full rounded-[20px] border border-[#E3E2DA] bg-[var(--case-study-bg-alt)] shadow-[1px_1px_10px_2px_rgba(212,210,210,0.25)]"
             />
           </figure>
         </Reveal>
@@ -173,7 +173,7 @@ export function Strategy() {
             <img
               src={A("image-27.png")}
               alt="Cog Clinic dashboard concept - Katherine Bell session view with an AI-drafted session summary"
-              className="mt-3 w-full rounded-[20px] border border-[#E3E2DA] bg-[var(--cog-bg-alt)] shadow-[1px_1px_10px_2px_rgba(212,210,210,0.25)]"
+              className="mt-3 w-full rounded-[20px] border border-[#E3E2DA] bg-[var(--case-study-bg-alt)] shadow-[1px_1px_10px_2px_rgba(212,210,210,0.25)]"
             />
           </figure>
         </Reveal>

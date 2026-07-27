@@ -12,15 +12,15 @@ const PROMPTS = [
 /** Bold mono feature label ending in a ">" chevron, e.g. "weekly overview graph >". */
 function FeatureLabel({ children }: { children: React.ReactNode }) {
   return (
-    <p className="font-[family-name:var(--font-mono)] text-[15px] font-bold lowercase tracking-tight text-[var(--cog-ink)]">
-      {children} <span className="text-[var(--cog-green)]">&gt;</span>
+    <p className="font-[family-name:var(--font-mono)] text-[15px] font-bold lowercase tracking-tight text-[var(--case-study-ink)]">
+      {children} <span className="text-[var(--cog-accent-deep)]">&gt;</span>
     </p>
   );
 }
 
 export function Solution() {
   return (
-    <section data-section="Solution" className="pt-[120px] pb-0 bg-[var(--cog-bg-section)]">
+    <section data-section="Solution" className="pt-[120px] pb-0 bg-[var(--case-study-bg-section)]">
       <Container>
         <Reveal stagger={0.08}>
           <Kicker>Solution</Kicker>
@@ -48,10 +48,10 @@ export function Solution() {
               alt="Portrait of Katherine Bell, the therapy-client persona"
               className="w-[140px] h-auto select-none"
             />
-            <p className="mt-3 font-[family-name:var(--font-body)] text-base font-bold text-[var(--cog-ink)]">
+            <p className="mt-3 font-[family-name:var(--font-body)] text-base font-bold text-[var(--case-study-ink)]">
               Katherine Bell
             </p>
-            <p className="mt-1 font-[family-name:var(--font-body)] text-[13px] text-[var(--cog-muted)]">
+            <p className="mt-1 font-[family-name:var(--font-body)] text-[13px] text-[var(--case-study-muted)]">
               Therapy Client
             </p>
           </div>

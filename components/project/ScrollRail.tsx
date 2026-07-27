@@ -240,7 +240,7 @@ export function ScrollRail({ sections, attr }: Props) {
             style={{
               width: 1,
               height: fillHeight,
-              background: "var(--case-study-green)",
+              background: "var(--case-study-accent)",
               transition: reduced ? "none" : `height ${STEP_MS}ms cubic-bezier(0.33, 0, 0.2, 1)`,
             }}
           />
@@ -293,20 +293,20 @@ function Dot({
       style={{
         width: current ? 13 : 11,
         height: current ? 13 : 11,
-        background: done ? "var(--case-study-green)" : "transparent",
+        background: done ? "var(--case-study-accent)" : "transparent",
         // hover puts the accent outline on any dot — lilac on Vector, green on
-        // cog/wiki, since it reads the theme's accent token rather than a hex
+        // cog, pink on wiki, since it reads the theme's accent token, not a hex
         border:
           done || hovered
-            ? "1px solid var(--case-study-green)"
+            ? "1px solid var(--case-study-accent)"
             : "1px solid var(--case-study-muted)",
         // the hollow dots ARE the "how many left" signal, so they can't be the
         // faintest thing on screen — at 0.5 they nearly vanished on Vector's near-black
         opacity: done || hovered ? 1 : 0.7,
         boxShadow: current
-          ? "0 0 0 4px color-mix(in srgb, var(--case-study-green) 22%, transparent)"
+          ? "0 0 0 4px color-mix(in srgb, var(--case-study-accent) 22%, transparent)"
           : hovered
-            ? "0 0 0 3px color-mix(in srgb, var(--case-study-green) 30%, transparent)"
+            ? "0 0 0 3px color-mix(in srgb, var(--case-study-accent) 30%, transparent)"
             : "none",
         // snappy: the dot is the second beat of a two-beat move with the line, so
         // a slow fade here would blur the one-two into a single mushy transition

@@ -33,9 +33,9 @@ colors:
   orb-5: "#bdeed9"
   # Case-study template colours — the light sub-theme (scoped to .cog-root /
   # components/project/<slug>/theme.css). Reusable across every case study.
-  cs-bg: "#f5f4ef"            # page cream (--cog-bg)
-  cs-bg-section: "#f7f7f4"    # shared section bg from "current therapy process" onward (--cog-bg-section)
-  cs-green: "#19a072"         # TEMPLATE green — dividers / rules / callout left-rule (--green)
+  cs-bg: "#f5f4ef"            # page cream (--case-study-bg)
+  cs-bg-section: "#f7f7f4"    # shared section bg from "current therapy process" onward (--case-study-bg-section)
+  cs-green: "#19a072"         # TEMPLATE green — dividers / rules / callout left-rule (--case-study-accent)
   cs-dark-green: "#006b4b"    # TEMPLATE dark green — emphasised labels e.g. persona name (--dark-green)
   cs-soft-ink: "#4a4a4a"      # soft body-copy ink (--soft-ink)
   cs-card-border: "#f1f0ea"   # InsightCard hairline border
@@ -74,7 +74,7 @@ typography:
     fontWeight: "700"   # bolder than the old 600
     letterSpacing: 0.18em
     textTransform: uppercase   # always all-caps regardless of markup casing
-    color: var(--cog-ink)   # same ink as the heading; reads as one stacked unit
+    color: var(--case-study-ink)   # same ink as the heading; reads as one stacked unit
     marginBottom: 0.75rem   # BAKES the consistent eyebrow→heading gap (12px) into the template
   case-study-section-heading:  # each section's heading (MY ROLE, INTERVIEWS, …)
     fontFamily: Iosevka Charon
@@ -94,7 +94,7 @@ typography:
     fontWeight: "800"
     letterSpacing: 0.02em
     textTransform: lowercase   # ALWAYS lower-case, no caps
-    color: var(--cog-ink)
+    color: var(--case-study-ink)
   case-study-body-md:          # default reading size for case-study body copy
     fontFamily: Geist
     fontSize: 16px
@@ -111,7 +111,7 @@ typography:
     fontStyle: italic
     fontSize: 15px
     lineHeight: 1.5
-    color: var(--cog-ink)
+    color: var(--case-study-ink)
   # Geist — body copy. The only sans on the page; calm against the noise.
   body-lg:
     fontFamily: Geist
@@ -302,7 +302,7 @@ we get a heavier display weight without swapping the typeface. Both the title an
 section headings break to a **max of 2 lines via manual `<br/>`** in the markup (3 is
 fine on mobile). The small all-caps **eyebrow** above each section heading
 (`case-study-eyebrows-heading`: **Geist** sans, **13px, weight 700**, letter-spacing
-0.18em, `text-transform: uppercase`) is coloured with the heading ink `--cog-ink` (NOT
+0.18em, `text-transform: uppercase`) is coloured with the heading ink `--case-study-ink` (NOT
 the green accent) so eyebrow + heading read as one stacked unit; it carries a
 **`margin-bottom: 0.75rem` (12px)** that BAKES the eyebrow→heading gap into the
 template — sections must NOT add their own top margin to the heading, so every gap
@@ -335,7 +335,7 @@ a colour utility, keeping the class self-contained. Left-ruled **statements / pu
 (22px ≤640px), light `--soft-ink`, with a **2px green rule** (`#19a072`) on the left. Like the
 other type tokens it's self-contained (apply alone). The older `cog-callout`/`cog-statement`
 stay for the dark near-black mono quotes used elsewhere. Italic **quotes and question
-prompts** use `case-study-quote` — **Geist italic, 15px / line-height 1.5**, `--cog-ink`
+prompts** use `case-study-quote` — **Geist italic, 15px / line-height 1.5**, `--case-study-ink`
 (the affinity-board post-its and the Solution question prompts share it). Genuinely-small captions (thought-bubble text, legends) use explicit `text-[13px]`
 /`text-sm` utilities directly (Geist is inherited from `.cog-root`). These live in each case
 study's `theme.css` as `.case-study-*` classes so they're reused verbatim across

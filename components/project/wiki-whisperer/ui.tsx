@@ -94,14 +94,14 @@ export function InsightCard({
         width: width === "auto" ? undefined : width,
         height: height === "auto" ? undefined : height,
       }}
-      className="flex h-full w-full max-w-full flex-col rounded-2xl border border-[var(--cog-line)] bg-[var(--cog-card)] px-9 py-8"
+      className="flex h-full w-full max-w-full flex-col rounded-2xl border border-[var(--case-study-line)] bg-[var(--case-study-card)] px-9 py-8"
     >
-      <p className="font-[family-name:var(--font-mono)] text-[15px] font-bold uppercase tracking-[0.02em] text-[var(--cog-ink)]">
+      <p className="font-[family-name:var(--font-mono)] text-[15px] font-bold uppercase tracking-[0.02em] text-[var(--case-study-ink)]">
         {label}
       </p>
       <h3 className="case-study-label mt-3 leading-[1.25]">{title}</h3>
-      <div className="mt-5 h-px w-full bg-[var(--green)]" />
-      <Body className="mt-5 text-[var(--cog-ink-soft)]">{children}</Body>
+      <div className="mt-5 h-px w-full bg-[var(--case-study-accent)]" />
+      <Body className="mt-5 text-[var(--case-study-ink-soft)]">{children}</Body>
     </div>
   );
 }
@@ -181,10 +181,10 @@ export function TestimonialBubble({
       />
       {/* text sits in the bubble body (above the tail) — never mirrored */}
       <figcaption className="absolute inset-0 flex flex-col justify-center px-[10%] pt-[2%] pb-[10%]">
-        <StreamingQuote className={`text-[15px] italic leading-relaxed text-[var(--cog-ink)] ${quoteClassName}`}>
+        <StreamingQuote className={`text-[15px] italic leading-relaxed text-[var(--case-study-ink)] ${quoteClassName}`}>
           {`“${quote}”`}
         </StreamingQuote>
-        <span className="mt-2 text-right text-[14px] text-[var(--cog-muted)]">
+        <span className="mt-2 text-right text-[14px] text-[var(--case-study-muted)]">
           {who}
         </span>
       </figcaption>

@@ -118,7 +118,7 @@ export function InsightCard({
         {label}
       </p>
       <h3 className="case-study-label mt-3 leading-[1.25]">{title}</h3>
-      <div className="mt-5 h-px w-full bg-[var(--green)]" />
+      <div className="mt-5 h-px w-full bg-[var(--case-study-accent)]" />
       <Body className="mt-5">{children}</Body>
     </div>
   );

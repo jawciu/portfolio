@@ -38,7 +38,7 @@ export function Takeaways() {
         >
           {LESSONS.map(([label, body]) => (
             <div key={label}>
-              <div className="mb-4 h-px w-10 bg-[var(--green)]" />
+              <div className="mb-4 h-px w-10 bg-[var(--case-study-accent)]" />
               <p className="case-study-label mb-3">{label} &gt;</p>
               <Body>{body}</Body>
             </div>

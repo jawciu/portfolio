@@ -53,7 +53,7 @@ export function Hero() {
                 href="https://vector.quest"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="ml-1 inline-flex items-center gap-1.5 font-[family-name:var(--font-mono)] text-[13px] text-[var(--case-study-muted)] underline decoration-[var(--case-study-line)] underline-offset-4 transition-colors hover:text-[var(--dark-green)]"
+                className="ml-1 inline-flex items-center gap-1.5 font-[family-name:var(--font-mono)] text-[13px] text-[var(--case-study-muted)] underline decoration-[var(--case-study-line)] underline-offset-4 transition-colors hover:text-[var(--case-study-accent-strong)]"
               >
                 <LinkIcon />
                 vector.quest

@@ -42,7 +42,7 @@ export function Hero() {
                 alt="Cog ADHD logo"
                 className="h-12 w-12 rounded-full object-cover"
               />
-              <span className="font-[family-name:var(--font-mono)] text-[28px] font-bold tracking-wide text-[var(--cog-ink)]">
+              <span className="font-[family-name:var(--font-mono)] text-[28px] font-bold tracking-wide text-[var(--case-study-ink)]">
                 COG ADHD
               </span>
             </div>

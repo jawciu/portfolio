@@ -23,7 +23,7 @@ export function Takeaways() {
   // pb-[120px]: this section's tinted background ends at a boundary with the cream
   // NextProject below, so its content needs bottom breathing space before that line.
   return (
-    <section data-section="Takeaways" className="pt-[120px] pb-[120px] max-sm:pb-[78px] bg-[var(--cog-bg-section)]">
+    <section data-section="Takeaways" className="pt-[120px] pb-[120px] max-sm:pb-[78px] bg-[var(--case-study-bg-section)]">
       <Container>
         <Reveal stagger={0.08}>
           <Kicker>KEY TAKEAWAYS</Kicker>
@@ -55,7 +55,7 @@ export function Takeaways() {
               </div>
               <div className="max-sm:mx-auto max-sm:max-w-[85%]">
                 <h3 className="case-study-label mt-4">{item.label}</h3>
-                <Body className="mt-3 text-[var(--cog-ink-soft)]">{item.body}</Body>
+                <Body className="mt-3 text-[var(--case-study-ink-soft)]">{item.body}</Body>
               </div>
             </div>
           ))}

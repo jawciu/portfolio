@@ -372,6 +372,45 @@ cards, element-screenshot. Delete the temp script after.
   deliberately-bleeding desktop layout), or accept it.
 - **Open:** the cog Methodology collision above. Nothing else blocks merge.
 
+### 2026-07-27 — TEMPLATE TOKEN RENAME: `--cog-*` / `--green` → `--case-study-*`. Branch `token-cleanup`.
+- **Caroline's call after the rail port exposed the mess:** template slots were named after the
+  FIRST study that used them (`--cog-bg/-ink/-muted/-line/-card`, kept by wiki + gateway when they
+  cloned the kit) and the accent slots were named after a COLOUR (`--green` held pink on wiki,
+  purple on gateway, lilac on vector). Vector had already renamed its own set; the other three
+  hadn't. **Gateway deliberately excluded** (still an untracked scaffold) — it keeps the legacy
+  names plus a 3-line bridge so the shared rail still retints; fold that away when it gets renamed.
+- **The slot set is now uniform across cog / wiki / vector:** `--case-study-bg` `-bg-alt`
+  `-bg-warm` `-bg-section` `-card` `-ink` `-ink-soft` `-muted` `-line` `-accent` `-accent-strong`.
+  Study-specific colours correctly KEEP their study prefix (`--cog-mint`, `--eon-magenta`,
+  `--vec-success`) — the prefix is only wrong on a template slot. `--soft-ink` untouched: it lives
+  in globals.css and is consumed site-wide.
+- **Dead tokens deleted (0 consumers, proven by grep):** `--cog-green-deep`,
+  `--case-study-green-deep`, wiki's `--cog-green`, vector's `--case-study-green`. cog's second
+  green IS live (5 uses: JourneyMap ·, Methodology underline, Solution >) so it survives as
+  `--cog-accent-deep: #1e7a4d` — genuinely cog-only now, so it keeps a study prefix.
+- **THE SCROLL RAIL WAS READING A DEAD TOKEN.** `--case-study-green` had zero consumers before the
+  rail; on cog it resolved to `#1e7a4d` while every other rule on the page used `#19a072`. Rail
+  repointed to `--case-study-accent` (the live slot). **This is the ONLY intended pixel change in
+  the whole refactor** — cog's rail shifts `#1e7a4d` → `#19a072` and now matches its own dividers.
+- **Vector accents re-valued on Caroline's instruction:** `--case-study-accent` `#c098ff` →
+  **`#d3b5ff`**, `--case-study-accent-strong` `#d3b5ff` → **`#9e6cee`** (the latter was the deleted
+  `-green-deep`). Affects vector's callout rule, ui divider, Takeaways rule, Product NF_PURPLE,
+  Collaboration LILAC and the Hero link hover. `--ai-from` stays `#c098ff`.
+- **NEW SKILL `.claude/skills/template-tokens/`** (her ask: "so this doesn't happen"). The rule:
+  a token's NAME describes its ROLE, its VALUE describes the study. Covers the two failure modes
+  seen here, the canonical slot set, scoping, the "check it has consumers before wiring shared code
+  to it" rule, and the safe-rename procedure. DESIGN.md's token references updated to match.
+- **Verification method worth reusing:** a pure rename must render PIXEL-IDENTICAL, so full-page
+  screenshots at 1440 + 390 before and after, with animations frozen and a full scroll-through
+  first. **Always run a CONTROL** (two captures on identical code) before believing a diff — wiki's
+  autoplaying promo video and vector's live WebGL differ by ~3k px on their own, which initially
+  looked like a regression. Result after controlling: every difference is video/WebGL frame noise
+  EXCEPT cog's 353px, and all 353 are inside the rail column (measured), i.e. the intended change.
+  Also: grep to zero, and watch for self-referential aliases (`--x: var(--x)`) — the rename ran
+  over my earlier bridge block and created exactly that, which is invalid and had to be deleted.
+- tsc + lint + `npm run build` clean, all routes prerender. **COMMITTED on `token-cleanup`, NOT
+  pushed and NOT merged — awaiting Caroline's review.**
+
 ### 2026-07-22 — NEW case study SCAFFOLD: Gateway (E.ON developer handovers). UNCOMMITTED.
 - **What**: 4th case study scaffolded per the plan agreed in the job-search repo session
   (fills the dense-data B2B gap; the site already has 3 AI credits: wiki, vector, synapse link).

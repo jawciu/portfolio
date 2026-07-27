@@ -257,7 +257,7 @@ const NF_ROWS = [
   { label: "task commented", y: 184, dest: "email" },
 ] as const;
 
-const NF_PURPLE = "var(--green)"; /* lilac accent — the asset's unread dots */
+const NF_PURPLE = "var(--case-study-accent)"; /* lilac accent — the asset's unread dots */
 const NF_GREEN = "var(--vec-success)"; /* the asset's green avatars */
 const NF_PINK = "#ff9ec4"; /* PINK like the asset's avatars (danger red was wrong) */
 const NF_DOT = "rgba(241,234,241,0.35)"; /* plain gray event dots */

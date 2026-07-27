@@ -80,7 +80,7 @@ export default function WikiWhispererCaseStudy() {
           <SoftBlob className="right-[10%] top-[72%] h-[920px] w-[1120px]" />
         </div>
 
-        {/* Sections sit transparent over the plate (solid --cog-bg) + the blob layer
+        {/* Sections sit transparent over the plate (solid --case-study-bg) + the blob layer
             above, so the ambient washes read continuously behind the content. */}
         <div data-ww="MyRole"><MyRole /></div>
         <div data-ww="Problem"><Problem /></div>

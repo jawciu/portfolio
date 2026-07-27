@@ -5,28 +5,19 @@
    are byte-identical to the cog case study — only the colour tokens below differ. */
 
 .ww-root {
-  /* SCROLL RAIL — the shared component reads the --case-study-* names (Vector's
-     naming, since it was built there). Alias them onto this theme's tokens so the
-     rail retints itself per study instead of hardcoding a colour. */
-  --case-study-ink: var(--cog-ink);
-  --case-study-muted: var(--cog-muted);
-  --case-study-green: var(--cog-green);
-
-  --cog-bg: #fefcff; /* page — cool near-white */
-  --cog-bg-alt: #fffafa; /* warm near-white — cards / placeholders */
-  --cog-bg-warm: #fffafa; /* warm near-white band */
-  --cog-bg-section: #fffafa; /* second background tone — warm near-white */
-  --cog-ink: #2a1a45; /* deep aubergine — headings/text */
-  --cog-ink-soft: #4c4263;
+  --case-study-bg: #fefcff; /* page — cool near-white */
+  --case-study-bg-alt: #fffafa; /* warm near-white — cards / placeholders */
+  --case-study-bg-warm: #fffafa; /* warm near-white band */
+  --case-study-bg-section: #fffafa; /* second background tone — warm near-white */
+  --case-study-ink: #2a1a45; /* deep aubergine — headings/text */
+  --case-study-ink-soft: #4c4263;
   --soft-ink: #4c4263; /* TEMPLATE: soft body-copy ink, reusable across case studies */
-  --cog-muted: #807798; /* secondary copy */
-  --cog-line: #f7ebff; /* hairlines / card + asset-frame borders — unified lavender */
-  --cog-card: #ffffff;
+  --case-study-muted: #807798; /* secondary copy */
+  --case-study-line: #f7ebff; /* hairlines / card + asset-frame borders — unified lavender */
+  --case-study-card: #ffffff;
 
-  --green: #e15bad; /* TEMPLATE accent slot — pink (dividers / rules / callout) */
-  --dark-green: #b3005f; /* TEMPLATE dark-accent slot — deep magenta (emphasised labels) */
-  --cog-green: #e15bad; /* mapped to the pink accent */
-  --cog-green-deep: #b3005f;
+  --case-study-accent: #e15bad; /* TEMPLATE accent slot — pink (dividers / rules / callout) */
+  --case-study-accent-strong: #b3005f; /* TEMPLATE dark-accent slot — deep magenta (emphasised labels) */
 
   /* E.ON Next decorative spectrum (used sparingly for dots / blobs / accents) */
   --eon-magenta: #e5007d;
@@ -37,8 +28,8 @@
   --eon-lime: #38d39f;
   --eon-amber: #ffb020;
 
-  background: var(--cog-bg);
-  color: var(--cog-ink);
+  background: var(--case-study-bg);
+  color: var(--case-study-ink);
   font-family: var(--font-body), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
@@ -59,7 +50,7 @@
   font-weight: 700;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--cog-ink);
+  color: var(--case-study-ink);
   margin-bottom: 0.75rem;
 }
 
@@ -71,7 +62,7 @@
   text-transform: uppercase;
   letter-spacing: -0.02em;
   line-height: 1.08;
-  color: var(--cog-ink);
+  color: var(--case-study-ink);
   font-size: 48px;
 }
 
@@ -90,7 +81,7 @@
   text-transform: uppercase;
   letter-spacing: -0.01em;
   line-height: 1.08;
-  color: var(--cog-ink);
+  color: var(--case-study-ink);
   font-size: clamp(1.75rem, 1rem + 2vw, 2.25rem); /* 28px → 36px */
   margin-bottom: 3rem;
 }
@@ -107,7 +98,7 @@
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.02em;
-  color: var(--cog-ink);
+  color: var(--case-study-ink);
 }
 
 /* CASE-STUDY HERO LABELS — mono meta labels in the hero. 16px, extra-bold. */
@@ -116,7 +107,7 @@
   font-size: 16px;
   font-weight: 800;
   letter-spacing: 0.02em;
-  color: var(--cog-ink);
+  color: var(--case-study-ink);
 }
 
 /* CASE-STUDY LABEL — reusable bold inline label, ALWAYS lowercase. */
@@ -126,7 +117,7 @@
   font-weight: 800;
   letter-spacing: 0.02em;
   text-transform: lowercase;
-  color: var(--cog-ink);
+  color: var(--case-study-ink);
 }
 
 /* CASE-STUDY BODY (MD) — default reading size. 16px, line-height 1.4, soft ink. */
@@ -143,7 +134,7 @@
   font-style: italic;
   font-size: 15px;
   line-height: 1.5;
-  color: var(--cog-ink);
+  color: var(--case-study-ink);
 }
 
 /* CASE-STUDY CALLOUT — left-ruled statement. Geist Mono 28px / 1.2, soft ink, magenta rule. */
@@ -152,7 +143,7 @@
   font-size: 28px;
   line-height: 1.2;
   color: var(--soft-ink);
-  border-left: 2px solid var(--green);
+  border-left: 2px solid var(--case-study-accent);
   padding: 4px 0 4px 24px;
 }
 
@@ -167,8 +158,8 @@
   font-family: var(--font-mono), monospace;
   font-size: clamp(0.95rem, 0.85rem + 0.5vw, 1.15rem);
   line-height: 1.6;
-  color: var(--cog-ink);
-  border-left: 2px solid var(--cog-ink);
+  color: var(--case-study-ink);
+  border-left: 2px solid var(--case-study-ink);
   padding: 4px 0 4px 24px;
 }
 
@@ -177,7 +168,7 @@
   font-family: var(--font-mono), monospace;
   font-size: clamp(1.05rem, 0.9rem + 0.7vw, 1.3rem);
   line-height: 1.55;
-  color: var(--cog-ink);
+  color: var(--case-study-ink);
 }
 
 /* StreamingQuote — word-by-word reveal (CSS driven by the StreamingQuote component) */

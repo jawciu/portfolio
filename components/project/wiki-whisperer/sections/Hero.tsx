@@ -34,7 +34,7 @@ export function Hero() {
                 alt="E.ON Next logo"
                 className="h-8 w-auto object-contain"
               />
-              <span className="font-[family-name:var(--font-mono)] text-[28px] font-bold tracking-wide text-[var(--cog-ink)]">
+              <span className="font-[family-name:var(--font-mono)] text-[28px] font-bold tracking-wide text-[var(--case-study-ink)]">
                 E.ON NEXT
               </span>
             </div>
@@ -108,7 +108,7 @@ export function Hero() {
             className="pointer-events-none absolute -bottom-4 left-5 right-5 top-8 rounded-[1.75rem] blur-lg"
             style={{ background: "linear-gradient(135deg, #FFF0F0, #F7EBFF)" }}
           />
-          <div className="relative w-full overflow-hidden rounded-2xl border border-[var(--cog-line)]">
+          <div className="relative w-full overflow-hidden rounded-2xl border border-[var(--case-study-line)]">
             <video
               id="hero-promo"
               src={A("promo.mp4")}

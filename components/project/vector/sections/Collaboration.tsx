@@ -11,7 +11,7 @@ import { DotGlow } from "../DotGlow";
 const MONO = "var(--font-mono), monospace";
 const LINE = "rgba(241,234,241,0.16)";
 const INK_SOFT = "var(--case-study-ink-soft)";
-const LILAC = "var(--green)";
+const LILAC = "var(--case-study-accent)";
 const MINT = "var(--vec-mint)";
 
 function PairDiagram() {

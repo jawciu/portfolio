@@ -52,7 +52,7 @@ const CUSTOMER: Bubble[] = [
 
 export function Results() {
   return (
-    <section data-section="Results" className="pt-[120px] pb-0 bg-[var(--cog-bg-section)]">
+    <section data-section="Results" className="pt-[120px] pb-0 bg-[var(--case-study-bg-section)]">
       <Container>
         <Reveal stagger={0.08}>
           <Kicker>Results</Kicker>
@@ -63,14 +63,14 @@ export function Results() {
           <Body>
             The history feature helped both users and therapists find value in
             reviewing past check-ins, contributing to a noticeable{" "}
-            <strong className="font-semibold text-[var(--cog-ink)]">
+            <strong className="font-semibold text-[var(--case-study-ink)]">
               increase in DAU and average time spent
             </strong>
             .
           </Body>
           <Body>
             Separately, after implementing batch session booking, we saw an{" "}
-            <strong className="font-semibold text-[var(--cog-ink)]">
+            <strong className="font-semibold text-[var(--case-study-ink)]">
               increase in therapy bookings.
             </strong>
           </Body>

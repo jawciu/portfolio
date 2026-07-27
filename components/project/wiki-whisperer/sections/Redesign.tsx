@@ -28,7 +28,7 @@ const FEATURES: [string, string, string][] = [
 function DesignsTag() {
   return (
     <div className="mx-auto mt-14 flex max-w-[1000px] justify-end">
-      <span className="cog-label border-b-2 border-[var(--green)] pb-2 pl-[84px] pr-3 text-right text-[var(--cog-ink)]">
+      <span className="cog-label border-b-2 border-[var(--case-study-accent)] pb-2 pl-[84px] pr-3 text-right text-[var(--case-study-ink)]">
         designs
       </span>
     </div>

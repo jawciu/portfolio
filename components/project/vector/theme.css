@@ -26,10 +26,8 @@
   --case-study-line: #25232d; /* hairlines / card + asset-frame borders */
 
   /* Accent — Vector's single warm-lilac action ramp */
-  --green: #c098ff; /* TEMPLATE accent slot — lilac (dividers / rules / callout rule) */
-  --dark-green: #d3b5ff; /* TEMPLATE dark-accent slot — lighter lilac (emphasised labels, reads on dark) */
-  --case-study-green: #c098ff; /* mapped to the lilac accent */
-  --case-study-green-deep: #9e6cee; /* pressed / deeper lilac */
+  --case-study-accent: #d3b5ff; /* accent — lilac (dividers / rules / callout rule) */
+  --case-study-accent-strong: #9e6cee; /* stronger/deeper lilac (emphasised labels, hover, pressed) */
 
   /* Vector's AI gradient + status spectrum (used sparingly for the sparkle / chips / blobs) */
   --ai-from: #c098ff; /* lilac */
@@ -156,7 +154,7 @@
   font-size: 28px;
   line-height: 1.2;
   color: var(--soft-ink);
-  border-left: 2px solid var(--green);
+  border-left: 2px solid var(--case-study-accent);
   padding: 4px 0 4px 24px;
 }
 
