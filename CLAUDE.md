@@ -361,6 +361,91 @@ cards, element-screenshot. Delete the temp script after.
   AI agents halo correct (incl. the "be nice to robots" egg), Vector = pea-green world with
   20-skill halo + case-study link, E.ON = caramel giant, drift band reads as one; 0 console
   errors, tsc + lint clean.
+- **ROUND 11 (same session): phase 1 now delays EVERYTHING, not just the camera.
+  UNCOMMITTED.** Her note: retract still overlapped the zoom even at max retractMs. Cause:
+  only `flyTo` was delayed — `setFocused` fired at click time, so the orb swap, label
+  switch, dims and the new halo's gather all started immediately and read as "the
+  transition". Rework: `beginRetract(prev, next)` runs IMPERATIVELY at click (freeze old
+  halo, reel edges in bright, collapse the new star's dim web edges, stash
+  sproutIdx/retractIdx in `hopPending`), and the ENTIRE focus switch
+  (`setFocused` + `flyTo`) sits behind the `flightTimer` (TUNING.retractMs). The focus
+  effect consumes `hopPending` when the hop lands and schedules only the sprout
+  (flightMs × sproutAt from flight start). releaseTimer deleted — the effect's normal
+  everyone-home + gather does the release at flight time. Probe-verified: through phase 1
+  focused stays old, camera 0px, halo 0.00 world movement, only ext changes; flip at
+  retractMs, sprout completes post-flight. Known micro-edge-case: double-hop mid-retract
+  leaves the first star's (invisible, alpha .03) web edges collapsed until the next
+  unfocus — harmless. tsc + lint clean, 0 console errors.
+- **ROUND 10 (same session): STRICT phase sequencing + live tuning panel. UNCOMMITTED.**
+  Her note: edges were still retracting mid-flight; she wants retract FULLY → then fly →
+  then sprout, zero overlap. Done: `focus()` detects a hop (focusedRef mirrors state) and
+  delays `flyTo` by the retract duration via `flightTimer`, so the camera sits parked at the
+  old planet while its edges reel in; release + sprout timers re-based off retract end.
+  Then her mid-turn ask: controls to tweak the feel herself. Built
+  **`galaxy/tuning.ts`** (mutable `TUNING` object: retractMs 600 / flightMs 1700 / sproutAt
+  0.66 / extRate 5 / gatherRate 3.2 — scene reads at call/frame time, never cached) +
+  **`galaxy/GalaxyTuner.tsx`** — dev-only slider panel (bottom-left "tune" chip in the frame,
+  NODE_ENV-gated at the SkillsGalaxy mount so it NEVER ships; stopPropagation so panel
+  clicks don't activate/focus/deactivate). When she lands on numbers, bake them into
+  TUNING_DEFAULTS. Smoke-tested: chip + all 5 sliders render, panel doesn't activate the
+  frame, 0 console errors, tsc + lint clean.
+- **ROUND 9 (same session): retract mirrored properly. UNCOMMITTED.** Her note: the sprout
+  looked perfect but leaving looked bad — she wanted the exact reverse (edges drawing INTO
+  the departing planet). Cause: the old halo was flying home WHILE its edges shrank, so
+  lines whipped around scattering stars. Fix: on hop, prev's halo members (minus ones shared
+  with the new halo) get their targetPos FROZEN at current live positions; a `releaseTimer`
+  (520ms) sends them home only after the edges have reeled in. Verified numerically via the
+  probe's new group-local `lx/ly/lz` fields: 0.00 world movement through +500ms, release by
+  +900ms. ⚠️ HEADLESS SCREENSHOT GOTCHA: on the stalled headless GPU, element.screenshot()
+  takes 1.5-2s internally, so "mid-flight" captures show POST-arrival states — mid-animation
+  choreography can only be judged by probe numbers or Caroline's real browser, never by
+  headless frames. (Also ruled out: Playwright does NOT emulate reduced-motion here.)
+- **ROUND 8 (same session): hop choreography + evaluator findings fixed. UNCOMMITTED.**
+  (1) **Focus-hop relay built** per her spec + AskUserQuestion answers (sprout final third /
+  no bridge for unconnected / faint web stays at rest / first-focus unchanged): per-edge
+  `ext` extension buffer (far endpoint lerps toward an anchor node) — leaving A retracts A's
+  edges INTO A while they stay bright (retractHold), the A↔B bridge survives the flight, B's
+  edges sprout from B via a 1122ms setTimeout; retracted threads quietly rejoin the dimmed
+  web after. (2) **Evaluator agent report** (93-node sweep): home clicks 88/88 ✓; real causes
+  of "dots don't open": labels not clickable (top), dt-CLAMPED lerps running ~10x slow at low
+  fps (races during glide), depth-biased picking, langchain projecting above the frame, tight
+  threshold. ALL FIXED: labels are now click targets → focus their node; every lerp is
+  exponential on REAL dt (`1 - exp(-rate*dt)`, framerate-independent); pickIndex compares
+  ANGULAR distance (`distanceToRay / distance`); threshold 0.42→0.6; HOME_CAM z 18.5 + layout
+  y-squash 0.85 (all non-egg stars verified in-frame at rest). (3) **TWO nasty bugs found
+  while verifying:** (a) giving the drei Html label WRAPPER pointerEvents:auto made R3F read
+  offsetX against the wrapper → NDC (-1,1) → rays shot to the canvas corner (clicks focused
+  random far nodes). Rule: wrapper stays pointerEvents:none, only the inner <p>/<a> opt in,
+  and label clicks stopPropagation NATIVELY (else R3F's container listener misparses them)
+  + dispatch `galaxy:activate` (SkillsGalaxy listens) since the stopped event can't bubble to
+  the frame's activation onClick. (b) halo members projected BELOW the frame (circular halo
+  vs wide window) → clicks on them landed outside → deactivate; halo vertical axis now
+  squashed ×0.72 (verified all members in-frame). Verified end-to-end: label click focuses +
+  activates, star hop eon→vector lands correctly with retract→bridge→sprout visible, halo
+  labels legible, 0 console errors, tsc + lint clean. Dev-only `__galaxyProbe`/`__galaxyEdges`
+  /`__galaxyFocused` hooks power the automated tests (NODE_ENV-gated). Minor known nit:
+  long halo labels can overlap on dense halos (evals/prompt-design) — cosmetic, unfixed.
+- **ROUND 7 (same session): dust de-lined + purple shift + HER GALAXY.MD CONTENT MERGED.
+  Rounds up to the patch-scatter committed as `819961f`; this round UNCOMMITTED.** (1) The
+  shared NEBULA_BAND axis is GONE (kept reading as a ruled line at any jitter) — gas is now 3
+  independent patches (top violets / centre-right pinks / lower-left sage-peach) + free wisps
+  on fully random axes. (2) Dust blues re-hued to her picks `#554FF0`/`#302D89` (muted
+  purple, "less saturated more purple"). (3) Her pasted GALAXY.md edits merged ON TOP of the
+  4 new E.ON projects: Burberry "led a team of 6 designers" (TODO resolved) · consultancy
+  "led creative projects for high-profile clients" · Julien Macdonald 2018-2019 mentored
+  interns · McQueen 2019-2021 · NEW JOBS Mary Katrantzou (2014-2017, 14 seasons) and Peter
+  Pilotto (2019, NO ROLE — sync now builds meta as [role,dates].filter(Boolean) so the label
+  shows just "2019") · gateway renamed "B2B handovers" · self-help/cog-ds/synapse one-liners
+  hers (synapse typos fixed: "owned backend and AI orchestration") · skills connects: her
+  additions (zero-to-one+eon, brand-identity+fashion houses, visual-craft+mary/pilotto/cog/
+  consultancy, motion-design+cog/eon/consultancy) merged, design-systems keeps BOTH eon and
+  eon-ds, print-design gained mary+pilotto. 95 nodes / 163 edges. margiela/job-search-agent/
+  cashu stay show:no. (4) **OPEN — focus-hop edge choreography, her brief:** when switching
+  focus from node A to node B, A's edges should RETRACT INTO A (halo stars become plain
+  stars), EXCEPT the A↔B edge which stays as a "connector bridge" during the camera flight,
+  then B's edges SPROUT FROM B's centre on arrival. She asked for follow-up questions —
+  asked 4 (sprout timing, no-bridge fallback, rest-state web visibility, first-focus sprout);
+  build it next once she answers. Click-evaluator agent still sweeping in the background.
 - **ROUND 6 (same session): fluid weather, nuanced planets, ring coverage, click-shield fixes,
   GALAXY.md content round. UNCOMMITTED** (round 5 committed `cf05e69`). Her notes: band too
   rigid (sent Milky Way refs — gas should float everywhere) · planets read as one texture

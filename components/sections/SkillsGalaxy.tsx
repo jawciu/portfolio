@@ -17,6 +17,7 @@
 import dynamic from "next/dynamic";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { getLenis } from "@/components/SmoothScroll";
+import { GalaxyTuner } from "./galaxy/GalaxyTuner";
 import { useGPUTier } from "@/lib/useGPUTier";
 import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 import { GALAXY_NODES, GALAXY_EDGES } from "@/lib/galaxyData";
@@ -46,6 +47,14 @@ export function SkillsGalaxy() {
     setActive(true);
     getLenis()?.stop();
   }, []);
+
+  // Label clicks stop native propagation (they'd corrupt R3F's pointer math),
+  // so they signal activation explicitly instead of bubbling to the frame.
+  useEffect(() => {
+    const fn = () => activate();
+    window.addEventListener("galaxy:activate", fn);
+    return () => window.removeEventListener("galaxy:activate", fn);
+  }, [activate]);
 
   // Esc, click outside the frame, or a wheel outside it → release the page.
   useEffect(() => {
@@ -119,6 +128,9 @@ export function SkillsGalaxy() {
           </div>
 
           <GalaxyCanvas active={active} visible={visible} reduced={reduced} tier={tier} />
+
+          {/* dev-only choreography tuning panel — never ships */}
+          {process.env.NODE_ENV !== "production" && <GalaxyTuner />}
 
           {/* label fade-in lives here so the section stays fully self-contained */}
           {/* only a `from` keyframe: it eases up to each label's own inline

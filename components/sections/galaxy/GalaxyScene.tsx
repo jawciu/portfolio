@@ -30,8 +30,9 @@ import gsap from "gsap";
 import { GALAXY_NODES, GALAXY_EDGES, type GalaxyNode } from "@/lib/galaxyData";
 import { layoutGalaxy } from "./layout";
 import { FocusOrb, orbExtent } from "./FocusOrb";
+import { TUNING } from "./tuning";
 
-const HOME_CAM = new THREE.Vector3(0, 2.5, 17);
+const HOME_CAM = new THREE.Vector3(0, 2, 18.5);
 const HOME_TARGET = new THREE.Vector3(0, 0, 0);
 
 // Halo geometry: neighbours gather on a ring of this radius; the camera
@@ -39,6 +40,11 @@ const HOME_TARGET = new THREE.Vector3(0, 0, 0);
 // of the frame whether a node has 3 connections or 21.
 const haloRadius = (n: number) => Math.min(2.2 + n * 0.09, 3.4);
 const flyDistance = (n: number) => Math.max(4.6, haloRadius(n) * 2.55);
+
+// Hop sequencing (Caroline's brief): retract COMPLETELY at the old planet,
+// only then fly, then sprout on approach. No overlap between the phases.
+// All timings/rates live in ./tuning.ts and are adjustable at runtime via
+// the dev-only GalaxyTuner panel — read them at call time, never cache.
 
 // Saturated per-cluster tints — the shader mixes them into white, so these
 // read as "white-ish but holographic" points that bloom into colour up close.
@@ -140,21 +146,18 @@ function radialTexture() {
 // flat radial-gradient sticker, and it genuinely parallaxes when the galaxy
 // rotates. In-splat fbm breaks the circular falloff into wisps.
 //
-// Hues are the HERO's mood, toned right down — the soft diffused blues,
-// corals, peaches, pinks and mints of the fireball/orb glow, never the raw
-// saturated spectrum (Caroline: "not shouty"). Instead of separate blobs the
-// clouds line up along ONE long diagonal drift that sweeps behind the whole
-// constellation (major axes share a band direction, see nebulaGeom), with a
-// couple of faint outliers and small white star-forming glows along the way.
+// Hues are the HERO's mood, toned right down — muted purples (Caroline's
+// #554FF0/#302D89), dusty pinks, corals, sage and peach, never the raw
+// saturated spectrum ("not shouty").
 // [core hue, edge hue, centre, spread (ellipsoid radii), amp scale]
 // Three separate patches (top / centre-right / lower-left) + free-floating
 // wisps between them, each cloud stretched along its OWN random axis — no
 // shared drift direction, so no readable line, just weather.
 const NEBULA_DEFS: [string, string, [number, number, number], [number, number, number], number][] = [
   // patch 1 — top, cool blues and violets
-  ["#5a68d9", "#2c3a8f", [-5, 4.5, -9], [6, 2.6, 3.6], 0.75],    // soft indigo
+  ["#554ff0", "#302d89", [-5, 4.5, -9], [6, 2.6, 3.6], 0.75],    // soft violet-indigo
   ["#8f6ad9", "#3d2c8f", [-1, 5.5, -8], [5.5, 2.4, 3], 0.7],     // muted violet
-  ["#4a5fae", "#22307a", [-8.5, 2.5, -10], [5, 2.2, 2.8], 0.55], // faint blue tail
+  ["#453fc0", "#282470", [-8.5, 2.5, -10], [5, 2.2, 2.8], 0.55], // faint purple tail
   // patch 2 — centre-right, pinks and corals
   ["#d9769a", "#8f3d5f", [4, 1, -8], [6.5, 2.6, 3.4], 0.7],      // dusty pink
   ["#e59a76", "#a05648", [7.5, 3.5, -9], [5.5, 2.4, 3], 0.65],   // faded coral
@@ -164,10 +167,10 @@ const NEBULA_DEFS: [string, string, [number, number, number], [number, number, n
   ["#e5b878", "#a06848", [-9, -4.5, -6.5], [5, 2.2, 2.8], 0.65], // warm peach
   // free-floating wisps in the gaps
   ["#8a6a4a", "#403020", [0, -0.5, -10], [9, 4, 4.5], 0.4],      // broad warm dust haze
-  ["#7a9ab8", "#2c4a6a", [2, -5.5, -8.5], [5.5, 2.4, 3], 0.5],   // steel blue, lower right
+  ["#7a85c0", "#302d89", [2, -5.5, -8.5], [5.5, 2.4, 3], 0.5],   // dusty periwinkle, lower right
   ["#a88ad9", "#4a2c8f", [9, 5.5, -10], [4.5, 2, 2.6], 0.5],     // lilac, upper right
   ["#c96a8f", "#7a3d56", [-3, -1, -8], [4.5, 2.2, 2.6], 0.45],   // rose, centre-left
-  ["#6a7ad9", "#2c3a8f", [4, 7, -9], [4.5, 2, 2.5], 0.45],       // blue, top
+  ["#554ff0", "#302d89", [4, 7, -9], [4.5, 2, 2.5], 0.45],       // violet, top
   // white star-forming glows, one per patch
   ["#ffffff", "#d9d0e5", [-3, 4.5, -8], [2.6, 1.4, 1.8], 0.35],
   ["#ffffff", "#bdeed9", [6, 1, -7.5], [3, 1.4, 2], 0.4],
@@ -428,17 +431,41 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
   const boostTarget = useRef(new Float32Array(nodes.length).fill(1));
   const edgeAlphaTarget = useRef(new Float32Array(layout.edgeIndices.length * 2).fill(REST_EDGE_ALPHA));
 
+  // ── focus-hop edge choreography (Caroline's relay brief) ───────────
+  // Hopping focus A→B: A's edges RETRACT into A (ext → 0, anchored at A),
+  // the A↔B bridge stays lit for the flight, and B's edges SPROUT from B
+  // (ext 0 → 1) in the final third of the flight. ext scales an edge's far
+  // endpoint toward its anchor; 1 = full length (the resting web).
+  const edgeExt = useRef(new Float32Array(layout.edgeIndices.length).fill(1));
+  const edgeExtTarget = useRef(new Float32Array(layout.edgeIndices.length).fill(1));
+  /** which endpoint the edge grows from / shrinks into: 0 none, 1 = a, 2 = b */
+  const edgeAnchor = useRef(new Int8Array(layout.edgeIndices.length));
+  /** 1 = keep this retracting edge bright until it has shrunk away */
+  const retractHold = useRef(new Uint8Array(layout.edgeIndices.length));
+  const sproutTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  /** set by beginRetract; consumed by the focus effect when the hop lands */
+  const hopPending = useRef<{ sproutIdx: number[]; retractIdx: number[] } | null>(null);
+  const prevFocused = useRef<number | null>(null);
+  useEffect(() => () => {
+    if (sproutTimer.current) clearTimeout(sproutTimer.current);
+  }, []);
+
   useEffect(() => {
     const dims = dimTarget.current;
     const boosts = boostTarget.current;
     const ea = edgeAlphaTarget.current;
     const targetPos = targetPosRef.current;
     if (!targetPos) return;
+    const prev = prevFocused.current;
+    prevFocused.current = focused;
+    if (sproutTimer.current) { clearTimeout(sproutTimer.current); sproutTimer.current = null; }
     targetPos.set(layout.positions); // everyone returns home by default
     if (focused === null) {
       dims.fill(0);
       boosts.fill(1);
       ea.fill(REST_EDGE_ALPHA);
+      edgeExtTarget.current.fill(1);
+      retractHold.current.fill(0);
       return;
     }
     const nbs = layout.neighbours[focused];
@@ -456,6 +483,21 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
         : 0.03;
       ea[k * 2] = ea[k * 2 + 1] = alpha;
     });
+
+    // Landing a hop: the retract (phase 1) already ran imperatively in
+    // beginRetract while `focused` still pointed at the old star — this
+    // effect fires at flight time (phase 2), so only the sprout remains.
+    if (hopPending.current && prev !== null && prev !== focused) {
+      const { sproutIdx, retractIdx } = hopPending.current;
+      hopPending.current = null;
+      const extT = edgeExtTarget.current;
+      sproutTimer.current = setTimeout(() => {
+        for (const k of sproutIdx) extT[k] = 1;
+        // the retracted threads quietly rejoin the (dimmed) resting web
+        for (const k of retractIdx) extT[k] = 1;
+        sproutTimer.current = null;
+      }, reduced ? 0 : TUNING.flightMs * TUNING.sproutAt);
+    }
 
     // gather the neighbourhood into a camera-facing halo around the star
     const c = new THREE.Vector3(
@@ -477,16 +519,18 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
       const depth = (((nb * 0.618) % 1) - 0.5) * 1.4;
       const p = c.clone()
         .addScaledVector(u, Math.cos(ang) * rr)
-        .addScaledVector(v, Math.sin(ang) * rr)
+        // the window is wide: squash the halo's vertical axis or the
+        // bottom-of-ring members project below the frame (unclickable)
+        .addScaledVector(v, Math.sin(ang) * rr * 0.72)
         .addScaledVector(dir, depth);
       targetPos.set([p.x, p.y, p.z], nb * 3);
     });
-  }, [focused, layout, nodes, camera]);
+  }, [focused, layout, nodes, camera, reduced, starGeom]);
 
   // ── camera fly-in / fly-home ──────────────────────────────────────
   const flyTo = useCallback((idx: number | null) => {
     const controls = controlsRef.current;
-    const dur = reduced ? 0 : idx === null ? 1.4 : 1.7;
+    const dur = reduced ? 0 : idx === null ? 1.4 : TUNING.flightMs / 1000;
     gsap.killTweensOf(camera.position);
     if (controls) gsap.killTweensOf(controls.target);
     let camTo: THREE.Vector3;
@@ -516,10 +560,74 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
     }
   }, [camera, layout, reduced]);
 
+  // Phase 1 of a hop, run imperatively AT CLICK TIME while `focused` still
+  // points at the old star: freeze its halo where it stands and reel every
+  // edge back in (bright), collapse the new star's dim web edges so they can
+  // sprout later. NOTHING else changes — no camera, no labels, no dims, no
+  // orb swap — so the retract plays out alone (Caroline's brief).
+  const beginRetract = useCallback((prev: number, next: number) => {
+    const targetPos = targetPosRef.current;
+    if (!targetPos) return;
+    const live = (starGeom.getAttribute("position") as THREE.BufferAttribute).array as Float32Array;
+    const ext = edgeExt.current;
+    const extT = edgeExtTarget.current;
+    const anch = edgeAnchor.current;
+    const hold = retractHold.current;
+    const ea = edgeAlphaTarget.current;
+    for (const nb of layout.neighbours[prev]) {
+      if (nb === next) continue;
+      targetPos.set([live[nb * 3], live[nb * 3 + 1], live[nb * 3 + 2]], nb * 3);
+    }
+    const sproutIdx: number[] = [];
+    const retractIdx: number[] = [];
+    layout.edgeIndices.forEach(([a, b], k) => {
+      const touchesPrev = a === prev || b === prev;
+      const touchesNew = a === next || b === next;
+      if (touchesPrev && touchesNew) { extT[k] = 1; hold[k] = 0; return; } // the bridge stays
+      if (touchesPrev) {
+        // reel into the star we are leaving, staying bright while it shrinks
+        anch[k] = a === prev ? 1 : 2;
+        extT[k] = 0;
+        hold[k] = 1;
+        ea[k * 2] = ea[k * 2 + 1] = 0.5;
+        retractIdx.push(k);
+      } else if (touchesNew) {
+        // collapse instantly (invisible at web alpha), sprout on approach
+        anch[k] = a === next ? 1 : 2;
+        ext[k] = 0;
+        extT[k] = 0;
+        sproutIdx.push(k);
+      }
+    });
+    hopPending.current = { sproutIdx, retractIdx };
+  }, [layout, starGeom]);
+
+  // Hops run phase 1 to completion BEFORE anything else happens: the whole
+  // focus switch (camera, labels, dims, orb, gather) is what gets delayed,
+  // not just the flight. focusedRef mirrors state so the callback can detect
+  // a hop without re-creating itself.
+  const focusedRef = useRef<number | null>(null);
+  const flightTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const focus = useCallback((idx: number | null) => {
-    setFocused(idx);
-    flyTo(idx);
-  }, [flyTo]);
+    const prevIdx = focusedRef.current;
+    const isHop = prevIdx !== null && idx !== null && idx !== prevIdx;
+    focusedRef.current = idx;
+    if (flightTimer.current) { clearTimeout(flightTimer.current); flightTimer.current = null; }
+    if (isHop && !reduced) {
+      beginRetract(prevIdx, idx);
+      flightTimer.current = setTimeout(() => {
+        flightTimer.current = null;
+        setFocused(idx);
+        flyTo(idx);
+      }, TUNING.retractMs);
+    } else {
+      setFocused(idx);
+      flyTo(idx);
+    }
+  }, [flyTo, reduced, beginRetract]);
+  useEffect(() => () => {
+    if (flightTimer.current) clearTimeout(flightTimer.current);
+  }, []);
 
   // A user grab always beats the choreography — kill in-flight tweens.
   useEffect(() => {
@@ -557,7 +665,10 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
   // ── per-frame work ────────────────────────────────────────────────
   const driftSpeed = useRef(0);
   useFrame((_, dt) => {
-    const t = Math.min(dt, 0.05);
+    const t = Math.min(dt, 0.05); // clamped: shader time + rotations only
+    // exponential smoothing on REAL dt — converges identically at any framerate
+    // (the evaluator measured the old dt-clamped lerps running ~10x slow at 4.5fps)
+    const kPos = reduced ? 1 : 1 - Math.exp(-TUNING.gatherRate * dt);
     if (starMatRef.current) starMatRef.current.uniforms.uTime.value += t;
     if (bgMatRef.current) bgMatRef.current.uniforms.uTime.value += t;
     if (dustMatRef.current) dustMatRef.current.uniforms.uTime.value += t;
@@ -566,16 +677,16 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
       if (!reduced) u.uTime.value += t;
       // gas backs off while a neighbourhood is focused so labels stay legible
       const fadeGoal = focused !== null ? 0.35 : 1;
-      u.uFade.value += (fadeGoal - u.uFade.value) * Math.min(1, t * 3);
+      u.uFade.value += (fadeGoal - u.uFade.value) * (1 - Math.exp(-3 * dt));
     }
 
     // idle drift eases in and out instead of stopping dead
     const driftGoal = !active && focused === null && !reduced ? 0.02 : 0;
-    driftSpeed.current += (driftGoal - driftSpeed.current) * Math.min(1, t * 2);
+    driftSpeed.current += (driftGoal - driftSpeed.current) * (1 - Math.exp(-2 * dt));
     if (groupRef.current) groupRef.current.rotation.y += driftSpeed.current * t * 60 * 0.0167;
     if (dustRef.current && !reduced) dustRef.current.rotation.y -= t * 0.004;
 
-    const k = reduced ? 1 : Math.min(1, t * 6.5);
+    const k = reduced ? 1 : 1 - Math.exp(-6.5 * dt);
     // gather / release: lerp live positions toward targets
     const posAttr = starGeom.getAttribute("position") as THREE.BufferAttribute;
     const live = posAttr.array as Float32Array;
@@ -584,16 +695,43 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
     if (targetPos) {
       for (let i = 0; i < live.length; i++) {
         const d = targetPos[i] - live[i];
-        if (Math.abs(d) > 0.0005) { live[i] += d * Math.min(1, reduced ? 1 : t * 3.2); posMoved = true; }
+        if (Math.abs(d) > 0.0005) { live[i] += d * kPos; posMoved = true; }
       }
     }
-    if (posMoved) {
+    // retract / sprout: lerp edge extensions toward targets
+    const ext = edgeExt.current;
+    const extT = edgeExtTarget.current;
+    const anch = edgeAnchor.current;
+    const hold = retractHold.current;
+    const kExt = reduced ? 1 : 1 - Math.exp(-TUNING.extRate * dt);
+    let extMoved = false;
+    for (let i = 0; i < ext.length; i++) {
+      const d = extT[i] - ext[i];
+      if (Math.abs(d) > 0.002) { ext[i] += d * kExt; extMoved = true; }
+      // a retracting edge stays bright until it has shrunk away, then dims
+      if (hold[i] && ext[i] <= 0.05) {
+        hold[i] = 0;
+        edgeAlphaTarget.current[i * 2] = edgeAlphaTarget.current[i * 2 + 1] = 0.03;
+      }
+    }
+    if (posMoved || extMoved) {
       posAttr.needsUpdate = true;
       const ePos = edgeGeom.getAttribute("position") as THREE.BufferAttribute;
       const eArr = ePos.array as Float32Array;
       layout.edgeIndices.forEach(([a, b], m) => {
-        eArr[m * 6] = live[a * 3]; eArr[m * 6 + 1] = live[a * 3 + 1]; eArr[m * 6 + 2] = live[a * 3 + 2];
-        eArr[m * 6 + 3] = live[b * 3]; eArr[m * 6 + 4] = live[b * 3 + 1]; eArr[m * 6 + 5] = live[b * 3 + 2];
+        let ax = live[a * 3], ay = live[a * 3 + 1], az = live[a * 3 + 2];
+        let bx = live[b * 3], by = live[b * 3 + 1], bz = live[b * 3 + 2];
+        const e = ext[m];
+        if (e < 0.999) {
+          if (anch[m] === 2) {
+            // b is the anchor: the a-side endpoint pulls toward b
+            ax = bx + (ax - bx) * e; ay = by + (ay - by) * e; az = bz + (az - bz) * e;
+          } else {
+            bx = ax + (bx - ax) * e; by = ay + (by - ay) * e; bz = az + (bz - az) * e;
+          }
+        }
+        eArr[m * 6] = ax; eArr[m * 6 + 1] = ay; eArr[m * 6 + 2] = az;
+        eArr[m * 6 + 3] = bx; eArr[m * 6 + 4] = by; eArr[m * 6 + 5] = bz;
       });
       ePos.needsUpdate = true;
     }
@@ -657,11 +795,19 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
           x: rect.x + ((v.x + 1) / 2) * rect.width,
           y: rect.y + ((1 - v.y) / 2) * rect.height,
           inFront: v.z < 1,
+          // group-local position: lets tests verify freezes/gathers without
+          // camera motion contaminating the measurement
+          lx: live[i * 3], ly: live[i * 3 + 1], lz: live[i * 3 + 2],
         };
       });
     };
     w.__galaxyFocused = focused === null ? null : nodes[focused].id;
-    return () => { delete w.__galaxyProbe; delete w.__galaxyFocused; };
+    w.__galaxyEdges = () => ({
+      ext: Array.from(edgeExt.current),
+      extT: Array.from(edgeExtTarget.current),
+      hold: Array.from(retractHold.current),
+    });
+    return () => { delete w.__galaxyProbe; delete w.__galaxyFocused; delete w.__galaxyEdges; };
   }, [nodes, camera, gl, starGeom, focused]);
 
   // ── labels ────────────────────────────────────────────────────────
@@ -812,7 +958,10 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
         )}
 
         {/* labels — DOM text pinned to (moving) stars. zIndexRange stays below
-            the window-chrome bar (z-20) so labels slide under it, not over. */}
+            the window-chrome bar (z-20) so labels slide under it, not over.
+            Labels are CLICK TARGETS (the evaluator's top finding: users click
+            the visible name, and that click used to miss the tiny star) —
+            except hover labels, which chase the cursor and would flicker. */}
         {labelSet.map(({ idx, kind }) => {
           // push the focused label clear of the close-up body (ring included)
           const offsetPx = kind === "focused"
@@ -820,11 +969,18 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
             : 14;
           return (
             <LabelAnchor key={`${nodes[idx].id}-${kind}`} idx={idx} live={livePos}>
-              <Html
-                zIndexRange={[15, 0]}
-                style={{ pointerEvents: kind === "focused" && nodes[idx].link ? "auto" : "none" }}
-              >
-                <GalaxyLabel node={nodes[idx]} kind={kind} offsetPx={offsetPx} />
+              {/* the Html WRAPPER must stay pointer-transparent: its layout box
+                  sits exactly on the star (the text is only transform-shifted),
+                  and a pointer-active wrapper makes R3F read offsetX against
+                  the wrapper → the ray shoots to the canvas corner. Only the
+                  text itself opts back in, inside GalaxyLabel. */}
+              <Html zIndexRange={[15, 0]} style={{ pointerEvents: "none" }}>
+                <GalaxyLabel
+                  node={nodes[idx]}
+                  kind={kind}
+                  offsetPx={offsetPx}
+                  onSelect={kind === "focused" || kind === "hover" ? undefined : () => focus(idx)}
+                />
               </Html>
             </LabelAnchor>
           );
@@ -842,7 +998,9 @@ function pickIndex(intersections: THREE.Intersection[]): number | null {
   let bestD = Infinity;
   for (const hit of intersections) {
     if (hit.index === undefined) continue;
-    const d = hit.distanceToRay ?? 0;
+    // angular distance: world offset from the ray scaled by how far away the
+    // hit is — a depth-biased compare let near stars steal far stars' clicks
+    const d = (hit.distanceToRay ?? 0) / Math.max(hit.distance, 0.0001);
     if (d < bestD) { bestD = d; best = hit.index; }
   }
   return best;
@@ -862,7 +1020,9 @@ function LabelAnchor({ idx, live, children }: { idx: number; live: Float32Array;
   );
 }
 
-function GalaxyLabel({ node, kind, offsetPx }: { node: GalaxyNode; kind: string; offsetPx: number }) {
+function GalaxyLabel({ node, kind, offsetPx, onSelect }: {
+  node: GalaxyNode; kind: string; offsetPx: number; onSelect?: () => void;
+}) {
   const primary = kind === "focused";
   return (
     <div
@@ -875,11 +1035,25 @@ function GalaxyLabel({ node, kind, offsetPx }: { node: GalaxyNode; kind: string;
         animation: "galaxy-label-in 0.45s ease both",
       }}
     >
+      {/* clicks must NOT reach R3F's container listener (it would misread
+          offsetX against this element and fire a bogus pointer-missed), so
+          the native event is stopped here; window activation is signalled
+          explicitly instead of relying on bubbling. */}
       <p
+        onClick={onSelect ? (ev) => {
+          ev.stopPropagation();
+          ev.nativeEvent.stopPropagation();
+          window.dispatchEvent(new CustomEvent("galaxy:activate"));
+          onSelect();
+        } : undefined}
+        onPointerDown={onSelect ? (ev) => { ev.stopPropagation(); ev.nativeEvent.stopPropagation(); } : undefined}
+        role={onSelect ? "button" : undefined}
+        style={onSelect ? { pointerEvents: "auto" } : undefined}
         className={
-          primary
+          (primary
             ? "font-mono text-xs font-bold tracking-[0.08em] text-fg"
-            : "font-mono text-[11px] tracking-[0.08em] text-fg/80"
+            : "font-mono text-[11px] tracking-[0.08em] text-fg/80") +
+          (onSelect ? " cursor-pointer hover:text-fg" : "")
         }
       >
         {node.name}
@@ -898,7 +1072,9 @@ function GalaxyLabel({ node, kind, offsetPx }: { node: GalaxyNode; kind: string;
       {primary && node.link && (
         <a
           href={node.link}
-          onClick={(e) => e.stopPropagation()}
+          onClick={(e) => { e.stopPropagation(); e.nativeEvent.stopPropagation(); }}
+          onPointerDown={(e) => { e.stopPropagation(); e.nativeEvent.stopPropagation(); }}
+          style={{ pointerEvents: "auto" }}
           className="mt-1 inline-block font-mono text-[10px] tracking-[0.12em] text-fg/70 underline underline-offset-4 hover:text-fg"
           {...(node.link.startsWith("http") ? { target: "_blank", rel: "noreferrer" } : {})}
         >
@@ -924,7 +1100,7 @@ export default function GalaxyCanvas({ active, visible, reduced, tier }: GalaxyC
       gl={{ powerPreference: "high-performance", antialias: false, alpha: false }}
       camera={{ position: HOME_CAM.toArray(), fov: 45 }}
       frameloop={visible ? "always" : "never"}
-      raycaster={{ params: { Points: { threshold: 0.42 }, Line: { threshold: 0 }, Mesh: {}, LOD: {}, Sprite: {} } }}
+      raycaster={{ params: { Points: { threshold: 0.6 }, Line: { threshold: 0 }, Mesh: {}, LOD: {}, Sprite: {} } }}
       onPointerDown={(e) => { missGuard.current = [e.clientX, e.clientY]; }}
       onPointerMissed={(e) => {
         // an orbit drag ends with a "missed click" — only unfocus real clicks

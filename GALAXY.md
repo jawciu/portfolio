@@ -30,10 +30,12 @@ Live Help, 360 call analytics and Performance insights are IN BUILD, frame as bu
 | yes  | cog        | Cog               | founding designer      | 2023 – 2025 | 0→1 ADHD app and online therapy clinic, first design hire        |
 | yes  | brainstation | BrainStation    | product design educator | 2023       | top of class, then came back to teach it                         |
 | yes  | casablanca | Casablanca Paris  | senior print designer  | 2022 – 2023 | luxury fashion house, print and graphics                         |
-| yes  | burberry   | Burberry          | senior print designer  | 2021 – 2022 | TODO(caro): managed a team of 6? confirm the number              |
-| yes  | consultancy | Design consultant | self-employed         | 2019 – 2021 | freelance print and branding across fashion                      |
-| yes  | julien-macdonald | Julien Macdonald | knitwear & print designer | TODO(caro) dates | TODO(caro): managed 12 interns? confirm              |
-| yes  | mcqueen    | Alexander McQueen | print designer         | TODO(caro) dates | couture-level craft under pressure                          |
+| yes  | burberry   | Burberry          | senior print designer  | 2021 – 2022 | led a team of 6 designers                                        |
+| yes  | consultancy | Design consultant | self-employed         | 2019 – 2021 | led creative projects for high-profile clients                   |
+| yes  | julien-macdonald | Julien Macdonald | knitwear & print designer | 2018 – 2019 | mentored and coordinated a group of interns             |
+| yes  | mcqueen    | Alexander McQueen | print designer         | 2019 – 2021 | couture-level craft under pressure                          |
+| yes  | mary       | Mary Katrantzou   | textile & print designer | 2014 – 2017 | textiles and graphics for shows and commercial work across 14 seasons |
+| yes  | pilotto    | Peter Pilotto     |                        | 2019        | managed garment print production and sampling                    |
 | no   | margiela   | Maison Margiela   | print designer         | TODO(caro) dates | TODO(caro): confirm role + dates before showing             |
 
 ## Projects
@@ -43,7 +45,7 @@ Live Help, 360 call analytics and Performance insights are IN BUILD, frame as bu
 | yes  | wiki-whisperer  | eon    | Wiki Whisperer V2       | rebuilt a failed AI assistant into an agent 97% would recommend        | /project/wiki-whisperer |
 | yes  | ai-design-system | eon   | AI design system        | one design language for every E.ON Next AI product, built from scratch |                         |
 | yes  | performance-tools | eon  | Performance tools       | replaced 12+ Tableau reports with one coaching dashboard               |                         |
-| yes  | gateway         | eon    | Gateway handovers       | developer handovers, from spreadsheet debt to a product                |                         |
+| yes  | gateway         | eon    | B2B handovers           | property developer handovers, from spreadsheet debt to a product       |                         |
 | yes  | figma-make-kit  | eon    | Figma Make boilerplates | on-brand prototyping kits adopted across product teams                 |                         |
 | yes  | live-help       | eon    | Live Help               | live transcription that catches a missed journey step and nudges it back, in build |             |
 | yes  | call-analytics  | eon    | 360 call analytics      | AI call evaluation trained on leaders' past reviews, every call instead of two a month |         |
@@ -53,11 +55,11 @@ Live Help, 360 call analytics and Performance insights are IN BUILD, frame as bu
 | yes  | check-in        | cog    | Check-in history        | weekly symptom overview so users could answer "how was your week?"     |                         |
 | yes  | daily-insights  | cog    | Daily insights          | 150+ therapist-written insights with a matching algorithm              |                         |
 | yes  | subscription    | cog    | Subscription launch     | designed the free-to-paid transition and first recurring revenue       |                         |
-| yes  | self-help       | cog    | CBT self-help modules   | turned therapist jargon into bite-sized illustrated stories            |                         |
+| yes  | self-help       | cog    | CBT self-help modules   | turned the in-person therapy journey into bite-sized illustrated stories            |                         |
 | yes  | cog-website     | cog    | cogadhd.com             | designed and built the marketing site in three weeks                   |                         |
-| yes  | cog-ds          | cog    | Cog design system       | tokens, variables and colour modes, built from zero                    |                         |
+| yes  | cog-ds          | cog    | Cog design system       | reusable component library and brand kit                    |                         |
 | yes  | vector          |        | Vector                  | AI-native B2B onboarding workspace, designed and built solo            | /project/vector         |
-| yes  | synapse         |        | Synapse                 | memory-first journaling agent on a knowledge graph, team of three      | https://github.com/jawciu/synapse |
+| yes  | synapse         |        | Synapse                 | memory-first journaling agent on a knowledge graph, owned backend and AI orchestration      | https://github.com/jawciu/synapse |
 | yes  | portfolio       |        | This site               | hand-built WebGL portfolio, the galaxy you are flying through          | https://github.com/jawciu/portfolio |
 | no   | job-search-agent |       | Job-search agent        | an agentic system that scans, digests and finds her next role          |                         |
 | no   | cashu           | brainstation | Cashu             | end-to-end personal finance app for 18-25s, tested twice               |                         |
@@ -68,16 +70,16 @@ Clusters: `design` · `research` · `ai` · `engineering` · `product` · `leade
 
 | show | id                | cluster     | name                     | size | featured | connects                                            |
 | ---- | ----------------- | ----------- | ------------------------ | ---- | -------- | --------------------------------------------------- |
-| yes  | zero-to-one       | design      | 0→1 product design       | 3    | yes      | cog vector gateway                             |
-| yes  | design-systems    | design      | design systems           | 3    | yes      | ai-design-system cog-ds vector eon-ds                   |
-| yes  | brand-identity    | design      | brand identity           | 2    |          | ai-design-system cog-website vector                  |
-| yes  | visual-craft      | design      | visual craft             | 2    |          | burberry mcqueen casablanca brand-identity           |
-| yes  | motion-design     | design      | motion design            | 1    |          | ai-design-system portfolio                           |
+| yes  | zero-to-one       | design      | 0→1 product design       | 3    | yes      | cog vector gateway eon                         |
+| yes  | design-systems    | design      | design systems           | 3    | yes      | ai-design-system cog-ds vector eon eon-ds     |
+| yes  | brand-identity    | design      | brand identity           | 2    |          | ai-design-system cog-website vector cog burberry casablanca julien-macdonald mcqueen consultancy |
+| yes  | visual-craft      | design      | visual craft             | 2    |          | burberry mcqueen casablanca brand-identity cog consultancy mary pilotto |
+| yes  | motion-design     | design      | motion design            | 1    |          | ai-design-system portfolio cog eon consultancy       |
 | yes  | dense-data-ui     | design      | dense-data UI            | 2    |          | performance-tools gateway vector                     |
 | yes  | accessibility     | design      | accessibility            | 1    |          | eon cog                                              |
 | yes  | prototyping       | design      | prototyping              | 1    |          | eon cog figma-make-kit                               |
 | yes  | figma-advanced    | design      | Figma, the deep end      | 2    |          | design-systems eon cog                               |
-| yes  | print-design      | design      | print & textile design   | 2    |          | burberry casablanca julien-macdonald mcqueen consultancy |
+| yes  | print-design      | design      | print & textile design   | 2    |          | burberry casablanca julien-macdonald mcqueen consultancy mary pilotto |
 | yes  | art-direction     | design      | art direction            | 1    |          | eon cog-website print-design                         |
 | yes  | information-arch  | design      | information architecture | 1    |          | cog-website gateway                                  |
 | yes  | conversion-design | design      | conversion design        | 1    |          | cog-clinic subscription                              |

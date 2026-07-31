@@ -136,6 +136,9 @@ export function layoutGalaxy(nodes: GalaxyNode[], edges: GalaxyEdge[]): LaidOutG
   const scale = 11.5 / (maxR || 1);
   const out = new Float32Array(n * 3);
   for (let i = 0; i < n * 3; i++) out[i] = pos[i] * scale;
+  // squash height a touch: the window is wide, and un-squashed the tallest
+  // skills poked above the frame at the home camera (unclickable at rest)
+  for (let i = 0; i < n; i++) out[i * 3 + 1] *= 0.85;
 
   return { positions: out, index, neighbours, edgeIndices };
 }

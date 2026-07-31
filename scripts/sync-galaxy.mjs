@@ -52,7 +52,7 @@ const edges = [];
 for (const j of jobs) {
   nodes.push({
     id: j.id, type: "job", name: j.name, cluster: "career",
-    line: j["one-liner"], meta: `${j.role} · ${j.dates}`, size: 2,
+    line: j["one-liner"], meta: [j.role, j.dates].filter(Boolean).join(" · "), size: 2,
   });
 }
 for (const p of projects) {

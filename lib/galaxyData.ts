@@ -67,7 +67,7 @@ export const GALAXY_NODES: GalaxyNode[] = [
     "type": "job",
     "name": "Burberry",
     "cluster": "career",
-    "line": "TODO(caro): managed a team of 6? confirm the number",
+    "line": "led a team of 6 designers",
     "meta": "senior print designer · 2021 – 2022",
     "size": 2
   },
@@ -76,7 +76,7 @@ export const GALAXY_NODES: GalaxyNode[] = [
     "type": "job",
     "name": "Design consultant",
     "cluster": "career",
-    "line": "freelance print and branding across fashion",
+    "line": "led creative projects for high-profile clients",
     "meta": "self-employed · 2019 – 2021",
     "size": 2
   },
@@ -85,8 +85,8 @@ export const GALAXY_NODES: GalaxyNode[] = [
     "type": "job",
     "name": "Julien Macdonald",
     "cluster": "career",
-    "line": "TODO(caro): managed 12 interns? confirm",
-    "meta": "knitwear & print designer · TODO(caro) dates",
+    "line": "mentored and coordinated a group of interns",
+    "meta": "knitwear & print designer · 2018 – 2019",
     "size": 2
   },
   {
@@ -95,7 +95,25 @@ export const GALAXY_NODES: GalaxyNode[] = [
     "name": "Alexander McQueen",
     "cluster": "career",
     "line": "couture-level craft under pressure",
-    "meta": "print designer · TODO(caro) dates",
+    "meta": "print designer · 2019 – 2021",
+    "size": 2
+  },
+  {
+    "id": "mary",
+    "type": "job",
+    "name": "Mary Katrantzou",
+    "cluster": "career",
+    "line": "textiles and graphics for shows and commercial work across 14 seasons",
+    "meta": "textile & print designer · 2014 – 2017",
+    "size": 2
+  },
+  {
+    "id": "pilotto",
+    "type": "job",
+    "name": "Peter Pilotto",
+    "cluster": "career",
+    "line": "managed garment print production and sampling",
+    "meta": "2019",
     "size": 2
   },
   {
@@ -126,9 +144,9 @@ export const GALAXY_NODES: GalaxyNode[] = [
   {
     "id": "gateway",
     "type": "project",
-    "name": "Gateway handovers",
+    "name": "B2B handovers",
     "cluster": "career",
-    "line": "developer handovers, from spreadsheet debt to a product",
+    "line": "property developer handovers, from spreadsheet debt to a product",
     "size": 1
   },
   {
@@ -209,7 +227,7 @@ export const GALAXY_NODES: GalaxyNode[] = [
     "type": "project",
     "name": "CBT self-help modules",
     "cluster": "career",
-    "line": "turned therapist jargon into bite-sized illustrated stories",
+    "line": "turned the in-person therapy journey into bite-sized illustrated stories",
     "size": 1
   },
   {
@@ -225,7 +243,7 @@ export const GALAXY_NODES: GalaxyNode[] = [
     "type": "project",
     "name": "Cog design system",
     "cluster": "career",
-    "line": "tokens, variables and colour modes, built from zero",
+    "line": "reusable component library and brand kit",
     "size": 1
   },
   {
@@ -242,7 +260,7 @@ export const GALAXY_NODES: GalaxyNode[] = [
     "type": "project",
     "name": "Synapse",
     "cluster": "career",
-    "line": "memory-first journaling agent on a knowledge graph, team of three",
+    "line": "memory-first journaling agent on a knowledge graph, owned backend and AI orchestration",
     "size": 2,
     "link": "https://github.com/jawciu/synapse"
   },
@@ -730,4 +748,4 @@ export const GALAXY_NODES: GalaxyNode[] = [
   }
 ];
 
-export const GALAXY_EDGES: GalaxyEdge[] = [["wiki-whisperer","eon"],["ai-design-system","eon"],["performance-tools","eon"],["gateway","eon"],["figma-make-kit","eon"],["live-help","eon"],["call-analytics","eon"],["perf-insights","eon"],["eon-ds","eon"],["cog-clinic","cog"],["check-in","cog"],["daily-insights","cog"],["subscription","cog"],["self-help","cog"],["cog-website","cog"],["cog-ds","cog"],["zero-to-one","cog"],["zero-to-one","vector"],["zero-to-one","gateway"],["design-systems","ai-design-system"],["design-systems","cog-ds"],["design-systems","vector"],["design-systems","eon-ds"],["brand-identity","ai-design-system"],["brand-identity","cog-website"],["brand-identity","vector"],["visual-craft","burberry"],["visual-craft","mcqueen"],["visual-craft","casablanca"],["visual-craft","brand-identity"],["motion-design","ai-design-system"],["motion-design","portfolio"],["dense-data-ui","performance-tools"],["dense-data-ui","gateway"],["dense-data-ui","vector"],["accessibility","eon"],["accessibility","cog"],["prototyping","eon"],["prototyping","cog"],["prototyping","figma-make-kit"],["figma-advanced","design-systems"],["figma-advanced","eon"],["figma-advanced","cog"],["print-design","burberry"],["print-design","casablanca"],["print-design","julien-macdonald"],["print-design","mcqueen"],["print-design","consultancy"],["art-direction","eon"],["art-direction","cog-website"],["art-direction","print-design"],["information-arch","cog-website"],["information-arch","gateway"],["conversion-design","cog-clinic"],["conversion-design","subscription"],["user-interviews","cog"],["user-interviews","eon"],["user-interviews","cog-clinic"],["usability-testing","cog-clinic"],["usability-testing","wiki-whisperer"],["pilot-design","wiki-whisperer"],["pilot-design","eon"],["ab-testing","cog-clinic"],["personas-journeys","cog"],["personas-journeys","cog-clinic"],["competitive-analysis","cog"],["competitive-analysis","vector"],["field-research","eon"],["research-ops","eon"],["surveys","eon"],["surveys","cog"],["ai-agents","wiki-whisperer"],["ai-agents","vector"],["ai-agents","synapse"],["ai-agents","live-help"],["langgraph","wiki-whisperer"],["langgraph","synapse"],["langchain","synapse"],["rag","wiki-whisperer"],["rag","synapse"],["knowledge-graphs","synapse"],["knowledge-graphs","portfolio"],["claude-api","vector"],["prompt-design","vector"],["prompt-design","synapse"],["prompt-design","wiki-whisperer"],["prompt-design","live-help"],["evals","wiki-whisperer"],["evals","vector"],["evals","synapse"],["evals","call-analytics"],["guardrails","wiki-whisperer"],["guardrails","vector"],["human-in-the-loop","vector"],["human-in-the-loop","wiki-whisperer"],["ai-observability","vector"],["ai-observability","synapse"],["ai-observability","eon"],["model-benchmarking","synapse"],["agent-workflows","portfolio"],["agent-workflows","vector"],["typescript-react","vector"],["typescript-react","portfolio"],["nextjs","vector"],["nextjs","portfolio"],["tailwind","vector"],["tailwind","portfolio"],["python-fastapi","synapse"],["postgres-prisma","vector"],["surrealdb","synapse"],["webgl-glsl","portfolio"],["r3f","portfolio"],["gsap","portfolio"],["playwright","vector"],["playwright","portfolio"],["webhooks-crons","vector"],["webflow","cog-website"],["product-metrics","eon"],["product-metrics","cog"],["product-metrics","vector"],["product-metrics","wiki-whisperer"],["product-metrics","perf-insights"],["business-cases","performance-tools"],["monetisation","subscription"],["monetisation","cog-clinic"],["stakeholder-mgmt","eon"],["stakeholder-mgmt","cog"],["roadmapping","cog"],["roadmapping","eon"],["icp-research","vector"],["mentoring","brainstation"],["mentoring","burberry"],["mentoring","eon"],["workshops","eon"],["team-leadership","burberry"],["team-leadership","julien-macdonald"],["founding-autonomy","cog"],["founding-autonomy","gateway"],["founding-autonomy","vector"],["cross-functional","eon"],["cross-functional","cog"],["golf","team-leadership"],["frisbee","golf"],["christmas-ds","cog-ds"],["praise-ai","ai-agents"],["commit-streak","portfolio"]];
+export const GALAXY_EDGES: GalaxyEdge[] = [["wiki-whisperer","eon"],["ai-design-system","eon"],["performance-tools","eon"],["gateway","eon"],["figma-make-kit","eon"],["live-help","eon"],["call-analytics","eon"],["perf-insights","eon"],["eon-ds","eon"],["cog-clinic","cog"],["check-in","cog"],["daily-insights","cog"],["subscription","cog"],["self-help","cog"],["cog-website","cog"],["cog-ds","cog"],["zero-to-one","cog"],["zero-to-one","vector"],["zero-to-one","gateway"],["zero-to-one","eon"],["design-systems","ai-design-system"],["design-systems","cog-ds"],["design-systems","vector"],["design-systems","eon"],["design-systems","eon-ds"],["brand-identity","ai-design-system"],["brand-identity","cog-website"],["brand-identity","vector"],["brand-identity","cog"],["brand-identity","burberry"],["brand-identity","casablanca"],["brand-identity","julien-macdonald"],["brand-identity","mcqueen"],["brand-identity","consultancy"],["visual-craft","burberry"],["visual-craft","mcqueen"],["visual-craft","casablanca"],["visual-craft","brand-identity"],["visual-craft","cog"],["visual-craft","consultancy"],["visual-craft","mary"],["visual-craft","pilotto"],["motion-design","ai-design-system"],["motion-design","portfolio"],["motion-design","cog"],["motion-design","eon"],["motion-design","consultancy"],["dense-data-ui","performance-tools"],["dense-data-ui","gateway"],["dense-data-ui","vector"],["accessibility","eon"],["accessibility","cog"],["prototyping","eon"],["prototyping","cog"],["prototyping","figma-make-kit"],["figma-advanced","design-systems"],["figma-advanced","eon"],["figma-advanced","cog"],["print-design","burberry"],["print-design","casablanca"],["print-design","julien-macdonald"],["print-design","mcqueen"],["print-design","consultancy"],["print-design","mary"],["print-design","pilotto"],["art-direction","eon"],["art-direction","cog-website"],["art-direction","print-design"],["information-arch","cog-website"],["information-arch","gateway"],["conversion-design","cog-clinic"],["conversion-design","subscription"],["user-interviews","cog"],["user-interviews","eon"],["user-interviews","cog-clinic"],["usability-testing","cog-clinic"],["usability-testing","wiki-whisperer"],["pilot-design","wiki-whisperer"],["pilot-design","eon"],["ab-testing","cog-clinic"],["personas-journeys","cog"],["personas-journeys","cog-clinic"],["competitive-analysis","cog"],["competitive-analysis","vector"],["field-research","eon"],["research-ops","eon"],["surveys","eon"],["surveys","cog"],["ai-agents","wiki-whisperer"],["ai-agents","vector"],["ai-agents","synapse"],["ai-agents","live-help"],["langgraph","wiki-whisperer"],["langgraph","synapse"],["langchain","synapse"],["rag","wiki-whisperer"],["rag","synapse"],["knowledge-graphs","synapse"],["knowledge-graphs","portfolio"],["claude-api","vector"],["prompt-design","vector"],["prompt-design","synapse"],["prompt-design","wiki-whisperer"],["prompt-design","live-help"],["evals","wiki-whisperer"],["evals","vector"],["evals","synapse"],["evals","call-analytics"],["guardrails","wiki-whisperer"],["guardrails","vector"],["human-in-the-loop","vector"],["human-in-the-loop","wiki-whisperer"],["ai-observability","vector"],["ai-observability","synapse"],["ai-observability","eon"],["model-benchmarking","synapse"],["agent-workflows","portfolio"],["agent-workflows","vector"],["typescript-react","vector"],["typescript-react","portfolio"],["nextjs","vector"],["nextjs","portfolio"],["tailwind","vector"],["tailwind","portfolio"],["python-fastapi","synapse"],["postgres-prisma","vector"],["surrealdb","synapse"],["webgl-glsl","portfolio"],["r3f","portfolio"],["gsap","portfolio"],["playwright","vector"],["playwright","portfolio"],["webhooks-crons","vector"],["webflow","cog-website"],["product-metrics","eon"],["product-metrics","cog"],["product-metrics","vector"],["product-metrics","wiki-whisperer"],["product-metrics","perf-insights"],["business-cases","performance-tools"],["monetisation","subscription"],["monetisation","cog-clinic"],["stakeholder-mgmt","eon"],["stakeholder-mgmt","cog"],["roadmapping","cog"],["roadmapping","eon"],["icp-research","vector"],["mentoring","brainstation"],["mentoring","burberry"],["mentoring","eon"],["workshops","eon"],["team-leadership","burberry"],["team-leadership","julien-macdonald"],["founding-autonomy","cog"],["founding-autonomy","gateway"],["founding-autonomy","vector"],["cross-functional","eon"],["cross-functional","cog"],["golf","team-leadership"],["frisbee","golf"],["christmas-ds","cog-ds"],["praise-ai","ai-agents"],["commit-streak","portfolio"]];
