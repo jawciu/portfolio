@@ -139,15 +139,32 @@ function radialTexture() {
 // stretched, randomly-oriented 3D volume — lumpy and irregular instead of a
 // flat radial-gradient sticker, and it genuinely parallaxes when the galaxy
 // rotates. In-splat fbm breaks the circular falloff into wisps.
-// [core hue, edge hue, centre, spread (ellipsoid radii)]
-const NEBULA_DEFS: [string, string, [number, number, number], [number, number, number]][] = [
-  ["#b03a7a", "#4a1a5a", [7, 3, -9], [7, 2.6, 4.5]],
-  ["#2a8a9a", "#173a5a", [-8, 0, -7], [6, 3.2, 3.4]],
-  ["#6a3ac9", "#2a1a6a", [0, -6, -10], [7.5, 2.4, 4]],
-  ["#b06a2a", "#5a2a1f", [9, -4, -6], [4.6, 2.2, 3.4]],
-  ["#2a8a5a", "#1a3a4a", [-5, 5, -8], [4.2, 2.4, 2.8]],
-  ["#c9457a", "#5a1f3a", [2, 7, -9], [5.4, 2.2, 3.2]],
+//
+// Hues are the HERO's mood, toned right down — the soft diffused blues,
+// corals, peaches, pinks and mints of the fireball/orb glow, never the raw
+// saturated spectrum (Caroline: "not shouty"). Instead of separate blobs the
+// clouds line up along ONE long diagonal drift that sweeps behind the whole
+// constellation (major axes share a band direction, see nebulaGeom), with a
+// couple of faint outliers and small white star-forming glows along the way.
+// [core hue, edge hue, centre, spread (ellipsoid radii), amp scale]
+const NEBULA_DEFS: [string, string, [number, number, number], [number, number, number], number][] = [
+  // the main drift, upper-right → lower-left
+  ["#5a68d9", "#2c3a8f", [8, 4.5, -8], [8, 2.6, 4], 0.9],        // soft indigo
+  ["#8f6ad9", "#3d2c8f", [5, 3, -9], [7, 2.4, 3.6], 0.85],       // muted violet
+  ["#d9769a", "#8f3d5f", [2, 1.5, -7.5], [7.5, 2.4, 3.8], 0.8],  // dusty pink
+  ["#e59a76", "#a05648", [-1.5, 0, -8.5], [7, 2.2, 3.4], 0.8],   // faded coral
+  ["#8fc9a8", "#3d6b8f", [-5.5, -2, -7], [8, 2.6, 3.6], 0.85],   // sage mint
+  ["#e5b878", "#a06848", [-9, -4, -6.5], [6, 2.2, 3], 0.8],      // warm peach tail
+  // faint outliers so the band doesn't read as the only weather
+  ["#4a5fae", "#22307a", [-6, 5, -10], [4.5, 2, 2.5], 0.6],
+  ["#c96a8f", "#7a3d56", [6, -4.5, -9], [4.5, 2, 2.6], 0.6],
+  // white star-forming glows along the drift
+  ["#ffffff", "#bdeed9", [6, 3.5, -7.5], [3, 1.4, 2], 0.4],
+  ["#ffffff", "#d9d0e5", [-3, -0.5, -7], [2.8, 1.4, 1.8], 0.35],
 ];
+
+// shared drift direction — every cloud's major axis roughly follows it
+const NEBULA_BAND = new THREE.Vector3(1, 0.45, 0.2).normalize();
 
 const NEBULA_VERT = /* glsl */ `
   attribute float aSize;
@@ -337,11 +354,14 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
     const edge = new THREE.Color();
     const mixed = new THREE.Color();
     let w = 0;
-    for (const [hexCore, hexEdge, centre, spread] of NEBULA_DEFS) {
+    for (const [hexCore, hexEdge, centre, spread, ampScale] of NEBULA_DEFS) {
       core.set(hexCore);
       edge.set(hexEdge);
-      // random orthonormal frame so every cloud is stretched a different way
-      const a = new THREE.Vector3(rand() * 2 - 1, rand() * 2 - 1, rand() * 2 - 1).normalize();
+      // major axis follows the shared drift direction (with jitter) so the
+      // clouds read as one stretched band, not randomly-tumbled blobs
+      const a = NEBULA_BAND.clone()
+        .add(new THREE.Vector3(rand() - 0.5, rand() - 0.5, rand() - 0.5).multiplyScalar(0.5))
+        .normalize();
       const b = new THREE.Vector3(rand() * 2 - 1, rand() * 2 - 1, rand() * 2 - 1)
         .projectOnPlane(a).normalize();
       const c = new THREE.Vector3().crossVectors(a, b);
@@ -352,14 +372,14 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
           .addScaledVector(b, gy * spread[1])
           .addScaledVector(c, gz * spread[2]);
         pos.set([p.x, p.y, p.z], w * 3);
-        const size = 2.2 + rand() * 3.8;
+        const size = 2.8 + rand() * 4.6;
         sizes[w] = size;
         // brighter core hue in the middle, darker edge hue at the fringes
         const t = Math.min(1, Math.hypot(gx, gy, gz) / 1.5);
         mixed.copy(core).lerp(edge, t * (0.7 + rand() * 0.3));
         tints.set([mixed.r, mixed.g, mixed.b], w * 3);
         phases[w] = rand();
-        amps[w] = (0.15 + rand() * 0.13) * (3.0 / size); // big splats run fainter
+        amps[w] = (0.11 + rand() * 0.1) * (3.0 / size) * ampScale; // big splats run fainter
         w++;
       }
     }
@@ -702,11 +722,12 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
         <points
           geometry={starGeom}
           frustumCulled={false}
-          onPointerMove={(e) => { e.stopPropagation(); if (e.index !== undefined) setHovered(e.index); }}
+          onPointerMove={(e) => { e.stopPropagation(); const i = pickIndex(e.intersections); if (i !== null) setHovered(i); }}
           onPointerOut={() => setHovered(null)}
           onClick={(e) => {
             e.stopPropagation();
-            if (e.index !== undefined) focus(e.index);
+            const i = pickIndex(e.intersections);
+            if (i !== null) focus(i);
           }}
         >
           <shaderMaterial
@@ -775,6 +796,20 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
       </group>
     </>
   );
+}
+
+// Points raycasts sort by distance ALONG the ray, so a nearer star can steal
+// a click aimed squarely at a star behind it. Pick the hit whose centre is
+// closest to the pointer ray instead — that's the star the user is pointing at.
+function pickIndex(intersections: THREE.Intersection[]): number | null {
+  let best: number | null = null;
+  let bestD = Infinity;
+  for (const hit of intersections) {
+    if (hit.index === undefined) continue;
+    const d = hit.distanceToRay ?? 0;
+    if (d < bestD) { bestD = d; best = hit.index; }
+  }
+  return best;
 }
 
 // Tracks a (possibly gathering) star: copies its live position onto a group

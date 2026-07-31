@@ -341,8 +341,28 @@ cards, element-screenshot. Delete the temp script after.
   Also answered her MD-vs-SurrealDB question: keep GALAXY.md (authored, tiny, read-whole,
   git-versioned, zero runtime deps) — a graph DB only pays rent if the galaxy ever gets
   runtime writes (e.g. an agent proposing edges) or server-side queries.
-- **ROUND 3 (same session): nebula sprites → point-cloud GAS. UNCOMMITTED.** Her note: the
-  blobs read as "computerized radial gradients"; wanted stardust/gas, less circular, more 3D,
+- **ROUND 5 (same session): hero-mood palette + one stretched drift + planet zoo + click-pick
+  fix. UNCOMMITTED** (rounds 3-4 committed as `6488319`). Her notes: round-4 hero-spectrum
+  colours were "way too shouty"; still read as two blobs (wanted gas bigger/more stretched,
+  covering more of the star field); sent ~13 planet reference images for close-up variety.
+  (1) NEBULA_DEFS now = ONE diagonal drift of 6 muted clouds (soft indigo/violet/dusty pink/
+  faded coral/sage/peach — the hero's diffused mood, NOT the raw spectrum hexes) + 2 faint
+  outliers + 2 white glows; every cloud's major axis follows shared `NEBULA_BAND` dir
+  (1,0.45,0.2 + jitter) so it reads as a single sweeping band behind the constellation;
+  splats bigger (2.8-7.4 world), amps lowered. (2) **FocusOrb planet zoo**: `PlanetStyle`
+  system — jobs = GAS GIANTS (Jupiter caramel / Saturn cream ringed / lavender ringed /
+  Neptune), projects = TERRESTRIALS (rust+white clouds / ice-blue marble / jade / pea green /
+  Io sulphur), eggs = grey MOON; per-node id hash picks the style permanently; shader gained
+  uBandFreq/uBlotch/uCloud + band-contrast push. Rings now come from style (giants only), and
+  orbRinged/orbExtent reflect that. (3) **REAL BUG FIXED — star click-picking**: Points
+  raycast hits sort by distance ALONG the ray, so a nearer star stole clicks aimed at a
+  labelled star behind it (clicking "AI agents" always focused "Figma, the deep end").
+  `pickIndex()` now picks min `distanceToRay` from e.intersections (hover + click). Verified:
+  AI agents halo correct (incl. the "be nice to robots" egg), Vector = pea-green world with
+  20-skill halo + case-study link, E.ON = caramel giant, drift band reads as one; 0 console
+  errors, tsc + lint clean.
+- **ROUND 3 (same session): nebula sprites → point-cloud GAS. Committed in `6488319`.** Her
+  note: the blobs read as "computerized radial gradients"; wanted stardust/gas, less circular, more 3D,
   rotating WITH the stars, subtle enough for label legibility. Rebuild: the 6 billboard
   sprites are GONE, replaced by one Points draw (`NEBULA_DEFS` + `NEBULA_VERT/FRAG` in
   GalaxyScene) — 6 clouds × 64 splats (34 on tier<2), each cloud scattered through a
