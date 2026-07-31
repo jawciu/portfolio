@@ -135,15 +135,70 @@ function radialTexture() {
   return tex;
 }
 
-// vivid Hubble-ish nebula pools: [tint, scale, position]
-const NEBULAS: [string, number, [number, number, number]][] = [
-  ["#7a2a5a", 26, [7, 3, -9]],
-  ["#1f5a7a", 22, [-8, 0, -7]],
-  ["#4a2a8a", 24, [0, -6, -10]],
-  ["#7a3a1f", 18, [9, -4, -6]],
-  ["#2a6a4a", 16, [-5, 5, -8]],
-  ["#5a1f3a", 20, [2, 7, -9]],
+// Nebula gas: each cloud is a swarm of big soft splats scattered through a
+// stretched, randomly-oriented 3D volume — lumpy and irregular instead of a
+// flat radial-gradient sticker, and it genuinely parallaxes when the galaxy
+// rotates. In-splat fbm breaks the circular falloff into wisps.
+// [core hue, edge hue, centre, spread (ellipsoid radii)]
+const NEBULA_DEFS: [string, string, [number, number, number], [number, number, number]][] = [
+  ["#b03a7a", "#4a1a5a", [7, 3, -9], [7, 2.6, 4.5]],
+  ["#2a8a9a", "#173a5a", [-8, 0, -7], [6, 3.2, 3.4]],
+  ["#6a3ac9", "#2a1a6a", [0, -6, -10], [7.5, 2.4, 4]],
+  ["#b06a2a", "#5a2a1f", [9, -4, -6], [4.6, 2.2, 3.4]],
+  ["#2a8a5a", "#1a3a4a", [-5, 5, -8], [4.2, 2.4, 2.8]],
+  ["#c9457a", "#5a1f3a", [2, 7, -9], [5.4, 2.2, 3.2]],
 ];
+
+const NEBULA_VERT = /* glsl */ `
+  attribute float aSize;
+  attribute vec3 aTint;
+  attribute float aPhase;
+  attribute float aAmp;
+  uniform float uPx;
+  varying vec3 vTint;
+  varying float vPhase;
+  varying float vAmp;
+  void main() {
+    vTint = aTint;
+    vPhase = aPhase;
+    vAmp = aAmp;
+    vec4 mv = modelViewMatrix * vec4(position, 1.0);
+    // clamp: gas splats are background — never let a close fly-by blow one
+    // up past the hardware point-size limits into a screen-filling wall
+    gl_PointSize = min(aSize * uPx / -mv.z, 460.0);
+    gl_Position = projectionMatrix * mv;
+  }
+`;
+
+const NEBULA_FRAG = /* glsl */ `
+  uniform float uTime;
+  uniform float uFade;
+  varying vec3 vTint;
+  varying float vPhase;
+  varying float vAmp;
+  float hash2(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+  float noise2(vec2 x) {
+    vec2 i = floor(x); vec2 f = fract(x);
+    f = f * f * (3.0 - 2.0 * f);
+    return mix(mix(hash2(i), hash2(i + vec2(1, 0)), f.x),
+               mix(hash2(i + vec2(0, 1)), hash2(i + vec2(1, 1)), f.x), f.y);
+  }
+  float fbm2(vec2 p) {
+    float v = 0.0; float a = 0.5;
+    for (int k = 0; k < 3; k++) { v += a * noise2(p); p *= 2.03; a *= 0.5; }
+    return v;
+  }
+  void main() {
+    vec2 uv = gl_PointCoord * 2.0 - 1.0;
+    float d = length(uv);
+    if (d > 1.0) discard;
+    float fall = exp(-d * d * 3.0);
+    // slow internal drift so the gas breathes; phase decorrelates the splats
+    float n = fbm2(uv * 2.2 + vPhase * 17.0 + vec2(uTime * 0.012, -uTime * 0.009));
+    float a = fall * (0.3 + 0.7 * n) * vAmp * uFade;
+    gl_FragColor = vec4(vTint * (0.55 + 0.45 * n), a);
+  }
+`;
 
 function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps) {
   const nodes = GALAXY_NODES;
@@ -158,6 +213,7 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
   const starMatRef = useRef<THREE.ShaderMaterial>(null);
   const bgMatRef = useRef<THREE.ShaderMaterial>(null);
   const dustMatRef = useRef<THREE.ShaderMaterial>(null);
+  const nebulaMatRef = useRef<THREE.ShaderMaterial>(null);
 
   const [hovered, setHovered] = useState<number | null>(null);
   const [focused, setFocused] = useState<number | null>(null);
@@ -266,6 +322,56 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
     return g;
   }, [tier]);
 
+  // ── nebula gas point clouds ───────────────────────────────────────
+  const nebulaGeom = useMemo(() => {
+    const perCloud = tier < 2 ? 34 : 64;
+    const count = NEBULA_DEFS.length * perCloud;
+    const rand = (s => () => ((s = (s * 16807) % 2147483647), s / 2147483647))(777);
+    const gauss = () => (rand() + rand() + rand()) / 1.5 - 1; // rough gaussian, [-1,1]
+    const pos = new Float32Array(count * 3);
+    const sizes = new Float32Array(count);
+    const tints = new Float32Array(count * 3);
+    const phases = new Float32Array(count);
+    const amps = new Float32Array(count);
+    const core = new THREE.Color();
+    const edge = new THREE.Color();
+    const mixed = new THREE.Color();
+    let w = 0;
+    for (const [hexCore, hexEdge, centre, spread] of NEBULA_DEFS) {
+      core.set(hexCore);
+      edge.set(hexEdge);
+      // random orthonormal frame so every cloud is stretched a different way
+      const a = new THREE.Vector3(rand() * 2 - 1, rand() * 2 - 1, rand() * 2 - 1).normalize();
+      const b = new THREE.Vector3(rand() * 2 - 1, rand() * 2 - 1, rand() * 2 - 1)
+        .projectOnPlane(a).normalize();
+      const c = new THREE.Vector3().crossVectors(a, b);
+      for (let i = 0; i < perCloud; i++) {
+        const gx = gauss(), gy = gauss(), gz = gauss();
+        const p = new THREE.Vector3(centre[0], centre[1], centre[2])
+          .addScaledVector(a, gx * spread[0])
+          .addScaledVector(b, gy * spread[1])
+          .addScaledVector(c, gz * spread[2]);
+        pos.set([p.x, p.y, p.z], w * 3);
+        const size = 2.2 + rand() * 3.8;
+        sizes[w] = size;
+        // brighter core hue in the middle, darker edge hue at the fringes
+        const t = Math.min(1, Math.hypot(gx, gy, gz) / 1.5);
+        mixed.copy(core).lerp(edge, t * (0.7 + rand() * 0.3));
+        tints.set([mixed.r, mixed.g, mixed.b], w * 3);
+        phases[w] = rand();
+        amps[w] = (0.15 + rand() * 0.13) * (3.0 / size); // big splats run fainter
+        w++;
+      }
+    }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+    g.setAttribute("aSize", new THREE.BufferAttribute(sizes, 1));
+    g.setAttribute("aTint", new THREE.BufferAttribute(tints, 3));
+    g.setAttribute("aPhase", new THREE.BufferAttribute(phases, 1));
+    g.setAttribute("aAmp", new THREE.BufferAttribute(amps, 1));
+    return g;
+  }, [tier]);
+
   // ── edges — positions rebuilt from livePos whenever the graph moves ─
   const REST_EDGE_ALPHA = 0.13;
   const edgeGeom = useMemo(() => {
@@ -285,6 +391,7 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
   useEffect(() => () => { starGeom.dispose(); }, [starGeom]);
   useEffect(() => () => { bgGeom.dispose(); }, [bgGeom]);
   useEffect(() => () => { dustGeom.dispose(); }, [dustGeom]);
+  useEffect(() => () => { nebulaGeom.dispose(); }, [nebulaGeom]);
   useEffect(() => () => { edgeGeom.dispose(); }, [edgeGeom]);
 
   const glowTex = useMemo(() => radialTexture(), []);
@@ -428,6 +535,13 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
     if (starMatRef.current) starMatRef.current.uniforms.uTime.value += t;
     if (bgMatRef.current) bgMatRef.current.uniforms.uTime.value += t;
     if (dustMatRef.current) dustMatRef.current.uniforms.uTime.value += t;
+    if (nebulaMatRef.current) {
+      const u = nebulaMatRef.current.uniforms;
+      if (!reduced) u.uTime.value += t;
+      // gas backs off while a neighbourhood is focused so labels stay legible
+      const fadeGoal = focused !== null ? 0.35 : 1;
+      u.uFade.value += (fadeGoal - u.uFade.value) * Math.min(1, t * 3);
+    }
 
     // idle drift eases in and out instead of stopping dead
     const driftGoal = !active && focused === null && !reduced ? 0.02 : 0;
@@ -490,7 +604,7 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
     [size.height, camera],
   );
   useEffect(() => {
-    for (const m of [starMatRef.current, bgMatRef.current, dustMatRef.current]) {
+    for (const m of [starMatRef.current, bgMatRef.current, dustMatRef.current, nebulaMatRef.current]) {
       if (m) m.uniforms.uPx.value = uPx;
     }
   }, [uPx]);
@@ -529,18 +643,18 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
       />
 
       <group ref={groupRef}>
-        {/* nebula glow pools */}
-        {NEBULAS.map(([hex, s, p]) => (
-          <sprite key={hex} position={p} scale={[s, s, 1]}>
-            <spriteMaterial
-              map={glowTex}
-              color={hex}
-              blending={THREE.AdditiveBlending}
-              depthWrite={false}
-              opacity={0.55}
-            />
-          </sprite>
-        ))}
+        {/* nebula gas — rotates and parallaxes with the galaxy, dims on focus */}
+        <points geometry={nebulaGeom} raycast={() => null} frustumCulled={false}>
+          <shaderMaterial
+            ref={nebulaMatRef}
+            vertexShader={NEBULA_VERT}
+            fragmentShader={NEBULA_FRAG}
+            transparent
+            depthWrite={false}
+            blending={THREE.AdditiveBlending}
+            uniforms={{ uTime: { value: 0 }, uFade: { value: 1 }, uPx: { value: 800 } }}
+          />
+        </points>
 
         {tier >= 2 && (
           <Sparkles

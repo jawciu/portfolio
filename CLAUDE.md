@@ -337,6 +337,25 @@ cards, element-screenshot. Delete the temp script after.
   + 3-node halo, E.ON ringed planet + 21-label halo all screenshot-checked; 0 console errors;
   tsc + lint clean. She is supplying table content for GALAXY.md separately — DO NOT edit
   GALAXY.md until her edits land.
+- **ROUND 2 committed on her ask as `4151754`** (9 files, no Co-Authored-By per her global rule).
+  Also answered her MD-vs-SurrealDB question: keep GALAXY.md (authored, tiny, read-whole,
+  git-versioned, zero runtime deps) — a graph DB only pays rent if the galaxy ever gets
+  runtime writes (e.g. an agent proposing edges) or server-side queries.
+- **ROUND 3 (same session): nebula sprites → point-cloud GAS. UNCOMMITTED.** Her note: the
+  blobs read as "computerized radial gradients"; wanted stardust/gas, less circular, more 3D,
+  rotating WITH the stars, subtle enough for label legibility. Rebuild: the 6 billboard
+  sprites are GONE, replaced by one Points draw (`NEBULA_DEFS` + `NEBULA_VERT/FRAG` in
+  GalaxyScene) — 6 clouds × 64 splats (34 on tier<2), each cloud scattered through a
+  randomly-oriented stretched ellipsoid (gaussian-ish spread on a Gram-Schmidt frame), core
+  hue → edge hue mixed by radial factor, per-splat 2D-fbm alpha so no splat is a circle, slow
+  in-splat drift via uTime (frozen when reduced). Being real scene points they parallax with
+  the group rotation (verified by drag: clouds visibly swing). `uFade` uniform lerps 1 → 0.35
+  while a node is focused so gas never fights halo labels (verified: focus shot near-black
+  behind labels). gl_PointSize CLAMPED at 460px so a close fly-by can't blow a splat into a
+  screen-filling wall. Brightness knobs if she wants more/less colour: `amps` base
+  (0.15 + rand*0.13) and perCloud count in nebulaGeom. First attempt was far too faint —
+  the old sprites carried most of the scene's colour; needed amp ×4 + count bump from the
+  initial guess. tsc + lint clean, 0 console errors, rest/rotated/focused screenshot-checked.
 
 ### 2026-07-26 — Scroll rail (case-study progress indicator) prototyped, 2 variants. Branch `scroll-progress`, UNCOMMITTED.
 - **Caroline's brief:** right-edge scroll feedback on case studies — how far you've scrolled, which
