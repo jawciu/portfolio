@@ -140,5 +140,27 @@ export function layoutGalaxy(nodes: GalaxyNode[], edges: GalaxyEdge[]): LaidOutG
   // skills poked above the frame at the home camera (unclickable at rest)
   for (let i = 0; i < n; i++) out[i * 3 + 1] *= 0.85;
 
+  // featured stars carry always-on labels at the resting view — if two sit
+  // close in the camera plane their labels overlap into soup (visual craft /
+  // design systems / brand identity did exactly that). Push featured pairs
+  // apart in x/y until every pair clears the label footprint.
+  const featured = nodes.map((node, i) => (node.featured ? i : -1)).filter((i) => i >= 0);
+  const MIN_SEP = 3.2;
+  for (let iter = 0; iter < 16; iter++) {
+    for (let fi = 0; fi < featured.length; fi++) {
+      for (let fj = fi + 1; fj < featured.length; fj++) {
+        const a = featured[fi], b = featured[fj];
+        let dx = out[a * 3] - out[b * 3];
+        let dy = out[a * 3 + 1] - out[b * 3 + 1];
+        let d = Math.hypot(dx, dy);
+        if (d >= MIN_SEP) continue;
+        if (d < 0.001) { dx = 1; dy = 0; d = 1; }
+        const push = (MIN_SEP - d) / 2;
+        out[a * 3] += (dx / d) * push; out[a * 3 + 1] += (dy / d) * push;
+        out[b * 3] -= (dx / d) * push; out[b * 3 + 1] -= (dy / d) * push;
+      }
+    }
+  }
+
   return { positions: out, index, neighbours, edgeIndices };
 }

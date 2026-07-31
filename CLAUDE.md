@@ -268,6 +268,27 @@ cards, element-screenshot. Delete the temp script after.
 - **STATE: working, committed on `skills-galaxy` through `3067c0b`.** tsc/lint/build clean at
   every commit. Caroline reviews live on :3001 (dev server may need restarting: `npm run dev --
   --port 3001`; NEVER touch port 3000).
+- **ROUND 13 (after the handoff commit, same session): painter + proposals + polish.
+  UNCOMMITTED.** (1) `logo-design`+consultancy edge (she confirmed the fact). (2) MY proposed
+  graph expansion, implemented for her veto (flip `show` to no to reject): skills
+  design-engineering (hub — her Design Engineer role shape), designing-for-trust (her
+  interview thesis), ux-writing, onboarding-design, data-visualisation, safety-first-AI
+  + eggs communities (AI Pilled/Claude Code Curious) and wispr (voice input). 106→114
+  nodes, 248→273 edges. (3) "view source" external links REMOVED from focused labels
+  (case-study links stay). (4) Featured stars were overlapping at rest (visual craft/design
+  systems/brand identity soup, her screenshot) — layout.ts now pushes FEATURED pairs apart
+  in x/y to ≥3.2 world post-sim; verified closest pair 122px on screen. (5) RING_FRAG
+  rebuilt: layered 1D noise → bands of varying width/weight, two Cassini-like gaps, band-
+  to-band colour between dust (uCol) and rock (uColB) tones — no more equal-width sin
+  ringlets. (6) **PlanetPainter** (`galaxy/PlanetPainter.tsx` + `galaxy/paint.ts`):
+  dev-only "paint" chip bottom-right; targets the FOCUSED body; 7 colour pickers (deep/
+  lifted/clouds/lanes/mottle/poles/rim) + 7 dials (amounts, cloud, banding, blotchiness),
+  applies next frame via PAINT store + PAINT_EVENT (FocusOrb merges over base style,
+  suns expose a/b only); "copy values" puts the patch JSON on the clipboard for baking
+  into PLANET_OVERRIDES; nothing persists. Focus is bridged to the DOM via FOCUS_EVENT
+  from the dev probe effect. LINT: PAINT mutations must live in paint.ts helpers
+  (setPaint/clearPaint) — react-hooks/immutability rejects them inline in components.
+  All verified live: spacing, varied rings on wiki, painter repaint, 0 errors, tsc+lint.
 - **OPEN / NEXT (in rough priority):**
   1. **Label de-collision** — dense halos (cog ~30 edges) overlap labels; obvious next round.
   2. Caroline to dial the new tuner knobs (arcLift default 2.5, bridgePulse, timings) in the

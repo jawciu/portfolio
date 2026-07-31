@@ -12,10 +12,11 @@
 // suns (Caroline: "planets emit light, probably not as much — don't worry
 // about consistency").
 
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import type { GalaxyNode } from "@/lib/galaxyData";
+import { PAINT, PAINT_EVENT } from "./paint";
 
 const NOISE = /* glsl */ `
   float hash(vec3 p) {
@@ -128,16 +129,35 @@ const RING_VERT = /* glsl */ `
 `;
 
 const RING_FRAG = /* glsl */ `
-  uniform vec3 uCol;
+  uniform vec3 uCol;   // lighter ring dust
+  uniform vec3 uColB;  // darker rock tone
   uniform float uInner;
   uniform float uOuter;
   varying vec3 vLocal;
+  float h1(float p) { return fract(sin(p * 127.1) * 43758.5453); }
+  float n1(float x) {
+    float i = floor(x); float f = fract(x);
+    f = f * f * (3.0 - 2.0 * f);
+    return mix(h1(i), h1(i + 1.0), f);
+  }
   void main() {
     float r = length(vLocal.xy);
     float t = clamp((r - uInner) / (uOuter - uInner), 0.0, 1.0);
-    float bands = 0.45 + 0.35 * sin(t * 55.0) + 0.2 * fract(sin(t * 137.13) * 43758.55);
-    float a = bands * smoothstep(0.0, 0.1, t) * (1.0 - smoothstep(0.82, 1.0, t));
-    gl_FragColor = vec4(uCol, a * 0.75);
+    // layered 1D noise → bands of genuinely different widths and weights
+    // (the old fixed-frequency sin made every ringlet identical)
+    float wide = n1(t * 7.0 + 3.1);
+    float mid = n1(t * 23.0 + 9.7);
+    float fine = n1(t * 90.0 + 31.0);
+    float density = smoothstep(0.18, 0.72, wide * 0.55 + mid * 0.3 + fine * 0.15);
+    // true divisions (Cassini-like): one broad, one narrow
+    float gap1 = 1.0 - 0.9 * smoothstep(0.50, 0.545, t) * (1.0 - smoothstep(0.575, 0.62, t));
+    float gap2 = 1.0 - 0.6 * smoothstep(0.80, 0.825, t) * (1.0 - smoothstep(0.84, 0.865, t));
+    float a = density * gap1 * gap2
+      * smoothstep(0.0, 0.06, t) * (1.0 - smoothstep(0.86, 1.0, t));
+    // band-to-band colour variation between dust and rock tones
+    vec3 col = mix(uColB, uCol, wide);
+    col *= 0.75 + 0.35 * mid;
+    gl_FragColor = vec4(col, a * 0.85);
   }
 `;
 
@@ -248,6 +268,28 @@ export function orbExtent(node: GalaxyNode) {
   return orbRinged(node) ? r * 2.35 : r * 1.25;
 }
 
+/** The PlanetPainter panel's view of a node: its kind and the pre-paint base
+ *  values for every editable field (suns expose only their two fbm colours). */
+export function paintableFor(node: GalaxyNode): { kind: string; values: Record<string, string | number> } {
+  const kind = orbKind(node);
+  if (kind === "sun") {
+    const p = PALETTES[node.cluster] ?? PALETTES.career;
+    return { kind, values: { a: p[0], b: p[1] } };
+  }
+  const s = planetStyle(node);
+  return {
+    kind,
+    values: {
+      a: s.a, b: s.b, c: s.c, d: s.d,
+      e: s.e ?? s.b, eAmt: s.eAmt ?? 0,
+      pole: s.pole ?? s.d, poleAmt: s.poleAmt ?? 0,
+      speckle: s.speckle ?? 0,
+      rim: s.rim ?? s.b, rimAmt: s.rimAmt ?? 0.25,
+      cloud: s.cloud, bandFreq: s.bandFreq, blotch: s.blotch,
+    },
+  };
+}
+
 export type FocusOrbProps = {
   node: GalaxyNode;
   reduced: boolean;
@@ -263,14 +305,34 @@ export function FocusOrb({ node, reduced, glowTex }: FocusOrbProps) {
   const kind = orbKind(node);
   const radius = orbRadius(node);
   const ringed = orbRinged(node);
-  const style = kind === "sun" ? null : planetStyle(node);
+
+  // live paint: the dev-only PlanetPainter mutates PAINT and fires
+  // PAINT_EVENT; bumping paintTick re-derives style/colours from the merge
+  const [paintTick, setPaintTick] = useState(0);
+  useEffect(() => {
+    const fn = () => setPaintTick((n) => n + 1);
+    window.addEventListener(PAINT_EVENT, fn);
+    return () => window.removeEventListener(PAINT_EVENT, fn);
+  }, []);
+
+  const style = useMemo(() => {
+    if (kind === "sun") return null;
+    return { ...planetStyle(node), ...PAINT[node.id] };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- paintTick re-reads the mutable PAINT store
+  }, [node, kind, paintTick]);
 
   const [colA, colB, colC, colD] = useMemo(() => {
     const p: [string, string, string, string] = style
       ? [style.a, style.b, style.c, style.d]
       : [...(PALETTES[node.cluster] ?? PALETTES.career), "#000000"] as [string, string, string, string];
+    if (!style) {
+      const patch = PAINT[node.id];
+      if (patch?.a) p[0] = patch.a;
+      if (patch?.b) p[1] = patch.b;
+    }
     return p.map((h) => new THREE.Color(h)) as [THREE.Color, THREE.Color, THREE.Color, THREE.Color];
-  }, [node, style]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- paintTick re-reads the mutable PAINT store
+  }, [node, style, paintTick]);
 
   const uniforms = useMemo(
     () => ({
@@ -295,8 +357,10 @@ export function FocusOrb({ node, reduced, glowTex }: FocusOrbProps) {
   );
   const ringUniforms = useMemo(
     () => ({
-      // rings read as neutral rock/ice dust with only a hint of the body's hue
+      // rings read as neutral rock/ice dust with only a hint of the body's hue;
+      // the darker rock tone gives the noise bands something to alternate with
       uCol: { value: new THREE.Color("#c9c0b0").lerp(colB, 0.35) },
+      uColB: { value: new THREE.Color("#6f6352").lerp(colB, 0.2) },
       uInner: { value: radius * 1.35 },
       uOuter: { value: radius * 2.3 },
     }),

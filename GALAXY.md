@@ -86,7 +86,7 @@ Clusters: `design` · `research` · `ai` · `engineering` · `product` · `leade
 | yes  | conversion-design | design      | conversion design        | 1    |          | cog-clinic subscription cog-website                  |
 | yes  | moodboarding      | design      | moodboarding             | 1    |          | cog casablanca mary                                  |
 | yes  | brand-guidelines  | design      | brand guidelines         | 1    |          | cog-ds ai-design-system                              |
-| yes  | logo-design       | design      | logo design              | 1    |          | cog cog-ds                                           |
+| yes  | logo-design       | design      | logo design              | 1    |          | cog cog-ds consultancy                               |
 | yes  | user-interviews   | research    | user interviews          | 2    |          | cog eon cog-clinic call-analytics gateway            |
 | yes  | usability-testing | research    | usability testing        | 1    |          | cog-clinic wiki-whisperer call-analytics             |
 | yes  | pilot-design      | research    | pilot & experiment design | 2   |          | wiki-whisperer eon                                   |
@@ -140,6 +140,12 @@ Clusters: `design` · `research` · `ai` · `engineering` · `product` · `leade
 | yes  | context-switching | leadership  | context switching        | 1    |          | cog vector                                           |
 | yes  | navigating-ambiguity | leadership | navigating ambiguity   | 1    |          | cog gateway vector                                   |
 | yes  | ownership         | leadership  | ownership                | 1    |          | cog vector synapse                                   |
+| yes  | design-engineering | engineering | design engineering      | 3    |          | design-systems tokens-in-code typescript-react tailwind portfolio vector figma-make-kit |
+| yes  | trust-design      | ai          | designing for trust      | 2    |          | wiki-whisperer vector human-in-the-loop guardrails   |
+| yes  | ux-writing        | design      | UX writing               | 1    |          | cog wiki-whisperer daily-insights self-help          |
+| yes  | onboarding-design | design      | onboarding design        | 1    |          | cog subscription vector                              |
+| yes  | data-viz          | design      | data visualisation       | 1    |          | performance-tools perf-insights vector               |
+| yes  | safety-design     | ai          | safety-first AI design   | 1    |          | synapse cog                                          |
 
 ## Easter eggs
 
@@ -155,4 +161,6 @@ Rendered as ordinary small stars scattered between the clusters. Found by the cu
 | yes  | christmas-ds   | holiday shipping    | built Cog's design system over Christmas, for fun            | cog-ds            |
 | yes  | praise-ai      | be nice to robots   | discovered that praising the AI makes it work better         | ai-agents         |
 | yes  | commit-streak  | momentum            | 208 commits in 7 weeks on the site you are looking at        | portfolio         |
+| yes  | communities    | good company        | member of AI Pilled and Claude Code Curious                  | agent-workflows   |
+| yes  | wispr          | voice input         | talks to her tools all day, a daily Wispr Flow user          |                   |
 | no   | scriggly       | Scriggly            | Cog's mascot approves of this galaxy                         | cog               |

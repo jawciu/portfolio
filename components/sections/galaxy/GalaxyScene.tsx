@@ -31,6 +31,7 @@ import { GALAXY_NODES, GALAXY_EDGES, type GalaxyNode } from "@/lib/galaxyData";
 import { layoutGalaxy } from "./layout";
 import { FocusOrb, orbExtent } from "./FocusOrb";
 import { TUNING } from "./tuning";
+import { FOCUS_EVENT } from "./paint";
 
 const HOME_CAM = new THREE.Vector3(0, 2, 18.5);
 const HOME_TARGET = new THREE.Vector3(0, 0, 0);
@@ -881,6 +882,8 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
       });
     };
     w.__galaxyFocused = focused === null ? null : nodes[focused].id;
+    // the dev-only PlanetPainter panel follows focus through this event
+    window.dispatchEvent(new CustomEvent(FOCUS_EVENT, { detail: w.__galaxyFocused }));
     w.__galaxyEdges = () => ({
       ext: Array.from(edgeExt.current),
       extT: Array.from(edgeExtTarget.current),
@@ -1172,16 +1175,17 @@ function GalaxyLabel({ node, kind, offsetPx, onSelect }: {
           {node.line}
         </p>
       )}
-      {primary && node.link && (
+      {/* only internal case-study routes get a link — external "view source"
+          links were cut on Caroline's call (2026-07-31) */}
+      {primary && node.link && !node.link.startsWith("http") && (
         <a
           href={node.link}
           onClick={(e) => { e.stopPropagation(); e.nativeEvent.stopPropagation(); }}
           onPointerDown={(e) => { e.stopPropagation(); e.nativeEvent.stopPropagation(); }}
           style={{ pointerEvents: "auto" }}
           className="mt-1 inline-block font-mono text-[10px] tracking-[0.12em] text-fg/70 underline underline-offset-4 hover:text-fg"
-          {...(node.link.startsWith("http") ? { target: "_blank", rel: "noreferrer" } : {})}
         >
-          {node.link.startsWith("http") ? "view source ↗" : "open case study →"}
+          open case study →
         </a>
       )}
     </div>

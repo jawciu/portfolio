@@ -18,6 +18,7 @@ import dynamic from "next/dynamic";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { getLenis } from "@/components/SmoothScroll";
 import { GalaxyTuner } from "./galaxy/GalaxyTuner";
+import { PlanetPainter } from "./galaxy/PlanetPainter";
 import { useGPUTier } from "@/lib/useGPUTier";
 import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 import { GALAXY_NODES, GALAXY_EDGES } from "@/lib/galaxyData";
@@ -129,8 +130,9 @@ export function SkillsGalaxy() {
 
           <GalaxyCanvas active={active} visible={visible} reduced={reduced} tier={tier} />
 
-          {/* dev-only choreography tuning panel — never ships */}
+          {/* dev-only choreography tuning + planet paint panels — never ship */}
           {process.env.NODE_ENV !== "production" && <GalaxyTuner />}
+          {process.env.NODE_ENV !== "production" && <PlanetPainter />}
 
           {/* label fade-in lives here so the section stays fully self-contained */}
           {/* only a `from` keyframe: it eases up to each label's own inline
