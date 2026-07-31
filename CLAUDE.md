@@ -361,6 +361,32 @@ cards, element-screenshot. Delete the temp script after.
   AI agents halo correct (incl. the "be nice to robots" egg), Vector = pea-green world with
   20-skill halo + case-study link, E.ON = caramel giant, drift band reads as one; 0 console
   errors, tsc + lint clean.
+- **ROUND 6 (same session): fluid weather, nuanced planets, ring coverage, click-shield fixes,
+  GALAXY.md content round. UNCOMMITTED** (round 5 committed `cf05e69`). Her notes: band too
+  rigid (sent Milky Way refs — gas should float everywhere) · planets read as one texture
+  re-hued, rings vanished · some stars don't zoom on click (asked for an evaluator agent) ·
+  content: drop job-search-agent + Cashu, add 4 E.ON projects she waffled.
+  (1) NEBULA_DEFS now 16 clouds: the 6 drift clouds + 7 loose wisps scattered over the whole
+  field incl. a broad warm-brown dust haze through the centre (the Milky Way tone) + 3 white
+  glows; axis jitter 0.5→1.1 so nothing reads ruled. (2) FocusOrb: 4-tone palettes (a deep /
+  b lifted / c cloud / d dark-lane) + a second dark-lane fbm register + fine grain + softer
+  lighting, so surfaces are tonal families not hue-swaps; `ring` is now a PROBABILITY
+  (Saturn/lavender giants always, Jupiter/ice/jade sometimes, others never) decided by a
+  second hash → 11 of 27 planets ringed incl. all four fashion-era jobs; terrestrial style
+  hash SALTED "pl" (bare id starved rust worlds to zero — check spread when roster changes);
+  ring colour now neutral rock-dust lerped 35% to the body hue. (3) Click-shield fixes: the
+  focused body's big corona sprite and drei Sparkles both got `raycast={() => null}` (the
+  corona was swallowing clicks near the focused star). (4) DEV-ONLY probe for automated
+  testing: `window.__galaxyProbe()` (per-node CSS px + inFront) and `window.__galaxyFocused`,
+  NODE_ENV-gated in GalaxyScene. An evaluator agent is sweeping all 93 nodes for click
+  failures — results pending. (5) GALAXY.md: job-search-agent + cashu → show no (and scrubbed
+  from connects), added live-help / call-analytics (360 call analytics, trained on leaders'
+  past reviews) / perf-insights / eon-ds under eon with skill wiring (evals, prompt-design,
+  product-metrics, design-systems); fact-discipline header now marks the three in-build E.ON
+  projects. ⚠️ **HER JOBS-TABLE EDITS NEVER REACHED DISK** (file was byte-identical before my
+  edits — likely an unsaved Cursor buffer). She must reload the file in Cursor and re-apply
+  her job rows, or paste them for merging. 93 nodes / 146 edges after sync. tsc + lint clean,
+  0 console errors, rest/eon-jupiter/wiki-ringed-jade/cog-ds-rust screenshot-verified.
 - **ROUND 3 (same session): nebula sprites → point-cloud GAS. Committed in `6488319`.** Her
   note: the blobs read as "computerized radial gradients"; wanted stardust/gas, less circular, more 3D,
   rotating WITH the stars, subtle enough for label legibility. Rebuild: the 6 billboard

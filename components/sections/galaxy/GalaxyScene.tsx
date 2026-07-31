@@ -147,24 +147,32 @@ function radialTexture() {
 // constellation (major axes share a band direction, see nebulaGeom), with a
 // couple of faint outliers and small white star-forming glows along the way.
 // [core hue, edge hue, centre, spread (ellipsoid radii), amp scale]
+// Three separate patches (top / centre-right / lower-left) + free-floating
+// wisps between them, each cloud stretched along its OWN random axis — no
+// shared drift direction, so no readable line, just weather.
 const NEBULA_DEFS: [string, string, [number, number, number], [number, number, number], number][] = [
-  // the main drift, upper-right → lower-left
-  ["#5a68d9", "#2c3a8f", [8, 4.5, -8], [8, 2.6, 4], 0.9],        // soft indigo
-  ["#8f6ad9", "#3d2c8f", [5, 3, -9], [7, 2.4, 3.6], 0.85],       // muted violet
-  ["#d9769a", "#8f3d5f", [2, 1.5, -7.5], [7.5, 2.4, 3.8], 0.8],  // dusty pink
-  ["#e59a76", "#a05648", [-1.5, 0, -8.5], [7, 2.2, 3.4], 0.8],   // faded coral
-  ["#8fc9a8", "#3d6b8f", [-5.5, -2, -7], [8, 2.6, 3.6], 0.85],   // sage mint
-  ["#e5b878", "#a06848", [-9, -4, -6.5], [6, 2.2, 3], 0.8],      // warm peach tail
-  // faint outliers so the band doesn't read as the only weather
-  ["#4a5fae", "#22307a", [-6, 5, -10], [4.5, 2, 2.5], 0.6],
-  ["#c96a8f", "#7a3d56", [6, -4.5, -9], [4.5, 2, 2.6], 0.6],
-  // white star-forming glows along the drift
-  ["#ffffff", "#bdeed9", [6, 3.5, -7.5], [3, 1.4, 2], 0.4],
-  ["#ffffff", "#d9d0e5", [-3, -0.5, -7], [2.8, 1.4, 1.8], 0.35],
+  // patch 1 — top, cool blues and violets
+  ["#5a68d9", "#2c3a8f", [-5, 4.5, -9], [6, 2.6, 3.6], 0.75],    // soft indigo
+  ["#8f6ad9", "#3d2c8f", [-1, 5.5, -8], [5.5, 2.4, 3], 0.7],     // muted violet
+  ["#4a5fae", "#22307a", [-8.5, 2.5, -10], [5, 2.2, 2.8], 0.55], // faint blue tail
+  // patch 2 — centre-right, pinks and corals
+  ["#d9769a", "#8f3d5f", [4, 1, -8], [6.5, 2.6, 3.4], 0.7],      // dusty pink
+  ["#e59a76", "#a05648", [7.5, 3.5, -9], [5.5, 2.4, 3], 0.65],   // faded coral
+  ["#b8879a", "#5f3d4a", [8.5, -1.5, -8], [5, 2.4, 2.8], 0.55],  // mauve fringe
+  // patch 3 — lower-left, greens into peach
+  ["#8fc9a8", "#3d6b8f", [-6, -3, -7], [6.5, 2.6, 3.2], 0.7],    // sage mint
+  ["#e5b878", "#a06848", [-9, -4.5, -6.5], [5, 2.2, 2.8], 0.65], // warm peach
+  // free-floating wisps in the gaps
+  ["#8a6a4a", "#403020", [0, -0.5, -10], [9, 4, 4.5], 0.4],      // broad warm dust haze
+  ["#7a9ab8", "#2c4a6a", [2, -5.5, -8.5], [5.5, 2.4, 3], 0.5],   // steel blue, lower right
+  ["#a88ad9", "#4a2c8f", [9, 5.5, -10], [4.5, 2, 2.6], 0.5],     // lilac, upper right
+  ["#c96a8f", "#7a3d56", [-3, -1, -8], [4.5, 2.2, 2.6], 0.45],   // rose, centre-left
+  ["#6a7ad9", "#2c3a8f", [4, 7, -9], [4.5, 2, 2.5], 0.45],       // blue, top
+  // white star-forming glows, one per patch
+  ["#ffffff", "#d9d0e5", [-3, 4.5, -8], [2.6, 1.4, 1.8], 0.35],
+  ["#ffffff", "#bdeed9", [6, 1, -7.5], [3, 1.4, 2], 0.4],
+  ["#ffffff", "#e5d9c9", [-7.5, -3.5, -7], [2.4, 1.3, 1.6], 0.3],
 ];
-
-// shared drift direction — every cloud's major axis roughly follows it
-const NEBULA_BAND = new THREE.Vector3(1, 0.45, 0.2).normalize();
 
 const NEBULA_VERT = /* glsl */ `
   attribute float aSize;
@@ -221,7 +229,7 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
   const nodes = GALAXY_NODES;
   const layout = useMemo(() => layoutGalaxy(nodes, GALAXY_EDGES), [nodes]);
 
-  const { camera, size } = useThree();
+  const { camera, size, gl } = useThree();
   // drei's OrbitControls type isn't exported cleanly; we only touch .target/.update()
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const controlsRef = useRef<any>(null);
@@ -357,11 +365,9 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
     for (const [hexCore, hexEdge, centre, spread, ampScale] of NEBULA_DEFS) {
       core.set(hexCore);
       edge.set(hexEdge);
-      // major axis follows the shared drift direction (with jitter) so the
-      // clouds read as one stretched band, not randomly-tumbled blobs
-      const a = NEBULA_BAND.clone()
-        .add(new THREE.Vector3(rand() - 0.5, rand() - 0.5, rand() - 0.5).multiplyScalar(0.5))
-        .normalize();
+      // fully random major axis per cloud — a shared direction kept reading
+      // as a ruled line no matter how much jitter it wore
+      const a = new THREE.Vector3(rand() * 2 - 1, rand() * 2 - 1, rand() * 2 - 1).normalize();
       const b = new THREE.Vector3(rand() * 2 - 1, rand() * 2 - 1, rand() * 2 - 1)
         .projectOnPlane(a).normalize();
       const c = new THREE.Vector3().crossVectors(a, b);
@@ -629,6 +635,35 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
     }
   }, [uPx]);
 
+  // DEV-ONLY test probe: lets automated checks project every star to CSS px
+  // and read the current focus without poking R3F internals. Stripped from
+  // production builds by the NODE_ENV gate.
+  useEffect(() => {
+    if (process.env.NODE_ENV === "production") return;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const w = window as any;
+    w.__galaxyProbe = () => {
+      const rect = gl.domElement.getBoundingClientRect();
+      const v = new THREE.Vector3();
+      const live = (starGeom.getAttribute("position") as THREE.BufferAttribute).array as Float32Array;
+      return nodes.map((n, i) => {
+        v.set(live[i * 3], live[i * 3 + 1], live[i * 3 + 2]);
+        groupRef.current?.localToWorld(v);
+        v.project(camera);
+        return {
+          id: n.id,
+          name: n.name,
+          type: n.type,
+          x: rect.x + ((v.x + 1) / 2) * rect.width,
+          y: rect.y + ((1 - v.y) / 2) * rect.height,
+          inFront: v.z < 1,
+        };
+      });
+    };
+    w.__galaxyFocused = focused === null ? null : nodes[focused].id;
+    return () => { delete w.__galaxyProbe; delete w.__galaxyFocused; };
+  }, [nodes, camera, gl, starGeom, focused]);
+
   // ── labels ────────────────────────────────────────────────────────
   const labelSet = useMemo(() => {
     const out: { idx: number; kind: "focused" | "neighbour" | "featured" | "hover" }[] = [];
@@ -678,6 +713,7 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
 
         {tier >= 2 && (
           <Sparkles
+            raycast={() => null}
             count={reduced ? 0 : 140}
             scale={[26, 16, 26]}
             size={1.6}

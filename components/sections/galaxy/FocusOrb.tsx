@@ -73,21 +73,29 @@ const PLANET_FRAG = NOISE + /* glsl */ `
   uniform vec3 uA;
   uniform vec3 uB;
   uniform vec3 uC;
+  uniform vec3 uD;
   uniform float uBandFreq; // high = gas-giant latitude bands, low = no banding
   uniform float uBlotch;   // high = continent/crater blotches dominate
   uniform float uCloud;    // how much of the uC swirl layer covers the surface
   varying vec3 vN; varying vec3 vP; varying vec3 vView;
   void main() {
     float warp = fbm(vP * 3.0 + uTime * 0.02) * 0.7;
+    // register 1: base terrain / belts between the deep (uA) and lifted (uB) tones
     float band = fbm(vec3(vP.y * uBandFreq + warp, vP.x * uBlotch, vP.z * uBlotch));
-    band = clamp((band - 0.5) * 1.7 + 0.5, 0.0, 1.0); // push contrast so bands/continents read
+    band = clamp((band - 0.5) * 1.7 + 0.5, 0.0, 1.0);
     vec3 col = mix(uA, uB, band);
+    // register 2: dark lanes / maria / storm belts (uD) at a different scale
+    float lane = fbm(vP * (2.0 + uBlotch * 1.5) - 5.1 + warp * 0.4);
+    col = mix(col, uD, smoothstep(0.58, 0.9, lane) * 0.65);
+    // register 3: cloud / swirl layer (uC)
     float swirl = fbm(vP * 5.0 + 3.7 + warp * 0.5);
     col = mix(col, uC, smoothstep(0.62 - 0.3 * uCloud, 0.95 - 0.15 * uCloud, swirl));
-    float light = 0.4 + 0.75 * max(dot(normalize(vN), normalize(vec3(0.6, 0.5, 0.8))), 0.0);
+    // fine grain so no region reads as one flat hue
+    col *= 0.82 + 0.36 * fbm(vP * 11.0 + 7.3);
+    float light = 0.34 + 0.62 * max(dot(normalize(vN), normalize(vec3(0.6, 0.5, 0.8))), 0.0);
     col *= light;
     float fres = pow(1.0 - max(dot(normalize(vN), vView), 0.0), 2.5);
-    col += uB * fres * 0.45;
+    col += uB * fres * 0.25;
     gl_FragColor = vec4(col, 1.0);
   }
 `;
@@ -126,28 +134,30 @@ const PALETTES: Record<string, [string, string, string]> = {
   career: ["#2b3fae", "#a9c6ff", "#7de3ff"],
 };
 
-// The planetary zoo (from Caroline's reference sheet). deep/bright hues +
-// swirl accent, banding vs blotch character, cloud coverage, ring.
+// The planetary zoo (from Caroline's reference sheet). Four tones per world
+// (deep base / lifted base / cloud accent / dark lane) so surfaces read as
+// nuanced registers of one family, not one texture re-hued. `ring` is a
+// probability: Saturn-likes always ring, some worlds sometimes, some never.
 // Jobs are GAS GIANTS, projects are TERRESTRIAL worlds — picked by id hash
 // so each node keeps its planet forever.
 type PlanetStyle = {
-  a: string; b: string; c: string;
-  bandFreq: number; blotch: number; cloud: number; ring: boolean;
+  a: string; b: string; c: string; d: string;
+  bandFreq: number; blotch: number; cloud: number; ring: number;
 };
 const GIANTS: PlanetStyle[] = [
-  { a: "#8f6a3d", b: "#e5c9a0", c: "#f0e8dc", bandFreq: 6, blotch: 0.7, cloud: 0.35, ring: false },  // Jupiter caramel
-  { a: "#a0804a", b: "#e5d0a8", c: "#f0e5c9", bandFreq: 4.5, blotch: 0.7, cloud: 0.25, ring: true }, // Saturn cream
-  { a: "#6a5abf", b: "#c9bce5", c: "#f0ead9", bandFreq: 3.5, blotch: 0.8, cloud: 0.4, ring: true },  // lavender pastel
-  { a: "#16227a", b: "#4a5fd9", c: "#8fa8f0", bandFreq: 4, blotch: 0.6, cloud: 0.15, ring: false },  // Neptune deep blue
+  { a: "#6b4a2a", b: "#d9c4a0", c: "#e8e0d0", d: "#8f8fa0", bandFreq: 6, blotch: 0.7, cloud: 0.3, ring: 0.5 },  // Jupiter: belt browns, cream zones, grey-blue storms
+  { a: "#8f7040", b: "#ddc89f", c: "#efe6cf", d: "#a89060", bandFreq: 4.5, blotch: 0.7, cloud: 0.25, ring: 1 }, // Saturn creams, always ringed
+  { a: "#5f4fa8", b: "#c4b8e0", c: "#efe8d9", d: "#3d3270", bandFreq: 3.5, blotch: 0.8, cloud: 0.4, ring: 1 },  // lavender pastel, always ringed
+  { a: "#101c66", b: "#3d4fc0", c: "#7f95e8", d: "#0a1240", bandFreq: 4, blotch: 0.6, cloud: 0.15, ring: 0 },   // Neptune: deep blues, faint light bands
 ];
 const TERRESTRIALS: PlanetStyle[] = [
-  { a: "#5f1f12", b: "#c95f3d", c: "#e8e6e0", bandFreq: 0.6, blotch: 2.4, cloud: 0.55, ring: false }, // rust world, white clouds
-  { a: "#14335f", b: "#5fb8e0", c: "#e08f8f", bandFreq: 0.7, blotch: 2.2, cloud: 0.5, ring: false },  // ice-blue marble, pink wisps
-  { a: "#1a5f42", b: "#7fc9a8", c: "#eef0e8", bandFreq: 0.8, blotch: 2.0, cloud: 0.5, ring: false },  // jade ocean world
-  { a: "#5f7a2c", b: "#b8d97f", c: "#e8f0dc", bandFreq: 0.7, blotch: 2.0, cloud: 0.45, ring: false }, // pea green
-  { a: "#8f7a24", b: "#e5d98f", c: "#8f5630", bandFreq: 0.9, blotch: 2.2, cloud: 0.35, ring: false }, // Io sulphur
+  { a: "#4a180e", b: "#b04a2c", c: "#e5e2da", d: "#26100a", bandFreq: 0.6, blotch: 2.4, cloud: 0.55, ring: 0 },  // rust world: char, lava, white cloud veils
+  { a: "#0f2a52", b: "#4fa8d4", c: "#d98a8a", d: "#081830", bandFreq: 0.7, blotch: 2.2, cloud: 0.5, ring: 0.5 }, // ice marble: deep-to-cyan blues, pink streaks
+  { a: "#14523a", b: "#6bb894", c: "#e8ece2", d: "#0d3324", bandFreq: 0.8, blotch: 2.0, cloud: 0.5, ring: 0.5 }, // jade ocean: green depths, white weather
+  { a: "#547024", b: "#a8cc70", c: "#dfe8cc", d: "#3a4f18", bandFreq: 0.7, blotch: 2.0, cloud: 0.45, ring: 0 },  // pea green swirl
+  { a: "#7a6a1f", b: "#d9cc7f", c: "#7a4a28", d: "#463a10", bandFreq: 0.9, blotch: 2.2, cloud: 0.35, ring: 0 },  // Io: sulphur yellows, burnt patches
 ];
-const MOON: PlanetStyle = { a: "#33333a", b: "#9a9aa2", c: "#cfcfd6", bandFreq: 0.5, blotch: 2.6, cloud: 0.3, ring: false };
+const MOON: PlanetStyle = { a: "#2e2e34", b: "#8f8f96", c: "#c4c4cc", d: "#1c1c22", bandFreq: 0.5, blotch: 2.6, cloud: 0.3, ring: 0 };
 
 function hashId(id: string) {
   let h = 0;
@@ -165,10 +175,14 @@ export function orbRadius(node: GalaxyNode) {
 export function planetStyle(node: GalaxyNode): PlanetStyle {
   if (node.type === "egg") return MOON;
   if (node.type === "job") return GIANTS[hashId(node.id) % GIANTS.length];
-  return TERRESTRIALS[hashId(node.id) % TERRESTRIALS.length];
+  // "pl" salt: with the current roster this deals every terrestrial style
+  // to at least 3 projects (the bare id starved rust worlds entirely)
+  return TERRESTRIALS[hashId(node.id + "pl") % TERRESTRIALS.length];
 }
 export function orbRinged(node: GalaxyNode) {
-  return orbKind(node) === "planet" && planetStyle(node).ring;
+  if (orbKind(node) !== "planet") return false;
+  // style.ring is a probability; a second hash bit decides the "maybe" cases
+  return (hashId(node.id + "ring") % 100) / 100 < planetStyle(node).ring;
 }
 /** Widest visible world-space radius of the close-up body (ring included) —
  *  the scene uses it to push the focused label clear of the artwork. */
@@ -194,11 +208,11 @@ export function FocusOrb({ node, reduced, glowTex }: FocusOrbProps) {
   const ringed = orbRinged(node);
   const style = kind === "sun" ? null : planetStyle(node);
 
-  const [colA, colB, colC] = useMemo(() => {
-    const p: [string, string, string] = style
-      ? [style.a, style.b, style.c]
-      : PALETTES[node.cluster] ?? PALETTES.career;
-    return p.map((h) => new THREE.Color(h)) as [THREE.Color, THREE.Color, THREE.Color];
+  const [colA, colB, colC, colD] = useMemo(() => {
+    const p: [string, string, string, string] = style
+      ? [style.a, style.b, style.c, style.d]
+      : [...(PALETTES[node.cluster] ?? PALETTES.career), "#000000"] as [string, string, string, string];
+    return p.map((h) => new THREE.Color(h)) as [THREE.Color, THREE.Color, THREE.Color, THREE.Color];
   }, [node, style]);
 
   const uniforms = useMemo(
@@ -207,15 +221,17 @@ export function FocusOrb({ node, reduced, glowTex }: FocusOrbProps) {
       uA: { value: colA },
       uB: { value: colB },
       uC: { value: colC },
+      uD: { value: colD },
       uBandFreq: { value: style?.bandFreq ?? 0 },
       uBlotch: { value: style?.blotch ?? 0 },
       uCloud: { value: style?.cloud ?? 0 },
     }),
-    [colA, colB, colC, style],
+    [colA, colB, colC, colD, style],
   );
   const ringUniforms = useMemo(
     () => ({
-      uCol: { value: colB.clone().lerp(new THREE.Color("#ffffff"), 0.2) },
+      // rings read as neutral rock/ice dust with only a hint of the body's hue
+      uCol: { value: new THREE.Color("#c9c0b0").lerp(colB, 0.35) },
       uInner: { value: radius * 1.35 },
       uOuter: { value: radius * 2.3 },
     }),
@@ -261,8 +277,13 @@ export function FocusOrb({ node, reduced, glowTex }: FocusOrbProps) {
         </mesh>
       )}
 
-      {/* corona — suns flare, planets keep a faint atmosphere halo */}
-      <sprite scale={[radius * (kind === "sun" ? 6 : 3.2), radius * (kind === "sun" ? 6 : 3.2), 1]}>
+      {/* corona — suns flare, planets keep a faint atmosphere halo.
+          raycast disabled: this quad is huge and was swallowing clicks
+          aimed at halo stars near the focused body. */}
+      <sprite
+        raycast={() => null}
+        scale={[radius * (kind === "sun" ? 6 : 3.2), radius * (kind === "sun" ? 6 : 3.2), 1]}
+      >
         <spriteMaterial
           map={glowTex}
           color={colB}

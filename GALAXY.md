@@ -19,7 +19,8 @@ How the tables work:
 
 Fact discipline (from the job-search repo, baked in here so it never slips):
 97% is "would recommend", never NPS · Synapse was a team of three, Caroline owned backend and
-AI architecture · Live Scribe is a PoC, never "shipped" · E.ON voice bots are not her work.
+AI architecture · Live Scribe is a PoC, never "shipped" · E.ON voice bots are not her work ·
+Live Help, 360 call analytics and Performance insights are IN BUILD, frame as building not shipped.
 
 ## Jobs
 
@@ -44,6 +45,10 @@ AI architecture · Live Scribe is a PoC, never "shipped" · E.ON voice bots are 
 | yes  | performance-tools | eon  | Performance tools       | replaced 12+ Tableau reports with one coaching dashboard               |                         |
 | yes  | gateway         | eon    | Gateway handovers       | developer handovers, from spreadsheet debt to a product                |                         |
 | yes  | figma-make-kit  | eon    | Figma Make boilerplates | on-brand prototyping kits adopted across product teams                 |                         |
+| yes  | live-help       | eon    | Live Help               | live transcription that catches a missed journey step and nudges it back, in build |             |
+| yes  | call-analytics  | eon    | 360 call analytics      | AI call evaluation trained on leaders' past reviews, every call instead of two a month |         |
+| yes  | perf-insights   | eon    | Performance insights    | links call metrics to transcripts to spot the trends worth upskilling on |                       |
+| yes  | eon-ds          | eon    | E.ON design system      | building and maintaining the core design system                        |                         |
 | yes  | cog-clinic      | cog    | Cog Clinic redesign     | research-led booking redesign that earned the first therapy revenue    | /project/cog-adhd       |
 | yes  | check-in        | cog    | Check-in history        | weekly symptom overview so users could answer "how was your week?"     |                         |
 | yes  | daily-insights  | cog    | Daily insights          | 150+ therapist-written insights with a matching algorithm              |                         |
@@ -54,8 +59,8 @@ AI architecture · Live Scribe is a PoC, never "shipped" · E.ON voice bots are 
 | yes  | vector          |        | Vector                  | AI-native B2B onboarding workspace, designed and built solo            | /project/vector         |
 | yes  | synapse         |        | Synapse                 | memory-first journaling agent on a knowledge graph, team of three      | https://github.com/jawciu/synapse |
 | yes  | portfolio       |        | This site               | hand-built WebGL portfolio, the galaxy you are flying through          | https://github.com/jawciu/portfolio |
-| yes  | job-search-agent |       | Job-search agent        | an agentic system that scans, digests and finds her next role          |                         |
-| yes  | cashu           | brainstation | Cashu             | end-to-end personal finance app for 18-25s, tested twice               |                         |
+| no   | job-search-agent |       | Job-search agent        | an agentic system that scans, digests and finds her next role          |                         |
+| no   | cashu           | brainstation | Cashu             | end-to-end personal finance app for 18-25s, tested twice               |                         |
 
 ## Skills
 
@@ -63,8 +68,8 @@ Clusters: `design` · `research` · `ai` · `engineering` · `product` · `leade
 
 | show | id                | cluster     | name                     | size | featured | connects                                            |
 | ---- | ----------------- | ----------- | ------------------------ | ---- | -------- | --------------------------------------------------- |
-| yes  | zero-to-one       | design      | 0→1 product design       | 3    | yes      | cog vector gateway cashu                             |
-| yes  | design-systems    | design      | design systems           | 3    | yes      | ai-design-system cog-ds vector eon                   |
+| yes  | zero-to-one       | design      | 0→1 product design       | 3    | yes      | cog vector gateway                             |
+| yes  | design-systems    | design      | design systems           | 3    | yes      | ai-design-system cog-ds vector eon-ds                   |
 | yes  | brand-identity    | design      | brand identity           | 2    |          | ai-design-system cog-website vector                  |
 | yes  | visual-craft      | design      | visual craft             | 2    |          | burberry mcqueen casablanca brand-identity           |
 | yes  | motion-design     | design      | motion design            | 1    |          | ai-design-system portfolio                           |
@@ -77,7 +82,7 @@ Clusters: `design` · `research` · `ai` · `engineering` · `product` · `leade
 | yes  | information-arch  | design      | information architecture | 1    |          | cog-website gateway                                  |
 | yes  | conversion-design | design      | conversion design        | 1    |          | cog-clinic subscription                              |
 | yes  | user-interviews   | research    | user interviews          | 2    |          | cog eon cog-clinic                                   |
-| yes  | usability-testing | research    | usability testing        | 1    |          | cog-clinic wiki-whisperer cashu                      |
+| yes  | usability-testing | research    | usability testing        | 1    |          | cog-clinic wiki-whisperer                      |
 | yes  | pilot-design      | research    | pilot & experiment design | 2   |          | wiki-whisperer eon                                   |
 | yes  | ab-testing        | research    | A/B testing              | 1    |          | cog-clinic                                           |
 | yes  | personas-journeys | research    | personas & journey maps  | 1    |          | cog cog-clinic                                       |
@@ -85,19 +90,19 @@ Clusters: `design` · `research` · `ai` · `engineering` · `product` · `leade
 | yes  | field-research    | research    | field research           | 1    |          | eon                                                  |
 | yes  | research-ops      | research    | research ops             | 1    |          | eon                                                  |
 | yes  | surveys           | research    | surveys                  | 1    |          | eon cog                                              |
-| yes  | ai-agents         | ai          | AI agents                | 3    | yes      | wiki-whisperer vector synapse job-search-agent       |
+| yes  | ai-agents         | ai          | AI agents                | 3    | yes      | wiki-whisperer vector synapse live-help       |
 | yes  | langgraph         | ai          | LangGraph                | 2    |          | wiki-whisperer synapse                               |
 | yes  | langchain         | ai          | LangChain                | 1    |          | synapse                                              |
 | yes  | rag               | ai          | RAG                      | 2    |          | wiki-whisperer synapse                               |
 | yes  | knowledge-graphs  | ai          | knowledge graphs         | 2    |          | synapse portfolio                                    |
 | yes  | claude-api        | ai          | Claude API               | 2    |          | vector                                               |
-| yes  | prompt-design     | ai          | prompt design            | 2    |          | vector synapse wiki-whisperer                        |
-| yes  | evals             | ai          | evals & golden datasets  | 2    |          | wiki-whisperer vector synapse                        |
+| yes  | prompt-design     | ai          | prompt design            | 2    |          | vector synapse wiki-whisperer live-help                        |
+| yes  | evals             | ai          | evals & golden datasets  | 2    |          | wiki-whisperer vector synapse call-analytics                        |
 | yes  | guardrails        | ai          | guardrails & grounding   | 1    |          | wiki-whisperer vector                                |
 | yes  | human-in-the-loop | ai          | human-in-the-loop design | 2    |          | vector wiki-whisperer                                |
 | yes  | ai-observability  | ai          | AI observability         | 2    |          | vector synapse eon                                   |
 | yes  | model-benchmarking | ai         | model benchmarking       | 1    |          | synapse                                              |
-| yes  | agent-workflows   | ai          | agent team workflows     | 2    |          | job-search-agent portfolio vector                    |
+| yes  | agent-workflows   | ai          | agent team workflows     | 2    |          | portfolio vector                    |
 | yes  | typescript-react  | engineering | TypeScript & React       | 2    |          | vector portfolio                                     |
 | yes  | nextjs            | engineering | Next.js                  | 2    |          | vector portfolio                                     |
 | yes  | tailwind          | engineering | Tailwind                 | 1    |          | vector portfolio                                     |
@@ -110,7 +115,7 @@ Clusters: `design` · `research` · `ai` · `engineering` · `product` · `leade
 | yes  | playwright        | engineering | Playwright testing       | 1    |          | vector portfolio                                     |
 | yes  | webhooks-crons    | engineering | webhooks & crons         | 1    |          | vector                                               |
 | yes  | webflow           | engineering | Webflow                  | 1    |          | cog-website                                          |
-| yes  | product-metrics   | product     | product metrics          | 2    |          | eon cog vector wiki-whisperer                        |
+| yes  | product-metrics   | product     | product metrics          | 2    |          | eon cog vector wiki-whisperer perf-insights                        |
 | yes  | business-cases    | product     | business cases           | 1    |          | performance-tools                                    |
 | yes  | monetisation      | product     | monetisation             | 1    |          | subscription cog-clinic                              |
 | yes  | stakeholder-mgmt  | product     | stakeholder management   | 2    |          | eon cog                                              |
