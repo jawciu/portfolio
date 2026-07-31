@@ -13,7 +13,8 @@ How the tables work:
 - `connects` — space-separated list of ids this node links to (jobs, projects or other skills).
 - `size` — 1 small · 2 medium · 3 hub. Hubs render bigger and brighter.
 - `featured` — `yes` on a skill means it starts pre-focused with a visible label at page load
-  (the curiosity bait). Keep it to 2-3.
+  (the curiosity bait). About 6 are chosen for the landing view: ai-agents, design-systems,
+  zero-to-one, visual-craft, brand-identity, product-work.
 - One line max per `one-liner`. It shows next to the star when focused. No em dashes.
 - `TODO(caro)` marks facts I could not verify in your notes — confirm or edit before merge.
 
@@ -70,39 +71,44 @@ Clusters: `design` · `research` · `ai` · `engineering` · `product` · `leade
 
 | show | id                | cluster     | name                     | size | featured | connects                                            |
 | ---- | ----------------- | ----------- | ------------------------ | ---- | -------- | --------------------------------------------------- |
-| yes  | zero-to-one       | design      | 0→1 product design       | 3    | yes      | cog vector gateway eon                         |
-| yes  | design-systems    | design      | design systems           | 3    | yes      | ai-design-system cog-ds vector eon eon-ds     |
-| yes  | brand-identity    | design      | brand identity           | 2    |          | ai-design-system cog-website vector cog burberry casablanca julien-macdonald mcqueen consultancy |
-| yes  | visual-craft      | design      | visual craft             | 2    |          | burberry mcqueen casablanca brand-identity cog consultancy mary pilotto |
+| yes  | zero-to-one       | design      | 0→1 product design       | 3    | yes      | cog vector gateway eon synapse portfolio user-interviews visual-craft brand-identity founding-autonomy context-switching navigating-ambiguity ownership |
+| yes  | design-systems    | design      | design systems           | 3    | yes      | ai-design-system cog-ds vector eon eon-ds cog figma-make-kit |
+| yes  | brand-identity    | design      | brand identity           | 2    | yes      | ai-design-system cog-website vector cog burberry casablanca julien-macdonald mcqueen consultancy mary pilotto eon design-systems moodboarding brand-guidelines logo-design |
+| yes  | visual-craft      | design      | visual craft             | 2    | yes      | burberry mcqueen casablanca brand-identity cog consultancy mary pilotto eon julien-macdonald brainstation art-direction motion-design print-design |
 | yes  | motion-design     | design      | motion design            | 1    |          | ai-design-system portfolio cog eon consultancy       |
-| yes  | dense-data-ui     | design      | dense-data UI            | 2    |          | performance-tools gateway vector                     |
+| yes  | dense-data-ui     | design      | dense-data UI            | 2    |          | performance-tools gateway vector perf-insights       |
 | yes  | accessibility     | design      | accessibility            | 1    |          | eon cog                                              |
-| yes  | prototyping       | design      | prototyping              | 1    |          | eon cog figma-make-kit                               |
-| yes  | figma-advanced    | design      | Figma, the deep end      | 2    |          | design-systems eon cog                               |
+| yes  | prototyping       | design      | prototyping              | 1    |          | eon cog figma-make-kit call-analytics live-help      |
+| yes  | figma-advanced    | design      | Figma, the deep end      | 2    |          | design-systems eon cog call-analytics figma-make-kit |
 | yes  | print-design      | design      | print & textile design   | 2    |          | burberry casablanca julien-macdonald mcqueen consultancy mary pilotto |
-| yes  | art-direction     | design      | art direction            | 1    |          | eon cog-website print-design                         |
+| yes  | art-direction     | design      | art direction            | 1    |          | eon cog-website print-design consultancy             |
 | yes  | information-arch  | design      | information architecture | 1    |          | cog-website gateway                                  |
-| yes  | conversion-design | design      | conversion design        | 1    |          | cog-clinic subscription                              |
-| yes  | user-interviews   | research    | user interviews          | 2    |          | cog eon cog-clinic                                   |
-| yes  | usability-testing | research    | usability testing        | 1    |          | cog-clinic wiki-whisperer                      |
+| yes  | conversion-design | design      | conversion design        | 1    |          | cog-clinic subscription cog-website                  |
+| yes  | moodboarding      | design      | moodboarding             | 1    |          | cog casablanca mary                                  |
+| yes  | brand-guidelines  | design      | brand guidelines         | 1    |          | cog-ds ai-design-system                              |
+| yes  | logo-design       | design      | logo design              | 1    |          | cog cog-ds                                           |
+| yes  | user-interviews   | research    | user interviews          | 2    |          | cog eon cog-clinic call-analytics gateway            |
+| yes  | usability-testing | research    | usability testing        | 1    |          | cog-clinic wiki-whisperer call-analytics             |
 | yes  | pilot-design      | research    | pilot & experiment design | 2   |          | wiki-whisperer eon                                   |
 | yes  | ab-testing        | research    | A/B testing              | 1    |          | cog-clinic                                           |
-| yes  | personas-journeys | research    | personas & journey maps  | 1    |          | cog cog-clinic                                       |
-| yes  | competitive-analysis | research | competitive analysis     | 1    |          | cog vector                                           |
+| yes  | personas-journeys | research    | personas & journey maps  | 1    |          | cog cog-clinic gateway                               |
+| yes  | competitive-analysis | research | competitive analysis     | 1    |          | cog vector synapse                                   |
 | yes  | field-research    | research    | field research           | 1    |          | eon                                                  |
 | yes  | research-ops      | research    | research ops             | 1    |          | eon                                                  |
 | yes  | surveys           | research    | surveys                  | 1    |          | eon cog                                              |
+| yes  | moderated-research | research   | moderated research       | 1    |          | cog eon cog-clinic                                   |
+| yes  | desk-research     | research    | desk research            | 1    |          | cog eon synapse vector                               |
 | yes  | ai-agents         | ai          | AI agents                | 3    | yes      | wiki-whisperer vector synapse live-help       |
 | yes  | langgraph         | ai          | LangGraph                | 2    |          | wiki-whisperer synapse                               |
 | yes  | langchain         | ai          | LangChain                | 1    |          | synapse                                              |
 | yes  | rag               | ai          | RAG                      | 2    |          | wiki-whisperer synapse                               |
 | yes  | knowledge-graphs  | ai          | knowledge graphs         | 2    |          | synapse portfolio                                    |
 | yes  | claude-api        | ai          | Claude API               | 2    |          | vector                                               |
-| yes  | prompt-design     | ai          | prompt design            | 2    |          | vector synapse wiki-whisperer live-help                        |
+| yes  | prompt-design     | ai          | prompt design            | 2    |          | vector synapse wiki-whisperer live-help call-analytics |
 | yes  | evals             | ai          | evals & golden datasets  | 2    |          | wiki-whisperer vector synapse call-analytics                        |
 | yes  | guardrails        | ai          | guardrails & grounding   | 1    |          | wiki-whisperer vector                                |
-| yes  | human-in-the-loop | ai          | human-in-the-loop design | 2    |          | vector wiki-whisperer                                |
-| yes  | ai-observability  | ai          | AI observability         | 2    |          | vector synapse eon                                   |
+| yes  | human-in-the-loop | ai          | human-in-the-loop design | 2    |          | vector wiki-whisperer live-help                      |
+| yes  | ai-observability  | ai          | AI observability         | 2    |          | vector synapse eon wiki-whisperer call-analytics live-help |
 | yes  | model-benchmarking | ai         | model benchmarking       | 1    |          | synapse                                              |
 | yes  | agent-workflows   | ai          | agent team workflows     | 2    |          | portfolio vector                    |
 | yes  | typescript-react  | engineering | TypeScript & React       | 2    |          | vector portfolio                                     |
@@ -117,17 +123,23 @@ Clusters: `design` · `research` · `ai` · `engineering` · `product` · `leade
 | yes  | playwright        | engineering | Playwright testing       | 1    |          | vector portfolio                                     |
 | yes  | webhooks-crons    | engineering | webhooks & crons         | 1    |          | vector                                               |
 | yes  | webflow           | engineering | Webflow                  | 1    |          | cog-website                                          |
-| yes  | product-metrics   | product     | product metrics          | 2    |          | eon cog vector wiki-whisperer perf-insights                        |
+| yes  | tokens-in-code    | engineering | design tokens in code    | 1    |          | design-systems tailwind typescript-react vector portfolio |
+| yes  | product-work      | product     | product work             | 3    | yes      | usability-testing prototyping product-metrics user-interviews competitive-analysis cog eon success-tracking moderated-research desk-research |
+| yes  | success-tracking  | product     | success tracking         | 1    |          | cog eon                                              |
+| yes  | product-metrics   | product     | product metrics          | 2    |          | eon cog vector wiki-whisperer perf-insights performance-tools |
 | yes  | business-cases    | product     | business cases           | 1    |          | performance-tools                                    |
 | yes  | monetisation      | product     | monetisation             | 1    |          | subscription cog-clinic                              |
-| yes  | stakeholder-mgmt  | product     | stakeholder management   | 2    |          | eon cog                                              |
-| yes  | roadmapping       | product     | roadmapping              | 1    |          | cog eon                                              |
+| yes  | stakeholder-mgmt  | product     | stakeholder management   | 2    |          | eon cog consultancy                                  |
+| yes  | roadmapping       | product     | roadmapping              | 1    |          | cog eon vector                                       |
 | yes  | icp-research      | product     | ICP & market research    | 1    |          | vector                                               |
-| yes  | mentoring         | leadership  | mentoring & teaching     | 2    |          | brainstation burberry eon                            |
+| yes  | mentoring         | leadership  | mentoring & teaching     | 2    |          | brainstation burberry eon julien-macdonald           |
 | yes  | workshops         | leadership  | workshop facilitation    | 1    |          | eon                                                  |
 | yes  | team-leadership   | leadership  | team leadership          | 2    |          | burberry julien-macdonald                            |
-| yes  | founding-autonomy | leadership  | no-manager mode          | 2    |          | cog gateway vector                                   |
+| yes  | founding-autonomy | leadership  | no-manager mode          | 2    |          | cog gateway vector consultancy                       |
 | yes  | cross-functional  | leadership  | cross-functional glue    | 1    |          | eon cog                                              |
+| yes  | context-switching | leadership  | context switching        | 1    |          | cog vector                                           |
+| yes  | navigating-ambiguity | leadership | navigating ambiguity   | 1    |          | cog gateway vector                                   |
+| yes  | ownership         | leadership  | ownership                | 1    |          | cog vector synapse                                   |
 
 ## Easter eggs
 

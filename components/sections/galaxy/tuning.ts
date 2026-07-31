@@ -16,6 +16,10 @@ export type GalaxyTuning = {
   extRate: number;
   /** exponential rate for stars gathering/releasing — higher = snappier */
   gatherRate: number;
+  /** world-units height of the mid-flight camera lift (0 = straight line) */
+  arcLift: number;
+  /** 1 = a glow rides the A↔B bridge during a hop flight, 0 = off */
+  bridgePulse: number;
 };
 
 export const TUNING_DEFAULTS: GalaxyTuning = {
@@ -24,6 +28,8 @@ export const TUNING_DEFAULTS: GalaxyTuning = {
   sproutAt: 0.66,
   extRate: 13,
   gatherRate: 3.2,
+  arcLift: 2.5,
+  bridgePulse: 1,
 };
 
 export const TUNING: GalaxyTuning = { ...TUNING_DEFAULTS };

@@ -77,6 +77,15 @@ const PLANET_FRAG = NOISE + /* glsl */ `
   uniform float uBandFreq; // high = gas-giant latitude bands, low = no banding
   uniform float uBlotch;   // high = continent/crater blotches dominate
   uniform float uCloud;    // how much of the uC swirl layer covers the surface
+  // optional fifth register + dressing — all default to 0 / uB so every
+  // pre-existing four-tone style renders exactly as before
+  uniform vec3 uE;         // secondary mottle colour (Io olive, Cog mint)
+  uniform float uEAmt;     // 0..1 coverage of the uE mottle layer
+  uniform vec3 uPole;      // polar shading tint
+  uniform float uPoleAmt;  // 0..1 strength of polar shading
+  uniform float uSpeckle;  // 0..1 density of small dark flecks
+  uniform vec3 uRim;       // atmosphere rim tint (defaults to uB)
+  uniform float uRimAmt;   // fresnel rim strength (default 0.25)
   varying vec3 vN; varying vec3 vP; varying vec3 vView;
   void main() {
     float warp = fbm(vP * 3.0 + uTime * 0.02) * 0.7;
@@ -87,15 +96,25 @@ const PLANET_FRAG = NOISE + /* glsl */ `
     // register 2: dark lanes / maria / storm belts (uD) at a different scale
     float lane = fbm(vP * (2.0 + uBlotch * 1.5) - 5.1 + warp * 0.4);
     col = mix(col, uD, smoothstep(0.58, 0.9, lane) * 0.65);
+    // register 2b: secondary mottle (uE) — its own scale + offset so the
+    // patches never align with the uD lanes; sits UNDER the cloud layer
+    float mott = fbm(vP * 3.6 - 11.4 + warp * 0.6);
+    col = mix(col, uE, smoothstep(0.5, 0.82, mott) * uEAmt);
     // register 3: cloud / swirl layer (uC)
     float swirl = fbm(vP * 5.0 + 3.7 + warp * 0.5);
     col = mix(col, uC, smoothstep(0.62 - 0.3 * uCloud, 0.95 - 0.15 * uCloud, swirl));
+    // polar shading with a noisy edge so the caps read painted, not stamped
+    float pol = smoothstep(0.5, 0.92, abs(vP.y) + (warp - 0.35) * 0.2);
+    col = mix(col, uPole, pol * uPoleAmt);
+    // small dark flecks (volcanic pits / islets) — darken whatever is there
+    float spk = noise(vP * 26.0 + 4.7);
+    col = mix(col, col * 0.3, smoothstep(0.8, 0.93, spk) * uSpeckle);
     // fine grain so no region reads as one flat hue
     col *= 0.82 + 0.36 * fbm(vP * 11.0 + 7.3);
     float light = 0.34 + 0.62 * max(dot(normalize(vN), normalize(vec3(0.6, 0.5, 0.8))), 0.0);
     col *= light;
     float fres = pow(1.0 - max(dot(normalize(vN), vView), 0.0), 2.5);
-    col += uB * fres * 0.25;
+    col += uRim * fres * uRimAmt;
     gl_FragColor = vec4(col, 1.0);
   }
 `;
@@ -143,6 +162,15 @@ const PALETTES: Record<string, [string, string, string]> = {
 type PlanetStyle = {
   a: string; b: string; c: string; d: string;
   bandFreq: number; blotch: number; cloud: number; ring: number;
+  // optional fifth-register dressing — omit and the world renders exactly
+  // as the classic four-tone shader (all extras default to off)
+  e?: string;       // secondary mottle colour
+  eAmt?: number;    // 0..1 coverage of the mottle layer
+  pole?: string;    // polar shading tint
+  poleAmt?: number; // 0..1 polar strength
+  speckle?: number; // 0..1 density of small dark flecks
+  rim?: string;     // atmosphere rim tint (defaults to b)
+  rimAmt?: number;  // fresnel rim strength (defaults to 0.25)
 };
 const GIANTS: PlanetStyle[] = [
   { a: "#6b4a2a", b: "#d9c4a0", c: "#e8e0d0", d: "#8f8fa0", bandFreq: 6, blotch: 0.7, cloud: 0.3, ring: 0.5 },  // Jupiter: belt browns, cream zones, grey-blue storms
@@ -150,14 +178,41 @@ const GIANTS: PlanetStyle[] = [
   { a: "#5f4fa8", b: "#c4b8e0", c: "#efe8d9", d: "#3d3270", bandFreq: 3.5, blotch: 0.8, cloud: 0.4, ring: 1 },  // lavender pastel, always ringed
   { a: "#101c66", b: "#3d4fc0", c: "#7f95e8", d: "#0a1240", bandFreq: 4, blotch: 0.6, cloud: 0.15, ring: 0 },   // Neptune: deep blues, faint light bands
 ];
+// Muted 2026-07-31 (Caroline: "some of the planet colours are too crazy") —
+// pea green, generic Io and the ice marble pulled toward naturalistic NASA
+// reference tones. Each world keeps its identity, just desaturated.
 const TERRESTRIALS: PlanetStyle[] = [
   { a: "#4a180e", b: "#b04a2c", c: "#e5e2da", d: "#26100a", bandFreq: 0.6, blotch: 2.4, cloud: 0.55, ring: 0 },  // rust world: char, lava, white cloud veils
-  { a: "#0f2a52", b: "#4fa8d4", c: "#d98a8a", d: "#081830", bandFreq: 0.7, blotch: 2.2, cloud: 0.5, ring: 0.5 }, // ice marble: deep-to-cyan blues, pink streaks
+  { a: "#152c4d", b: "#6f9dbb", c: "#c9a49c", d: "#081830", bandFreq: 0.7, blotch: 2.2, cloud: 0.5, ring: 0.5 }, // ice marble: slate blues, dusty rose streaks
   { a: "#14523a", b: "#6bb894", c: "#e8ece2", d: "#0d3324", bandFreq: 0.8, blotch: 2.0, cloud: 0.5, ring: 0.5 }, // jade ocean: green depths, white weather
-  { a: "#547024", b: "#a8cc70", c: "#dfe8cc", d: "#3a4f18", bandFreq: 0.7, blotch: 2.0, cloud: 0.45, ring: 0 },  // pea green swirl
-  { a: "#7a6a1f", b: "#d9cc7f", c: "#7a4a28", d: "#463a10", bandFreq: 0.9, blotch: 2.2, cloud: 0.35, ring: 0 },  // Io: sulphur yellows, burnt patches
+  { a: "#46512c", b: "#93a468", c: "#e0e4d4", d: "#2f381d", bandFreq: 0.7, blotch: 2.0, cloud: 0.45, ring: 0 },  // sage swirl: earthy olive greens
+  { a: "#6f6134", b: "#d0c493", c: "#8a5c38", d: "#43391c", bandFreq: 0.9, blotch: 2.2, cloud: 0.35, ring: 0 },  // Io: soft sulphur creams, burnt patches
 ];
 const MOON: PlanetStyle = { a: "#2e2e34", b: "#8f8f96", c: "#c4c4cc", d: "#1c1c22", bandFreq: 0.5, blotch: 2.6, cloud: 0.3, ring: 0 };
+
+// Hand-tuned worlds for specific nodes (Caroline's reference photos) —
+// checked before the hash pick so these ids never reroll their planet.
+const PLANET_OVERRIDES: Record<string, PlanetStyle> = {
+  // vector — NASA's Io: pale cream-yellow base, large white plains, olive
+  // mottled patches, rust-orange blotches, lavender-grey poles, dark speckles
+  vector: {
+    a: "#cfc08e", b: "#e9e2c8", c: "#f4f1e6", d: "#b4622f",
+    e: "#6d743e", eAmt: 0.6,
+    pole: "#a09ab0", poleAmt: 0.55,
+    speckle: 0.55,
+    bandFreq: 0.6, blotch: 2.3, cloud: 0.5, ring: 0,
+    rim: "#e9e2c8", rimAmt: 0.18,
+  },
+  // cog — teal-green marble built around the case study accent #19A072:
+  // deep teal ocean, mid-green landmass bands, mint streaks, white cloud
+  // swirls, soft pale atmospheric rim
+  cog: {
+    a: "#0d4a3a", b: "#19a072", c: "#eef7f2", d: "#073028",
+    e: "#8fdec2", eAmt: 0.55,
+    bandFreq: 2.5, blotch: 1.6, cloud: 0.55, ring: 0,
+    rim: "#d9f2e8", rimAmt: 0.65,
+  },
+};
 
 function hashId(id: string) {
   let h = 0;
@@ -174,6 +229,8 @@ export function orbRadius(node: GalaxyNode) {
 }
 export function planetStyle(node: GalaxyNode): PlanetStyle {
   if (node.type === "egg") return MOON;
+  const override = PLANET_OVERRIDES[node.id];
+  if (override) return override;
   if (node.type === "job") return GIANTS[hashId(node.id) % GIANTS.length];
   // "pl" salt: with the current roster this deals every terrestrial style
   // to at least 3 projects (the bare id starved rust worlds entirely)
@@ -225,6 +282,14 @@ export function FocusOrb({ node, reduced, glowTex }: FocusOrbProps) {
       uBandFreq: { value: style?.bandFreq ?? 0 },
       uBlotch: { value: style?.blotch ?? 0 },
       uCloud: { value: style?.cloud ?? 0 },
+      // fifth-register dressing — defaults keep legacy styles pixel-identical
+      uE: { value: new THREE.Color(style?.e ?? style?.b ?? "#ffffff") },
+      uEAmt: { value: style?.eAmt ?? 0 },
+      uPole: { value: new THREE.Color(style?.pole ?? "#000000") },
+      uPoleAmt: { value: style?.poleAmt ?? 0 },
+      uSpeckle: { value: style?.speckle ?? 0 },
+      uRim: { value: style?.rim ? new THREE.Color(style.rim) : colB },
+      uRimAmt: { value: style?.rimAmt ?? 0.25 },
     }),
     [colA, colB, colC, colD, style],
   );

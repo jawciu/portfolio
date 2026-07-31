@@ -233,6 +233,8 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
   const layout = useMemo(() => layoutGalaxy(nodes, GALAXY_EDGES), [nodes]);
 
   const { camera, size, gl } = useThree();
+  // stable store getter, used only by the dev probe (frameloop readout)
+  const getThree = useThree((s) => s.get);
   // drei's OrbitControls type isn't exported cleanly; we only touch .target/.update()
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const controlsRef = useRef<any>(null);
@@ -528,11 +530,27 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
   }, [focused, layout, nodes, camera, reduced, starGeom]);
 
   // ── camera fly-in / fly-home ──────────────────────────────────────
-  const flyTo = useCallback((idx: number | null) => {
+  // The flight is a progress tween, not a straight position tween: the
+  // camera position is lerp(start, end, t) plus a lift of arcLift·sin(πt)
+  // along a fixed direction, so it pulls up and back mid-flight and
+  // descends onto the destination like a map app's fly-to. The lift
+  // direction is computed ONCE at launch (away from the galaxy centre,
+  // blended toward world-up) — the flight normal is not used because it
+  // flips sign when a path grazes the centre line, kinking the arc.
+  const flightProg = useRef({ t: 0 });
+  /** hop endpoints for the bridge pulse; null whenever there is no hop flight */
+  const hopRef = useRef<{ a: number; b: number; bridged: boolean } | null>(null);
+  const pulseRef = useRef<THREE.Sprite>(null);
+
+  const flyTo = useCallback((idx: number | null, hopFrom?: number) => {
     const controls = controlsRef.current;
     const dur = reduced ? 0 : idx === null ? 1.4 : TUNING.flightMs / 1000;
     gsap.killTweensOf(camera.position);
+    gsap.killTweensOf(flightProg.current);
     if (controls) gsap.killTweensOf(controls.target);
+    hopRef.current = idx !== null && hopFrom !== undefined
+      ? { a: hopFrom, b: idx, bridged: layout.neighbours[hopFrom].includes(idx) }
+      : null;
     let camTo: THREE.Vector3;
     let targetTo: THREE.Vector3;
     if (idx === null) {
@@ -551,10 +569,37 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
       const dir = camera.position.clone().sub(controls ? controls.target : HOME_TARGET).normalize();
       camTo = targetTo.clone().add(dir.multiplyScalar(dist));
     }
-    gsap.to(camera.position, { x: camTo.x, y: camTo.y, z: camTo.z, duration: dur, ease: "power2.inOut" });
+    if (reduced) {
+      // reduced motion: straight and instant, no arc, no pulse
+      gsap.to(camera.position, { x: camTo.x, y: camTo.y, z: camTo.z, duration: dur, ease: "power2.inOut" });
+    } else {
+      const from = camera.position.clone();
+      const to = camTo.clone();
+      const lift = from.clone().add(to).multiplyScalar(0.5); // = mid-point − galaxy centre (origin)
+      if (lift.lengthSq() < 1e-4) lift.set(0, 1, 0);
+      lift.normalize().multiplyScalar(0.75).add(new THREE.Vector3(0, 0.6, 0)).normalize();
+      // fly-home already pulls a long way back on its own — a full arc on
+      // top of that overshoots, so it gets a gentler one
+      const liftAmt = TUNING.arcLift * (idx === null ? 0.35 : 1);
+      const p = flightProg.current;
+      p.t = 0;
+      gsap.to(p, {
+        t: 1,
+        duration: dur,
+        // power3.inOut, not power2: the slower attack keeps the camera
+        // visually parked through the retract/flight overlap (see focus())
+        ease: "power3.inOut",
+        onUpdate: () => {
+          camera.position.lerpVectors(from, to, p.t)
+            .addScaledVector(lift, liftAmt * Math.sin(Math.PI * p.t));
+        },
+        onComplete: () => { hopRef.current = null; },
+      });
+    }
     if (controls) {
       gsap.to(controls.target, {
-        x: targetTo.x, y: targetTo.y, z: targetTo.z, duration: dur, ease: "power2.inOut",
+        x: targetTo.x, y: targetTo.y, z: targetTo.z, duration: dur,
+        ease: reduced ? "power2.inOut" : "power3.inOut",
         onUpdate: () => controls.update(),
       });
     }
@@ -615,11 +660,17 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
     if (flightTimer.current) { clearTimeout(flightTimer.current); flightTimer.current = null; }
     if (isHop && !reduced) {
       beginRetract(prevIdx, idx);
+      // Phase blend: the flight launches at 85% of the retract rather than
+      // after it. Overlap + the flight's power3.inOut attack was chosen over
+      // either alone: the overlap kills the dead stop between the phases,
+      // and power3's near-flat opening (≈0.1% progress across the 15%
+      // window at the default timings) hides the overlap completely, so the
+      // retract still reads as finishing before the camera moves.
       flightTimer.current = setTimeout(() => {
         flightTimer.current = null;
         setFocused(idx);
-        flyTo(idx);
-      }, TUNING.retractMs);
+        flyTo(idx, prevIdx);
+      }, TUNING.retractMs * 0.85);
     } else {
       setFocused(idx);
       flyTo(idx);
@@ -636,6 +687,10 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
     const onStart = () => {
       gsap.killTweensOf(camera.position);
       gsap.killTweensOf(controls.target);
+      // the arc drives the camera through a progress object — kill that too,
+      // and drop the hop so the bridge pulse dies with the flight
+      gsap.killTweensOf(flightProg.current);
+      hopRef.current = null;
     };
     controls.addEventListener("start", onStart);
     return () => controls.removeEventListener("start", onStart);
@@ -659,12 +714,16 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
 
   useEffect(() => () => {
     gsap.killTweensOf(camera.position);
+    gsap.killTweensOf(flightProg.current);
     if (controlsRef.current) gsap.killTweensOf(controlsRef.current.target);
   }, [camera]);
 
   // ── per-frame work ────────────────────────────────────────────────
   const driftSpeed = useRef(0);
+  /** dev probe only: lets headless checks see whether the loop is ticking */
+  const frameCount = useRef(0);
   useFrame((_, dt) => {
+    frameCount.current++;
     const t = Math.min(dt, 0.05); // clamped: shader time + rotations only
     // exponential smoothing on REAL dt — converges identically at any framerate
     // (the evaluator measured the old dt-clamped lerps running ~10x slow at 4.5fps)
@@ -760,6 +819,26 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
       if (Math.abs(d) > 0.001) { eArr[i] += d * k; eMoved = true; }
     }
     if (eMoved) eAttr.needsUpdate = true;
+
+    // bridge pulse: a small glow rides the A→B bridge in step with the
+    // flight. Endpoints are read live so it tracks the (rotating, breathing)
+    // group; sin(πt) opacity hides the pop at either end of the run.
+    const pulse = pulseRef.current;
+    if (pulse) {
+      const hop = hopRef.current;
+      const pt = flightProg.current.t;
+      const show = hop !== null && hop.bridged && !reduced
+        && TUNING.bridgePulse >= 0.5 && pt > 0.001 && pt < 0.999;
+      pulse.visible = show;
+      if (show && hop) {
+        pulse.position.set(
+          live[hop.a * 3] + (live[hop.b * 3] - live[hop.a * 3]) * pt,
+          live[hop.a * 3 + 1] + (live[hop.b * 3 + 1] - live[hop.a * 3 + 1]) * pt,
+          live[hop.a * 3 + 2] + (live[hop.b * 3 + 2] - live[hop.a * 3 + 2]) * pt,
+        );
+        (pulse.material as THREE.SpriteMaterial).opacity = Math.sin(Math.PI * pt);
+      }
+    }
   });
 
   // px factor for projection-correct point sizes
@@ -807,8 +886,19 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
       extT: Array.from(edgeExtTarget.current),
       hold: Array.from(retractHold.current),
     });
-    return () => { delete w.__galaxyProbe; delete w.__galaxyFocused; delete w.__galaxyEdges; };
-  }, [nodes, camera, gl, starGeom, focused]);
+    w.__galaxyFlight = () => ({
+      t: flightProg.current.t,
+      hop: hopRef.current ? { ...hopRef.current } : null,
+      cam: camera.position.toArray(),
+      pulseVisible: pulseRef.current?.visible ?? false,
+      pulsePos: pulseRef.current ? pulseRef.current.position.toArray() : null,
+      frames: frameCount.current,
+      frameloop: getThree().frameloop,
+    });
+    return () => {
+      delete w.__galaxyProbe; delete w.__galaxyFocused; delete w.__galaxyEdges; delete w.__galaxyFlight;
+    };
+  }, [nodes, camera, gl, starGeom, focused, getThree]);
 
   // ── labels ────────────────────────────────────────────────────────
   const labelSet = useMemo(() => {
@@ -899,6 +989,19 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
             blending={THREE.AdditiveBlending}
           />
         </lineSegments>
+
+        {/* bridge pulse — a light travelling the A↔B edge during a hop
+            flight; positioned + shown per frame in useFrame, never raycast */}
+        <sprite ref={pulseRef} visible={false} scale={0.42} raycast={() => null}>
+          <spriteMaterial
+            map={glowTex}
+            color="#c9a2ff"
+            transparent
+            opacity={0}
+            depthWrite={false}
+            blending={THREE.AdditiveBlending}
+          />
+        </sprite>
 
         {/* node stars */}
         <points

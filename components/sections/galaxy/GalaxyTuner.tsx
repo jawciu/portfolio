@@ -14,6 +14,8 @@ const FIELDS: { key: keyof GalaxyTuning; label: string; min: number; max: number
   { key: "sproutAt", label: "sprout at (× flight)", min: 0, max: 1.2, step: 0.05 },
   { key: "extRate", label: "edge speed", min: 1, max: 15, step: 0.5 },
   { key: "gatherRate", label: "gather speed", min: 0.5, max: 10, step: 0.1 },
+  { key: "arcLift", label: "arc lift (world)", min: 0, max: 8, step: 0.5 },
+  { key: "bridgePulse", label: "bridge pulse (0/1)", min: 0, max: 1, step: 1 },
 ];
 
 export function GalaxyTuner() {

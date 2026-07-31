@@ -361,6 +361,44 @@ cards, element-screenshot. Delete the temp script after.
   AI agents halo correct (incl. the "be nice to robots" egg), Vector = pea-green world with
   20-skill halo + case-study link, E.ON = caramel giant, drift band reads as one; 0 console
   errors, tsc + lint clean.
+- **ROUND 12 (same session): edge speed 13 baked, ALL choreography committed `d126029`.
+  TWO PARALLEL SUBAGENTS DISPATCHED (her ask):** Agent 1 (animation) owns GalaxyScene.tsx +
+  tuning.ts + GalaxyTuner.tsx: fly-over arc (arcLift knob), light pulse travelling the
+  bridge (bridgePulse knob), phase-blend softening. Agent 2 (planets + graph) owns
+  FocusOrb.tsx + GALAXY.md (+sync): PLANET_OVERRIDES — vector = Io-style multi-tone (her
+  NASA ref), cog = green ocean world on #19A072 (her ref), mute the too-crazy styles; and
+  her full knowledge-graph density spec (new hub product-work + success-tracking/
+  moderated-research/desk-research/moodboarding/brand-guidelines/logo-design/
+  context-switching/navigating-ambiguity/ownership etc, featured set grows to ~6, general
+  every-node-richly-connected pass). File ownership is disjoint by design. **BOTH LANDED,
+  combined tree verified (106 stars / 248 links, 6 featured labels, vector=Io / cog=green
+  marble focus-checked, 0 console errors, tsc+lint clean). UNCOMMITTED. Details:**
+  · Animation agent: flyTo now tweens a progress object — camera = lerp(start,end,t) +
+    liftDir·arcLift·sin(πt), liftDir = midpoint-away-from-centre blended with world-up
+    (never flips); fly-home uses 0.35× lift. Bridge pulse = glowTex sprite riding
+    lerp(A,B,t) with sin(πt) opacity, only on BRIDGED hops, killed on grab/landing.
+    Phase blend: flight fires at retractMs×0.85 with power3.inOut (near-flat attack hides
+    the 90ms overlap; measured camera <0.2 world moved before all edges home). New TUNING:
+    arcLift 2.5 (0-8), bridgePulse 1 (0/1), both in the tuner. New dev hook
+    `__galaxyFlight()` {t, hop, cam, pulseVisible, frames, frameloop}. HEADLESS LESSON:
+    SwiftShader hits "too many active WebGL contexts" (hero+galaxy+StrictMode) and the R3F
+    loop can die while timers keep running — launch Chromium with `--use-angle=metal
+    --enable-gpu` and abort if the frames counter stalls. Open dial: arcLift is absolute,
+    short hops get proportionally more lift — cap by flight distance if it reads floaty.
+  · Planets/graph agent: PLANET_FRAG gained OPTIONAL fifth register + dressing (uE/uEAmt
+    mottle, uPole/uPoleAmt noisy polar caps, uSpeckle flecks, uRim/uRimAmt per-style rim —
+    all default off so old styles render byte-identical). `PLANET_OVERRIDES` by node id:
+    vector = Io (cream base, white plains, olive mottle, rust lanes, lavender poles,
+    speckles), cog = teal-green marble on #19A072 (deep teal → mid → mint streaks, white
+    swirls, pale mint rim). Muting pass: ice/pea/io styles desaturated. GALAXY.md: 11 new
+    skills (product-work hub featured + success-tracking, moderated-research,
+    desk-research, moodboarding, brand-guidelines, logo-design, context-switching,
+    navigating-ambiguity, ownership, tokens-in-code), featured now 6, big honest-density
+    pass (deliberately NOT connected: model-benchmarking→vector, logo-design→consultancy,
+    brand-identity→brainstation, unverified synapse stack claims). 95→106 nodes,
+    163→248 edges, sync validation + no duplicate pairs.
+  · Known nit grew: denser halos = more label overlaps (cog's halo has several) — a label
+    de-collision pass is the obvious next round.
 - **ROUND 11 (same session): phase 1 now delays EVERYTHING, not just the camera.
   UNCOMMITTED.** Her note: retract still overlapped the zoom even at max retractMs. Cause:
   only `flyTo` was delayed — `setFocused` fired at click time, so the orb swap, label
