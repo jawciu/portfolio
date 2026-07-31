@@ -19,6 +19,9 @@ const COLOUR_FIELDS: { key: keyof PaintPatch; label: string }[] = [
   { key: "e", label: "mottle" },
   { key: "pole", label: "poles" },
   { key: "rim", label: "rim glow" },
+  // ringed worlds only — paintableFor omits these keys when there are no rings
+  { key: "ringA", label: "ring dust" },
+  { key: "ringB", label: "ring rock" },
 ];
 const DIAL_FIELDS: { key: keyof PaintPatch; label: string; min: number; max: number; step: number }[] = [
   { key: "eAmt", label: "mottle amount", min: 0, max: 1, step: 0.05 },

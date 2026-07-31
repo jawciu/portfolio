@@ -191,6 +191,10 @@ type PlanetStyle = {
   speckle?: number; // 0..1 density of small dark flecks
   rim?: string;     // atmosphere rim tint (defaults to b)
   rimAmt?: number;  // fresnel rim strength (defaults to 0.25)
+  // ring tones — omit for the default neutral rock/ice dust lerped toward the
+  // body hue; set both to give a world deliberately coloured rings
+  ringA?: string;   // lighter dust band tone
+  ringB?: string;   // darker rock band tone
 };
 const GIANTS: PlanetStyle[] = [
   { a: "#6b4a2a", b: "#d9c4a0", c: "#e8e0d0", d: "#8f8fa0", bandFreq: 6, blotch: 0.7, cloud: 0.3, ring: 0.5 },  // Jupiter: belt browns, cream zones, grey-blue storms
@@ -226,13 +230,71 @@ const PLANET_OVERRIDES: Record<string, PlanetStyle> = {
   // cog — teal-green marble built around the case study accent #19A072:
   // deep teal ocean, mid-green landmass bands, mint streaks, white cloud
   // swirls, soft pale atmospheric rim
+  // cog — Caroline repainted the marble copper 2026-07-31 (structure kept from
+  // the teal build: same registers, new base + rim tones)
   cog: {
-    a: "#0d4a3a", b: "#19a072", c: "#eef7f2", d: "#073028",
+    a: "#a96232", b: "#d7ab93", c: "#eef7f2", d: "#073028",
     e: "#8fdec2", eAmt: 0.55,
     bandFreq: 2.5, blotch: 1.6, cloud: 0.55, ring: 0,
-    rim: "#d9f2e8", rimAmt: 0.65,
+    rim: "#f2e3d9", rimAmt: 0.65,
+  },
+  // Painted live by Caroline 2026-07-31 (values copied out of PlanetPainter,
+  // merged over each node's previously-hashed base style so the fields she
+  // never touched keep the surface she was looking at).
+  // eon — deep ocean blue with a dusty pink cloud deck, over the Jupiter giant
+  eon: {
+    a: "#116192", b: "#dd9cb6", c: "#ecd8b1", d: "#8f8fa0",
+    e: "#f0dfc2", eAmt: 0.4,
+    poleAmt: 0.45, // no pole colour: shades toward black, as painted
+    speckle: 0.45,
+    bandFreq: 6, blotch: 0.7, cloud: 0.45, ring: 0.5,
+    rim: "#ecb1b1", rimAmt: 0.65,
+  },
+  // ai design system — navy base with a clay-pink terrain, over the rust world
+  "ai-design-system": {
+    a: "#0e2249", b: "#c19486", c: "#e5e2da", d: "#26100a",
+    bandFreq: 0.6, blotch: 2.4, cloud: 0.55, ring: 0,
+    rim: "#df8b72",
+  },
+  // cog clinic — muted sea-green, over the sage world
+  "cog-clinic": {
+    a: "#2d5349", b: "#88a59e", c: "#e0e4d4", d: "#2f381d",
+    bandFreq: 0.7, blotch: 2.0, cloud: 0.45, ring: 0,
+  },
+  // wiki whisperer — deep indigo with violet weather, over the jade world.
+  // Ringed, with deliberately lilac rings rather than the default neutral dust.
+  "wiki-whisperer": {
+    a: "#0e1462", b: "#b79edb", c: "#eae3ed", d: "#0e1735",
+    e: "#d08ddd", pole: "#270e35",
+    bandFreq: 0.8, blotch: 2.0, cloud: 0.5, ring: 1,
+    rim: "#b66bb8",
+    ringA: "#e0c6ef", ringB: "#6a4a86",
   },
 };
+
+// Suns take their two fbm tones from the cluster palette; these ids override
+// that pick (painted live, same panel).
+const SUN_OVERRIDES: Record<string, [string, string]> = {
+  "product-work": ["#14620e", "#6baeac"],
+};
+
+/** The two fbm tones a sun burns with (cluster palette, or a painted override). */
+function sunTones(node: GalaxyNode): [string, string] {
+  const o = SUN_OVERRIDES[node.id];
+  if (o) return o;
+  const p = PALETTES[node.cluster] ?? PALETTES.career;
+  return [p[0], p[1]];
+}
+
+/** Ring dust + rock tones: a style can name them, otherwise they're neutral
+ *  rock/ice lerped a little toward the body's lifted base. */
+function ringTones(style: PlanetStyle | null, bHex: string): [string, string] {
+  const b = new THREE.Color(bHex);
+  return [
+    style?.ringA ?? `#${new THREE.Color("#c9c0b0").lerp(b, 0.35).getHexString()}`,
+    style?.ringB ?? `#${new THREE.Color("#6f6352").lerp(b, 0.2).getHexString()}`,
+  ];
+}
 
 function hashId(id: string) {
   let h = 0;
@@ -273,19 +335,24 @@ export function orbExtent(node: GalaxyNode) {
 export function paintableFor(node: GalaxyNode): { kind: string; values: Record<string, string | number> } {
   const kind = orbKind(node);
   if (kind === "sun") {
-    const p = PALETTES[node.cluster] ?? PALETTES.career;
-    return { kind, values: { a: p[0], b: p[1] } };
+    const [a, b] = sunTones(node);
+    return { kind, values: { a, b } };
   }
   const s = planetStyle(node);
+  const [ringA, ringB] = ringTones(s, s.b);
   return {
     kind,
     values: {
       a: s.a, b: s.b, c: s.c, d: s.d,
       e: s.e ?? s.b, eAmt: s.eAmt ?? 0,
-      pole: s.pole ?? s.d, poleAmt: s.poleAmt ?? 0,
+      // pole defaults to BLACK, matching the shader's uPole fallback — the
+      // panel used to preview s.d here and lied about what you'd render
+      pole: s.pole ?? "#000000", poleAmt: s.poleAmt ?? 0,
       speckle: s.speckle ?? 0,
       rim: s.rim ?? s.b, rimAmt: s.rimAmt ?? 0.25,
       cloud: s.cloud, bandFreq: s.bandFreq, blotch: s.blotch,
+      // ring tones only exist as controls on worlds that actually have rings
+      ...(orbRinged(node) ? { ringA, ringB } : {}),
     },
   };
 }
@@ -322,9 +389,10 @@ export function FocusOrb({ node, reduced, glowTex }: FocusOrbProps) {
   }, [node, kind, paintTick]);
 
   const [colA, colB, colC, colD] = useMemo(() => {
+    const sun = sunTones(node);
     const p: [string, string, string, string] = style
       ? [style.a, style.b, style.c, style.d]
-      : [...(PALETTES[node.cluster] ?? PALETTES.career), "#000000"] as [string, string, string, string];
+      : [sun[0], sun[1], (PALETTES[node.cluster] ?? PALETTES.career)[2], "#000000"];
     if (!style) {
       const patch = PAINT[node.id];
       if (patch?.a) p[0] = patch.a;
@@ -356,15 +424,19 @@ export function FocusOrb({ node, reduced, glowTex }: FocusOrbProps) {
     [colA, colB, colC, colD, style],
   );
   const ringUniforms = useMemo(
-    () => ({
-      // rings read as neutral rock/ice dust with only a hint of the body's hue;
-      // the darker rock tone gives the noise bands something to alternate with
-      uCol: { value: new THREE.Color("#c9c0b0").lerp(colB, 0.35) },
-      uColB: { value: new THREE.Color("#6f6352").lerp(colB, 0.2) },
-      uInner: { value: radius * 1.35 },
-      uOuter: { value: radius * 2.3 },
-    }),
-    [colB, radius],
+    () => {
+      // default: neutral rock/ice dust with only a hint of the body's hue, the
+      // darker tone giving the noise bands something to alternate with. A style
+      // (or the painter) can name ringA/ringB for deliberately coloured rings.
+      const [ringA, ringB] = ringTones(style, `#${colB.getHexString()}`);
+      return {
+        uCol: { value: new THREE.Color(ringA) },
+        uColB: { value: new THREE.Color(ringB) },
+        uInner: { value: radius * 1.35 },
+        uOuter: { value: radius * 2.3 },
+      };
+    },
+    [colB, radius, style],
   );
 
   useFrame((_, dt) => {

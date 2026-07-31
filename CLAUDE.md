@@ -248,6 +248,22 @@ cards, element-screenshot. Delete the temp script after.
 > current state (working / broken / in-progress), explicit next steps. Sweep settled entries into
 > the archive periodically so this file stays short.
 
+### 2026-07-31 (eve) — HANDOFF: CLAUDE.md tidied + Caroline's painted planet palettes baked
+
+- **CLAUDE.md swept**: 1,777 → ~330 lines. Every 2026-06-28 → 2026-07-30 handoff moved verbatim
+  into `docs/CLAUDE-ARCHIVE.md` (nothing deleted), and the branch-state table below is new.
+- **Planet palettes baked** from her live PlanetPainter session (see the galaxy entry's "Painted
+  palettes" block for the details and the two baking gotchas). Touched `FocusOrb.tsx`,
+  `PlanetPainter.tsx`, `paint.ts`. Verified live on :3001: all 6 nodes focus correctly, colours
+  match her paint, wiki's rings read lilac, ring pickers appear only on ringed worlds, 0 console
+  errors, tsc + lint clean.
+- **State: working, committed on `skills-galaxy`** (not pushed, not merged). Caroline signed off
+  for the night straight after the commit, so nothing was left half-applied.
+- **Pick up here:** she may want more paint rounds (wiki's mottle/pole amounts are still 0, so
+  those two colours are invisible until dialled; E.ON's blue is mostly hidden behind the pink at
+  default banding). Otherwise the galaxy's open list below is unchanged, with label de-collision
+  still top.
+
 ### Branch state (unmerged work, all off `main`)
 
 | Branch | What | State | Blocking / next |
@@ -297,6 +313,16 @@ flight with a light pulse on the bridge → B's edges sprout on approach.
 expansion proposal for her veto, featured-star de-overlap, rebuilt ring bands, the planet painter,
 "view source" links removed from focused labels). Not pushed, not merged. Caroline reviews live on
 :3001 (`npm run dev -- --port 3001`; **never touch port 3000**, it's usually hers).
+
+**Painted palettes (2026-07-31, uncommitted)** — Caroline's live paint baked into
+`PLANET_OVERRIDES`: eon (blue + dusty pink giant), cog (recoloured copper, was teal), cog-clinic
+(sea green), ai-design-system (navy + clay), wiki-whisperer (indigo + violet, lilac rings). Suns
+now have their own `SUN_OVERRIDES` map (product-work = green/teal) since `PLANET_OVERRIDES` is only
+read for planets. Ring tones are a style field (`ringA`/`ringB`) with the old neutral-dust lerp as
+the default, and the painter shows "ring dust" / "ring rock" pickers **only on ringed worlds**.
+Two things to know when baking painter output: the panel emits ONLY the fields she touched, so
+merge them over the node's existing hashed base style; and a colour whose amount dial is still 0
+(wiki's mottle + poles) renders as nothing until she dials the amount up.
 
 **Open / next, in priority order**
 1. **Label de-collision** in dense halos (cog has ~30 edges, labels overlap).

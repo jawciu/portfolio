@@ -9,6 +9,7 @@
 export type PaintPatch = Partial<{
   a: string; b: string; c: string; d: string;
   e: string; pole: string; rim: string;
+  ringA: string; ringB: string;
   eAmt: number; poleAmt: number; speckle: number; rimAmt: number;
   cloud: number; bandFreq: number; blotch: number;
 }>;
