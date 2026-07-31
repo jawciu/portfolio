@@ -245,6 +245,44 @@ cards, element-screenshot. Delete the temp script after.
 > **`docs/CLAUDE-ARCHIVE.md`**. At the end of a session, append a new entry with: what changed,
 > current state (working / broken / in-progress), and explicit next steps for the next agent.
 
+### 2026-07-31 — HANDOFF: Skills galaxy, branch `skills-galaxy`, all work COMMITTED through `3067c0b` (NOT pushed, NOT merged).
+> **READ THIS FIRST if you're picking up the galaxy.** The full blow-by-blow (12 rounds) is in
+> the dated entries below; this is the resume-here summary.
+- **WHAT IT IS:** Caroline's skills matrix as an interactive knowledge-graph galaxy — a
+  homepage section between Highlights and Toolkit (`components/sections/SkillsGalaxy.tsx`),
+  window-framed R3F canvas, 106 stars (jobs/projects/skills/easter eggs) and 248 links.
+  Click a star: camera flies in, neighbours gather into a labelled halo, the node renders as
+  a sun (skills), planet (jobs=gas giants, projects=terrestrials, per-id overrides: vector=Io,
+  cog=green marble on #19A072) or moon (eggs). Hops A→B run strict phases: edges reel into A
+  (halo frozen, nothing else moves) → arced camera flight with a light pulse on the bridge →
+  B's edges sprout on approach.
+- **HOW TO WORK ON IT:** data = `GALAXY.md` tables → `node scripts/sync-galaxy.mjs` →
+  `lib/galaxyData.ts` (never hand-edit; validates refs). Visual/choreo knobs = `galaxy/tuning.ts`
+  (mutable TUNING, read live) + dev-only slider panel (`GalaxyTuner`, "tune" chip bottom-left).
+  Dev-only test hooks on window: `__galaxyProbe()` (per-node screen px + local xyz),
+  `__galaxyFocused`, `__galaxyEdges()`, `__galaxyFlight()`. Verify with standalone Playwright
+  FROM REPO ROOT, `domcontentloaded`, section locator `[aria-labelledby='skills-galaxy-label']`;
+  headless gotchas: launch with `--use-angle=metal --enable-gpu`, screenshots lag 1-2s behind
+  animation (judge choreography by hook numbers, not frames), scope getByText to the section
+  (Highlights above has clashing text like "E.ON Next").
+- **STATE: working, committed on `skills-galaxy` through `3067c0b`.** tsc/lint/build clean at
+  every commit. Caroline reviews live on :3001 (dev server may need restarting: `npm run dev --
+  --port 3001`; NEVER touch port 3000).
+- **OPEN / NEXT (in rough priority):**
+  1. **Label de-collision** — dense halos (cog ~30 edges) overlap labels; obvious next round.
+  2. Caroline to dial the new tuner knobs (arcLift default 2.5, bridgePulse, timings) in the
+     live demo → bake her numbers into TUNING_DEFAULTS.
+  3. `TODO(caro)` facts still in GALAXY.md: Peter Pilotto has NO role (label shows just
+     "2019"), margiela row hidden pending role/dates.
+  4. Mobile pass never done (section renders at 390 but untuned); iPhone on-device test
+     pending (historically the only place some bugs reproduce).
+  5. Before merge: decide whether the dev-only probes/tuner stay NODE_ENV-gated (they never
+     ship, so probably fine); sr-only accessibility alternative for the canvas still missing;
+     the evaluator flagged a stray React "useEffect changed size between renders" error
+     somewhere on the homepage — source never found, worth a look.
+  6. Not linked from nav/homepage copy yet — it's just a section; Caroline may want a teaser
+     or nav anchor later.
+
 ### 2026-07-31 — SKILLS GALAXY prototyped: interactive knowledge-graph star field on the homepage. Branch `skills-galaxy`, UNCOMMITTED.
 - **Caroline's vision (grilled via /grill-me):** her skills matrix as a fun, interactive galaxy /
   knowledge graph — sparkles, skills connected to skills and to jobs/projects, click to zoom in.
