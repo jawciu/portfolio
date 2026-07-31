@@ -1,0 +1,139 @@
+# GALAXY.md — the skills galaxy data (source of truth)
+
+This file feeds the `/skills` galaxy section on the homepage. **Edit the tables, not the code.**
+After editing, run `node scripts/sync-galaxy.mjs` (or ask an agent) to regenerate
+`lib/galaxyData.ts`. The site never reads this file directly.
+
+How the tables work:
+
+- `show` — `yes` renders the row, `no` keeps it here but out of the galaxy. Never delete a row
+  to hide it, flip it to `no` so nothing is lost.
+- `id` — lowercase-kebab, referenced by other tables. Don't rename an id without updating the
+  rows that point at it (the sync script errors loudly if a reference dangles).
+- `connects` — space-separated list of ids this node links to (jobs, projects or other skills).
+- `size` — 1 small · 2 medium · 3 hub. Hubs render bigger and brighter.
+- `featured` — `yes` on a skill means it starts pre-focused with a visible label at page load
+  (the curiosity bait). Keep it to 2-3.
+- One line max per `one-liner`. It shows next to the star when focused. No em dashes.
+- `TODO(caro)` marks facts I could not verify in your notes — confirm or edit before merge.
+
+Fact discipline (from the job-search repo, baked in here so it never slips):
+97% is "would recommend", never NPS · Synapse was a team of three, Caroline owned backend and
+AI architecture · Live Scribe is a PoC, never "shipped" · E.ON voice bots are not her work.
+
+## Jobs
+
+| show | id         | name              | role                   | dates       | one-liner                                                        |
+| ---- | ---------- | ----------------- | ---------------------- | ----------- | ---------------------------------------------------------------- |
+| yes  | eon        | E.ON Next         | product designer       | 2025 – now  | AI tools for a support call centre, designed end to end          |
+| yes  | cog        | Cog               | founding designer      | 2023 – 2025 | 0→1 ADHD app and online therapy clinic, first design hire        |
+| yes  | brainstation | BrainStation    | product design educator | 2023       | top of class, then came back to teach it                         |
+| yes  | casablanca | Casablanca Paris  | senior print designer  | 2022 – 2023 | luxury fashion house, print and graphics                         |
+| yes  | burberry   | Burberry          | senior print designer  | 2021 – 2022 | TODO(caro): managed a team of 6? confirm the number              |
+| yes  | consultancy | Design consultant | self-employed         | 2019 – 2021 | freelance print and branding across fashion                      |
+| yes  | julien-macdonald | Julien Macdonald | knitwear & print designer | TODO(caro) dates | TODO(caro): managed 12 interns? confirm              |
+| yes  | mcqueen    | Alexander McQueen | print designer         | TODO(caro) dates | couture-level craft under pressure                          |
+| no   | margiela   | Maison Margiela   | print designer         | TODO(caro) dates | TODO(caro): confirm role + dates before showing             |
+
+## Projects
+
+| show | id              | job    | name                    | one-liner                                                              | link                    |
+| ---- | --------------- | ------ | ----------------------- | ---------------------------------------------------------------------- | ----------------------- |
+| yes  | wiki-whisperer  | eon    | Wiki Whisperer V2       | rebuilt a failed AI assistant into an agent 97% would recommend        | /project/wiki-whisperer |
+| yes  | ai-design-system | eon   | AI design system        | one design language for every E.ON Next AI product, built from scratch |                         |
+| yes  | performance-tools | eon  | Performance tools       | replaced 12+ Tableau reports with one coaching dashboard               |                         |
+| yes  | gateway         | eon    | Gateway handovers       | developer handovers, from spreadsheet debt to a product                |                         |
+| yes  | figma-make-kit  | eon    | Figma Make boilerplates | on-brand prototyping kits adopted across product teams                 |                         |
+| yes  | cog-clinic      | cog    | Cog Clinic redesign     | research-led booking redesign that earned the first therapy revenue    | /project/cog-adhd       |
+| yes  | check-in        | cog    | Check-in history        | weekly symptom overview so users could answer "how was your week?"     |                         |
+| yes  | daily-insights  | cog    | Daily insights          | 150+ therapist-written insights with a matching algorithm              |                         |
+| yes  | subscription    | cog    | Subscription launch     | designed the free-to-paid transition and first recurring revenue       |                         |
+| yes  | self-help       | cog    | CBT self-help modules   | turned therapist jargon into bite-sized illustrated stories            |                         |
+| yes  | cog-website     | cog    | cogadhd.com             | designed and built the marketing site in three weeks                   |                         |
+| yes  | cog-ds          | cog    | Cog design system       | tokens, variables and colour modes, built from zero                    |                         |
+| yes  | vector          |        | Vector                  | AI-native B2B onboarding workspace, designed and built solo            | /project/vector         |
+| yes  | synapse         |        | Synapse                 | memory-first journaling agent on a knowledge graph, team of three      | https://github.com/jawciu/synapse |
+| yes  | portfolio       |        | This site               | hand-built WebGL portfolio, the galaxy you are flying through          | https://github.com/jawciu/portfolio |
+| yes  | job-search-agent |       | Job-search agent        | an agentic system that scans, digests and finds her next role          |                         |
+| yes  | cashu           | brainstation | Cashu             | end-to-end personal finance app for 18-25s, tested twice               |                         |
+
+## Skills
+
+Clusters: `design` · `research` · `ai` · `engineering` · `product` · `leadership`
+
+| show | id                | cluster     | name                     | size | featured | connects                                            |
+| ---- | ----------------- | ----------- | ------------------------ | ---- | -------- | --------------------------------------------------- |
+| yes  | zero-to-one       | design      | 0→1 product design       | 3    | yes      | cog vector gateway cashu                             |
+| yes  | design-systems    | design      | design systems           | 3    | yes      | ai-design-system cog-ds vector eon                   |
+| yes  | brand-identity    | design      | brand identity           | 2    |          | ai-design-system cog-website vector                  |
+| yes  | visual-craft      | design      | visual craft             | 2    |          | burberry mcqueen casablanca brand-identity           |
+| yes  | motion-design     | design      | motion design            | 1    |          | ai-design-system portfolio                           |
+| yes  | dense-data-ui     | design      | dense-data UI            | 2    |          | performance-tools gateway vector                     |
+| yes  | accessibility     | design      | accessibility            | 1    |          | eon cog                                              |
+| yes  | prototyping       | design      | prototyping              | 1    |          | eon cog figma-make-kit                               |
+| yes  | figma-advanced    | design      | Figma, the deep end      | 2    |          | design-systems eon cog                               |
+| yes  | print-design      | design      | print & textile design   | 2    |          | burberry casablanca julien-macdonald mcqueen consultancy |
+| yes  | art-direction     | design      | art direction            | 1    |          | eon cog-website print-design                         |
+| yes  | information-arch  | design      | information architecture | 1    |          | cog-website gateway                                  |
+| yes  | conversion-design | design      | conversion design        | 1    |          | cog-clinic subscription                              |
+| yes  | user-interviews   | research    | user interviews          | 2    |          | cog eon cog-clinic                                   |
+| yes  | usability-testing | research    | usability testing        | 1    |          | cog-clinic wiki-whisperer cashu                      |
+| yes  | pilot-design      | research    | pilot & experiment design | 2   |          | wiki-whisperer eon                                   |
+| yes  | ab-testing        | research    | A/B testing              | 1    |          | cog-clinic                                           |
+| yes  | personas-journeys | research    | personas & journey maps  | 1    |          | cog cog-clinic                                       |
+| yes  | competitive-analysis | research | competitive analysis     | 1    |          | cog vector                                           |
+| yes  | field-research    | research    | field research           | 1    |          | eon                                                  |
+| yes  | research-ops      | research    | research ops             | 1    |          | eon                                                  |
+| yes  | surveys           | research    | surveys                  | 1    |          | eon cog                                              |
+| yes  | ai-agents         | ai          | AI agents                | 3    | yes      | wiki-whisperer vector synapse job-search-agent       |
+| yes  | langgraph         | ai          | LangGraph                | 2    |          | wiki-whisperer synapse                               |
+| yes  | langchain         | ai          | LangChain                | 1    |          | synapse                                              |
+| yes  | rag               | ai          | RAG                      | 2    |          | wiki-whisperer synapse                               |
+| yes  | knowledge-graphs  | ai          | knowledge graphs         | 2    |          | synapse portfolio                                    |
+| yes  | claude-api        | ai          | Claude API               | 2    |          | vector                                               |
+| yes  | prompt-design     | ai          | prompt design            | 2    |          | vector synapse wiki-whisperer                        |
+| yes  | evals             | ai          | evals & golden datasets  | 2    |          | wiki-whisperer vector synapse                        |
+| yes  | guardrails        | ai          | guardrails & grounding   | 1    |          | wiki-whisperer vector                                |
+| yes  | human-in-the-loop | ai          | human-in-the-loop design | 2    |          | vector wiki-whisperer                                |
+| yes  | ai-observability  | ai          | AI observability         | 2    |          | vector synapse eon                                   |
+| yes  | model-benchmarking | ai         | model benchmarking       | 1    |          | synapse                                              |
+| yes  | agent-workflows   | ai          | agent team workflows     | 2    |          | job-search-agent portfolio vector                    |
+| yes  | typescript-react  | engineering | TypeScript & React       | 2    |          | vector portfolio                                     |
+| yes  | nextjs            | engineering | Next.js                  | 2    |          | vector portfolio                                     |
+| yes  | tailwind          | engineering | Tailwind                 | 1    |          | vector portfolio                                     |
+| yes  | python-fastapi    | engineering | Python & FastAPI         | 1    |          | synapse                                              |
+| yes  | postgres-prisma   | engineering | Postgres & Prisma        | 1    |          | vector                                               |
+| yes  | surrealdb         | engineering | SurrealDB                | 1    |          | synapse                                              |
+| yes  | webgl-glsl        | engineering | WebGL & GLSL             | 2    |          | portfolio                                            |
+| yes  | r3f               | engineering | React Three Fiber        | 1    |          | portfolio                                            |
+| yes  | gsap              | engineering | GSAP animation           | 1    |          | portfolio                                            |
+| yes  | playwright        | engineering | Playwright testing       | 1    |          | vector portfolio                                     |
+| yes  | webhooks-crons    | engineering | webhooks & crons         | 1    |          | vector                                               |
+| yes  | webflow           | engineering | Webflow                  | 1    |          | cog-website                                          |
+| yes  | product-metrics   | product     | product metrics          | 2    |          | eon cog vector wiki-whisperer                        |
+| yes  | business-cases    | product     | business cases           | 1    |          | performance-tools                                    |
+| yes  | monetisation      | product     | monetisation             | 1    |          | subscription cog-clinic                              |
+| yes  | stakeholder-mgmt  | product     | stakeholder management   | 2    |          | eon cog                                              |
+| yes  | roadmapping       | product     | roadmapping              | 1    |          | cog eon                                              |
+| yes  | icp-research      | product     | ICP & market research    | 1    |          | vector                                               |
+| yes  | mentoring         | leadership  | mentoring & teaching     | 2    |          | brainstation burberry eon                            |
+| yes  | workshops         | leadership  | workshop facilitation    | 1    |          | eon                                                  |
+| yes  | team-leadership   | leadership  | team leadership          | 2    |          | burberry julien-macdonald                            |
+| yes  | founding-autonomy | leadership  | no-manager mode          | 2    |          | cog gateway vector                                   |
+| yes  | cross-functional  | leadership  | cross-functional glue    | 1    |          | eon cog                                              |
+
+## Easter eggs
+
+Rendered as ordinary small stars scattered between the clusters. Found by the curious.
+
+| show | id             | name                | one-liner                                                    | connects          |
+| ---- | -------------- | ------------------- | ------------------------------------------------------------ | ----------------- |
+| yes  | golf           | determination       | played golf for the Polish national team                     | team-leadership   |
+| yes  | frisbee        | competitive streak  | way too competitive at ultimate frisbee                      | golf              |
+| yes  | handstand      | current side quest  | trying to land a handstand                                   |                   |
+| yes  | polish         | dwujęzyczna         | native Polish speaker, born in Łódź                          |                   |
+| yes  | book-a-month   | paper input         | one product book a month, Inspired started it                |                   |
+| yes  | christmas-ds   | holiday shipping    | built Cog's design system over Christmas, for fun            | cog-ds            |
+| yes  | praise-ai      | be nice to robots   | discovered that praising the AI makes it work better         | ai-agents         |
+| yes  | commit-streak  | momentum            | 208 commits in 7 weeks on the site you are looking at        | portfolio         |
+| no   | scriggly       | Scriggly            | Cog's mascot approves of this galaxy                         | cog               |

@@ -8,6 +8,7 @@ import { ProjectCarousel } from "@/components/sections/ProjectCarousel";
 // Remove this import + the Suspense block below and restore <ProjectCarousel />
 // once a direction is chosen.
 import { ProjectShowcasePrototype } from "@/components/sections/prototype/ProjectShowcasePrototype";
+import { SkillsGalaxy } from "@/components/sections/SkillsGalaxy";
 import { Toolkit } from "@/components/sections/Toolkit";
 
 export default function Home() {
@@ -62,6 +63,9 @@ export default function Home() {
         <div className="-mt-px bg-bg">
           {/* Career highlights — sits on the black plate directly under About. */}
           <Highlights />
+          {/* Skills galaxy — interactive knowledge graph in a window frame.
+              Self-contained: to re-home it, move this one mount. */}
+          <SkillsGalaxy />
           <Toolkit />
           {/* pb adds +88px below the cards before the footer (48/80 base + 88). */}
           {/* mobile pt-6 (was 12): halves the toolkit->projects gap on phones;

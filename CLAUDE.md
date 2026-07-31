@@ -245,6 +245,99 @@ cards, element-screenshot. Delete the temp script after.
 > **`docs/CLAUDE-ARCHIVE.md`**. At the end of a session, append a new entry with: what changed,
 > current state (working / broken / in-progress), and explicit next steps for the next agent.
 
+### 2026-07-31 — SKILLS GALAXY prototyped: interactive knowledge-graph star field on the homepage. Branch `skills-galaxy`, UNCOMMITTED.
+- **Caroline's vision (grilled via /grill-me):** her skills matrix as a fun, interactive galaxy /
+  knowledge graph — sparkles, skills connected to skills and to jobs/projects, click to zoom in.
+  Targeting founding-designer roles. Her decisions: homepage SECTION (between Highlights and
+  Toolkit), built SELF-CONTAINED so it can be re-homed by moving one mount · skills + jobs +
+  projects node types, with a proper editable database (more jobs/projects than the site shows) ·
+  camera fly-in on click, NO info cards, just node names + max one line beside the star, all
+  node types drawn as stars · R3F canvas · FULL orbit controls but gated behind a window frame
+  ("click to explore" activates; would otherwise fight page scroll) · real-galaxy colours
+  (white-ish stars, faint homepage-accent tints; clusters read via position, not colour-coding) ·
+  labels only on focus, except 2-3 FEATURED stars pre-labelled at load as curiosity bait ·
+  easter eggs mixed in as ordinary stars.
+- **DATA PIPELINE (the workflow she asked for):** root **`GALAXY.md`** = human-edited source of
+  truth, four md tables (Jobs / Projects / Skills / Easter eggs) with `show` flags so rows hide
+  without deleting → `node scripts/sync-galaxy.mjs` regenerates **`lib/galaxyData.ts`** (typed,
+  validates every cross-reference, errors on dangling ids). Site only imports the TS. Current:
+  91 nodes, 143 edges. SHE IS EDITING GALAXY.md IN PARALLEL — re-run the sync after her edits.
+- **Data was mined from her real material** by two Explore agents: `~/Code/job-search` repo
+  (PROFILE.md, CV, 16 application packs, fact-discipline warnings) + the Eden vault
+  (`~/Notes/Eden`, job applications / E.ON journey / Cog / Portfolio folders). Fact discipline
+  BAKED into GALAXY.md's header: 97% = "would recommend" never NPS · Synapse = team of three ·
+  Live Scribe = PoC never shipped · E.ON voice bots not her work. LinkedIn itself is unscrapable
+  (HTTP 999). `TODO(caro)` marks unverified facts she volunteered (managed team of 6 at Burberry,
+  12 interns at Julien Macdonald, McQueen/Margiela dates) — confirm before merge. Easter egg
+  confirmed in vault: played golf for the POLISH NATIONAL TEAM (AXLE/Intro.md).
+- **Components:** `components/sections/SkillsGalaxy.tsx` (section wrapper: /skills label, glass
+  window frame with mono chrome bar `~/skills-galaxy · 91 stars · 143 links`, activation gate) +
+  `components/sections/galaxy/GalaxyScene.tsx` (Canvas, dynamic ssr:false) +
+  `components/sections/galaxy/layout.ts` (seeded deterministic 3D force layout — cluster anchors
+  on a ring, career nodes central, sidequest eggs on a wide outer shell, 320-iter spring/repulsion
+  sim, normalised to a fixed radius; same data → same galaxy, no hydration risk).
+- **Render architecture (the arrays-vs-objects answer she asked about, worth repeating to her):**
+  authored data = readable objects; render layer converts once to flat Float32Array buffers
+  (position/size/tint/phase/dim per star) consumed by custom point shaders — gaussian core +
+  4-point diffraction spikes + twinkle, additive blending. Edges = lineSegments with per-vertex
+  alpha. Nebula = 3 tinted radial-gradient sprites; drei Sparkles for dust (tier≥2 only).
+  Focus dimming + edge lighting animate by lerping the aDim/aAlpha buffers toward targets in
+  useFrame — no per-node React state in the hot path.
+- **Interaction contract:** hover = name label + cursor; click star = gsap camera fly-in along
+  current view direction + neighbourhood lights up + labels (focused star gets name/meta/one-liner
+  + case-study link where present; neighbours get small names). Click empty space = fly home
+  (guarded so an orbit-drag release doesn't count: pointer must move <8px). `active` gates
+  OrbitControls ONLY — hover/click always work, so the first star click both activates and flies.
+  Activation stops LENIS (`getLenis().stop()`); Esc / click-outside / wheel-outside / scrolling
+  the section off-screen deactivates + restarts it, with an unmount safety-net restart.
+  Frameloop = "never" when the section is off-screen (IntersectionObserver) so the WebGL hero
+  keeps its GPU budget. Reduced motion: no twinkle/drift/sparkles, instant camera moves.
+  GPU tier <2: fewer background stars, DPR cap 1.5, no Sparkles.
+- **Verified** (standalone Playwright on :3001, screenshots in scratchpad): rest state = galaxy
+  with 3 featured labels + hint "click a star to explore" · click flew into a star, bolded its
+  label, lit neighbours, dimmed the rest, hint flipped to "drag to orbit · scroll to zoom · esc
+  to exit" · Esc flew home + released the page scroll (measured scrollY moves again) · mobile 390
+  renders · 0 console errors · tsc + eslint clean.
+- **Known rough edges for next rounds:** clusters could separate more (galaxy reads as one dense
+  blob; tune ANCHORS/REST in layout.ts) · mobile needs a sizing/label pass · raycast picks the
+  nearest star along the ray so dense areas need care when clicking · featured-label overlap at
+  some angles · no sr-only text alternative yet (canvas has aria-label only).
+- **Open:** Caroline edits GALAXY.md tables (confirm the TODO(caro) facts) → rerun sync. Visual
+  tuning rounds expected. UNCOMMITTED on `skills-galaxy`; dev server was left on :3001 (agent-
+  started; if it died, run `npm run dev` — port 3000 may host her other app, never kill it).
+- **ROUND 2 (same session, her feedback + 5 reference images of galaxies/Saturn/suns):**
+  (1) **Gather-on-focus** — clicking a star now pulls its whole neighbourhood into a
+  camera-facing halo around it (her "zoom on Cog and see working-without-manager, brand,
+  0→1 around it"). Live position buffer = the star geometry's position attribute itself,
+  lerped toward halo slots in useFrame; edges rebuilt from live positions each frame; labels
+  ride along via per-frame LabelAnchor groups. Halo radius capped
+  (`haloRadius = min(2.2 + n*0.09, 3.4)`) and fly distance proportional
+  (`flyDistance = max(4.6, rc*2.55)`) so every neighbourhood fills the same fraction of frame
+  whether 3 neighbours or 21 (E.ON). (2) **FocusOrb close-ups** (`galaxy/FocusOrb.tsx`): the
+  focused node blooms into a real rotating body — skills = fbm-granulation SUNS (her Antares
+  ref), jobs/projects = banded PLANETS (~half ringed via id hash, Saturn ref; jobs get cream
+  Saturn palette), eggs = small moons. Orbiting the focus shows sphericality (her ask); orb
+  self-rotates; suns keep the boosted point-flare behind them (aBoost 2.4), planets fade it
+  (0.4, "planets emit less light"). Focused label offset is COMPUTED from the body's screen
+  size (`orbExtent × uPx / flyDistance + 26`) so it clears rings. (3) **Colour pumped**:
+  6 vivid nebula sprites (magenta/teal/violet/amber/green/pink), saturated cluster tints with
+  uTintMix uniform (nodes .55, bg .6, dust .9), coloured background stars, NEW 1100-point
+  multicolour stardust layer counter-rotating slowly ("stardust that does nothing"). 
+  (4) **Smoothing**: fly tweens 1.7s/1.4s power2.inOut, damping .06, zoom/rotate speeds
+  lowered, idle drift eases in/out instead of stopping dead, labels fade in via a
+  `galaxy-label-in` keyframe (from{opacity:0} ONLY, so neighbours settle at their inline .62),
+  a user grab (controls "start") kills in-flight camera tweens so the hand always wins.
+  (5) Labels now zIndexRange [15,0] = UNDER the chrome bar (z-20). **LINT GOTCHA:**
+  `react-hooks/immutability` forbids mutating a useMemo result — the live buffer must be
+  reached THROUGH the geometry (`getAttribute("position").array`), same as aDim was; targets
+  live in refs. **TEST GOTCHA that burned a round:** `page.getByText("E.ON Next")` matched the
+  HIGHLIGHTS card above the galaxy → the "bug" was the test clicking outside the frame (the
+  gate correctly deactivated); scope Playwright queries to
+  `section[aria-labelledby='skills-galaxy-label']`. Verified: rest state (vivid), sun close-up
+  + 3-node halo, E.ON ringed planet + 21-label halo all screenshot-checked; 0 console errors;
+  tsc + lint clean. She is supplying table content for GALAXY.md separately — DO NOT edit
+  GALAXY.md until her edits land.
+
 ### 2026-07-26 — Scroll rail (case-study progress indicator) prototyped, 2 variants. Branch `scroll-progress`, UNCOMMITTED.
 - **Caroline's brief:** right-edge scroll feedback on case studies — how far you've scrolled, which
   section you're in, and how many sections remain. Dots per section, the section's EYEBROW (not the
