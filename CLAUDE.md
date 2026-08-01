@@ -248,6 +248,45 @@ cards, element-screenshot. Delete the temp script after.
 > current state (working / broken / in-progress), explicit next steps. Sweep settled entries into
 > the archive periodically so this file stays short.
 
+### 2026-08-01 (afternoon) — label resolver, julien style, umbrellas, softness dial. COMMITTED on `skills-galaxy`, NOT pushed.
+
+- **Label de-collision resolver SHIPPED** (`GalaxyScene.tsx`): per-frame screen-space greedy sweep.
+  Rects predicted from the mono font (7.5px/char at 11px = 6.6 advance + 0.08em tracking — the
+  bare advance alone left the widest labels 13% short). Focused block + hover are immovable
+  obstacles; neighbours push apart vertically, tight cap 28px with a 44px rescue tier for
+  crowded pockets; offsets damped `1-exp(-10dt)` with 1.5px hysteresis, written straight to a
+  wrapper div inside the drei Html (composes with drei's transform; pointer-events inherits
+  `none` so label clicks still work). Verified on real DOM rects: **0 overlapping pairs** on
+  vector (46 labels), cog (41), eon (40) and rest state. Also fixed: the focused point-flare
+  boost now keys off `orbKind`, not raw node type (skills-as-planets were keeping sun flare).
+- **Graph: 130 stars / 441 links.** Umbrella skills front-end / back-end / ai-architecture wired
+  (design-engineering dropped direct tailwind+typescript-react); live-help one-liner lost
+  ", in build" — ⚠ the fact-discipline header still lists Live Help as in-build, Caroline owes
+  a ruling. Agent judgement calls pending her blessing: tracing NOT in ai-architecture;
+  cog-website/webflow/playwright NOT in front-end.
+- **JULIEN_STYLE + PLANET_SKILLS** (`FocusOrb.tsx`): her repaint of the Saturn giant, applied to
+  julien-macdonald + five skills rendered as planets (usability-testing, product-work,
+  zero-to-one, context-switching, organisation — identical clones by design). product-work's
+  green sun override removed (superseded). OPEN: the look repeats — 3 more jobs hash to the
+  near-identical cream Saturn base (casablanca, consultancy, pilotto); she's choosing between
+  varying the clones / retinting those Saturns / both.
+- **`soft` dial** (planets): edge-width multiplier on every surface register (sedge() in
+  PLANET_FRAG), 0.25 crisp → 3 dreamy, **1 = pixel-identical baseline (verified 0.00 diff
+  against a frozen capture)**. In the painter as "softness". Added after the threshold fix's
+  full strength finally reached her browser (stale-tab gremlin, third documented occurrence)
+  and read as too sharp.
+
+**HAND-PAINTED REGISTRY — keep this current.** Caroline hand-tunes bodies via the painter and
+the values get baked; she needs to know later which bodies are hers vs hash-derived. When baking
+a patch, add the id here (and keep the dated comment in FocusOrb).
+- Planets: eon · cog · cog-clinic · ai-design-system · wiki-whisperer (+ lilac rings) · vector ·
+  burberry · julien-macdonald (JULIEN_STYLE, also cloned to the five planet-skills above)
+- Suns: team-leadership · design-systems · ai-agents · design-engineering · cross-functional ·
+  prioritisation · navigating-ambiguity · context-design · tool-design · tokens-in-code ·
+  building-with-agents · visual-craft (rings only) · ~~product-work~~ (green sun, superseded by
+  JULIEN_STYLE planet)
+- Everything else renders from cluster palettes / hashed style tables — not hand-touched.
+
 ### 2026-08-01 — HANDOFF: galaxy labels, dead shader dials, graph expansion. All COMMITTED on `skills-galaxy` (`c11ea5c`), NOT pushed.
 
 **Caroline switched model mid-session; this entry is the resume point.** Everything below is

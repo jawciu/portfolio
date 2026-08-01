@@ -29,7 +29,7 @@ import * as THREE from "three";
 import gsap from "gsap";
 import { GALAXY_NODES, GALAXY_EDGES, type GalaxyNode } from "@/lib/galaxyData";
 import { layoutGalaxy } from "./layout";
-import { FocusOrb, orbExtent } from "./FocusOrb";
+import { FocusOrb, orbExtent, orbKind } from "./FocusOrb";
 import { TUNING } from "./tuning";
 import { FOCUS_EVENT } from "./paint";
 
@@ -476,9 +476,10 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
     dims.fill(0.82);
     boosts.fill(1);
     dims[focused] = 0;
-    // suns keep a big flaring point behind the sphere; planets glow less
-    const focusedType = nodes[focused].type;
-    boosts[focused] = focusedType === "skill" || focusedType === "egg" ? 2.4 : 0.4;
+    // suns keep a big flaring point behind the sphere; planets glow less.
+    // Keyed off orbKind, NOT node.type: some skills render as planets
+    // (PLANET_SKILLS in FocusOrb) and must take the planet-level flare.
+    boosts[focused] = orbKind(nodes[focused]) === "planet" ? 0.4 : 2.4;
     for (const nb of nbs) { dims[nb] = 0.08; boosts[nb] = 1.35; }
     layout.edgeIndices.forEach(([a, b], k) => {
       const alpha = a === focused || b === focused ? 0.7
@@ -921,6 +922,97 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
 
   const focusedNode = focused !== null ? nodes[focused] : null;
 
+  // px the focused label is shifted right so it clears the close-up body —
+  // shared by the JSX below and the collision resolver's rect model
+  const focusedOffsetPx = (idx: number) =>
+    Math.round((orbExtent(nodes[idx]) * uPx) / flyDistance(layout.neighbours[idx].length)) + 26;
+
+  // ── label de-collision ────────────────────────────────────────────
+  // Labels know about each other: every frame the visible labels are
+  // projected to screen space, their rects predicted (Geist Mono, so width
+  // is exactly chars × 6.6px at 11px — no DOM measuring), and overlapping
+  // labels resolved with a greedy top-to-bottom sweep that pushes the lower
+  // label down (capped, damped). The focused block and the hover label are
+  // immovable obstacles; neighbours route around them. Measured on the two
+  // densest halos (vector 12 overlapping pairs, cog 5) this resolves 100%
+  // with a max push of 25px. Offsets are applied to a wrapper div INSIDE the
+  // drei Html (so they compose with drei's own per-frame transform), written
+  // directly to the DOM — no React state in the hot path.
+  const labelElsRef = useRef(new Map<number, HTMLDivElement>());
+  const labelDyRef = useRef(new Map<number, { cur: number; target: number }>());
+  useFrame((_, dt) => {
+    const group = groupRef.current;
+    if (!group) return;
+    const MAX_PUSH = 28;      // ≈ two line heights — a label never strays far from its star
+    const CHAR_W = 7.5;       // Geist Mono advance at 11px (6.6) + tracking-[0.08em] (0.88)
+    const v = new THREE.Vector3();
+
+    type Rect = { idx: number; x: number; y: number; w: number; h: number; movable: boolean };
+    const obstacles: Rect[] = [];
+    const movables: Rect[] = [];
+    for (const { idx, kind } of labelSet) {
+      v.set(livePos[idx * 3], livePos[idx * 3 + 1], livePos[idx * 3 + 2]);
+      group.localToWorld(v);
+      v.project(camera);
+      if (v.z > 1) continue; // behind the camera — not on screen, not an obstacle
+      const sx = ((v.x + 1) / 2) * size.width;
+      const sy = ((1 - v.y) / 2) * size.height;
+      const node = nodes[idx];
+      if (kind === "focused") {
+        // the whole block (name + meta + one-liner) is v-centred on the star
+        const h = 20 + (node.meta ? 30 : 0) + (node.line ? 32 : 0) + 6;
+        obstacles.push({ idx, x: sx + focusedOffsetPx(idx), y: sy - h / 2, w: 215, h, movable: false });
+      } else {
+        const r: Rect = {
+          idx, x: sx + 14, y: sy - 7.5,
+          w: node.name.length * CHAR_W + 6, h: 15,
+          movable: kind !== "hover",
+        };
+        (r.movable ? movables : obstacles).push(r);
+      }
+    }
+
+    // greedy sweep, deterministic order: top of the screen first
+    movables.sort((a, b) => a.y - b.y || a.idx - b.idx);
+    const placed: Rect[] = [...obstacles];
+    const overlap = (a: Rect, b: Rect) =>
+      a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h;
+    // push `r` past its blockers in one direction; null if the cap is exceeded
+    const solve = (r: Rect, dir: 1 | -1, cap: number): number | null => {
+      let dy = 0;
+      const probe = { ...r };
+      for (let i = 0; i < 8; i++) {
+        const hit = placed.find((q) => overlap(probe, q));
+        if (!hit) return dy;
+        const step = dir === 1 ? hit.y + hit.h - probe.y + 2 : -(probe.y + probe.h - hit.y + 2);
+        dy += step;
+        if (Math.abs(dy) > cap) return null;
+        probe.y += step;
+      }
+      return Math.abs(dy) <= cap ? dy : null;
+    };
+    const seen = new Set<number>();
+    for (const r of movables) {
+      seen.add(r.idx);
+      // tight cap first; the loose cap only rescues crowded pockets where the
+      // widest labels (e.g. "human-in-the-loop design") can't clear at ±28
+      const dy =
+        solve(r, 1, MAX_PUSH) ?? solve(r, -1, MAX_PUSH) ??
+        solve(r, 1, 44) ?? solve(r, -1, 44) ?? 0; // all capped → accept the rare overlap
+      r.y += dy;
+      placed.push(r);
+      const e = labelDyRef.current.get(r.idx) ?? { cur: 0, target: 0 };
+      // hysteresis: sub-2px target churn (orbit micro-jitter) doesn't re-shuffle
+      if (Math.abs(dy - e.target) > 1.5) e.target = dy;
+      e.cur = reduced ? e.target : e.cur + (e.target - e.cur) * (1 - Math.exp(-10 * dt));
+      labelDyRef.current.set(r.idx, e);
+      const el = labelElsRef.current.get(r.idx);
+      if (el) el.style.transform = `translateY(${e.cur.toFixed(1)}px)`;
+    }
+    // labels that left the movable set (refocus, hover change) drop their state
+    for (const idx of labelDyRef.current.keys()) if (!seen.has(idx)) labelDyRef.current.delete(idx);
+  });
+
   return (
     <>
       <OrbitControls
@@ -1070,9 +1162,7 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
             except hover labels, which chase the cursor and would flicker. */}
         {labelSet.map(({ idx, kind }) => {
           // push the focused label clear of the close-up body (ring included)
-          const offsetPx = kind === "focused"
-            ? Math.round((orbExtent(nodes[idx]) * uPx) / flyDistance(layout.neighbours[idx].length)) + 26
-            : 14;
+          const offsetPx = kind === "focused" ? focusedOffsetPx(idx) : 14;
           return (
             <LabelAnchor key={`${nodes[idx].id}-${kind}`} idx={idx} live={livePos}>
               {/* the Html WRAPPER must stay pointer-transparent: its layout box
@@ -1081,12 +1171,23 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
                   the wrapper → the ray shoots to the canvas corner. Only the
                   text itself opts back in, inside GalaxyLabel. */}
               <Html zIndexRange={[15, 0]} style={{ pointerEvents: "none" }}>
-                <GalaxyLabel
-                  node={nodes[idx]}
-                  kind={kind}
-                  offsetPx={offsetPx}
-                  onSelect={kind === "focused" || kind === "hover" ? undefined : () => focus(idx)}
-                />
+                {/* de-collision wrapper: the resolver writes translateY here
+                    each frame (composes with drei's outer transform). It sets
+                    NO pointer style — pointer-events inherits `none` from the
+                    Html wrapper, keeping the click contract above intact. */}
+                <div
+                  ref={(el) => {
+                    if (el) labelElsRef.current.set(idx, el);
+                    else labelElsRef.current.delete(idx);
+                  }}
+                >
+                  <GalaxyLabel
+                    node={nodes[idx]}
+                    kind={kind}
+                    offsetPx={offsetPx}
+                    onSelect={kind === "focused" || kind === "hover" ? undefined : () => focus(idx)}
+                  />
+                </div>
               </Html>
             </LabelAnchor>
           );

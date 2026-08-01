@@ -92,12 +92,23 @@ const PLANET_FRAG = NOISE + /* glsl */ `
   uniform float uSpeckle;  // 0..1 density of small dark flecks
   uniform vec3 uRim;       // atmosphere rim tint (defaults to uB)
   uniform float uRimAmt;   // fresnel rim strength (default 0.25)
+  uniform float uSoft;     // edge-width multiplier: <1 crisper, >1 dreamier, 1 = baseline
   varying vec3 vN; varying vec3 vP; varying vec3 vView;
+  // smoothstep with its window scaled around the midpoint by uSoft — the one
+  // knob that makes every surface register sharper or blurrier together.
+  // At uSoft == 1 this is EXACTLY smoothstep(lo, hi, x): all pre-existing
+  // styles render pixel-identical (verified against a frozen baseline).
+  float sedge(float lo, float hi, float x) {
+    float m = 0.5 * (lo + hi);
+    float w = 0.5 * (hi - lo) * uSoft;
+    return smoothstep(m - w, m + w, x);
+  }
   void main() {
     float warp = fbm(vP * 3.0 + uTime * 0.02) * 0.7;
     // register 1: base terrain / belts between the deep (uA) and lifted (uB) tones
     float band = fbm(vec3(vP.y * uBandFreq + warp, vP.x * uBlotch, vP.z * uBlotch));
-    band = clamp((band - 0.5) * 1.7 + 0.5, 0.0, 1.0);
+    // contrast push relaxes as the surface softens (sqrt so it moves gently)
+    band = clamp((band - 0.5) * 1.7 / sqrt(uSoft) + 0.5, 0.0, 1.0);
     vec3 col = mix(uA, uB, band);
     // NOTE on the thresholds below: fbm() here sums 4 octaves of value noise,
     // so it does NOT span 0..1 — measured over 60k points on the sphere it runs
@@ -107,14 +118,14 @@ const PLANET_FRAG = NOISE + /* glsl */ `
     // dead. Every range is now placed inside the real distribution.
     // register 2: dark lanes / maria / storm belts (uD) at a different scale
     float lane = fbm(vP * (2.0 + uBlotch * 1.5) - 5.1 + warp * 0.4);
-    col = mix(col, uD, smoothstep(0.50, 0.62, lane) * 0.65);
+    col = mix(col, uD, sedge(0.50, 0.62, lane) * 0.65);
     // register 2b: secondary mottle (uE) — its own scale + offset so the
     // patches never align with the uD lanes; sits UNDER the cloud layer
     float mott = fbm(vP * 3.6 - 11.4 + warp * 0.6);
-    col = mix(col, uE, smoothstep(0.46, 0.60, mott) * uEAmt);
+    col = mix(col, uE, sedge(0.46, 0.60, mott) * uEAmt);
     // register 3: cloud / swirl layer (uC)
     float swirl = fbm(vP * 5.0 + 3.7 + warp * 0.5);
-    col = mix(col, uC, smoothstep(0.58 - 0.22 * uCloud, 0.70 - 0.12 * uCloud, swirl));
+    col = mix(col, uC, sedge(0.58 - 0.22 * uCloud, 0.70 - 0.12 * uCloud, swirl));
     // polar shading with a noisy edge so the caps read painted, not stamped
     float pol = smoothstep(0.5, 0.92, abs(vP.y) + (warp - 0.35) * 0.2);
     col = mix(col, uPole, pol * uPoleAmt);
@@ -123,9 +134,10 @@ const PLANET_FRAG = NOISE + /* glsl */ `
     // never fired: measured, the dial moved the render LESS than frame noise.
     // Coarser cells + an earlier threshold make it a control you can see.
     float spk = noise(vP * 13.0 + 4.7);
-    col = mix(col, col * 0.28, smoothstep(0.58, 0.88, spk) * uSpeckle);
-    // fine grain so no region reads as one flat hue
-    col *= 0.82 + 0.36 * fbm(vP * 11.0 + 7.3);
+    col = mix(col, col * 0.28, sedge(0.58, 0.88, spk) * uSpeckle);
+    // fine grain so no region reads as one flat hue — fades as the surface
+    // softens (grit IS sharpness at this frequency), grows when crisped
+    col *= 0.82 + (0.36 / (0.6 + 0.4 * uSoft)) * fbm(vP * 11.0 + 7.3);
     float light = 0.34 + 0.62 * max(dot(normalize(vN), normalize(vec3(0.6, 0.5, 0.8))), 0.0);
     col *= light;
     float fres = pow(1.0 - max(dot(normalize(vN), vView), 0.0), 2.5);
@@ -205,6 +217,7 @@ type PlanetStyle = {
   speckle?: number; // 0..1 density of small dark flecks
   rim?: string;     // atmosphere rim tint (defaults to b)
   rimAmt?: number;  // fresnel rim strength (defaults to 0.25)
+  soft?: number;    // surface edge softness: <1 crisper, >1 blurrier (default 1)
   // ring tones — omit for the default neutral rock/ice dust lerped toward the
   // body hue; set both to give a world deliberately coloured rings
   ringA?: string;   // lighter dust band tone
@@ -227,6 +240,31 @@ const TERRESTRIALS: PlanetStyle[] = [
   { a: "#6f6134", b: "#d0c493", c: "#8a5c38", d: "#43391c", bandFreq: 0.9, blotch: 2.2, cloud: 0.35, ring: 0 },  // Io: soft sulphur creams, burnt patches
 ];
 const MOON: PlanetStyle = { a: "#2e2e34", b: "#8f8f96", c: "#c4c4cc", d: "#1c1c22", bandFreq: 0.5, blotch: 2.6, cloud: 0.3, ring: 0 };
+
+// The "Julien Macdonald vibe" — Caroline's live repaint of the Saturn giant
+// (2026-08-01): magenta-plum base under the cream Saturn bands, clay dark
+// lanes, a warm cream rim and rust ring rock. Always ringed, like its base.
+// NOTE: `e` is set with no `eAmt`, so the mottle colour never renders — that
+// is exactly the surface she painted and approved, so it is baked as-is.
+const JULIEN_STYLE: PlanetStyle = {
+  a: "#721d53", b: "#dec7a1", c: "#efe6cf", d: "#a86f61",
+  bandFreq: 4.5, blotch: 0.7, cloud: 0.25, ring: 1,
+  e: "#c48154",
+  rim: "#f8e9e2",
+  ringB: "#b15d39",
+};
+
+// Skills normally render as suns. These five are drawn as PLANETS instead —
+// Caroline wants the Julien Macdonald look on them (see PLANET_OVERRIDES
+// below). They are deliberate clones of one style and can each be repainted
+// individually later with the live PlanetPainter.
+const PLANET_SKILLS = new Set<string>([
+  "usability-testing",
+  "product-work",
+  "zero-to-one",
+  "context-switching",
+  "organisation",
+]);
 
 // Hand-tuned worlds for specific nodes (Caroline's reference photos) —
 // checked before the hash pick so these ids never reroll their planet.
@@ -295,6 +333,15 @@ const PLANET_OVERRIDES: Record<string, PlanetStyle> = {
     bandFreq: 4.5, blotch: 0.7, cloud: 0.1, ring: 1,
     ringB: "#eebb63",
   },
+  // julien macdonald — Caroline's repaint of the Saturn giant, 2026-08-01
+  "julien-macdonald": JULIEN_STYLE,
+  // The five skills she asked to wear the same look (see PLANET_SKILLS).
+  // Identical on purpose; repaint any of them individually later.
+  "usability-testing": JULIEN_STYLE,
+  "product-work": JULIEN_STYLE,
+  "zero-to-one": JULIEN_STYLE,
+  "context-switching": JULIEN_STYLE,
+  organisation: JULIEN_STYLE,
 };
 
 // Suns burn with two fbm tones from their cluster palette plus a handful of
@@ -314,7 +361,8 @@ const SUN_BASE: Omit<SunStyle, "a" | "b"> = { gran: 3.5, turb: 1, flareAmt: 0.9,
 
 // Per-id sun overrides (painted live, same panel as the planets).
 const SUN_OVERRIDES: Record<string, Partial<SunStyle>> = {
-  "product-work": { a: "#14620e", b: "#6baeac" },
+  // (product-work's green sun was removed 2026-08-01 — it renders as a
+  // Julien Macdonald planet now, so a sun override would never be read)
   // visual craft — the one skill star Caroline wants wearing rings
   "visual-craft": { ring: 1, ringA: "#f2c9a4", ringB: "#8a4a2c" },
   // painted live 2026-08-01
@@ -329,6 +377,7 @@ const SUN_OVERRIDES: Record<string, Partial<SunStyle>> = {
   "context-design": { a: "#982ba6", b: "#c3af83", gran: 2, turb: 0.8, flareAmt: 1.5, flare: "#ffaca3" },
   "tool-design": { a: "#12229b", b: "#b493e1", gran: 9.25, glow: 1.7 },
   "tokens-in-code": { a: "#341a7a", b: "#85c0d1", flare: "#92c5d3", glow: 1, gran: 2.75 },
+  "building-with-agents": { a: "#21103c", b: "#b38fe5", flare: "#bc7bae", gran: 5.5, turb: 1.65, flareAmt: 1.25, glow: 0.95 },
 };
 
 /** A sun's tones + dials: cluster palette, then any per-id override. */
@@ -354,6 +403,8 @@ function hashId(id: string) {
 }
 
 export function orbKind(node: GalaxyNode) {
+  // a handful of skills are drawn as planets rather than suns (PLANET_SKILLS)
+  if (node.type === "skill" && PLANET_SKILLS.has(node.id)) return "planet";
   return node.type === "skill" ? "sun" : node.type === "egg" ? "moon" : "planet";
 }
 export function orbRadius(node: GalaxyNode) {
@@ -414,6 +465,7 @@ export function paintableFor(node: GalaxyNode): { kind: string; values: Record<s
       speckle: s.speckle ?? 0,
       rim: s.rim ?? s.b, rimAmt: s.rimAmt ?? 0.25,
       cloud: s.cloud, bandFreq: s.bandFreq, blotch: s.blotch,
+      soft: s.soft ?? 1,
       // ring tones only exist as controls on worlds that actually have rings
       ...(orbRinged(node) ? { ringA, ringB } : {}),
     },
@@ -496,6 +548,7 @@ export function FocusOrb({ node, reduced, glowTex }: FocusOrbProps) {
       uSpeckle: { value: style?.speckle ?? 0 },
       uRim: { value: style?.rim ? new THREE.Color(style.rim) : colB },
       uRimAmt: { value: style?.rimAmt ?? 0.25 },
+      uSoft: { value: style?.soft ?? 1 },
     };
     return u;
   }, [colA, colB, colC, colD, style, sun]);

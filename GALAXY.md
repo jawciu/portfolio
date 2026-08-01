@@ -48,7 +48,7 @@ Live Help, 360 call analytics and Performance insights are IN BUILD, frame as bu
 | yes  | performance-tools | eon  | Performance tools       | replaced 12+ Tableau reports with one coaching dashboard               |                         |
 | yes  | gateway         | eon    | B2B handovers           | property developer handovers, from spreadsheet debt to a product       |                         |
 | yes  | figma-make-kit  | eon    | Figma Make boilerplates | on-brand prototyping kits adopted across product teams                 |                         |
-| yes  | live-help       | eon    | Live Help               | live transcription that catches a missed journey step and nudges it back, in build |             |
+| yes  | live-help       | eon    | Live Help               | live transcription that catches a missed journey step and nudges it back |                         |
 | yes  | call-analytics  | eon    | 360 call analytics      | AI call evaluation trained on leaders' past reviews, every call instead of two a month |         |
 | yes  | perf-insights   | eon    | Performance insights    | links call metrics to transcripts to spot the trends worth upskilling on |                       |
 | yes  | eon-ds          | eon    | E.ON design system      | building and maintaining the core design system                        |                         |
@@ -111,6 +111,9 @@ Clusters: `design` · `research` · `ai` · `engineering` · `product` · `leade
 | yes  | ai-observability  | ai          | AI observability         | 2    |          | vector synapse eon wiki-whisperer call-analytics live-help |
 | yes  | model-benchmarking | ai         | model benchmarking       | 1    |          | synapse                                              |
 | yes  | agent-workflows   | ai          | agent team workflows     | 2    |          | portfolio vector                    |
+| yes  | ai-architecture   | ai          | AI architecture          | 2    |          | claude-api rag knowledge-graphs context-design agent-harnesses design-engineering synapse vector wiki-whisperer |
+| yes  | front-end         | engineering | front-end engineering    | 2    |          | typescript-react nextjs tailwind webgl-glsl r3f gsap design-engineering vector portfolio |
+| yes  | back-end          | engineering | back-end engineering     | 2    |          | postgres-prisma python-fastapi surrealdb webhooks-crons design-engineering vector synapse |
 | yes  | typescript-react  | engineering | TypeScript & React       | 2    |          | vector portfolio                                     |
 | yes  | nextjs            | engineering | Next.js                  | 2    |          | vector portfolio                                     |
 | yes  | tailwind          | engineering | Tailwind                 | 1    |          | vector portfolio                                     |
@@ -140,7 +143,7 @@ Clusters: `design` · `research` · `ai` · `engineering` · `product` · `leade
 | yes  | context-switching | leadership  | context switching        | 1    |          | cog vector                                           |
 | yes  | navigating-ambiguity | leadership | navigating ambiguity   | 1    |          | cog gateway vector                                   |
 | yes  | ownership         | leadership  | ownership                | 1    |          | cog vector synapse                                   |
-| yes  | design-engineering | engineering | design engineering      | 3    |          | design-systems tokens-in-code typescript-react tailwind portfolio vector figma-make-kit synapse context-design agent-harnesses agent-loops plan-first agent-memory agent-skills building-with-agents |
+| yes  | design-engineering | engineering | design engineering      | 3    |          | design-systems tokens-in-code portfolio vector figma-make-kit synapse context-design agent-harnesses agent-loops plan-first agent-memory agent-skills building-with-agents |
 | yes  | trust-design      | ai          | designing for trust      | 2    |          | wiki-whisperer vector human-in-the-loop guardrails   |
 | yes  | ux-writing        | design      | UX writing               | 2    |          | cog wiki-whisperer daily-insights self-help live-help perf-insights performance-tools vector gateway cog-clinic eon |
 | yes  | onboarding-design | design      | onboarding design        | 1    |          | cog subscription vector                              |
