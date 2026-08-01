@@ -233,13 +233,16 @@ const MOON: PlanetStyle = { a: "#2e2e34", b: "#8f8f96", c: "#c4c4cc", d: "#1c1c2
 const PLANET_OVERRIDES: Record<string, PlanetStyle> = {
   // vector — NASA's Io: pale cream-yellow base, large white plains, olive
   // mottled patches, rust-orange blotches, lavender-grey poles, dark speckles
+  // repainted 2026-08-01: violet base under peach terrain and orchid clouds.
+  // rimAmt raised 0.18 → 0.65 on her "add a rim pls" (she painted the rim
+  // COLOUR but the strength dial was never moved off the old near-off value)
   vector: {
-    a: "#cfc08e", b: "#e9e2c8", c: "#f4f1e6", d: "#b4622f",
+    a: "#622ab7", b: "#e8b2a1", c: "#ddade1", d: "#b4622f",
     e: "#6d743e", eAmt: 0.6,
     pole: "#a09ab0", poleAmt: 0.55,
     speckle: 0.55,
-    bandFreq: 0.6, blotch: 2.3, cloud: 0.5, ring: 0,
-    rim: "#e9e2c8", rimAmt: 0.18,
+    bandFreq: 0.6, blotch: 2.4, cloud: 0.75, ring: 0,
+    rim: "#ccc8ea", rimAmt: 0.65,
   },
   // cog — teal-green marble built around the case study accent #19A072:
   // deep teal ocean, mid-green landmass bands, mint streaks, white cloud
@@ -256,8 +259,9 @@ const PLANET_OVERRIDES: Record<string, PlanetStyle> = {
   // merged over each node's previously-hashed base style so the fields she
   // never touched keep the surface she was looking at).
   // eon — deep ocean blue with a dusty pink cloud deck, over the Jupiter giant
+  // repainted 2026-08-01: violet base, dusty rose bands, warm cream cloud deck
   eon: {
-    a: "#116192", b: "#dd9cb6", c: "#ecd8b1", d: "#8f8fa0",
+    a: "#603fab", b: "#caa0b1", c: "#f0daad", d: "#7c7c9c",
     e: "#f0dfc2", eAmt: 0.4,
     poleAmt: 0.45, // no pole colour: shades toward black, as painted
     speckle: 0.45,
@@ -313,6 +317,12 @@ const SUN_OVERRIDES: Record<string, Partial<SunStyle>> = {
   "product-work": { a: "#14620e", b: "#6baeac" },
   // visual craft — the one skill star Caroline wants wearing rings
   "visual-craft": { ring: 1, ringA: "#f2c9a4", ringB: "#8a4a2c" },
+  // painted live 2026-08-01
+  "team-leadership": { a: "#792a2a", b: "#dda6b4" },
+  "design-systems": { a: "#126d46", b: "#9fb7c1", flare: "#a7a871", gran: 7.75, turb: 1.45, flareAmt: 1 },
+  "ai-agents": { a: "#204683", b: "#baabcf", flare: "#a77ae6", gran: 2.75, turb: 0.8, flareAmt: 1.75 },
+  "design-engineering": { a: "#201a7a", b: "#8a9eb7", flare: "#764c4c", gran: 4.25 },
+  "cross-functional": { a: "#e1dbdd", b: "#d25189", flare: "#e0d4cd", gran: 1.75, turb: 1.6 },
 };
 
 /** A sun's tones + dials: cluster palette, then any per-id override. */

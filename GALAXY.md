@@ -98,7 +98,7 @@ Clusters: `design` · `research` · `ai` · `engineering` · `product` · `leade
 | yes  | surveys           | research    | surveys                  | 1    |          | eon cog                                              |
 | yes  | moderated-research | research   | moderated research       | 1    |          | cog eon cog-clinic                                   |
 | yes  | desk-research     | research    | desk research            | 1    |          | cog eon synapse vector                               |
-| yes  | ai-agents         | ai          | AI agents                | 3    | yes      | wiki-whisperer vector synapse live-help       |
+| yes  | ai-agents         | ai          | AI agents                | 3    | yes      | wiki-whisperer vector synapse live-help ai-observability call-analytics context-design agent-harnesses agent-loops tracing building-with-agents tool-design agent-memory plan-first agent-skills |
 | yes  | langgraph         | ai          | LangGraph                | 2    |          | wiki-whisperer synapse                               |
 | yes  | langchain         | ai          | LangChain                | 1    |          | synapse                                              |
 | yes  | rag               | ai          | RAG                      | 2    |          | wiki-whisperer synapse                               |
@@ -134,18 +134,31 @@ Clusters: `design` · `research` · `ai` · `engineering` · `product` · `leade
 | yes  | icp-research      | product     | ICP & market research    | 1    |          | vector                                               |
 | yes  | mentoring         | leadership  | mentoring & teaching     | 2    |          | brainstation burberry eon julien-macdonald           |
 | yes  | workshops         | leadership  | workshop facilitation    | 1    |          | eon                                                  |
-| yes  | team-leadership   | leadership  | team leadership          | 2    |          | burberry julien-macdonald                            |
+| yes  | team-leadership   | leadership  | team leadership          | 2    |          | burberry julien-macdonald communication empathy organisation prioritisation mentoring |
 | yes  | founding-autonomy | leadership  | no-manager mode          | 2    |          | cog gateway vector consultancy                       |
-| yes  | cross-functional  | leadership  | cross-functional glue    | 1    |          | eon cog                                              |
+| yes  | cross-functional  | leadership  | cross-functional glue    | 2    |          | eon cog burberry mary pilotto mcqueen casablanca julien-macdonald communication empathy |
 | yes  | context-switching | leadership  | context switching        | 1    |          | cog vector                                           |
 | yes  | navigating-ambiguity | leadership | navigating ambiguity   | 1    |          | cog gateway vector                                   |
 | yes  | ownership         | leadership  | ownership                | 1    |          | cog vector synapse                                   |
-| yes  | design-engineering | engineering | design engineering      | 3    |          | design-systems tokens-in-code typescript-react tailwind portfolio vector figma-make-kit |
+| yes  | design-engineering | engineering | design engineering      | 3    |          | design-systems tokens-in-code typescript-react tailwind portfolio vector figma-make-kit synapse context-design agent-harnesses agent-loops plan-first agent-memory agent-skills building-with-agents |
 | yes  | trust-design      | ai          | designing for trust      | 2    |          | wiki-whisperer vector human-in-the-loop guardrails   |
-| yes  | ux-writing        | design      | UX writing               | 1    |          | cog wiki-whisperer daily-insights self-help          |
+| yes  | ux-writing        | design      | UX writing               | 2    |          | cog wiki-whisperer daily-insights self-help live-help perf-insights performance-tools vector gateway cog-clinic eon |
 | yes  | onboarding-design | design      | onboarding design        | 1    |          | cog subscription vector                              |
 | yes  | data-viz          | design      | data visualisation       | 1    |          | performance-tools perf-insights vector               |
 | yes  | safety-design     | ai          | safety-first AI design   | 1    |          | synapse cog                                          |
+| yes  | communication     | leadership  | communication            | 2    |          | stakeholder-mgmt workshops mentoring ux-writing brainstation eon cog consultancy burberry gateway |
+| yes  | empathy           | research    | empathy                  | 2    |          | user-interviews usability-testing moderated-research personas-journeys product-work ux-writing accessibility cog eon cog-clinic mentoring stakeholder-mgmt communication workshops |
+| yes  | organisation      | leadership  | organisation             | 2    |          | eon cog brainstation casablanca burberry consultancy julien-macdonald mcqueen mary pilotto context-switching stakeholder-mgmt research-ops |
+| yes  | prioritisation    | leadership  | prioritisation           | 2    |          | eon cog brainstation casablanca burberry consultancy julien-macdonald mcqueen mary pilotto organisation roadmapping product-work navigating-ambiguity |
+| yes  | context-design    | ai          | context design           | 2    |          | prompt-design rag claude-api agent-harnesses vector synapse wiki-whisperer portfolio |
+| yes  | agent-harnesses   | ai          | agent harnesses          | 2    |          | agent-workflows claude-api tool-design vector portfolio synapse |
+| yes  | agent-loops       | ai          | agent loops              | 1    |          | agent-harnesses langgraph human-in-the-loop vector synapse wiki-whisperer |
+| yes  | tracing           | ai          | tracing                  | 1    |          | ai-observability evals langgraph vector synapse wiki-whisperer call-analytics |
+| yes  | tool-design       | ai          | tool design              | 1    |          | claude-api langgraph vector synapse  |
+| yes  | agent-memory      | ai          | agent memory             | 2    |          | synapse knowledge-graphs context-design portfolio vector |
+| yes  | plan-first        | ai          | plan before code         | 2    |          | agent-workflows playwright navigating-ambiguity roadmapping vector portfolio synapse |
+| yes  | agent-skills      | ai          | writing agent skills     | 1    |          | agent-workflows context-design portfolio vector      |
+| yes  | building-with-agents | ai         | building with agents     | 2    |          | agent-workflows plan-first typescript-react vector portfolio synapse |
 
 ## Easter eggs
 

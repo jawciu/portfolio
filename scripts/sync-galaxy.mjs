@@ -94,6 +94,19 @@ const clusters = new Set(["design", "research", "ai", "engineering", "product", 
 for (const s of skills) {
   if (!clusters.has(s.cluster)) throw new Error(`GALAXY.md: skill "${s.id}" has unknown cluster "${s.cluster}"`);
 }
+// Edges are UNDIRECTED, so listing the pair from both sides (A connects to B
+// AND B connects to A) used to emit it twice. That silently gave a node the
+// same neighbour twice, which shows up in the scene as duplicate React keys on
+// the halo labels. Collapse to one edge per unordered pair and say what was
+// folded, so GALAXY.md can be tidied without the render ever breaking.
+const byPair = new Map();
+for (const [a, b] of edges) {
+  const key = [a, b].sort().join("|");
+  if (!byPair.has(key)) byPair.set(key, [a, b]);
+  else console.warn(`  note: ${a} ↔ ${b} is declared from both sides in GALAXY.md, keeping one edge`);
+}
+edges.length = 0;
+edges.push(...byPair.values());
 
 // ── emit ────────────────────────────────────────────────────────────
 const banner = `// GENERATED from GALAXY.md by scripts/sync-galaxy.mjs — DO NOT EDIT BY HAND.

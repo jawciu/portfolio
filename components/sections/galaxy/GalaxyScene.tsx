@@ -1137,7 +1137,11 @@ function GalaxyLabel({ node, kind, offsetPx, onSelect }: {
         // the focused star blooms into a sphere — push its label clear of the body
         transform: `translate(${offsetPx}px, -50%)`,
         whiteSpace: "nowrap",
-        opacity: kind === "neighbour" ? 0.62 : 1,
+        // Neighbour dimming now lives in the TEXT colour (fg/70), not a wrapper
+        // opacity multiplied on top of it. The old 0.62 × fg/80 landed at 0.50
+        // effective = 4.96:1 on the flat backdrop and 3.35:1 over a nebula
+        // patch, i.e. failing AA wherever the gas is bright.
+        opacity: 1,
         animation: "galaxy-label-in 0.45s ease both",
       }}
     >
@@ -1158,7 +1162,7 @@ function GalaxyLabel({ node, kind, offsetPx, onSelect }: {
           onClick={(e) => { e.stopPropagation(); e.nativeEvent.stopPropagation(); }}
           onPointerDown={(e) => { e.stopPropagation(); e.nativeEvent.stopPropagation(); }}
           style={{ pointerEvents: "auto" }}
-          className="inline-flex items-center gap-1.5 font-mono text-xs font-bold tracking-[0.08em] text-fg decoration-fg/40 underline-offset-4 hover:underline"
+          className="inline-flex items-center gap-1.5 font-mono text-sm font-bold tracking-[0.08em] text-fg decoration-fg/40 underline-offset-4 hover:underline"
         >
           {node.name}
           <svg width="9" height="9" viewBox="0 0 10 10" fill="none" aria-hidden="true" className="shrink-0">
@@ -1178,21 +1182,35 @@ function GalaxyLabel({ node, kind, offsetPx, onSelect }: {
           style={onSelect ? { pointerEvents: "auto" } : undefined}
           className={
             (primary
-              ? "font-mono text-xs font-bold tracking-[0.08em] text-fg"
-              : "font-mono text-[11px] tracking-[0.08em] text-fg/80") +
+              ? "font-mono text-sm font-bold tracking-[0.08em] text-fg"
+              : kind === "neighbour"
+                // same grey as the section's /skills heading (9.07:1)
+                ? "font-mono text-[11px] tracking-[0.08em] text-fg/70"
+                : "font-mono text-[11px] tracking-[0.08em] text-fg/80") +
             (onSelect ? " cursor-pointer hover:text-fg" : "")
           }
         >
           {node.name}
         </p>
       )}
+      {/* meta + one-liner sit at fg/85 — deliberately between the focused
+          name's full white and the fg/70 of the neighbour labels, so the
+          focused block reads as one hierarchy rather than dropping to the
+          section's dimmest grey */}
+      {/* meta arrives from the sync as "role · dates" (or just the dates when a
+          role is missing, e.g. Peter Pilotto). Split it so the job title and
+          the years sit on their own lines. */}
       {primary && node.meta && (
-        <p className="font-mono text-[10px] tracking-[0.06em] text-fg-muted">{node.meta}</p>
+        <div className="font-mono text-[11px] leading-snug tracking-[0.06em] text-fg/85" style={{ whiteSpace: "normal", maxWidth: 200 }}>
+          {node.meta.split(" · ").map((part) => (
+            <p key={part}>{part}</p>
+          ))}
+        </div>
       )}
       {primary && node.line && (
         <p
-          className="mt-0.5 font-body text-[11px] leading-snug text-fg-muted"
-          style={{ whiteSpace: "normal", width: 220 }}
+          className="mt-0.5 font-body text-[11px] leading-snug text-fg/85"
+          style={{ whiteSpace: "normal", width: 200 }}
         >
           {node.line}
         </p>
