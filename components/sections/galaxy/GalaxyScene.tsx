@@ -33,6 +33,9 @@ import { FocusOrb, orbExtent, orbKind, orbRadius } from "./FocusOrb";
 import { TUNING } from "./tuning";
 import { FOCUS_EVENT } from "./paint";
 
+// scratch for the per-frame edge-clip projection (avoids allocation in useFrame)
+const clipV = new THREE.Vector3();
+
 const HOME_CAM = new THREE.Vector3(0, 2, 18.5);
 const HOME_TARGET = new THREE.Vector3(0, 0, 0);
 
@@ -106,28 +109,27 @@ const STAR_FRAG = /* glsl */ `
 const EDGE_VERT = /* glsl */ `
   attribute float aAlpha;
   varying float vAlpha;
-  varying vec3 vLocal;
   void main() {
     vAlpha = aAlpha;
-    vLocal = position;
     gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
   }
 `;
 
 const EDGE_FRAG = /* glsl */ `
-  uniform vec3 uOrbPos; // focused node position, group-local
-  uniform float uOrbR;  // close-up body radius (0 = no focus, no clip)
+  uniform vec2 uOrbScreen;   // focused body centre in DEVICE px (gl_FragCoord space)
+  uniform float uOrbScreenR; // projected body radius in device px (0 = no focus)
   varying float vAlpha;
-  varying vec3 vLocal;
   void main() {
-    // fade the line out at the focused body's surface — the halo sits in a
-    // camera-facing plane through the node, so edge segments near the centre
-    // genuinely pass IN FRONT of the sphere and depth testing can't hide
-    // them. Clipping by distance makes them emerge softly from the limb.
-    // band kept TIGHT (0.97r → 1.08r): the first cut faded out to 1.35r and
-    // the missing lines read as a black moat ringing the planet (Caroline).
-    // Lines now touch the limb and are fully lit a few px beyond it.
-    float clip = uOrbR > 0.0 ? smoothstep(uOrbR * 0.97, uOrbR * 1.08, length(vLocal - uOrbPos)) : 1.0;
+    // Nothing draws over the focused body's face. A 3D clip sphere was tried
+    // first and missed a whole class of offenders: edges belonging to OTHER
+    // nodes that physically sit between the camera and the planet — depth
+    // testing keeps them (they ARE in front) but visually they slice across
+    // the hero. So the clip is a SCREEN-SPACE disc around the projected
+    // body: any edge fragment inside it fades out, whatever its depth.
+    // Band kept tight (0.97r → 1.08r) — a wider fade read as a black moat.
+    float clip = uOrbScreenR > 0.0
+      ? smoothstep(uOrbScreenR * 0.97, uOrbScreenR * 1.08, distance(gl_FragCoord.xy, uOrbScreen))
+      : 1.0;
     // base colour dropped from 0.62/0.78/0.95 (Caroline: a touch darker,
     // softer on the eye — same hue, ~18% less additive energy)
     gl_FragColor = vec4(0.51, 0.64, 0.78, vAlpha * clip);
@@ -754,6 +756,18 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
     if (controlsRef.current) gsap.killTweensOf(controlsRef.current.target);
   }, [camera]);
 
+  // px factor for projection-correct point sizes — declared BEFORE the main
+  // frame loop, which reads it for the edge-clip disc projection
+  const uPx = useMemo(
+    () => size.height / (2 * Math.tan(((camera as THREE.PerspectiveCamera).fov * Math.PI) / 360)),
+    [size.height, camera],
+  );
+  useEffect(() => {
+    for (const m of [starMatRef.current, bgMatRef.current, dustMatRef.current, nebulaMatRef.current]) {
+      if (m) m.uniforms.uPx.value = uPx;
+    }
+  }, [uPx]);
+
   // ── per-frame work ────────────────────────────────────────────────
   const driftSpeed = useRef(0);
   /** dev probe only: lets headless checks see whether the loop is ticking */
@@ -856,15 +870,23 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
     }
     if (eMoved) eAttr.needsUpdate = true;
 
-    // edge clip sphere follows the focused close-up body (0 releases it)
+    // edge clip disc tracks the focused close-up body in screen space
+    // (device px, gl_FragCoord origin = bottom-left; 0 radius releases it)
     const em = edgeMatRef.current;
-    if (em) {
+    if (em && groupRef.current) {
       if (focused !== null) {
-        (em.uniforms.uOrbPos.value as THREE.Vector3).set(
-          livePos[focused * 3], livePos[focused * 3 + 1], livePos[focused * 3 + 2]);
-        em.uniforms.uOrbR.value = orbRadius(nodes[focused]);
+        clipV.set(livePos[focused * 3], livePos[focused * 3 + 1], livePos[focused * 3 + 2]);
+        groupRef.current.localToWorld(clipV);
+        const dpr = gl.getPixelRatio();
+        const rPx = (orbRadius(nodes[focused]) * uPx) / camera.position.distanceTo(clipV);
+        clipV.project(camera);
+        (em.uniforms.uOrbScreen.value as THREE.Vector2).set(
+          ((clipV.x + 1) / 2) * size.width * dpr,
+          ((clipV.y + 1) / 2) * size.height * dpr,
+        );
+        em.uniforms.uOrbScreenR.value = rPx * dpr;
       } else {
-        em.uniforms.uOrbR.value = 0;
+        em.uniforms.uOrbScreenR.value = 0;
       }
     }
 
@@ -888,17 +910,6 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
       }
     }
   });
-
-  // px factor for projection-correct point sizes
-  const uPx = useMemo(
-    () => size.height / (2 * Math.tan(((camera as THREE.PerspectiveCamera).fov * Math.PI) / 360)),
-    [size.height, camera],
-  );
-  useEffect(() => {
-    for (const m of [starMatRef.current, bgMatRef.current, dustMatRef.current, nebulaMatRef.current]) {
-      if (m) m.uniforms.uPx.value = uPx;
-    }
-  }, [uPx]);
 
   // DEV-ONLY test probe: lets automated checks project every star to CSS px
   // and read the current focus without poking R3F internals. Stripped from
@@ -1129,7 +1140,7 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
             transparent
             depthWrite={false}
             blending={THREE.AdditiveBlending}
-            uniforms={{ uOrbPos: { value: new THREE.Vector3() }, uOrbR: { value: 0 } }}
+            uniforms={{ uOrbScreen: { value: new THREE.Vector2() }, uOrbScreenR: { value: 0 } }}
           />
         </lineSegments>
 

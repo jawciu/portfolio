@@ -282,12 +282,16 @@ cards, element-screenshot. Delete the temp script after.
 **HAND-PAINTED REGISTRY — keep this current.** Caroline hand-tunes bodies via the painter and
 the values get baked; she needs to know later which bodies are hers vs hash-derived. When baking
 a patch, add the id here (and keep the dated comment in FocusOrb).
-- Planets: eon · cog · cog-clinic · ai-design-system · wiki-whisperer (+ lilac rings) · vector ·
-  burberry · julien-macdonald (JULIEN_STYLE, also cloned to the five planet-skills above)
-- Suns: team-leadership · design-systems · ai-agents · design-engineering · cross-functional ·
-  prioritisation · navigating-ambiguity · context-design · tool-design · tokens-in-code ·
-  building-with-agents · visual-craft (rings only) · ~~product-work~~ (green sun, superseded by
-  JULIEN_STYLE planet)
+- Planets: eon (v3 pink-rose) · cog (green, v3) · cog-clinic · ai-design-system (v2 indigo/mint) ·
+  wiki-whisperer (+ lilac rings) · vector (v2 apricot/orchid) · burberry · julien-macdonald
+  (JULIEN_STYLE, still cloned to usability-testing + context-switching + organisation) ·
+  zero-to-one (diverged: plum-violet) · product-work (diverged: rose-pink) · gateway ·
+  call-analytics · perf-insights (those three: her paint over the hashed ice base, rings frozen on)
+- Suns: team-leadership · design-systems (v2 green/gold flare) · ai-agents (v2 green, flare
+  killed) · design-engineering · cross-functional · prioritisation · navigating-ambiguity ·
+  context-design · tool-design · tokens-in-code · building-with-agents · plan-first ·
+  roadmapping · dense-data-ui · user-interviews · ux-writing · visual-craft (rings only) ·
+  ~~product-work~~ (now a diverged planet)
 - Everything else renders from cluster palettes / hashed style tables — not hand-touched.
 
 ### 2026-08-01 — HANDOFF: galaxy labels, dead shader dials, graph expansion. All COMMITTED on `skills-galaxy` (`c11ea5c`), NOT pushed.

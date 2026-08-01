@@ -278,46 +278,55 @@ const PLANET_SKILLS = new Set<string>([
 const PLANET_OVERRIDES: Record<string, PlanetStyle> = {
   // vector — NASA's Io: pale cream-yellow base, large white plains, olive
   // mottled patches, rust-orange blotches, lavender-grey poles, dark speckles
-  // repainted 2026-08-01: violet base under peach terrain and orchid clouds.
-  // rimAmt raised 0.18 → 0.65 on her "add a rim pls" (she painted the rim
-  // COLOUR but the strength dial was never moved off the old near-off value)
+  // repainted 2026-08-01 pm (v2): violet base, apricot terrain, orchid-pink
+  // clouds, purple lanes, apricot mottle, speckles off
   vector: {
-    a: "#622ab7", b: "#e8b2a1", c: "#ddade1", d: "#b4622f",
-    e: "#6d743e", eAmt: 0.6,
+    a: "#622ab7", b: "#fbbe79", c: "#ffccf6", d: "#822cc9",
+    e: "#ffc87a", eAmt: 0.6,
     pole: "#a09ab0", poleAmt: 0.55,
-    speckle: 0.55,
+    speckle: 0,
     bandFreq: 0.6, blotch: 2.4, cloud: 0.75, ring: 0,
-    rim: "#ccc8ea", rimAmt: 0.65,
+    rim: "#eac8c8", rimAmt: 0.65,
+    soft: 3,
   },
   // cog — teal-green marble built around the case study accent #19A072:
   // deep teal ocean, mid-green landmass bands, mint streaks, white cloud
   // swirls, soft pale atmospheric rim
-  // cog — Caroline repainted the marble copper 2026-07-31 (structure kept from
-  // the teal build: same registers, new base + rim tones)
+  // cog — repainted green 2026-08-01 over the copper build (patch recovered
+  // from her clipboard after a reload ate the live paint): deep green base,
+  // tan-lifted bands, near-black-green lanes, quieter clouds, soft 3
   cog: {
-    a: "#a96232", b: "#d7ab93", c: "#eef7f2", d: "#073028",
+    a: "#32a981", b: "#d7ab93", c: "#eef7f2", d: "#033f33",
     e: "#8fdec2", eAmt: 0.55,
-    bandFreq: 2.5, blotch: 1.6, cloud: 0.55, ring: 0,
+    bandFreq: 2.5, blotch: 1.5, cloud: 0.25, ring: 0,
     rim: "#f2e3d9", rimAmt: 0.65,
+    soft: 3,
   },
   // Painted live by Caroline 2026-07-31 (values copied out of PlanetPainter,
   // merged over each node's previously-hashed base style so the fields she
   // never touched keep the surface she was looking at).
   // eon — deep ocean blue with a dusty pink cloud deck, over the Jupiter giant
-  // repainted 2026-08-01: violet base, dusty rose bands, warm cream cloud deck
+  // repainted 2026-08-01 pm (v3): pink-rose bands over the violet base,
+  // orchid lanes, deep indigo poles, strong rose rim
   eon: {
-    a: "#603fab", b: "#caa0b1", c: "#f0daad", d: "#7c7c9c",
-    e: "#f0dfc2", eAmt: 0.4,
-    poleAmt: 0.45, // no pole colour: shades toward black, as painted
-    speckle: 0.45,
-    bandFreq: 6, blotch: 0.7, cloud: 0.45, ring: 0.5,
-    rim: "#ecb1b1", rimAmt: 0.65,
+    a: "#603fab", b: "#eea5c2", c: "#ffebfc", d: "#b579e6",
+    e: "#ffc2fd", eAmt: 0.5,
+    pole: "#280f57", poleAmt: 0.35,
+    speckle: 0.1,
+    bandFreq: 7.5, blotch: 0.4, cloud: 0.45, ring: 0.5,
+    rim: "#ecb1b1", rimAmt: 0.9,
+    soft: 3.85,
   },
-  // ai design system — navy base with a clay-pink terrain, over the rust world
+  // ai design system — repainted 2026-08-01 pm (v2): deep indigo + electric
+  // violet under heavy mint-ice clouds, teal lanes, pale lavender rim.
+  // e is set with no eAmt (inert), exactly as painted.
   "ai-design-system": {
-    a: "#0e2249", b: "#c19486", c: "#e5e2da", d: "#26100a",
-    bandFreq: 0.6, blotch: 2.4, cloud: 0.55, ring: 0,
-    rim: "#df8b72",
+    a: "#210f61", b: "#523cbe", c: "#d1fffa", d: "#31999b",
+    bandFreq: 0.75, blotch: 3, cloud: 0.75, ring: 0,
+    e: "#170703",
+    rim: "#eae5ff", rimAmt: 0.35,
+    speckle: 0,
+    soft: 5,
   },
   // cog clinic — muted sea-green, over the sage world
   "cog-clinic": {
@@ -345,10 +354,63 @@ const PLANET_OVERRIDES: Record<string, PlanetStyle> = {
   // The five skills she asked to wear the same look (see PLANET_SKILLS).
   // Identical on purpose; repaint any of them individually later.
   "usability-testing": JULIEN_STYLE,
-  "product-work": JULIEN_STYLE,
-  "zero-to-one": JULIEN_STYLE,
+  // product-work — painted 2026-08-01 pm, diverged from its JULIEN_STYLE
+  // clone: rose-pink bands on the plum base, blush clouds and mottle, rose
+  // poles, dark plum ring rock. Inherits a/ring/rim from JULIEN_STYLE.
+  "product-work": {
+    a: "#721d53", b: "#ee91a3", c: "#f2dad4", d: "#d7907e",
+    bandFreq: 7, blotch: 2.6, cloud: 0.65, ring: 1,
+    e: "#f1cad4", eAmt: 0.55,
+    pole: "#db7584", poleAmt: 0.25,
+    speckle: 0,
+    rim: "#f8e9e2",
+    ringB: "#6a2f6f",
+    soft: 3,
+  },
+  // zero-to-one — painted live 2026-08-01, diverged from its JULIEN_STYLE
+  // clone: plum-violet marble, peach lanes, copper ring rock. Untouched
+  // fields (ring, cream rim tint, no speckle) inherit from JULIEN_STYLE.
+  "zero-to-one": {
+    a: "#833466", b: "#7f69ce", c: "#d4b0b9", d: "#fbb99d",
+    bandFreq: 0, blotch: 1.2, cloud: 0.35, ring: 1,
+    e: "#d4a98c", eAmt: 0.25,
+    poleAmt: 0.05,
+    rim: "#f8e9e2", rimAmt: 0.35,
+    ringB: "#d6764c",
+    soft: 3,
+  },
   "context-switching": JULIEN_STYLE,
   organisation: JULIEN_STYLE,
+  // Painted 2026-08-01 pm — all three hash to the ICE marble and rolled
+  // ringed; ring: 1 freezes that so a roster change can never unring them.
+  // Unpatched fields inherit the ice base. e without eAmt is inert.
+  // gateway — forest depths under cyan-mint bands, blush lanes, apricot clouds
+  gateway: {
+    a: "#175934", b: "#c7fffb", c: "#fddbbf", d: "#e8a6ba",
+    bandFreq: 6.75, blotch: 2.2, cloud: 0.5, ring: 1,
+    e: "#fffce5",
+    ringB: "#ca8849",
+    soft: 3.75,
+  },
+  // call-analytics — midnight indigo + periwinkle, rose lanes, heavy clouds,
+  // her own ring pair (silver dust / cobalt rock)
+  "call-analytics": {
+    a: "#1b1660", b: "#7d7cdf", c: "#e1c3bc", d: "#df8186",
+    bandFreq: 0.7, blotch: 2.2, cloud: 0.7, ring: 1,
+    e: "#c77a33",
+    rim: "#bac1f2",
+    ringA: "#b2b2d7", ringB: "#4257ae",
+    soft: 4.65,
+  },
+  // perf-insights — mint-white weather at full cloud over the ice base,
+  // peach clouds, sage/rust rings
+  "perf-insights": {
+    a: "#152c4d", b: "#e0ffe8", c: "#ffc6ad", d: "#081830",
+    bandFreq: 0.7, blotch: 2.2, cloud: 1, ring: 1,
+    ringA: "#a9bcaf", ringB: "#d75842",
+    rimAmt: 0.4,
+    soft: 5,
+  },
 };
 
 // Suns burn with two fbm tones from their cluster palette plus a handful of
@@ -380,8 +442,10 @@ const SUN_OVERRIDES: Record<string, Partial<SunStyle>> = {
   "visual-craft": { ring: 1, ringA: "#f2c9a4", ringB: "#8a4a2c" },
   // painted live 2026-08-01
   "team-leadership": { a: "#792a2a", b: "#dda6b4" },
-  "design-systems": { a: "#126d46", b: "#9fb7c1", flare: "#a7a871", gran: 7.75, turb: 1.45, flareAmt: 1 },
-  "ai-agents": { a: "#204683", b: "#baabcf", flare: "#a77ae6", gran: 2.75, turb: 0.8, flareAmt: 1.75 },
+  // design-systems + ai-agents repainted 2026-08-01 pm (ai-agents: flareAmt 0
+  // kills the purple wash she couldn't place — the green base reads now)
+  "design-systems": { a: "#0a8a52", b: "#b39fc1", flare: "#feffcc", gran: 7.75, turb: 1.45, flareAmt: 1, soft: 5 },
+  "ai-agents": { a: "#1a7a5d", b: "#e3d4f7", flare: "#8de8e6", gran: 2, turb: 0.8, flareAmt: 0, glow: 0.6, soft: 4.2 },
   "design-engineering": { a: "#201a7a", b: "#8a9eb7", flare: "#764c4c", gran: 4.25 },
   "cross-functional": { a: "#e1dbdd", b: "#d25189", flare: "#e0d4cd", gran: 1.75, turb: 1.6 },
   "prioritisation": { a: "#f5c7d8", b: "#ff8a8a", flare: "#ff0066", glow: 1.45, flareAmt: 1.85, turb: 1.75, gran: 4 },
@@ -391,6 +455,12 @@ const SUN_OVERRIDES: Record<string, Partial<SunStyle>> = {
   "tool-design": { a: "#12229b", b: "#b493e1", gran: 9.25, glow: 1.7 },
   "tokens-in-code": { a: "#341a7a", b: "#85c0d1", flare: "#92c5d3", glow: 1, gran: 2.75 },
   "building-with-agents": { a: "#21103c", b: "#b38fe5", flare: "#bc7bae", gran: 5.5, turb: 1.65, flareAmt: 1.25, glow: 0.95 },
+  "plan-first": { a: "#9a24b2", flareAmt: 0.75, soft: 2.65 },
+  roadmapping: { a: "#7a1010", b: "#ffd166", flare: "#ffffff", soft: 5 },
+  // painted 2026-08-01 pm
+  "dense-data-ui": { a: "#9597d0", b: "#ffebe0", turb: 1.9, flareAmt: 0.7, glow: 0.9, soft: 5 },
+  "user-interviews": { a: "#cb438c", b: "#ffe68a", flare: "#dd4ba7", gran: 1, turb: 0, flareAmt: 0.55, glow: 1.35, soft: 5 },
+  "ux-writing": { b: "#b07d7d", gran: 1.5, turb: 0.2, flareAmt: 0.4, glow: 2.25, soft: 3.8 },
 };
 
 /** A sun's tones + dials: cluster palette, then any per-id override. */
