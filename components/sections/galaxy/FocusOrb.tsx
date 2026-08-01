@@ -323,6 +323,12 @@ const SUN_OVERRIDES: Record<string, Partial<SunStyle>> = {
   "ai-agents": { a: "#204683", b: "#baabcf", flare: "#a77ae6", gran: 2.75, turb: 0.8, flareAmt: 1.75 },
   "design-engineering": { a: "#201a7a", b: "#8a9eb7", flare: "#764c4c", gran: 4.25 },
   "cross-functional": { a: "#e1dbdd", b: "#d25189", flare: "#e0d4cd", gran: 1.75, turb: 1.6 },
+  "prioritisation": { a: "#f5c7d8", b: "#ff8a8a", flare: "#ff0066", glow: 1.45, flareAmt: 1.85, turb: 1.75, gran: 4 },
+  // no "a": keeps the leadership cluster's deep tone underneath
+  "navigating-ambiguity": { b: "#d095ad", gran: 9.25 },
+  "context-design": { a: "#982ba6", b: "#c3af83", gran: 2, turb: 0.8, flareAmt: 1.5, flare: "#ffaca3" },
+  "tool-design": { a: "#12229b", b: "#b493e1", gran: 9.25, glow: 1.7 },
+  "tokens-in-code": { a: "#341a7a", b: "#85c0d1", flare: "#92c5d3", glow: 1, gran: 2.75 },
 };
 
 /** A sun's tones + dials: cluster palette, then any per-id override. */

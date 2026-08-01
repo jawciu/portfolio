@@ -150,7 +150,7 @@ Clusters: `design` · `research` · `ai` · `engineering` · `product` · `leade
 | yes  | empathy           | research    | empathy                  | 2    |          | user-interviews usability-testing moderated-research personas-journeys product-work ux-writing accessibility cog eon cog-clinic mentoring stakeholder-mgmt communication workshops |
 | yes  | organisation      | leadership  | organisation             | 2    |          | eon cog brainstation casablanca burberry consultancy julien-macdonald mcqueen mary pilotto context-switching stakeholder-mgmt research-ops |
 | yes  | prioritisation    | leadership  | prioritisation           | 2    |          | eon cog brainstation casablanca burberry consultancy julien-macdonald mcqueen mary pilotto organisation roadmapping product-work navigating-ambiguity |
-| yes  | context-design    | ai          | context design           | 2    |          | prompt-design rag claude-api agent-harnesses vector synapse wiki-whisperer portfolio |
+| yes  | context-design    | ai          | context design           | 2    |          | prompt-design rag claude-api agent-harnesses vector synapse wiki-whisperer portfolio call-analytics live-help |
 | yes  | agent-harnesses   | ai          | agent harnesses          | 2    |          | agent-workflows claude-api tool-design vector portfolio synapse |
 | yes  | agent-loops       | ai          | agent loops              | 1    |          | agent-harnesses langgraph human-in-the-loop vector synapse wiki-whisperer |
 | yes  | tracing           | ai          | tracing                  | 1    |          | ai-observability evals langgraph vector synapse wiki-whisperer call-analytics |

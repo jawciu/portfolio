@@ -248,6 +248,62 @@ cards, element-screenshot. Delete the temp script after.
 > current state (working / broken / in-progress), explicit next steps. Sweep settled entries into
 > the archive periodically so this file stays short.
 
+### 2026-08-01 — HANDOFF: galaxy labels, dead shader dials, graph expansion. All COMMITTED on `skills-galaxy` (`c11ea5c`), NOT pushed.
+
+**Caroline switched model mid-session; this entry is the resume point.** Everything below is
+committed and verified. Dev server was left running on **:3001** (never touch 3000).
+
+**Shipped today, in three commits (`ef710fa`, `c11ea5c`, plus `6c89a5a` for the CLAUDE.md tidy):**
+- **Two real bugs found and fixed by measurement, not by eye** (see the fbm note in the galaxy
+  entry's hard-won rules): the mottle / dark-lane / cloud registers were keyed to `smoothstep`
+  ceilings the noise never reaches, so those dials were dead; and speckles were sub-pixel. Both
+  retuned to the measured distribution. **This changed the texture of every already-approved
+  planet** (same palettes, much more definition). Caroline has seen it and is happy, but if she
+  ever says a world looks busier than she remembers, this is why.
+- **Suns are now paintable like planets**: `SunStyle` + `SUN_BASE` (defaults reproduce the old
+  hardcoded sun byte-for-byte) with flare colour, granulation, turbulence, flare amount,
+  brightness, and optional rings. `SUN_OVERRIDES` holds the per-id bakes. visual-craft is the
+  one ringed star.
+- **Palettes baked** (all painted live by her, merged over each node's hashed base): eon, cog,
+  cog-clinic, ai-design-system, wiki-whisperer, burberry, vector (+ rim strength raised 0.18 →
+  0.65 on her "add a rim" note), and suns product-work, team-leadership, design-systems,
+  ai-agents, design-engineering, cross-functional.
+- **Focused label restructured**: the separate "open case study →" line is GONE; the focused
+  NAME is now the link (↗ icon, underline on hover, opens in a new tab). Sizes: name 14px bold,
+  meta 11px, one-liner 11px, both capped at 200px, meta split onto two lines by splitting the
+  sync's `"role · dates"` string in the component. Colours: name #f5f5f5, meta + one-liner
+  `fg/85`, neighbours `fg/70` (the `/skills` grey, up from an effective 0.50 alpha).
+- **Accessibility pass on the label colours** (she asked): everything now clears AA on the flat
+  backdrop AND over bright nebula. Method worth reusing: measure the CANVAS background
+  percentiles from a screenshot (median 7/255 but p90 is 47), then compute contrast against the
+  bright case, not the dark one. Still open: at the p99 background (star cores, ~164/255) NO
+  label colour passes, because brighter text is closer to the bright thing behind it. **The fix
+  for that is a dark text-halo (text-shadow), proposed and not yet built.**
+- **Graph 114 → 127 nodes, 273 → 416 edges** (an Opus subagent did this half): new soft skills
+  (communication, empathy, organisation, prioritisation) and agent-craft skills (context-design,
+  agent-harnesses, agent-loops, tracing, tool-design, agent-memory, plan-first, agent-skills,
+  building-with-agents), ai-agents 5 → 17 connections, design-engineering expanded from her
+  LinkedIn "I design teams out of Claude" post, ux-writing and cross-functional broadened.
+  Her review calls: BrainStation dropped from cross-functional · ux-writing inferences kept ·
+  "vibe coding" renamed **building with agents** · empathy stays in the `research` cluster but
+  now also links into leadership.
+- **`scripts/sync-galaxy.mjs` now DEDUPES EDGES.** It only ever checked duplicate node ids, so
+  declaring a pair from both sides (A connects to B *and* B connects to A) silently emitted two
+  edges, which gave a node the same neighbour twice and threw duplicate-key React errors in the
+  console. It now collapses unordered pairs and warns which it folded. It caught two more the
+  moment the next edit landed, so leave it in.
+
+**OPEN / NEXT, in priority order**
+1. **Label de-collision** — still the top job, and now more visible: the focused block grew
+   (14px name + two 200px paragraphs) and dense halos are brighter. Likely needs a reserved zone
+   around the focused block that neighbours route around, not just per-label nudging.
+2. **The dark text-halo** for labels over star cores (see accessibility above).
+3. Caroline may keep painting: the panel's "copy values" emits ONLY the fields she moved, so
+   always merge a patch over the node's existing base style, and remember a colour whose amount
+   dial is 0 renders as nothing.
+4. Everything from the previous handoff still stands: her tuner numbers to bake, the `TODO(caro)`
+   facts in GALAXY.md, the mobile pass, the missing sr-only alternative.
+
 ### 2026-07-31 (eve) — HANDOFF: CLAUDE.md tidied + Caroline's painted planet palettes baked
 
 - **CLAUDE.md swept**: 1,777 → ~330 lines. Every 2026-06-28 → 2026-07-30 handoff moved verbatim
@@ -268,7 +324,7 @@ cards, element-screenshot. Delete the temp script after.
 
 | Branch | What | State | Blocking / next |
 | --- | --- | --- | --- |
-| `skills-galaxy` | Interactive knowledge-graph galaxy section (see below) | Working, committed through `684f1e3`. NOT pushed, NOT merged | Label de-collision, mobile pass, Caroline's tuner numbers |
+| `skills-galaxy` | Interactive knowledge-graph galaxy section (see below) | Working, committed through `c11ea5c`. NOT pushed, NOT merged | Label de-collision, label text-halo, mobile pass, Caroline's tuner numbers |
 | `scroll-progress` | Right-edge case-study progress rail, ported to all 4 studies | Working, uncommitted. Pre-merge cleanup done | ONE decision: cog's Methodology "exploratory sketches" row deliberately bleeds past the rail at 1440 and the label is unreadable over the artwork. Options: frosted plate behind the rail / right padding on that one row / accept |
 | `token-cleanup` | `--cog-*` / `--green` → `--case-study-*` template slots + new `template-tokens` skill | Committed, not pushed/merged | Caroline's review. Only intended pixel change: cog's rail `#1e7a4d` → `#19a072` |
 | (untracked, no branch) | Gateway case study scaffold (`app/project/gateway/`, `components/project/gateway/`) | Builds + prerenders, all copy is DRAFT `TODO(caro)`, `noindex`, unlinked | Read `components/project/gateway/OUTLINE.md` first: 7 open facts + shot list. Still on legacy `--cog-*` tokens with a 3-line bridge for the rail |
@@ -277,7 +333,7 @@ cards, element-screenshot. Delete the temp script after.
 
 **What it is:** Caroline's skills matrix as an interactive knowledge-graph galaxy, a homepage
 section between Highlights and Toolkit (`components/sections/SkillsGalaxy.tsx`), window-framed R3F
-canvas, 114 stars (jobs / projects / skills / easter eggs) and 273 links. Click a star: camera flies
+canvas, 127 stars (jobs / projects / skills / easter eggs) and 416 links. Click a star: camera flies
 in, neighbours gather into a labelled halo, the node renders as a sun (skills), planet (jobs = gas
 giants, projects = terrestrials, per-id overrides: vector = Io, cog = green marble) or moon (eggs).
 Hops A→B run strict phases: edges reel into A (halo frozen, nothing else moves) → arced camera
