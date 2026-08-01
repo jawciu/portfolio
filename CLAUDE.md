@@ -270,11 +270,14 @@ cards, element-screenshot. Delete the temp script after.
   green sun override removed (superseded). OPEN: the look repeats — 3 more jobs hash to the
   near-identical cream Saturn base (casablanca, consultancy, pilotto); she's choosing between
   varying the clones / retinting those Saturns / both.
-- **`soft` dial** (planets): edge-width multiplier on every surface register (sedge() in
-  PLANET_FRAG), 0.25 crisp → 3 dreamy, **1 = pixel-identical baseline (verified 0.00 diff
-  against a frozen capture)**. In the painter as "softness". Added after the threshold fix's
-  full strength finally reached her browser (stale-tab gremlin, third documented occurrence)
-  and read as too sharp.
+- **`soft` dial** (all bodies): planets scale every register's edge width (sedge() in
+  PLANET_FRAG); suns damp granulation contrast around its mean so texture flattens WITHOUT
+  shifting exposure (glow stays the only brightness dial). Range 0.25 crisp → 5 dreamy,
+  **1 = pixel-identical baseline (verified 0.00 diff against a frozen capture)**.
+  **Planets default to `DEFAULT_PLANET_SOFT = 3`** (Caroline's call — the threshold fix's
+  full crispness finally reached her browser via the stale-tab gremlin, third documented
+  occurrence, and read as too sharp); suns default 1. An explicit `soft` on a style or
+  painter patch wins over the default.
 
 **HAND-PAINTED REGISTRY — keep this current.** Caroline hand-tunes bodies via the painter and
 the values get baked; she needs to know later which bodies are hers vs hash-derived. When baking

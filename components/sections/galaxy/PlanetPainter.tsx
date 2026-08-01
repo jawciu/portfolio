@@ -34,8 +34,11 @@ const DIAL_FIELDS: { key: keyof PaintPatch; label: string; min: number; max: num
   { key: "cloud", label: "cloud cover", min: 0, max: 1, step: 0.05 },
   { key: "bandFreq", label: "banding", min: 0, max: 8, step: 0.25 },
   { key: "blotch", label: "blotchiness", min: 0, max: 3, step: 0.1 },
-  // surface edge softness — left = crisp, 1 = baseline, right = dreamy blur
-  { key: "soft", label: "softness", min: 0.25, max: 3, step: 0.05 },
+  // surface edge softness — left = crisp, 1 = baseline sharpness, right =
+  // dreamy blur. Planets default to 3 (Caroline's call), suns to 1. Present
+  // on every body kind: planets scale their register edges, suns damp their
+  // granulation contrast.
+  { key: "soft", label: "softness", min: 0.25, max: 5, step: 0.05 },
   // suns
   { key: "gran", label: "granulation", min: 1, max: 10, step: 0.25 },
   { key: "turb", label: "turbulence", min: 0, max: 2.5, step: 0.05 },

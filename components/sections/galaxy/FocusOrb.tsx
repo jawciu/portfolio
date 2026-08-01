@@ -62,12 +62,19 @@ const SUN_FRAG = NOISE + /* glsl */ `
   uniform float uTurb;     // weight of the fine boiling detail
   uniform float uFlareAmt; // rim flare strength
   uniform float uGlow;     // overall exposure
+  uniform float uSoft;     // granulation contrast damper: >1 creamier, 1 = baseline
   varying vec3 vN; varying vec3 vP; varying vec3 vView;
   void main() {
     float g = fbm(vP * uGran + vec3(0.0, uTime * 0.06, uTime * 0.04));
     float g2 = fbm(vP * uGran * 2.571 - uTime * 0.05);
-    vec3 col = mix(uA, uB, clamp(g * 1.5, 0.0, 1.0));
-    col *= 0.75 + 0.6 * g + 0.35 * g2 * uTurb;
+    // softness damps the granulation AROUND ITS MEAN (fbm median ≈ 0.47), so
+    // texture flattens without shifting exposure or average hue — glow stays
+    // the only brightness dial. At uSoft == 1 both lines reduce EXACTLY to
+    // the original expressions.
+    float k = 1.0 / uSoft;
+    float m = 0.47 * (0.6 + 0.35 * uTurb);
+    vec3 col = mix(uA, uB, clamp((g * 1.5 - 0.7) * k + 0.7, 0.0, 1.0));
+    col *= 0.75 + m + (0.6 * g + 0.35 * g2 * uTurb - m) * k;
     float fres = pow(1.0 - max(dot(normalize(vN), vView), 0.0), 2.0);
     col += uFlare * fres * uFlareAmt;
     gl_FragColor = vec4(col * uGlow, 1.0);
@@ -354,10 +361,16 @@ type SunStyle = {
   flare?: string;    // rim flare tint (defaults to b)
   flareAmt: number;  // rim flare strength
   glow: number;      // exposure
+  soft: number;      // granulation contrast damper: >1 creamier (1 = baseline)
   ring: number;      // 0/1 — suns are bare unless a style asks for rings
   ringA?: string; ringB?: string;
 };
-const SUN_BASE: Omit<SunStyle, "a" | "b"> = { gran: 3.5, turb: 1, flareAmt: 0.9, glow: 1.35, ring: 0 };
+const SUN_BASE: Omit<SunStyle, "a" | "b"> = { gran: 3.5, turb: 1, flareAmt: 0.9, glow: 1.35, soft: 1, ring: 0 };
+
+// Caroline's call (2026-08-01): every planet defaults to a soft, dreamy
+// surface — the crisp look the threshold fix revealed read as too sharp.
+// An explicit `soft` on a style (or a painter patch) still wins.
+const DEFAULT_PLANET_SOFT = 3;
 
 // Per-id sun overrides (painted live, same panel as the planets).
 const SUN_OVERRIDES: Record<string, Partial<SunStyle>> = {
@@ -444,7 +457,7 @@ export function paintableFor(node: GalaxyNode): { kind: string; values: Record<s
       kind,
       values: {
         a: s.a, b: s.b, flare: s.flare ?? s.b,
-        gran: s.gran, turb: s.turb, flareAmt: s.flareAmt, glow: s.glow,
+        gran: s.gran, turb: s.turb, flareAmt: s.flareAmt, glow: s.glow, soft: s.soft,
         ...(orbRinged(node) ? { ringA, ringB } : {}),
       },
     };
@@ -465,7 +478,7 @@ export function paintableFor(node: GalaxyNode): { kind: string; values: Record<s
       speckle: s.speckle ?? 0,
       rim: s.rim ?? s.b, rimAmt: s.rimAmt ?? 0.25,
       cloud: s.cloud, bandFreq: s.bandFreq, blotch: s.blotch,
-      soft: s.soft ?? 1,
+      soft: s.soft ?? DEFAULT_PLANET_SOFT,
       // ring tones only exist as controls on worlds that actually have rings
       ...(orbRinged(node) ? { ringA, ringB } : {}),
     },
@@ -527,6 +540,7 @@ export function FocusOrb({ node, reduced, glowTex }: FocusOrbProps) {
         uTurb: { value: sun.turb },
         uFlareAmt: { value: sun.flareAmt },
         uGlow: { value: sun.glow },
+        uSoft: { value: sun.soft },
       };
       return u;
     }
@@ -548,7 +562,7 @@ export function FocusOrb({ node, reduced, glowTex }: FocusOrbProps) {
       uSpeckle: { value: style?.speckle ?? 0 },
       uRim: { value: style?.rim ? new THREE.Color(style.rim) : colB },
       uRimAmt: { value: style?.rimAmt ?? 0.25 },
-      uSoft: { value: style?.soft ?? 1 },
+      uSoft: { value: style?.soft ?? DEFAULT_PLANET_SOFT },
     };
     return u;
   }, [colA, colB, colC, colD, style, sun]);
