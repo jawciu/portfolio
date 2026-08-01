@@ -12,6 +12,9 @@ export type PaintPatch = Partial<{
   ringA: string; ringB: string;
   eAmt: number; poleAmt: number; speckle: number; rimAmt: number;
   cloud: number; bandFreq: number; blotch: number;
+  // suns
+  flare: string;
+  gran: number; turb: number; flareAmt: number; glow: number;
 }>;
 
 export const PAINT: Record<string, PaintPatch> = {};

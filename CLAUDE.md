@@ -308,6 +308,13 @@ flight with a light pulse on the bridge → B's edges sprout on approach.
 - `react-hooks/immutability` forbids mutating a `useMemo` result: reach the live buffer through the
   geometry (`getAttribute("position").array`), and keep `PAINT` mutations inside `paint.ts` helpers.
 - Halo vertical axis is squashed ×0.72 so members can't project below the wide window frame.
+- **`fbm()` in FocusOrb does NOT span 0..1.** Four octaves of value noise measured over 60k points
+  on the sphere run **0.13 – 0.79, median 0.47**. The original `smoothstep` ceilings (0.82 / 0.9 /
+  0.95) sat above anything the noise ever produces, so the dark-lane, mottle and cloud registers
+  only ever rendered at a fraction of strength and their dials read as dead. Any new threshold must
+  sit inside that measured range. Verify a dial by freezing the body (Playwright
+  `reducedMotion: "reduce"` DOES work and stops the rotation, contrary to the round-9 note) and
+  diffing pixels: noise floor is ~0.28, so a working dial should move 3+.
 
 **State:** working. tsc / lint / build clean. Committed through `684f1e3` (last round: graph
 expansion proposal for her veto, featured-star de-overlap, rebuilt ring bands, the planet painter,

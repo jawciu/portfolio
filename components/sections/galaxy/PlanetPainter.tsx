@@ -11,6 +11,8 @@ import { GALAXY_NODES } from "@/lib/galaxyData";
 import { paintableFor } from "./FocusOrb";
 import { PAINT, FOCUS_EVENT, setPaint, clearPaint, type PaintPatch } from "./paint";
 
+// Every field is filtered against the node's paintable values, so planets,
+// moons and suns each get exactly the controls their shader actually reads.
 const COLOUR_FIELDS: { key: keyof PaintPatch; label: string }[] = [
   { key: "a", label: "deep base" },
   { key: "b", label: "lifted base" },
@@ -19,7 +21,8 @@ const COLOUR_FIELDS: { key: keyof PaintPatch; label: string }[] = [
   { key: "e", label: "mottle" },
   { key: "pole", label: "poles" },
   { key: "rim", label: "rim glow" },
-  // ringed worlds only — paintableFor omits these keys when there are no rings
+  { key: "flare", label: "flare" }, // suns
+  // ringed bodies only — paintableFor omits these keys when there are no rings
   { key: "ringA", label: "ring dust" },
   { key: "ringB", label: "ring rock" },
 ];
@@ -31,6 +34,11 @@ const DIAL_FIELDS: { key: keyof PaintPatch; label: string; min: number; max: num
   { key: "cloud", label: "cloud cover", min: 0, max: 1, step: 0.05 },
   { key: "bandFreq", label: "banding", min: 0, max: 8, step: 0.25 },
   { key: "blotch", label: "blotchiness", min: 0, max: 3, step: 0.1 },
+  // suns
+  { key: "gran", label: "granulation", min: 1, max: 10, step: 0.25 },
+  { key: "turb", label: "turbulence", min: 0, max: 2.5, step: 0.05 },
+  { key: "flareAmt", label: "flare amount", min: 0, max: 2.5, step: 0.05 },
+  { key: "glow", label: "brightness", min: 0.4, max: 2.5, step: 0.05 },
 ];
 
 export function PlanetPainter() {
@@ -47,7 +55,6 @@ export function PlanetPainter() {
   const node = focusedId ? GALAXY_NODES.find((n) => n.id === focusedId) : undefined;
   const base = node ? paintableFor(node) : null;
   const patch: PaintPatch = node ? PAINT[node.id] ?? {} : {};
-  const isSun = base?.kind === "sun";
 
   const set = (key: keyof PaintPatch, value: string | number) => {
     if (!node) return;
@@ -85,7 +92,7 @@ export function PlanetPainter() {
                   />
                 </label>
               ))}
-              {!isSun && DIAL_FIELDS.map((f) => (
+              {DIAL_FIELDS.filter((f) => f.key in base.values).map((f) => (
                 <label key={f.key} className="mb-1.5 block">
                   <span className="flex justify-between">
                     <span>{f.label}</span>

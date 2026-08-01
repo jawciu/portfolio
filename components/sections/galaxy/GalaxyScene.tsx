@@ -1145,25 +1145,47 @@ function GalaxyLabel({ node, kind, offsetPx, onSelect }: {
           offsetX against this element and fire a bogus pointer-missed), so
           the native event is stopped here; window activation is signalled
           explicitly instead of relying on bubbling. */}
-      <p
-        onClick={onSelect ? (ev) => {
-          ev.stopPropagation();
-          ev.nativeEvent.stopPropagation();
-          window.dispatchEvent(new CustomEvent("galaxy:activate"));
-          onSelect();
-        } : undefined}
-        onPointerDown={onSelect ? (ev) => { ev.stopPropagation(); ev.nativeEvent.stopPropagation(); } : undefined}
-        role={onSelect ? "button" : undefined}
-        style={onSelect ? { pointerEvents: "auto" } : undefined}
-        className={
-          (primary
-            ? "font-mono text-xs font-bold tracking-[0.08em] text-fg"
-            : "font-mono text-[11px] tracking-[0.08em] text-fg/80") +
-          (onSelect ? " cursor-pointer hover:text-fg" : "")
-        }
-      >
-        {node.name}
-      </p>
+      {/* On a focused node with a case study, the NAME is the link (opens in a
+          new tab) — the old separate "open case study →" line read as clutter
+          under every planet. Internal routes only; external links were cut
+          2026-07-31. */}
+      {primary && node.link && !node.link.startsWith("http") ? (
+        <a
+          href={node.link}
+          target="_blank"
+          rel="noopener noreferrer"
+          title={`${node.name} case study (opens in a new tab)`}
+          onClick={(e) => { e.stopPropagation(); e.nativeEvent.stopPropagation(); }}
+          onPointerDown={(e) => { e.stopPropagation(); e.nativeEvent.stopPropagation(); }}
+          style={{ pointerEvents: "auto" }}
+          className="inline-flex items-center gap-1.5 font-mono text-xs font-bold tracking-[0.08em] text-fg decoration-fg/40 underline-offset-4 hover:underline"
+        >
+          {node.name}
+          <svg width="9" height="9" viewBox="0 0 10 10" fill="none" aria-hidden="true" className="shrink-0">
+            <path d="M2.2 7.8 7.8 2.2M3.4 2.2h4.4v4.4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </a>
+      ) : (
+        <p
+          onClick={onSelect ? (ev) => {
+            ev.stopPropagation();
+            ev.nativeEvent.stopPropagation();
+            window.dispatchEvent(new CustomEvent("galaxy:activate"));
+            onSelect();
+          } : undefined}
+          onPointerDown={onSelect ? (ev) => { ev.stopPropagation(); ev.nativeEvent.stopPropagation(); } : undefined}
+          role={onSelect ? "button" : undefined}
+          style={onSelect ? { pointerEvents: "auto" } : undefined}
+          className={
+            (primary
+              ? "font-mono text-xs font-bold tracking-[0.08em] text-fg"
+              : "font-mono text-[11px] tracking-[0.08em] text-fg/80") +
+            (onSelect ? " cursor-pointer hover:text-fg" : "")
+          }
+        >
+          {node.name}
+        </p>
+      )}
       {primary && node.meta && (
         <p className="font-mono text-[10px] tracking-[0.06em] text-fg-muted">{node.meta}</p>
       )}
@@ -1174,19 +1196,6 @@ function GalaxyLabel({ node, kind, offsetPx, onSelect }: {
         >
           {node.line}
         </p>
-      )}
-      {/* only internal case-study routes get a link — external "view source"
-          links were cut on Caroline's call (2026-07-31) */}
-      {primary && node.link && !node.link.startsWith("http") && (
-        <a
-          href={node.link}
-          onClick={(e) => { e.stopPropagation(); e.nativeEvent.stopPropagation(); }}
-          onPointerDown={(e) => { e.stopPropagation(); e.nativeEvent.stopPropagation(); }}
-          style={{ pointerEvents: "auto" }}
-          className="mt-1 inline-block font-mono text-[10px] tracking-[0.12em] text-fg/70 underline underline-offset-4 hover:text-fg"
-        >
-          open case study →
-        </a>
       )}
     </div>
   );

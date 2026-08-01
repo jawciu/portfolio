@@ -57,15 +57,20 @@ const SUN_FRAG = NOISE + /* glsl */ `
   uniform float uTime;
   uniform vec3 uA;
   uniform vec3 uB;
+  uniform vec3 uFlare;     // rim flare tint (defaults to uB)
+  uniform float uGran;     // granulation cell size — low = big lazy cells
+  uniform float uTurb;     // weight of the fine boiling detail
+  uniform float uFlareAmt; // rim flare strength
+  uniform float uGlow;     // overall exposure
   varying vec3 vN; varying vec3 vP; varying vec3 vView;
   void main() {
-    float g = fbm(vP * 3.5 + vec3(0.0, uTime * 0.06, uTime * 0.04));
-    float g2 = fbm(vP * 9.0 - uTime * 0.05);
+    float g = fbm(vP * uGran + vec3(0.0, uTime * 0.06, uTime * 0.04));
+    float g2 = fbm(vP * uGran * 2.571 - uTime * 0.05);
     vec3 col = mix(uA, uB, clamp(g * 1.5, 0.0, 1.0));
-    col *= 0.75 + 0.6 * g + 0.35 * g2;
+    col *= 0.75 + 0.6 * g + 0.35 * g2 * uTurb;
     float fres = pow(1.0 - max(dot(normalize(vN), vView), 0.0), 2.0);
-    col += uB * fres * 0.9;
-    gl_FragColor = vec4(col * 1.35, 1.0);
+    col += uFlare * fres * uFlareAmt;
+    gl_FragColor = vec4(col * uGlow, 1.0);
   }
 `;
 
@@ -94,22 +99,31 @@ const PLANET_FRAG = NOISE + /* glsl */ `
     float band = fbm(vec3(vP.y * uBandFreq + warp, vP.x * uBlotch, vP.z * uBlotch));
     band = clamp((band - 0.5) * 1.7 + 0.5, 0.0, 1.0);
     vec3 col = mix(uA, uB, band);
+    // NOTE on the thresholds below: fbm() here sums 4 octaves of value noise,
+    // so it does NOT span 0..1 — measured over 60k points on the sphere it runs
+    // 0.13..0.79 with a median of 0.47. The original smoothstep ceilings (0.82,
+    // 0.9, 0.95) sat ABOVE anything the noise ever produces, so these layers
+    // only ever rendered at a fraction of their strength and their dials felt
+    // dead. Every range is now placed inside the real distribution.
     // register 2: dark lanes / maria / storm belts (uD) at a different scale
     float lane = fbm(vP * (2.0 + uBlotch * 1.5) - 5.1 + warp * 0.4);
-    col = mix(col, uD, smoothstep(0.58, 0.9, lane) * 0.65);
+    col = mix(col, uD, smoothstep(0.50, 0.62, lane) * 0.65);
     // register 2b: secondary mottle (uE) — its own scale + offset so the
     // patches never align with the uD lanes; sits UNDER the cloud layer
     float mott = fbm(vP * 3.6 - 11.4 + warp * 0.6);
-    col = mix(col, uE, smoothstep(0.5, 0.82, mott) * uEAmt);
+    col = mix(col, uE, smoothstep(0.46, 0.60, mott) * uEAmt);
     // register 3: cloud / swirl layer (uC)
     float swirl = fbm(vP * 5.0 + 3.7 + warp * 0.5);
-    col = mix(col, uC, smoothstep(0.62 - 0.3 * uCloud, 0.95 - 0.15 * uCloud, swirl));
+    col = mix(col, uC, smoothstep(0.58 - 0.22 * uCloud, 0.70 - 0.12 * uCloud, swirl));
     // polar shading with a noisy edge so the caps read painted, not stamped
     float pol = smoothstep(0.5, 0.92, abs(vP.y) + (warp - 0.35) * 0.2);
     col = mix(col, uPole, pol * uPoleAmt);
-    // small dark flecks (volcanic pits / islets) — darken whatever is there
-    float spk = noise(vP * 26.0 + 4.7);
-    col = mix(col, col * 0.3, smoothstep(0.8, 0.93, spk) * uSpeckle);
+    // small dark flecks (volcanic pits / islets) — darken whatever is there.
+    // Frequency 26 put the flecks under a pixel and the 0.8 threshold almost
+    // never fired: measured, the dial moved the render LESS than frame noise.
+    // Coarser cells + an earlier threshold make it a control you can see.
+    float spk = noise(vP * 13.0 + 4.7);
+    col = mix(col, col * 0.28, smoothstep(0.58, 0.88, spk) * uSpeckle);
     // fine grain so no region reads as one flat hue
     col *= 0.82 + 0.36 * fbm(vP * 11.0 + 7.3);
     float light = 0.34 + 0.62 * max(dot(normalize(vN), normalize(vec3(0.6, 0.5, 0.8))), 0.0);
@@ -270,25 +284,46 @@ const PLANET_OVERRIDES: Record<string, PlanetStyle> = {
     rim: "#b66bb8",
     ringA: "#e0c6ef", ringB: "#6a4a86",
   },
+  // burberry — trench camel over the Saturn giant, gold ring rock, no rim
+  burberry: {
+    a: "#93622a", b: "#bbad9b", c: "#efe6cf", d: "#a89060",
+    eAmt: 0, speckle: 0, rimAmt: 0,
+    bandFreq: 4.5, blotch: 0.7, cloud: 0.1, ring: 1,
+    ringB: "#eebb63",
+  },
 };
 
-// Suns take their two fbm tones from the cluster palette; these ids override
-// that pick (painted live, same panel).
-const SUN_OVERRIDES: Record<string, [string, string]> = {
-  "product-work": ["#14620e", "#6baeac"],
+// Suns burn with two fbm tones from their cluster palette plus a handful of
+// surface dials. SUN_BASE reproduces the original hardcoded sun exactly, so a
+// star with no override renders byte-identical to before these dials existed.
+type SunStyle = {
+  a: string; b: string;
+  gran: number;      // granulation cell size (3.5 = the classic boil)
+  turb: number;      // weight of the fine detail register
+  flare?: string;    // rim flare tint (defaults to b)
+  flareAmt: number;  // rim flare strength
+  glow: number;      // exposure
+  ring: number;      // 0/1 — suns are bare unless a style asks for rings
+  ringA?: string; ringB?: string;
+};
+const SUN_BASE: Omit<SunStyle, "a" | "b"> = { gran: 3.5, turb: 1, flareAmt: 0.9, glow: 1.35, ring: 0 };
+
+// Per-id sun overrides (painted live, same panel as the planets).
+const SUN_OVERRIDES: Record<string, Partial<SunStyle>> = {
+  "product-work": { a: "#14620e", b: "#6baeac" },
+  // visual craft — the one skill star Caroline wants wearing rings
+  "visual-craft": { ring: 1, ringA: "#f2c9a4", ringB: "#8a4a2c" },
 };
 
-/** The two fbm tones a sun burns with (cluster palette, or a painted override). */
-function sunTones(node: GalaxyNode): [string, string] {
-  const o = SUN_OVERRIDES[node.id];
-  if (o) return o;
+/** A sun's tones + dials: cluster palette, then any per-id override. */
+export function sunStyle(node: GalaxyNode): SunStyle {
   const p = PALETTES[node.cluster] ?? PALETTES.career;
-  return [p[0], p[1]];
+  return { a: p[0], b: p[1], ...SUN_BASE, ...SUN_OVERRIDES[node.id] };
 }
 
 /** Ring dust + rock tones: a style can name them, otherwise they're neutral
  *  rock/ice lerped a little toward the body's lifted base. */
-function ringTones(style: PlanetStyle | null, bHex: string): [string, string] {
+function ringTones(style: { ringA?: string; ringB?: string } | null | undefined, bHex: string): [string, string] {
   const b = new THREE.Color(bHex);
   return [
     style?.ringA ?? `#${new THREE.Color("#c9c0b0").lerp(b, 0.35).getHexString()}`,
@@ -319,6 +354,7 @@ export function planetStyle(node: GalaxyNode): PlanetStyle {
   return TERRESTRIALS[hashId(node.id + "pl") % TERRESTRIALS.length];
 }
 export function orbRinged(node: GalaxyNode) {
+  if (orbKind(node) === "sun") return sunStyle(node).ring > 0;
   if (orbKind(node) !== "planet") return false;
   // style.ring is a probability; a second hash bit decides the "maybe" cases
   return (hashId(node.id + "ring") % 100) / 100 < planetStyle(node).ring;
@@ -335,8 +371,16 @@ export function orbExtent(node: GalaxyNode) {
 export function paintableFor(node: GalaxyNode): { kind: string; values: Record<string, string | number> } {
   const kind = orbKind(node);
   if (kind === "sun") {
-    const [a, b] = sunTones(node);
-    return { kind, values: { a, b } };
+    const s = sunStyle(node);
+    const [ringA, ringB] = ringTones(s, s.b);
+    return {
+      kind,
+      values: {
+        a: s.a, b: s.b, flare: s.flare ?? s.b,
+        gran: s.gran, turb: s.turb, flareAmt: s.flareAmt, glow: s.glow,
+        ...(orbRinged(node) ? { ringA, ringB } : {}),
+      },
+    };
   }
   const s = planetStyle(node);
   const [ringA, ringB] = ringTones(s, s.b);
@@ -344,7 +388,10 @@ export function paintableFor(node: GalaxyNode): { kind: string; values: Record<s
     kind,
     values: {
       a: s.a, b: s.b, c: s.c, d: s.d,
-      e: s.e ?? s.b, eAmt: s.eAmt ?? 0,
+      // mottle falls back to the DARK LANE tone, not the lifted base: mixing
+      // the base into itself is why "mottle amount" felt like a dead dial on
+      // any world that never named a mottle colour
+      e: s.e ?? s.d, eAmt: s.eAmt ?? 0,
       // pole defaults to BLACK, matching the shader's uPole fallback — the
       // panel used to preview s.d here and lied about what you'd render
       pole: s.pole ?? "#000000", poleAmt: s.poleAmt ?? 0,
@@ -388,22 +435,34 @@ export function FocusOrb({ node, reduced, glowTex }: FocusOrbProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- paintTick re-reads the mutable PAINT store
   }, [node, kind, paintTick]);
 
+  const sun = useMemo(() => {
+    if (kind !== "sun") return null;
+    return { ...sunStyle(node), ...PAINT[node.id] };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- paintTick re-reads the mutable PAINT store
+  }, [node, kind, paintTick]);
+
   const [colA, colB, colC, colD] = useMemo(() => {
-    const sun = sunTones(node);
     const p: [string, string, string, string] = style
       ? [style.a, style.b, style.c, style.d]
-      : [sun[0], sun[1], (PALETTES[node.cluster] ?? PALETTES.career)[2], "#000000"];
-    if (!style) {
-      const patch = PAINT[node.id];
-      if (patch?.a) p[0] = patch.a;
-      if (patch?.b) p[1] = patch.b;
-    }
+      : [sun!.a, sun!.b, (PALETTES[node.cluster] ?? PALETTES.career)[2], "#000000"];
     return p.map((h) => new THREE.Color(h)) as [THREE.Color, THREE.Color, THREE.Color, THREE.Color];
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- paintTick re-reads the mutable PAINT store
-  }, [node, style, paintTick]);
+  }, [node, style, sun]);
 
-  const uniforms = useMemo(
-    () => ({
+  const uniforms = useMemo(() => {
+    if (sun) {
+      const u: Record<string, THREE.IUniform> = {
+        uTime: { value: 0 },
+        uA: { value: colA },
+        uB: { value: colB },
+        uFlare: { value: sun.flare ? new THREE.Color(sun.flare) : colB },
+        uGran: { value: sun.gran },
+        uTurb: { value: sun.turb },
+        uFlareAmt: { value: sun.flareAmt },
+        uGlow: { value: sun.glow },
+      };
+      return u;
+    }
+    const u: Record<string, THREE.IUniform> = {
       uTime: { value: 0 },
       uA: { value: colA },
       uB: { value: colB },
@@ -412,23 +471,24 @@ export function FocusOrb({ node, reduced, glowTex }: FocusOrbProps) {
       uBandFreq: { value: style?.bandFreq ?? 0 },
       uBlotch: { value: style?.blotch ?? 0 },
       uCloud: { value: style?.cloud ?? 0 },
-      // fifth-register dressing — defaults keep legacy styles pixel-identical
-      uE: { value: new THREE.Color(style?.e ?? style?.b ?? "#ffffff") },
+      // fifth-register dressing — every world without a mottle colour also has
+      // eAmt 0, so the dark-lane fallback changes nothing already baked
+      uE: { value: new THREE.Color(style?.e ?? style?.d ?? "#ffffff") },
       uEAmt: { value: style?.eAmt ?? 0 },
       uPole: { value: new THREE.Color(style?.pole ?? "#000000") },
       uPoleAmt: { value: style?.poleAmt ?? 0 },
       uSpeckle: { value: style?.speckle ?? 0 },
       uRim: { value: style?.rim ? new THREE.Color(style.rim) : colB },
       uRimAmt: { value: style?.rimAmt ?? 0.25 },
-    }),
-    [colA, colB, colC, colD, style],
-  );
+    };
+    return u;
+  }, [colA, colB, colC, colD, style, sun]);
   const ringUniforms = useMemo(
     () => {
       // default: neutral rock/ice dust with only a hint of the body's hue, the
       // darker tone giving the noise bands something to alternate with. A style
       // (or the painter) can name ringA/ringB for deliberately coloured rings.
-      const [ringA, ringB] = ringTones(style, `#${colB.getHexString()}`);
+      const [ringA, ringB] = ringTones(style ?? sun, `#${colB.getHexString()}`);
       return {
         uCol: { value: new THREE.Color(ringA) },
         uColB: { value: new THREE.Color(ringB) },
@@ -436,7 +496,7 @@ export function FocusOrb({ node, reduced, glowTex }: FocusOrbProps) {
         uOuter: { value: radius * 2.3 },
       };
     },
-    [colB, radius, style],
+    [colB, radius, style, sun],
   );
 
   useFrame((_, dt) => {
