@@ -36,6 +36,7 @@ export function SkillsGalaxy() {
   const frameRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(false);
   const [visible, setVisible] = useState(false);
+  const [helpOpen, setHelpOpen] = useState(false);
   const reduced = usePrefersReducedMotion();
   const tier = useGPUTier();
 
@@ -119,14 +120,56 @@ export function SkillsGalaxy() {
           style={{ height: "min(78vh, 860px)", minHeight: 460 }}
         >
           {/* window chrome */}
-          <div className="pointer-events-none absolute inset-x-0 top-0 z-20 flex items-center justify-between border-b border-white/[0.06] bg-[rgba(7,7,9,0.6)] px-4 py-2.5 backdrop-blur-sm">
+          <div className="pointer-events-none absolute inset-x-0 top-0 z-20 flex items-center justify-between gap-3 border-b border-white/[0.06] bg-[rgba(7,7,9,0.6)] px-4 py-2.5 backdrop-blur-sm">
             <p className="font-mono text-[10px] tracking-[0.18em] text-fg/45 md:text-[11px]">
               ~/skills-galaxy · {GALAXY_NODES.length} stars · {GALAXY_EDGES.length} links
             </p>
-            <p className="font-mono text-[10px] tracking-[0.18em] text-fg/45 md:text-[11px]">
-              {active ? "drag to orbit · scroll to zoom · esc to exit" : "click a star to explore"}
-            </p>
+            <div className="flex items-center gap-4">
+              <p className="hidden font-mono text-[10px] tracking-[0.18em] text-fg/45 sm:block md:text-[11px]">
+                {active ? "drag to orbit · scroll to zoom · esc to exit" : "click a star to explore"}
+              </p>
+              {active && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    // must not read as a star click or a frame activation
+                    e.stopPropagation();
+                    window.dispatchEvent(new CustomEvent("galaxy:recentre"));
+                  }}
+                  className="pointer-events-auto cursor-pointer whitespace-nowrap rounded border border-white/15 px-2 py-0.5 font-mono text-[10px] tracking-[0.18em] text-fg/60 transition-colors hover:border-white/30 hover:text-fg md:text-[11px]"
+                >
+                  ↺ re-centre
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={(e) => { e.stopPropagation(); setHelpOpen((v) => !v); }}
+                aria-label="How to navigate the galaxy"
+                className="pointer-events-auto cursor-pointer rounded-full border border-white/15 px-2 py-0.5 font-mono text-[10px] text-fg/50 transition-colors hover:border-white/30 hover:text-fg md:text-[11px]"
+              >
+                ?
+              </button>
+            </div>
           </div>
+
+          {/* controls legend — drops from the chrome bar, clear of the canvas
+              centre where halo labels roam (no em dashes: house rule) */}
+          {helpOpen && (
+            <div
+              className="absolute right-3 top-12 z-20 w-64 rounded-lg border border-white/15 bg-[rgba(7,7,9,0.85)] p-3 font-mono text-[10px] leading-relaxed tracking-[0.08em] text-fg/70 backdrop-blur-sm"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="mb-1.5 flex items-center justify-between">
+                <span className="tracking-[0.15em] text-fg/45">how to explore</span>
+                <button type="button" className="cursor-pointer text-fg/50 hover:text-fg" onClick={() => setHelpOpen(false)}>×</button>
+              </div>
+              <p>click any star or its label to fly to it</p>
+              <p>click another star to travel between them</p>
+              <p>drag to orbit · scroll to zoom</p>
+              <p>esc or click empty space to zoom back out</p>
+              <p>↺ re-centre returns to the start view</p>
+            </div>
+          )}
 
           <GalaxyCanvas active={active} visible={visible} reduced={reduced} tier={tier} />
 

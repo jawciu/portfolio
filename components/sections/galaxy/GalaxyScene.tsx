@@ -70,14 +70,17 @@ const STAR_VERT = /* glsl */ `
   attribute float aPhase;
   attribute float aDim;
   attribute float aBoost;
+  attribute float aReveal; // 0 = always visible; >0 = zoom-reveal threshold
   uniform float uPx;
   varying vec3 vTint;
   varying float vPhase;
   varying float vDim;
+  varying float vReveal;
   void main() {
     vTint = aTint;
     vPhase = aPhase;
     vDim = aDim;
+    vReveal = aReveal;
     vec4 mv = modelViewMatrix * vec4(position, 1.0);
     gl_PointSize = aSize * aBoost * uPx / -mv.z;
     gl_Position = projectionMatrix * mv;
@@ -88,9 +91,11 @@ const STAR_FRAG = /* glsl */ `
   uniform float uTime;
   uniform float uTwinkle;
   uniform float uTintMix;
+  uniform float uReveal; // 0 at the home view → 1 fully zoomed in
   varying vec3 vTint;
   varying float vPhase;
   varying float vDim;
+  varying float vReveal;
   void main() {
     vec2 uv = gl_PointCoord * 2.0 - 1.0;
     float d = length(uv);
@@ -101,6 +106,11 @@ const STAR_FRAG = /* glsl */ `
                 + max(0.0, 1.0 - abs(uv.y) * 6.0) * max(0.0, 1.0 - abs(uv.x) * 1.5);
     float tw = 1.0 + uTwinkle * 0.22 * sin(uTime * (1.1 + vPhase * 1.9) + vPhase * 40.0);
     float i = (core + spike * 0.42) * tw;
+    // zoom-reveal stars fade in one by one as uReveal climbs past their
+    // threshold — geometries without an aReveal attribute read 0 (GL default)
+    // and are untouched, so the home view stays byte-identical
+    float reveal = vReveal <= 0.0 ? 1.0 : smoothstep(vReveal - 0.22, vReveal, uReveal);
+    i *= reveal;
     vec3 col = mix(vec3(1.0), vTint, uTintMix);
     gl_FragColor = vec4(col * i, i * (1.0 - vDim * 0.85));
   }
@@ -326,7 +336,12 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
 
   // ── decorative background stars (never raycast) ───────────────────
   const bgGeom = useMemo(() => {
-    const count = tier < 2 ? 260 : 700;
+    // base population (always visible) + a zoom-reveal population that fades
+    // in star by star as the camera closes in from the home view — depth as
+    // a reward for exploring, without changing the load view at all
+    const base = tier < 2 ? 260 : 700;
+    const extra = tier < 2 ? 200 : 520;
+    const count = base + extra;
     const rand = (s => () => ((s = (s * 16807) % 2147483647), s / 2147483647))(48271);
     const pos = new Float32Array(count * 3);
     const sizes = new Float32Array(count);
@@ -334,18 +349,27 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
     const phases = new Float32Array(count);
     const dims = new Float32Array(count);
     const boosts = new Float32Array(count).fill(1);
+    const reveals = new Float32Array(count); // 0 for base stars
     const palette = ["#ffffff", "#cfe0ff", "#ffe9c4", "#7de3ff", "#ff8ab8", "#ffd166"].map(h => new THREE.Color(h));
     for (let i = 0; i < count; i++) {
-      const r = 26 + rand() * 30;
+      const isReveal = i >= base;
+      // reveal stars sit a little closer so the field gains depth, not just count
+      const r = (isReveal ? 20 + rand() * 26 : 26 + rand() * 30);
       const theta = rand() * Math.PI * 2;
       const z = rand() * 2 - 1;
       const s = Math.sqrt(1 - z * z);
       pos.set([r * s * Math.cos(theta), r * z * 0.7, r * s * Math.sin(theta)], i * 3);
-      sizes[i] = 0.1 + rand() * 0.16;
+      sizes[i] = (isReveal ? 0.07 : 0.1) + rand() * (isReveal ? 0.11 : 0.16);
       // skew toward the white end so colour stays an accent, not confetti
       const c = palette[Math.floor(Math.pow(rand(), 1.6) * palette.length)];
       tints.set([c.r, c.g, c.b], i * 3);
       phases[i] = rand();
+      // staggered thresholds: the first arrive early in the zoom, the last
+      // only near full zoom — a gradual thickening, never a pop. Floor 0.22
+      // matches the shader's fade band width, so at uReveal = 0 every reveal
+      // star is FULLY dark (the evaluator caught 46 pre-lit stars when the
+      // floor sat below the band).
+      if (isReveal) reveals[i] = 0.22 + rand() * 0.78;
     }
     const g = new THREE.BufferGeometry();
     g.setAttribute("position", new THREE.BufferAttribute(pos, 3));
@@ -354,6 +378,7 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
     g.setAttribute("aPhase", new THREE.BufferAttribute(phases, 1));
     g.setAttribute("aDim", new THREE.BufferAttribute(dims, 1));
     g.setAttribute("aBoost", new THREE.BufferAttribute(boosts, 1));
+    g.setAttribute("aReveal", new THREE.BufferAttribute(reveals, 1));
     return g;
   }, [tier]);
 
@@ -750,6 +775,15 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
     }
   }, [unfocusSignal, focus]);
 
+  // Re-centre button (frame chrome, SkillsGalaxy) → back to the load view.
+  // focus(null) flies HOME_CAM/HOME_TARGET even when nothing is focused, so
+  // it also rescues a user who just orbited/zoomed themselves lost.
+  useEffect(() => {
+    const fn = () => focus(null);
+    window.addEventListener("galaxy:recentre", fn);
+    return () => window.removeEventListener("galaxy:recentre", fn);
+  }, [focus]);
+
   useEffect(() => () => {
     gsap.killTweensOf(camera.position);
     gsap.killTweensOf(flightProg.current);
@@ -770,6 +804,8 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
 
   // ── per-frame work ────────────────────────────────────────────────
   const driftSpeed = useRef(0);
+  /** damped 0→1 zoom-reveal level for the extra background stars */
+  const revealCur = useRef(0);
   /** dev probe only: lets headless checks see whether the loop is ticking */
   const frameCount = useRef(0);
   useFrame((_, dt) => {
@@ -870,11 +906,33 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
     }
     if (eMoved) eAttr.needsUpdate = true;
 
+    // zoom-reveal: exploring in from the home view (camera ≈18.6 out) fades
+    // extra background stars in one by one — full field by ~9 world units.
+    // Gated to free wandering only: no focus AND no camera tween in flight
+    // (the fly-home tween passes through "close + unfocused", which would
+    // flash the reveal population for the duration of the flight — the
+    // evaluator caught the mechanism). Damped so it breathes, never pops.
+    {
+      const camDist = camera.position.distanceTo(HOME_TARGET);
+      const wandering = focused === null && !gsap.isTweening(camera.position);
+      const zoomT = wandering ? THREE.MathUtils.clamp((17.5 - camDist) / 8.5, 0, 1) : 0;
+      revealCur.current += (zoomT - revealCur.current) * (reduced ? 1 : 1 - Math.exp(-3 * dt));
+      if (bgMatRef.current) bgMatRef.current.uniforms.uReveal.value = revealCur.current;
+    }
+
     // edge clip disc tracks the focused close-up body in screen space
     // (device px, gl_FragCoord origin = bottom-left; 0 radius releases it)
     const em = edgeMatRef.current;
     if (em && groupRef.current) {
       if (focused !== null) {
+        // FRESH matrices, not last frame's: group rotation (drift) and camera
+        // motion (orbit/zoom) otherwise put the clip disc one frame behind the
+        // body — at low fps that read as a dark circle dragging behind the
+        // planet (Caroline's report). matrixWorldInverse must be rebuilt by
+        // hand; only the renderer refreshes it, and that happens after us.
+        groupRef.current.updateWorldMatrix(true, false);
+        camera.updateMatrixWorld();
+        camera.matrixWorldInverse.copy(camera.matrixWorld).invert();
         clipV.set(livePos[focused * 3], livePos[focused * 3 + 1], livePos[focused * 3 + 2]);
         groupRef.current.localToWorld(clipV);
         const dpr = gl.getPixelRatio();
@@ -996,7 +1054,7 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
   // drei Html (so they compose with drei's own per-frame transform), written
   // directly to the DOM — no React state in the hot path.
   const labelElsRef = useRef(new Map<number, HTMLDivElement>());
-  const labelDyRef = useRef(new Map<number, { cur: number; target: number }>());
+  const labelDyRef = useRef(new Map<number, { cur: number; target: number; fade: number }>());
   useFrame((_, dt) => {
     const group = groupRef.current;
     if (!group) return;
@@ -1051,20 +1109,32 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
     const seen = new Set<number>();
     for (const r of movables) {
       seen.add(r.idx);
-      // tight cap first; the loose cap only rescues crowded pockets where the
-      // widest labels (e.g. "human-in-the-loop design") can't clear at ±28
+      // tight cap first; looser caps only rescue crowded pockets — the 64px
+      // tier exists because after an orbit a halo label can land dead-centre
+      // on the ~86px-tall focused block, where ±44 can't clear it and the
+      // focused text became unreadable (evaluator's find)
       const dy =
         solve(r, 1, MAX_PUSH) ?? solve(r, -1, MAX_PUSH) ??
-        solve(r, 1, 44) ?? solve(r, -1, 44) ?? 0; // all capped → accept the rare overlap
+        solve(r, 1, 44) ?? solve(r, -1, 44) ??
+        solve(r, 1, 64) ?? solve(r, -1, 64) ?? 0; // all capped → accept the rare overlap
       r.y += dy;
       placed.push(r);
-      const e = labelDyRef.current.get(r.idx) ?? { cur: 0, target: 0 };
+      // a label that STILL sits on the focused/hover text after every rescue
+      // tier yields: it fades out until orbiting frees a slot again. The
+      // focused block is the hero; nothing may render over it.
+      const clashes = obstacles.some((q) => overlap(r, q));
+      const e = labelDyRef.current.get(r.idx) ?? { cur: 0, target: 0, fade: 1 };
       // hysteresis: sub-2px target churn (orbit micro-jitter) doesn't re-shuffle
       if (Math.abs(dy - e.target) > 1.5) e.target = dy;
-      e.cur = reduced ? e.target : e.cur + (e.target - e.cur) * (1 - Math.exp(-10 * dt));
+      const k2 = reduced ? 1 : 1 - Math.exp(-10 * dt);
+      e.cur = reduced ? e.target : e.cur + (e.target - e.cur) * k2;
+      e.fade += ((clashes ? 0 : 1) - e.fade) * (reduced ? 1 : 1 - Math.exp(-6 * dt));
       labelDyRef.current.set(r.idx, e);
       const el = labelElsRef.current.get(r.idx);
-      if (el) el.style.transform = `translateY(${e.cur.toFixed(1)}px)`;
+      if (el) {
+        el.style.transform = `translateY(${e.cur.toFixed(1)}px)`;
+        el.style.opacity = e.fade.toFixed(2);
+      }
     }
     // labels that left the movable set (refocus, hover change) drop their state
     for (const idx of labelDyRef.current.keys()) if (!seen.has(idx)) labelDyRef.current.delete(idx);
@@ -1126,6 +1196,7 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
                 uTwinkle: { value: reduced ? 0 : 0.5 },
                 uTintMix: { value: 0.9 },
                 uPx: { value: 800 },
+                uReveal: { value: 0 },
               }}
             />
           </points>
@@ -1182,6 +1253,7 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
               uTwinkle: { value: reduced ? 0 : 1 },
               uTintMix: { value: 0.55 },
               uPx: { value: 800 },
+              uReveal: { value: 0 },
             }}
           />
         </points>
@@ -1200,6 +1272,7 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
               uTwinkle: { value: reduced ? 0 : 0.6 },
               uTintMix: { value: 0.6 },
               uPx: { value: 800 },
+              uReveal: { value: 0 },
             }}
           />
         </points>

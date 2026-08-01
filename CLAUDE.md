@@ -282,16 +282,23 @@ cards, element-screenshot. Delete the temp script after.
 **HAND-PAINTED REGISTRY — keep this current.** Caroline hand-tunes bodies via the painter and
 the values get baked; she needs to know later which bodies are hers vs hash-derived. When baking
 a patch, add the id here (and keep the dated comment in FocusOrb).
-- Planets: eon (v3 pink-rose) · cog (green, v3) · cog-clinic · ai-design-system (v2 indigo/mint) ·
-  wiki-whisperer (+ lilac rings) · vector (v2 apricot/orchid) · burberry · julien-macdonald
-  (JULIEN_STYLE, still cloned to usability-testing + context-switching + organisation) ·
-  zero-to-one (diverged: plum-violet) · product-work (diverged: rose-pink) · gateway ·
-  call-analytics · perf-insights (those three: her paint over the hashed ice base, rings frozen on)
-- Suns: team-leadership · design-systems (v2 green/gold flare) · ai-agents (v2 green, flare
-  killed) · design-engineering · cross-functional · prioritisation · navigating-ambiguity ·
-  context-design · tool-design · tokens-in-code · building-with-agents · plan-first ·
-  roadmapping · dense-data-ui · user-interviews · ux-writing · visual-craft (rings only) ·
-  ~~product-work~~ (now a diverged planet)
+- Planets: eon (v3 pink-rose) · cog (green, v3) · cog-clinic (v2 mint/gold clouds) ·
+  ai-design-system (v2 indigo/mint) · wiki-whisperer (v2 periwinkle/violet) · vector (v2
+  apricot/orchid) · burberry (v2 orange/lemon) · julien-macdonald (v2 striped teal/plum, own
+  entry now — JULIEN_STYLE const is used by context-switching ONLY) · zero-to-one (v2
+  blush/electric-blue) · product-work (v2 magenta/gold) · usability-testing (pure-band stripes) ·
+  organisation (diverged: teal/white stripes) · gateway · call-analytics (v2) · perf-insights ·
+  eon-ds (EON_DS_STYLE gold/amber, cloned to the nextjs skill-as-planet) · cog-website · cog-ds ·
+  mary · casablanca · consultancy · brainstation · mcqueen · pilotto (the six jobs, 2026-08-01 pm)
+- Suns: team-leadership · design-systems (v2 green/gold flare) · ai-agents (v3 teal/periwinkle) ·
+  design-engineering · cross-functional · prioritisation · navigating-ambiguity · context-design ·
+  tool-design · tokens-in-code · building-with-agents · agent-workflows (soft only — her patch was
+  labelled "agent team workflows" but carried building-with-agents' id; applied to the labelled
+  node) · plan-first · roadmapping · dense-data-ui · user-interviews (v2) · ux-writing ·
+  information-arch · figma-advanced · brand-identity · webflow · art-direction · empathy ·
+  prototyping · success-tracking · visual-craft (v2 full repaint + rings) · mentoring ·
+  print-design · logo-design · communication ·
+  ~~product-work~~ ~~nextjs~~ (both render as planets now)
 - Everything else renders from cluster palettes / hashed style tables — not hand-touched.
 
 ### 2026-08-01 — HANDOFF: galaxy labels, dead shader dials, graph expansion. All COMMITTED on `skills-galaxy` (`c11ea5c`), NOT pushed.

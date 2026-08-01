@@ -253,6 +253,9 @@ const MOON: PlanetStyle = { a: "#2e2e34", b: "#8f8f96", c: "#c4c4cc", d: "#1c1c2
 // lanes, a warm cream rim and rust ring rock. Always ringed, like its base.
 // NOTE: `e` is set with no `eAmt`, so the mottle colour never renders — that
 // is exactly the surface she painted and approved, so it is baked as-is.
+// As of 2026-08-01 pm (batch 3) the ONLY node still wearing this is
+// `context-switching` — julien-macdonald and organisation were each painted
+// off it into their own literal entries. Kept as a const for that one user.
 const JULIEN_STYLE: PlanetStyle = {
   a: "#721d53", b: "#dec7a1", c: "#efe6cf", d: "#a86f61",
   bandFreq: 4.5, blotch: 0.7, cloud: 0.25, ring: 1,
@@ -271,7 +274,19 @@ const PLANET_SKILLS = new Set<string>([
   "zero-to-one",
   "context-switching",
   "organisation",
+  "nextjs", // wears EON_DS_STYLE, her call 2026-08-01: "make next.js the same"
 ]);
+
+// E.ON design system — painted 2026-08-01 pm over the io base: gold + cream
+// under an amber cloud deck, red lanes, magenta poles. Shared with nextjs.
+const EON_DS_STYLE: PlanetStyle = {
+  a: "#ffcc24", b: "#fff1e5", c: "#ff770f", d: "#ca3f3f",
+  bandFreq: 3.5, blotch: 1.4, cloud: 0.85, ring: 0,
+  e: "#c92626",
+  pole: "#b3004d", poleAmt: 0.5,
+  rim: "#fff6d1", rimAmt: 0.45,
+  soft: 5,
+};
 
 // Hand-tuned worlds for specific nodes (Caroline's reference photos) —
 // checked before the hash pick so these ids never reroll their planet.
@@ -329,58 +344,138 @@ const PLANET_OVERRIDES: Record<string, PlanetStyle> = {
     soft: 5,
   },
   // cog clinic — muted sea-green, over the sage world
+  // repainted 2026-08-01 pm (batch 3): bright aqua bands and a gold cloud
+  // deck lift the sea-green base out of the sage world it started from
   "cog-clinic": {
-    a: "#2d5349", b: "#88a59e", c: "#e0e4d4", d: "#2f381d",
-    bandFreq: 0.7, blotch: 2.0, cloud: 0.45, ring: 0,
+    a: "#2d5349", b: "#94ffe6", c: "#ffe08a", d: "#2f381d",
+    bandFreq: 0.7, blotch: 2.0, cloud: 1, ring: 0,
   },
-  // wiki whisperer — deep indigo with violet weather, over the jade world.
-  // Ringed, with deliberately lilac rings rather than the default neutral dust.
+  // wiki whisperer — repainted 2026-08-01 pm (v2): periwinkle + violet under
+  // full white-lilac cloud cover, hot pink lanes, periwinkle/orchid rings
   "wiki-whisperer": {
-    a: "#0e1462", b: "#b79edb", c: "#eae3ed", d: "#0e1735",
-    e: "#d08ddd", pole: "#270e35",
-    bandFreq: 0.8, blotch: 2.0, cloud: 0.5, ring: 1,
-    rim: "#b66bb8",
-    ringA: "#e0c6ef", ringB: "#6a4a86",
+    a: "#6970d3", b: "#a74bd2", c: "#f9ebff", d: "#ff70e0",
+    e: "#d08ddd", pole: "#5a1084",
+    bandFreq: 0.8, blotch: 1.5, cloud: 1, ring: 1,
+    rim: "#b66bb8", rimAmt: 0.6,
+    ringA: "#b1bdec", ringB: "#ea76d1",
+    soft: 4.25,
   },
   // burberry — trench camel over the Saturn giant, gold ring rock, no rim
+  // repainted 2026-08-01 pm (batch 3): hot orange base under lemon-cream
+  // bands and blush clouds, pale grey dust in the rings beside the gold rock
   burberry: {
-    a: "#93622a", b: "#bbad9b", c: "#efe6cf", d: "#a89060",
+    a: "#ff8800", b: "#f9ffa8", c: "#ffe5ee", d: "#a89060",
     eAmt: 0, speckle: 0, rimAmt: 0,
-    bandFreq: 4.5, blotch: 0.7, cloud: 0.1, ring: 1,
-    ringB: "#eebb63",
+    bandFreq: 4.5, blotch: 0.7, cloud: 0.9, ring: 1,
+    ringA: "#d2cbd2", ringB: "#eebb63",
   },
-  // julien macdonald — Caroline's repaint of the Saturn giant, 2026-08-01
-  "julien-macdonald": JULIEN_STYLE,
+  // julien macdonald — Caroline's repaint of the Saturn giant, 2026-08-01;
+  // given its own literal 2026-08-01 pm (batch 3) when she painted it away
+  // from the shared JULIEN_STYLE: plum base under mint-teal stripes at zero
+  // blotch/cloud (pure latitude bands), clay lanes, bone/rust rings
+  "julien-macdonald": {
+    a: "#721d53", b: "#a1ded7", c: "#efe6cf", d: "#e19784",
+    bandFreq: 8, blotch: 0, cloud: 0, ring: 1,
+    e: "#c48154",
+    rim: "#f8e9e2",
+    ringA: "#ceb8ab", ringB: "#b15d39",
+  },
   // The five skills she asked to wear the same look (see PLANET_SKILLS).
   // Identical on purpose; repaint any of them individually later.
-  "usability-testing": JULIEN_STYLE,
-  // product-work — painted 2026-08-01 pm, diverged from its JULIEN_STYLE
-  // clone: rose-pink bands on the plum base, blush clouds and mottle, rose
-  // poles, dark plum ring rock. Inherits a/ring/rim from JULIEN_STYLE.
+  // usability-testing — diverged from JULIEN 2026-08-01 pm: heavy banding
+  // at zero blotch/cloud (pure latitude stripes), rose base, sand bands,
+  // orchid/gold rings
+  "usability-testing": {
+    a: "#d87db7", b: "#eed0a0", c: "#efe6cf", d: "#bd7765",
+    bandFreq: 8, blotch: 0, cloud: 0, ring: 1,
+    e: "#f4904e",
+    rim: "#f8e9e2",
+    ringA: "#c280ba", ringB: "#e7c274",
+  },
+  // product-work — repainted 2026-08-01 pm (v2): magenta depths, blush bands,
+  // gold clouds, apricot lanes, sand/teal rings
   "product-work": {
-    a: "#721d53", b: "#ee91a3", c: "#f2dad4", d: "#d7907e",
-    bandFreq: 7, blotch: 2.6, cloud: 0.65, ring: 1,
-    e: "#f1cad4", eAmt: 0.55,
+    a: "#9f1d69", b: "#ea869a", c: "#ffdfa8", d: "#f09947",
+    bandFreq: 7, blotch: 2.6, cloud: 0.6, ring: 1,
+    e: "#caf1d6", eAmt: 0.55,
     pole: "#db7584", poleAmt: 0.25,
     speckle: 0,
     rim: "#f8e9e2",
-    ringB: "#6a2f6f",
+    ringA: "#eac39f", ringB: "#238b71",
     soft: 3,
   },
-  // zero-to-one — painted live 2026-08-01, diverged from its JULIEN_STYLE
-  // clone: plum-violet marble, peach lanes, copper ring rock. Untouched
-  // fields (ring, cream rim tint, no speckle) inherit from JULIEN_STYLE.
+  // zero-to-one — repainted 2026-08-01 pm (v2): blush shell over electric
+  // blue, pink clouds and lanes, heavy apricot mottle, slate/rose rings
   "zero-to-one": {
-    a: "#833466", b: "#7f69ce", c: "#d4b0b9", d: "#fbb99d",
-    bandFreq: 0, blotch: 1.2, cloud: 0.35, ring: 1,
-    e: "#d4a98c", eAmt: 0.25,
+    a: "#f0d1d1", b: "#0f6dd2", c: "#ffccd9", d: "#ff9e9e",
+    bandFreq: 0, blotch: 1.2, cloud: 0.65, ring: 1,
+    e: "#ffa385", eAmt: 0.75,
     poleAmt: 0.05,
-    rim: "#f8e9e2", rimAmt: 0.35,
-    ringB: "#d6764c",
+    rim: "#f8e9e2", rimAmt: 0.55,
+    ringA: "#9792bf", ringB: "#ffadad",
     soft: 3,
   },
   "context-switching": JULIEN_STYLE,
-  organisation: JULIEN_STYLE,
+  // organisation — own literal 2026-08-01 pm (batch 3), painted off the shared
+  // JULIEN_STYLE: teal base under near-white bands, sea-green lanes, teal rock
+  organisation: {
+    a: "#007694", b: "#edffe0", c: "#fafffa", d: "#61a88d",
+    bandFreq: 8, blotch: 0, cloud: 0, ring: 1,
+    e: "#c48154",
+    rim: "#f8e9e2",
+    ringB: "#1fa1a3",
+  },
+  // Fashion-era jobs + the teaching/consulting years, painted 2026-08-01 pm
+  // (batch 3). Ring values are frozen to each node's hashed outcome so a
+  // roster change can never re-roll them.
+  // mary katrantzou — deep royal blue with periwinkle bands, pink cloud
+  // veils and a strong jade atmosphere rim
+  mary: {
+    a: "#0a21b8", b: "#8091ff", c: "#ffbdf9", d: "#0a1240",
+    bandFreq: 4, blotch: 0.6, cloud: 1, ring: 0,
+    rim: "#3dc29a", rimAmt: 1.05,
+  },
+  // casablanca — striped azure and mint-green at zero blotch/cloud, sea-green
+  // mottle, blue-grey/mint rings, very soft surface
+  casablanca: {
+    a: "#0d65d9", b: "#d3ffd1", c: "#9cd3a7", d: "#61a887",
+    bandFreq: 8, blotch: 0, cloud: 0, ring: 1,
+    e: "#399d77",
+    ringA: "#859cc1", ringB: "#c8f9d5",
+    soft: 3.35,
+  },
+  // consultancy — rose base under gold bands and pale butter clouds, pink
+  // rim and hot-pink ring rock
+  consultancy: {
+    a: "#e878a8", b: "#ffe070", c: "#fff3a3", d: "#a89060",
+    bandFreq: 8, blotch: 0, cloud: 0, ring: 1,
+    rim: "#ffd6f4", rimAmt: 0.6,
+    ringB: "#ff99e9",
+    soft: 3.7,
+  },
+  // brainstation — the lavender giant kept, repainted with sky-blue bands,
+  // mint clouds, a cyan rim and sage/steel rings
+  brainstation: {
+    a: "#5f4fa8", b: "#a3d7ff", c: "#d6ffe0", d: "#3d3270",
+    bandFreq: 3.5, blotch: 0.8, cloud: 0.65, ring: 1,
+    rim: "#a8fffe", rimAmt: 0.6,
+    ringA: "#9ed6d0", ringB: "#3e92bb",
+  },
+  // mcqueen — orchid base under peach bands, terracotta clouds, unringed
+  mcqueen: {
+    a: "#db7bbc", b: "#ffd5b3", c: "#f2b797", d: "#e594d0",
+    bandFreq: 8, blotch: 0, cloud: 0, ring: 0,
+    eAmt: 0,
+    soft: 1.85,
+  },
+  // peter pilotto — orchid-pink base striped with sand and cream, amber
+  // lanes, magenta ring rock
+  pilotto: {
+    a: "#f08ede", b: "#ddc89f", c: "#efe6cf", d: "#f4be52",
+    bandFreq: 8, blotch: 0, cloud: 0, ring: 1,
+    e: "#fff8eb",
+    ringB: "#e67ac9",
+  },
   // Painted 2026-08-01 pm — all three hash to the ICE marble and rolled
   // ringed; ring: 1 freezes that so a roster change can never unring them.
   // Unpatched fields inherit the ice base. e without eAmt is inert.
@@ -392,14 +487,14 @@ const PLANET_OVERRIDES: Record<string, PlanetStyle> = {
     ringB: "#ca8849",
     soft: 3.75,
   },
-  // call-analytics — midnight indigo + periwinkle, rose lanes, heavy clouds,
-  // her own ring pair (silver dust / cobalt rock)
+  // call-analytics — repainted 2026-08-01 pm (v2): indigo + periwinkle under
+  // near-white heavy clouds, coral lanes, peach mottle, rose rim, orchid/sky rings
   "call-analytics": {
-    a: "#1b1660", b: "#7d7cdf", c: "#e1c3bc", d: "#df8186",
-    bandFreq: 0.7, blotch: 2.2, cloud: 0.7, ring: 1,
-    e: "#c77a33",
-    rim: "#bac1f2",
-    ringA: "#b2b2d7", ringB: "#4257ae",
+    a: "#352f83", b: "#aaa8ff", c: "#fff7f5", d: "#ff949f",
+    bandFreq: 0.7, blotch: 1.1, cloud: 0.85, ring: 1,
+    e: "#ffd0a3", eAmt: 0.45,
+    rim: "#ffbdea",
+    ringA: "#e6c7e0", ringB: "#6cb2d5",
     soft: 4.65,
   },
   // perf-insights — mint-white weather at full cloud over the ice base,
@@ -410,6 +505,31 @@ const PLANET_OVERRIDES: Record<string, PlanetStyle> = {
     ringA: "#a9bcaf", ringB: "#d75842",
     rimAmt: 0.4,
     soft: 5,
+  },
+  // painted 2026-08-01 pm over their hashed bases (all unringed by hash,
+  // matching the patches). e-without-eAmt entries are inert, as painted.
+  "eon-ds": EON_DS_STYLE,
+  nextjs: EON_DS_STYLE, // deliberate clone of eon-ds, her ask
+  // cogadhd.com — tangerine + peach under forest-green clouds, mint lanes,
+  // orange poles, speckled
+  "cog-website": {
+    a: "#f79336", b: "#ffd79e", c: "#418151", d: "#b0e3b9",
+    bandFreq: 4.75, blotch: 2.7, cloud: 0.2, ring: 0,
+    e: "#b0deaf",
+    pole: "#ff9029", poleAmt: 0.3,
+    speckle: 0.45,
+    rim: "#fff9e0", rimAmt: 0.5,
+    soft: 3.9,
+  },
+  // Cog design system — violet depths, full teal-mint cloud cover, steel-blue
+  // lanes, orchid mottle at full strength
+  "cog-ds": {
+    a: "#6e12ca", b: "#24c6a6", c: "#ccf5d4", d: "#28779f",
+    bandFreq: 0.6, blotch: 2.4, cloud: 1, ring: 0,
+    e: "#e774c2", eAmt: 1,
+    speckle: 0,
+    rim: "#dbfff9", rimAmt: 0.4,
+    soft: 2.6,
   },
 };
 
@@ -440,29 +560,52 @@ const DEFAULT_PLANET_SOFT = 3;
 const SUN_OVERRIDES: Record<string, Partial<SunStyle>> = {
   // (product-work's green sun was removed 2026-08-01 — it renders as a
   // Julien Macdonald planet now, so a sun override would never be read)
-  // visual craft — the one skill star Caroline wants wearing rings
-  "visual-craft": { ring: 1, ringA: "#f2c9a4", ringB: "#8a4a2c" },
-  // painted live 2026-08-01
-  "team-leadership": { a: "#792a2a", b: "#dda6b4" },
+  // visual craft — repainted 2026-08-01 pm: magenta core, fine granulation,
+  // brighter flare, blush/cream rings
+  "visual-craft": { a: "#a72a80", gran: 9, turb: 1.2, flareAmt: 1.15, glow: 1.45, soft: 2.2, ring: 1, ringA: "#ffc7c7", ringB: "#fff7d1" },
+  // painted live 2026-08-01, softened 2026-08-01 pm (batch 3)
+  "team-leadership": { a: "#792a2a", b: "#dda6b4", soft: 0.85 },
   // design-systems + ai-agents repainted 2026-08-01 pm (ai-agents: flareAmt 0
   // kills the purple wash she couldn't place — the green base reads now)
   "design-systems": { a: "#0a8a52", b: "#b39fc1", flare: "#feffcc", gran: 7.75, turb: 1.45, flareAmt: 1, soft: 5 },
-  "ai-agents": { a: "#1a7a5d", b: "#e3d4f7", flare: "#8de8e6", gran: 2, turb: 0.8, flareAmt: 0, glow: 0.6, soft: 4.2 },
-  "design-engineering": { a: "#201a7a", b: "#8a9eb7", flare: "#764c4c", gran: 4.25 },
-  "cross-functional": { a: "#e1dbdd", b: "#d25189", flare: "#e0d4cd", gran: 1.75, turb: 1.6 },
-  "prioritisation": { a: "#f5c7d8", b: "#ff8a8a", flare: "#ff0066", glow: 1.45, flareAmt: 1.85, turb: 1.75, gran: 4 },
+  // ai-agents v3 2026-08-01 pm: teal deep, periwinkle lift, crisp fine boil
+  "ai-agents": { a: "#116364", b: "#b4b3ff", flare: "#8de8e6", gran: 8.25, turb: 1.65, flareAmt: 1.05, glow: 0.75, soft: 1.05 },
+  "design-engineering": { a: "#201a7a", b: "#8a9eb7", flare: "#764c4c", gran: 4.25, soft: 0.85 },
+  // cross-functional + prioritisation softened 2026-08-01 pm (batch 3)
+  "cross-functional": { a: "#e1dbdd", b: "#d25189", flare: "#e0d4cd", gran: 1.75, turb: 1.6, soft: 0.75 },
+  "prioritisation": { a: "#f5c7d8", b: "#ff8a8a", flare: "#ff0066", glow: 1.45, flareAmt: 1.85, turb: 1.75, gran: 4, soft: 0.55 },
   // no "a": keeps the leadership cluster's deep tone underneath
   "navigating-ambiguity": { b: "#d095ad", gran: 9.25 },
   "context-design": { a: "#982ba6", b: "#c3af83", gran: 2, turb: 0.8, flareAmt: 1.5, flare: "#ffaca3" },
   "tool-design": { a: "#12229b", b: "#b493e1", gran: 9.25, glow: 1.7 },
   "tokens-in-code": { a: "#341a7a", b: "#85c0d1", flare: "#92c5d3", glow: 1, gran: 2.75 },
-  "building-with-agents": { a: "#21103c", b: "#b38fe5", flare: "#bc7bae", gran: 5.5, turb: 1.65, flareAmt: 1.25, glow: 0.95 },
-  "plan-first": { a: "#9a24b2", flareAmt: 0.75, soft: 2.65 },
+  "building-with-agents": { a: "#21103c", b: "#b38fe5", flare: "#bc7bae", gran: 5.5, turb: 1.65, flareAmt: 1.25, glow: 0.95, soft: 1.25 },
+  // agent-workflows: her patch was LABELLED "agent team workflows" but carried
+  // building-with-agents' id (a copy slip) — applied to the labelled node
+  "agent-workflows": { soft: 1.25 },
+  "plan-first": { a: "#9a24b2", flareAmt: 0.75, soft: 0.8, glow: 1.35 },
   roadmapping: { a: "#7a1010", b: "#ffd166", flare: "#ffffff", soft: 5 },
   // painted 2026-08-01 pm
   "dense-data-ui": { a: "#9597d0", b: "#ffebe0", turb: 1.9, flareAmt: 0.7, glow: 0.9, soft: 5 },
-  "user-interviews": { a: "#cb438c", b: "#ffe68a", flare: "#dd4ba7", gran: 1, turb: 0, flareAmt: 0.55, glow: 1.35, soft: 5 },
+  // user-interviews v2 2026-08-01 pm: same pink/gold, coarser boil, pink flare
+  "user-interviews": { a: "#cb438c", b: "#ffe68a", flare: "#f094ce", gran: 3, turb: 0, flareAmt: 0.9, glow: 1.3, soft: 1.35 },
   "ux-writing": { b: "#b07d7d", gran: 1.5, turb: 0.2, flareAmt: 0.4, glow: 2.25, soft: 3.8 },
+  // painted 2026-08-01 pm (batch 2)
+  "information-arch": { gran: 5.5, turb: 1.6, glow: 1.35, soft: 1.9 },
+  "figma-advanced": { soft: 0.7 },
+  "brand-identity": { a: "#2a43a7", b: "#259193", flare: "#ff6ba6", gran: 2.75, turb: 1.2, flareAmt: 0.6, glow: 1.85, soft: 0.85 },
+  webflow: { b: "#dbc7db", glow: 0.9, soft: 0.95 },
+  "art-direction": { a: "#cd32a4", b: "#ffd7c2", flare: "#ff8ad4", gran: 4.25, turb: 1.55, flareAmt: 0.55, glow: 1, soft: 1.25 },
+  empathy: { a: "#7a4724", b: "#e4a8f0", flare: "#ffc28a", gran: 7.5, glow: 1.35, soft: 0.85 },
+  prototyping: { soft: 0.9 },
+  "success-tracking": { a: "#7a1076", b: "#ffc380", flare: "#fff9eb", gran: 4.5, glow: 0.95, soft: 0.7 },
+  // painted 2026-08-01 pm (batch 3)
+  // communication — blush lift on the cluster's deep tone, very fine boil
+  communication: { b: "#ffcce0", gran: 10, turb: 1.6, flareAmt: 0.65, glow: 0.95, soft: 0.8 },
+  // mentoring — teal core under a warm pink lift, coarse quiet granulation
+  mentoring: { a: "#24707a", b: "#ffa8cb", gran: 3.25, turb: 0.55, soft: 0.75 },
+  "print-design": { a: "#992aa7", soft: 0.85 },
+  "logo-design": { a: "#2a5aa7", soft: 0.65 },
 };
 
 /** A sun's tones + dials: cluster palette, then any per-id override. */

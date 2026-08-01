@@ -74,18 +74,18 @@ Clusters: `design` · `research` · `ai` · `engineering` · `product` · `leade
 | yes  | zero-to-one       | design      | 0→1 product design       | 3    | yes      | cog vector gateway eon synapse portfolio user-interviews visual-craft brand-identity founding-autonomy context-switching navigating-ambiguity ownership |
 | yes  | design-systems    | design      | design systems           | 3    | yes      | ai-design-system cog-ds vector eon eon-ds cog figma-make-kit |
 | yes  | brand-identity    | design      | brand identity           | 2    | yes      | ai-design-system cog-website vector cog burberry casablanca julien-macdonald mcqueen consultancy mary pilotto eon design-systems moodboarding brand-guidelines logo-design |
-| yes  | visual-craft      | design      | visual craft             | 2    | yes      | burberry mcqueen casablanca brand-identity cog consultancy mary pilotto eon julien-macdonald brainstation art-direction motion-design print-design |
+| yes  | visual-craft      | design      | visual craft             | 2    | yes      | burberry mcqueen casablanca brand-identity cog consultancy mary pilotto eon julien-macdonald brainstation art-direction motion-design print-design eon-ds |
 | yes  | motion-design     | design      | motion design            | 1    |          | ai-design-system portfolio cog eon consultancy       |
 | yes  | dense-data-ui     | design      | dense-data UI            | 2    |          | performance-tools gateway vector perf-insights       |
-| yes  | accessibility     | design      | accessibility            | 1    |          | eon cog                                              |
+| yes  | accessibility     | design      | accessibility            | 1    |          | eon cog eon-ds                                       |
 | yes  | prototyping       | design      | prototyping              | 1    |          | eon cog figma-make-kit call-analytics live-help      |
-| yes  | figma-advanced    | design      | Figma, the deep end      | 2    |          | design-systems eon cog call-analytics figma-make-kit |
+| yes  | figma-advanced    | design      | Figma, the deep end      | 2    |          | design-systems eon cog call-analytics figma-make-kit eon-ds |
 | yes  | print-design      | design      | print & textile design   | 2    |          | burberry casablanca julien-macdonald mcqueen consultancy mary pilotto |
 | yes  | art-direction     | design      | art direction            | 1    |          | eon cog-website print-design consultancy             |
 | yes  | information-arch  | design      | information architecture | 1    |          | cog-website gateway                                  |
 | yes  | conversion-design | design      | conversion design        | 1    |          | cog-clinic subscription cog-website                  |
 | yes  | moodboarding      | design      | moodboarding             | 1    |          | cog casablanca mary                                  |
-| yes  | brand-guidelines  | design      | brand guidelines         | 1    |          | cog-ds ai-design-system                              |
+| yes  | brand-guidelines  | design      | brand guidelines         | 1    |          | cog-ds ai-design-system eon-ds                       |
 | yes  | logo-design       | design      | logo design              | 1    |          | cog cog-ds consultancy                               |
 | yes  | user-interviews   | research    | user interviews          | 2    |          | cog eon cog-clinic call-analytics gateway            |
 | yes  | usability-testing | research    | usability testing        | 1    |          | cog-clinic wiki-whisperer call-analytics             |
@@ -126,9 +126,9 @@ Clusters: `design` · `research` · `ai` · `engineering` · `product` · `leade
 | yes  | playwright        | engineering | Playwright testing       | 1    |          | vector portfolio                                     |
 | yes  | webhooks-crons    | engineering | webhooks & crons         | 1    |          | vector                                               |
 | yes  | webflow           | engineering | Webflow                  | 1    |          | cog-website                                          |
-| yes  | tokens-in-code    | engineering | design tokens in code    | 1    |          | design-systems tailwind typescript-react vector portfolio |
+| yes  | tokens-in-code    | engineering | design tokens in code    | 1    |          | design-systems tailwind typescript-react vector portfolio eon-ds |
 | yes  | product-work      | product     | product work             | 3    | yes      | usability-testing prototyping product-metrics user-interviews competitive-analysis cog eon success-tracking moderated-research desk-research |
-| yes  | success-tracking  | product     | success tracking         | 1    |          | cog eon                                              |
+| yes  | success-tracking  | product     | success tracking         | 1    |          | cog eon cog-clinic check-in daily-insights subscription self-help cog-website cog-ds wiki-whisperer gateway |
 | yes  | product-metrics   | product     | product metrics          | 2    |          | eon cog vector wiki-whisperer perf-insights performance-tools |
 | yes  | business-cases    | product     | business cases           | 1    |          | performance-tools                                    |
 | yes  | monetisation      | product     | monetisation             | 1    |          | subscription cog-clinic                              |
