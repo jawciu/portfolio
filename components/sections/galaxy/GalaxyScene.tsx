@@ -29,7 +29,7 @@ import * as THREE from "three";
 import gsap from "gsap";
 import { GALAXY_NODES, GALAXY_EDGES, type GalaxyNode } from "@/lib/galaxyData";
 import { layoutGalaxy } from "./layout";
-import { FocusOrb, orbExtent, orbKind } from "./FocusOrb";
+import { FocusOrb, orbExtent, orbKind, orbRadius } from "./FocusOrb";
 import { TUNING } from "./tuning";
 import { FOCUS_EVENT } from "./paint";
 
@@ -106,16 +106,31 @@ const STAR_FRAG = /* glsl */ `
 const EDGE_VERT = /* glsl */ `
   attribute float aAlpha;
   varying float vAlpha;
+  varying vec3 vLocal;
   void main() {
     vAlpha = aAlpha;
+    vLocal = position;
     gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
   }
 `;
 
 const EDGE_FRAG = /* glsl */ `
+  uniform vec3 uOrbPos; // focused node position, group-local
+  uniform float uOrbR;  // close-up body radius (0 = no focus, no clip)
   varying float vAlpha;
+  varying vec3 vLocal;
   void main() {
-    gl_FragColor = vec4(0.62, 0.78, 0.95, vAlpha);
+    // fade the line out at the focused body's surface — the halo sits in a
+    // camera-facing plane through the node, so edge segments near the centre
+    // genuinely pass IN FRONT of the sphere and depth testing can't hide
+    // them. Clipping by distance makes them emerge softly from the limb.
+    // band kept TIGHT (0.97r → 1.08r): the first cut faded out to 1.35r and
+    // the missing lines read as a black moat ringing the planet (Caroline).
+    // Lines now touch the limb and are fully lit a few px beyond it.
+    float clip = uOrbR > 0.0 ? smoothstep(uOrbR * 0.97, uOrbR * 1.08, length(vLocal - uOrbPos)) : 1.0;
+    // base colour dropped from 0.62/0.78/0.95 (Caroline: a touch darker,
+    // softer on the eye — same hue, ~18% less additive energy)
+    gl_FragColor = vec4(0.51, 0.64, 0.78, vAlpha * clip);
   }
 `;
 
@@ -242,6 +257,7 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
   const groupRef = useRef<THREE.Group>(null);
   const dustRef = useRef<THREE.Group>(null);
   const starMatRef = useRef<THREE.ShaderMaterial>(null);
+  const edgeMatRef = useRef<THREE.ShaderMaterial>(null);
   const bgMatRef = useRef<THREE.ShaderMaterial>(null);
   const dustMatRef = useRef<THREE.ShaderMaterial>(null);
   const nebulaMatRef = useRef<THREE.ShaderMaterial>(null);
@@ -249,6 +265,24 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
   const [hovered, setHovered] = useState<number | null>(null);
   const [focused, setFocused] = useState<number | null>(null);
   useCursor(hovered !== null);
+
+  // Drag guard for STAR clicks (the canvas-level missGuard only protects the
+  // empty-space unfocus path): with a 0.6-world pick threshold over 130 stars
+  // almost every orbit drag both starts and ends "on" the points cloud, so
+  // R3F synthesised a click at release and the view hopped to whichever star
+  // sat under the pointer (Caroline's bf found it). Track where the pointer
+  // went down on the canvas and ignore clicks that travelled > 8px.
+  const dragStart = useRef<[number, number] | null>(null);
+  useEffect(() => {
+    const el = gl.domElement;
+    const down = (e: PointerEvent) => { dragStart.current = [e.clientX, e.clientY]; };
+    el.addEventListener("pointerdown", down);
+    return () => el.removeEventListener("pointerdown", down);
+  }, [gl]);
+  const isDrag = (e: { clientX: number; clientY: number }) => {
+    const d = dragStart.current;
+    return d !== null && Math.hypot(e.clientX - d[0], e.clientY - d[1]) > 8;
+  };
 
   // ── live positions — the graph breathes: neighbours gather on focus ──
   // The star geometry's position attribute IS the live buffer (mutated in
@@ -822,6 +856,18 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
     }
     if (eMoved) eAttr.needsUpdate = true;
 
+    // edge clip sphere follows the focused close-up body (0 releases it)
+    const em = edgeMatRef.current;
+    if (em) {
+      if (focused !== null) {
+        (em.uniforms.uOrbPos.value as THREE.Vector3).set(
+          livePos[focused * 3], livePos[focused * 3 + 1], livePos[focused * 3 + 2]);
+        em.uniforms.uOrbR.value = orbRadius(nodes[focused]);
+      } else {
+        em.uniforms.uOrbR.value = 0;
+      }
+    }
+
     // bridge pulse: a small glow rides the A→B bridge in step with the
     // flight. Endpoints are read live so it tracks the (rotating, breathing)
     // group; sin(πt) opacity hides the pop at either end of the run.
@@ -1077,11 +1123,13 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
         {/* edges */}
         <lineSegments geometry={edgeGeom} frustumCulled={false}>
           <shaderMaterial
+            ref={edgeMatRef}
             vertexShader={EDGE_VERT}
             fragmentShader={EDGE_FRAG}
             transparent
             depthWrite={false}
             blending={THREE.AdditiveBlending}
+            uniforms={{ uOrbPos: { value: new THREE.Vector3() }, uOrbR: { value: 0 } }}
           />
         </lineSegments>
 
@@ -1106,6 +1154,7 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
           onPointerOut={() => setHovered(null)}
           onClick={(e) => {
             e.stopPropagation();
+            if (isDrag(e.nativeEvent)) return; // orbit-drag release, not a click
             const i = pickIndex(e.intersections);
             if (i !== null) focus(i);
           }}
