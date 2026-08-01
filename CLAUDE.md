@@ -274,10 +274,10 @@ cards, element-screenshot. Delete the temp script after.
   PLANET_FRAG); suns damp granulation contrast around its mean so texture flattens WITHOUT
   shifting exposure (glow stays the only brightness dial). Range 0.25 crisp → 5 dreamy,
   **1 = pixel-identical baseline (verified 0.00 diff against a frozen capture)**.
-  **Planets default to `DEFAULT_PLANET_SOFT = 3`** (Caroline's call — the threshold fix's
-  full crispness finally reached her browser via the stale-tab gremlin, third documented
-  occurrence, and read as too sharp); suns default 1. An explicit `soft` on a style or
-  painter patch wins over the default.
+  **Every body defaults to soft 3** (Caroline's calls, 2026-08-01 — planets first after the
+  threshold fix's full crispness reached her browser via the stale-tab gremlin and read as too
+  sharp; suns brought to 3 later the same day). An explicit `soft` on a style or painter patch
+  wins over the default.
 
 **HAND-PAINTED REGISTRY — keep this current.** Caroline hand-tunes bodies via the painter and
 the values get baked; she needs to know later which bodies are hers vs hash-derived. When baking

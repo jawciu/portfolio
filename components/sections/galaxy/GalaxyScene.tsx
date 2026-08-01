@@ -1211,7 +1211,13 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
             layout.positions[focused * 3 + 1],
             layout.positions[focused * 3 + 2],
           ]}>
-            <FocusOrb node={focusedNode} reduced={reduced} glowTex={glowTex} />
+            {/* keyed by id: a DIRECT star→star hop must REMOUNT the body.
+                Reconciling it in place keeps the old shader program when the
+                body kind changes (planet→sun), rendering the previous
+                planet's surface under the new node's label — Caroline caught
+                design-systems wearing a rust planet. Remount also restores
+                the intended bloom-in on every hop. */}
+            <FocusOrb key={focusedNode.id} node={focusedNode} reduced={reduced} glowTex={glowTex} />
           </group>
         )}
 

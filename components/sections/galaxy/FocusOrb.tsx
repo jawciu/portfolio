@@ -427,7 +427,9 @@ type SunStyle = {
   ring: number;      // 0/1 — suns are bare unless a style asks for rings
   ringA?: string; ringB?: string;
 };
-const SUN_BASE: Omit<SunStyle, "a" | "b"> = { gran: 3.5, turb: 1, flareAmt: 0.9, glow: 1.35, soft: 1, ring: 0 };
+// soft 3: suns share the planets' dreamy default (Caroline, 2026-08-01) —
+// an explicit `soft` on a painted sun still wins
+const SUN_BASE: Omit<SunStyle, "a" | "b"> = { gran: 3.5, turb: 1, flareAmt: 0.9, glow: 1.35, soft: 3, ring: 0 };
 
 // Caroline's call (2026-08-01): every planet defaults to a soft, dreamy
 // surface — the crisp look the threshold fix revealed read as too sharp.
