@@ -15,7 +15,7 @@
 // keeps its GPU budget.
 
 import dynamic from "next/dynamic";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { getLenis } from "@/components/SmoothScroll";
 import { GalaxyTuner } from "./galaxy/GalaxyTuner";
 import { PlanetPainter } from "./galaxy/PlanetPainter";
@@ -31,8 +31,40 @@ const GalaxyCanvas = dynamic(() => import("./galaxy/GalaxyScene"), {
   ),
 });
 
+// The galaxy is desktop-only (Caroline, 2026-08-02: "too much" on phones).
+// The section hides via CSS below md, and the CANVAS doesn't mount at all
+// there: a display:none R3F canvas would still create a WebGL context, and
+// iOS Safari's context budget is the documented killer (hero + galaxy +
+// StrictMode already tripped it headless). Same SSR-safe matchMedia pattern
+// as usePrefersReducedMotion.
+const DESKTOP_QUERY = "(min-width: 768px)";
+function subscribeDesktop(cb: () => void) {
+  const mq = window.matchMedia(DESKTOP_QUERY);
+  mq.addEventListener("change", cb);
+  return () => mq.removeEventListener("change", cb);
+}
+
+// Caroline's tune/paint panels: NODE_ENV already strips them from production
+// BUILDS entirely (they cannot ship). On the dev server they now also hide
+// unless the URL carries ?dev — visit localhost:3001/?dev to get them back
+// for future iteration rounds. (Caroline, 2026-08-02)
+const noopSubscribe = () => () => {};
+function useDevTools() {
+  return useSyncExternalStore(
+    noopSubscribe,
+    () => new URLSearchParams(window.location.search).has("dev"),
+    () => false,
+  );
+}
+
 export function SkillsGalaxy() {
   const frameRef = useRef<HTMLDivElement>(null);
+  const isDesktop = useSyncExternalStore(
+    subscribeDesktop,
+    () => window.matchMedia(DESKTOP_QUERY).matches,
+    () => false,
+  );
+  const devTools = useDevTools();
   const [active, setActive] = useState(false);
   const [visible, setVisible] = useState(false);
   const reduced = usePrefersReducedMotion();
@@ -97,7 +129,7 @@ export function SkillsGalaxy() {
   return (
     <section
       aria-labelledby="skills-galaxy-label"
-      className="px-8 pb-16 md:px-12 md:pb-28"
+      className="hidden px-8 pb-16 md:block md:px-12 md:pb-28"
     >
       <div className="mx-auto w-full max-w-7xl 2xl:max-w-[88rem]">
         <div
@@ -125,8 +157,13 @@ export function SkillsGalaxy() {
               too space-hungry; mouse glyphs rejected as obsolete.
               stopPropagation: panel clicks must not focus stars behind it
               or trip the frame's click handling. (no em dashes: house rule) */}
+          {/* Below 960px the hints re-form as a 2x2 grid with the button top
+              right (Caroline's sketch, 2026-08-02) via duplicate-and-hide:
+              the one-line markup carries the click-in collapse animation and
+              must stay byte-identical at desktop, so the narrow band renders
+              its own explicit grid instead of reflowing the wide one. */}
           <div
-            className="absolute inset-x-0 bottom-0 z-20 flex items-center justify-between gap-6 border-t border-white/10 bg-[rgba(7,7,9,0.82)] px-5 py-3 font-mono backdrop-blur-md md:px-7"
+            className="absolute inset-x-0 bottom-0 z-20 flex items-start justify-between gap-x-6 border-t border-white/10 bg-[rgba(7,7,9,0.82)] px-5 py-3 font-mono backdrop-blur-md min-[960px]:items-center md:px-7"
             onClick={(e) => { e.stopPropagation(); if (!active) activate(); }}
             onPointerDown={(e) => e.stopPropagation()}
           >
@@ -138,7 +175,18 @@ export function SkillsGalaxy() {
                 dead gap, and slide back when it returns. The wrapper owns
                 its trailing gap (pr, outside the gap container) so nothing
                 is left over once collapsed. */}
-            <div className="flex items-center">
+            {/* narrow band (768-959px): 2x2 hint grid, no collapse animation,
+                the click-in cell just goes invisible while active */}
+            <div className="grid grid-cols-2 gap-x-7 gap-y-2 min-[960px]:hidden">
+              <span className={active ? "invisible" : ""}>
+                <ControlHint glyph={<PlayIcon />} lines={["click in to start"]} />
+              </span>
+              <ControlHint glyph={<ScrollZoomIcon />} lines={["scroll to zoom"]} />
+              <ControlHint glyph={<TriangleIcon />} lines={["click to travel"]} />
+              <ControlHint glyph={<DragOrbitIcon />} lines={["drag to orbit"]} />
+            </div>
+            {/* wide band (≥960px): the original one-line strip, untouched */}
+            <div className="hidden items-center min-[960px]:flex">
               <div
                 className="grid transition-[grid-template-columns,opacity] duration-500 ease-out motion-reduce:transition-none"
                 style={{ gridTemplateColumns: active ? "0fr" : "1fr", opacity: active ? 0 : 1 }}
@@ -161,18 +209,19 @@ export function SkillsGalaxy() {
                 e.stopPropagation();
                 window.dispatchEvent(new CustomEvent("galaxy:recentre"));
               }}
-              className="flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-lg border border-fg/80 px-3.5 py-1.5 text-[11px] tracking-[0.12em] text-fg/90 transition-colors hover:border-fg hover:bg-fg hover:text-bg"
+              className="ml-auto flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-lg border border-fg/80 px-3.5 py-1.5 text-[11px] tracking-[0.12em] text-fg/90 transition-colors hover:border-fg hover:bg-fg hover:text-bg"
             >
               <BackToStartIcon />
               back to start
             </button>
           </div>
 
-          <GalaxyCanvas active={active} visible={visible} reduced={reduced} tier={tier} />
+          {isDesktop && <GalaxyCanvas active={active} visible={visible} reduced={reduced} tier={tier} />}
 
-          {/* dev-only choreography tuning + planet paint panels — never ship */}
-          {process.env.NODE_ENV !== "production" && <GalaxyTuner />}
-          {process.env.NODE_ENV !== "production" && <PlanetPainter />}
+          {/* dev-only choreography tuning + planet paint panels — never ship
+              (compiled out of prod builds), and even in dev only with ?dev */}
+          {process.env.NODE_ENV !== "production" && devTools && <GalaxyTuner />}
+          {process.env.NODE_ENV !== "production" && devTools && <PlanetPainter />}
 
           {/* label fade-in lives here so the section stays fully self-contained */}
           {/* only a `from` keyframe: it eases up to each label's own inline

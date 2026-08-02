@@ -413,9 +413,19 @@ committed and verified. Dev server was left running on **:3001** (never touch 30
 
 ### Branch state (unmerged work, all off `main`)
 
+> **`galaxy-linkedin`** (2026-08-02): throwaway branch off `skills-galaxy`, lives in its OWN
+> WORKTREE at `/Users/caro/Code/portfolio-linkedin` (dev server :3002) so it never disturbs the
+> main checkout. Anonymous mode for Caroline's LinkedIn screenshots: `HIDE_LABELS = true` in
+> GalaxyScene empties `labelSet` (no names/focused block/neighbours/hover — nothing revealing
+> skills, companies, or the job hunt), "/skills" label is sr-only; stars still clickable,
+> planets still expand, painter chip still available. Changes UNCOMMITTED in that worktree.
+> Gotcha hit there: gating the label JSX with a `!HIDE_LABELS &&` constant trips the React
+> compiler's "cannot access refs during render" lint on the label ref callback — gate inside
+> the `labelSet` useMemo instead. Delete branch + worktree when she's done posting.
+
 | Branch | What | State | Blocking / next |
 | --- | --- | --- | --- |
-| `skills-galaxy` | Interactive knowledge-graph galaxy section (see below) | Working, committed through `c11ea5c`. NOT pushed, NOT merged | Label de-collision, label text-halo, mobile pass, Caroline's tuner numbers |
+| `skills-galaxy` | Interactive knowledge-graph galaxy section (see below) | **MERGED TO MAIN + DEPLOYED 2026-08-02.** Desktop-only (hidden below md, canvas never mounts there); dev tune/paint panels need `?dev` on the URL | Remaining polish lives on main now: label text-halo idea, iPhone on-device check of the homepage flow without the section, sr-only alternative |
 | `scroll-progress` | Right-edge case-study progress rail, ported to all 4 studies | Working, uncommitted. Pre-merge cleanup done | ONE decision: cog's Methodology "exploratory sketches" row deliberately bleeds past the rail at 1440 and the label is unreadable over the artwork. Options: frosted plate behind the rail / right padding on that one row / accept |
 | `token-cleanup` | `--cog-*` / `--green` → `--case-study-*` template slots + new `template-tokens` skill | Committed, not pushed/merged | Caroline's review. Only intended pixel change: cog's rail `#1e7a4d` → `#19a072` |
 | (untracked, no branch) | Gateway case study scaffold (`app/project/gateway/`, `components/project/gateway/`) | Builds + prerenders, all copy is DRAFT `TODO(caro)`, `noindex`, unlinked | Read `components/project/gateway/OUTLINE.md` first: 7 open facts + shot list. Still on legacy `--cog-*` tokens with a 3-line bridge for the rail |
