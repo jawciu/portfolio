@@ -650,6 +650,7 @@ const SUN_DONORS: Record<string, string> = {
   "stakeholder-mgmt": "success-tracking", "icp-research": "roadmapping",
   // leadership cluster → mentoring / team-leadership / cross-functional
   workshops: "mentoring", "founding-autonomy": "team-leadership", ownership: "cross-functional",
+  collaboration: "team-leadership", // new skill 2026-08-02, wears her paint like the rest
 };
 for (const [id, donor] of Object.entries(PLANET_DONORS)) PLANET_OVERRIDES[id] = PLANET_OVERRIDES[donor];
 for (const [id, donor] of Object.entries(SUN_DONORS)) SUN_OVERRIDES[id] = SUN_OVERRIDES[donor];

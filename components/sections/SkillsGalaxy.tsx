@@ -129,13 +129,13 @@ export function SkillsGalaxy() {
   return (
     <section
       aria-labelledby="skills-galaxy-label"
-      className="hidden px-8 pb-16 md:block md:px-12 md:pb-28"
+      className="hidden px-8 pb-16 md:block md:px-12 md:pb-[72px]"
     >
       <div className="mx-auto w-full max-w-7xl 2xl:max-w-[88rem]">
         <div
           ref={frameRef}
           onClick={() => { if (!active) activate(); }}
-          className={`relative mt-9 overflow-hidden rounded-2xl border bg-[#070709] transition-[border-color] duration-500 md:mt-12 ${
+          className={`relative mt-9 overflow-hidden rounded-2xl border bg-[#070709] transition-[border-color] duration-500 md:mt-[68px] ${
             active ? "border-white/25" : "border-white/10 cursor-pointer"
           }`}
           style={{ height: "min(78vh, 860px)", minHeight: 460 }}
