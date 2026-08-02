@@ -62,7 +62,12 @@ const CLUSTER_TINT: Record<string, string> = {
   sidequest: "#8affc1",
   career: "#a9c6ff",
 };
-const JOB_TINT = "#ffd9a0"; // jobs glow warmer than projects
+// Star tints for the discoverable layer (Caroline, 2026-08-02): companies
+// glow yellowish, projects bluish, matching their label colours (#C3B9A3 /
+// #BDCACF). The star hexes run more saturated than the labels because
+// uTintMix (0.55) mixes them back toward white before they render.
+const JOB_TINT = "#d0c194";
+const PROJECT_TINT = "#a5c4d2";
 
 const STAR_VERT = /* glsl */ `
   attribute float aSize;
@@ -71,16 +76,19 @@ const STAR_VERT = /* glsl */ `
   attribute float aDim;
   attribute float aBoost;
   attribute float aReveal; // 0 = always visible; >0 = zoom-reveal threshold
+  attribute float aHalo;   // 1 = soft halo skirt (companies + projects)
   uniform float uPx;
   varying vec3 vTint;
   varying float vPhase;
   varying float vDim;
   varying float vReveal;
+  varying float vHalo;
   void main() {
     vTint = aTint;
     vPhase = aPhase;
     vDim = aDim;
     vReveal = aReveal;
+    vHalo = aHalo;
     vec4 mv = modelViewMatrix * vec4(position, 1.0);
     gl_PointSize = aSize * aBoost * uPx / -mv.z;
     gl_Position = projectionMatrix * mv;
@@ -96,6 +104,7 @@ const STAR_FRAG = /* glsl */ `
   varying float vPhase;
   varying float vDim;
   varying float vReveal;
+  varying float vHalo;
   void main() {
     vec2 uv = gl_PointCoord * 2.0 - 1.0;
     float d = length(uv);
@@ -106,6 +115,10 @@ const STAR_FRAG = /* glsl */ `
                 + max(0.0, 1.0 - abs(uv.y) * 6.0) * max(0.0, 1.0 - abs(uv.x) * 1.5);
     float tw = 1.0 + uTwinkle * 0.22 * sin(uTime * (1.1 + vPhase * 1.9) + vPhase * 40.0);
     float i = (core + spike * 0.42) * tw;
+    // soft halo skirt on companies + projects (attribute-gated; geometries
+    // without aHalo read 0): a wide faint gaussian, edge-faded so the sprite
+    // quad boundary never shows
+    i += vHalo * exp(-d * d * 3.2) * (1.0 - smoothstep(0.65, 1.0, d)) * 0.2 * tw;
     // zoom-reveal stars fade in one by one as uReveal climbs past their
     // threshold — geometries without an aReveal attribute read 0 (GL default)
     // and are untouched, so the home view stays byte-identical
@@ -313,11 +326,20 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
     const phases = new Float32Array(n);
     const dims = new Float32Array(n);
     const boosts = new Float32Array(n).fill(1);
+    const halos = new Float32Array(n);
     const col = new THREE.Color();
     nodes.forEach((node, i) => {
       const base = node.size >= 3 ? 0.6 : node.size >= 2 ? 0.4 : 0.27;
-      sizes[i] = base + (node.featured ? 0.07 : 0);
-      col.set(node.type === "job" ? JOB_TINT : CLUSTER_TINT[node.cluster] ?? "#ffffff");
+      // companies + projects are the discoverable layer (Caroline,
+      // 2026-08-02): their stars grow 12% (was 25%, dialled back same day),
+      // skill stars shrink 12% — hierarchy reads before any label appears
+      const typeScale = node.type === "job" || node.type === "project" ? 1.12
+        : node.type === "skill" ? 0.88 : 1;
+      sizes[i] = base * typeScale + (node.featured ? 0.07 : 0);
+      halos[i] = node.type === "job" || node.type === "project" ? 1 : 0;
+      col.set(node.type === "job" ? JOB_TINT
+        : node.type === "project" ? PROJECT_TINT
+        : CLUSTER_TINT[node.cluster] ?? "#ffffff");
       tints.set([col.r, col.g, col.b], i * 3);
       phases[i] = (i * 0.618033988749895) % 1; // golden-ratio spread, deterministic
     });
@@ -328,6 +350,7 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
     g.setAttribute("aPhase", new THREE.BufferAttribute(phases, 1));
     g.setAttribute("aDim", new THREE.BufferAttribute(dims, 1));
     g.setAttribute("aBoost", new THREE.BufferAttribute(boosts, 1));
+    g.setAttribute("aHalo", new THREE.BufferAttribute(halos, 1));
     return g;
   }, [nodes, layout]);
 
@@ -1109,6 +1132,7 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
     if (!group) return;
     const MAX_PUSH = 28;      // ≈ two line heights — a label never strays far from its star
     const CHAR_W = 7.5;       // Geist Mono advance at 11px (6.6) + tracking-[0.08em] (0.88)
+    const STRONG_CHAR_W = 8.2; // job/project labels run 12px (7.2 + 0.96 tracking)
     const v = new THREE.Vector3();
 
     type Rect = { idx: number; x: number; y: number; w: number; h: number; movable: boolean };
@@ -1127,9 +1151,10 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
         const h = 20 + (node.meta ? 30 : 0) + (node.line ? 32 : 0) + 6;
         obstacles.push({ idx, x: sx + focusedOffsetPx(idx), y: sy - h / 2, w: 215, h, movable: false });
       } else {
+        const strong = node.type === "job" || node.type === "project";
         const r: Rect = {
-          idx, x: sx + 14, y: sy - 7.5,
-          w: node.name.length * CHAR_W + 6, h: 15,
+          idx, x: sx + 14, y: sy - (strong ? 8.5 : 7.5),
+          w: node.name.length * (strong ? STRONG_CHAR_W : CHAR_W) + 6, h: strong ? 17 : 15,
           movable: kind !== "hover",
         };
         (r.movable ? movables : obstacles).push(r);
@@ -1470,12 +1495,23 @@ function GalaxyLabel({ node, kind, offsetPx, onSelect }: {
           role={onSelect ? "button" : undefined}
           style={onSelect ? { pointerEvents: "auto" } : undefined}
           className={
+            // companies + projects are the discoverable layer (Caroline,
+            // 2026-08-02): bold, 1px larger, and tinted to match their star
+            // glow: companies muted sand #C3B9A3, projects blue-grey #BDCACF
+            // (both ≥10:1 on the backdrop); skills and eggs stay 11px
+            // regular grey. The resolver's rect model accounts for the
+            // wider advance (see STRONG_CHAR_W).
             (primary
               ? "font-mono text-sm font-bold tracking-[0.08em] text-fg"
-              : kind === "neighbour" || kind === "zoom"
-                // same grey as the section's /skills heading (9.07:1)
-                ? "font-mono text-[11px] tracking-[0.08em] text-fg/70"
-                : "font-mono text-[11px] tracking-[0.08em] text-fg/80") +
+              : node.type === "job"
+                ? "font-mono text-[12px] font-bold tracking-[0.08em] text-[#C3B9A3]"
+              : node.type === "project"
+                ? "font-mono text-[12px] font-bold tracking-[0.08em] text-[#BDCACF]"
+                : "font-mono text-[11px] tracking-[0.08em] " +
+                  (kind === "neighbour" || kind === "zoom"
+                    // same grey as the section's /skills heading (9.07:1)
+                    ? "text-fg/70"
+                    : "text-fg/80")) +
             (onSelect ? " cursor-pointer hover:text-fg" : "")
           }
         >
