@@ -802,10 +802,32 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
     }
   }, [uPx]);
 
+  // Map-style label reveal order: zooming in surfaces more star NAMES, the
+  // way a map surfaces more places at deeper zoom levels. Featured first,
+  // then hubs before minor nodes (size desc), stable hash tie-break. Eggs
+  // are deliberately excluded: they are secrets, found by hover, never
+  // advertised by zoom. Declared BEFORE the frame loop, which drives it.
+  const zoomOrder = useMemo(() => {
+    const idx = nodes.map((_, i) => i).filter((i) => nodes[i].type !== "egg");
+    const h = (s: string) => { let x = 0; for (let i = 0; i < s.length; i++) x = (x * 31 + s.charCodeAt(i)) | 0; return Math.abs(x); };
+    idx.sort((a, b) => {
+      const na = nodes[a], nb = nodes[b];
+      if (!!na.featured !== !!nb.featured) return na.featured ? -1 : 1;
+      if ((nb.size ?? 1) !== (na.size ?? 1)) return (nb.size ?? 1) - (na.size ?? 1);
+      return h(na.id) - h(nb.id);
+    });
+    return idx;
+  }, [nodes]);
+  // stepped count so zooming re-renders a handful of times, not per frame
+  const [zoomLabels, setZoomLabels] = useState(0);
+  const zoomLabelsRef = useRef(0);
+
   // ── per-frame work ────────────────────────────────────────────────
   const driftSpeed = useRef(0);
   /** damped 0→1 zoom-reveal level for the extra background stars */
   const revealCur = useRef(0);
+  /** separately-damped level for the LABEL reveal (slower, trickles) */
+  const labelCur = useRef(0);
   /** dev probe only: lets headless checks see whether the loop is ticking */
   const frameCount = useRef(0);
   useFrame((_, dt) => {
@@ -906,18 +928,36 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
     }
     if (eMoved) eAttr.needsUpdate = true;
 
-    // zoom-reveal: exploring in from the home view (camera ≈18.6 out) fades
-    // extra background stars in one by one — full field by ~9 world units.
-    // Gated to free wandering only: no focus AND no camera tween in flight
-    // (the fly-home tween passes through "close + unfocused", which would
-    // flash the reveal population for the duration of the flight — the
-    // evaluator caught the mechanism). Damped so it breathes, never pops.
+    // zoom-reveal: closing in fades extra background stars in one by one —
+    // full field by ~9 world units, PURELY distance-driven. An earlier
+    // focused-null gate blocked Caroline's real flow (clicking in almost
+    // always focuses a star, so her zooms never revealed anything). Only
+    // scripted FLIGHTS suppress it (they tween flightProg / the camera in
+    // reduced mode), so a fly-home doesn't flash the field. Damped.
     {
       const camDist = camera.position.distanceTo(HOME_TARGET);
-      const wandering = focused === null && !gsap.isTweening(camera.position);
-      const zoomT = wandering ? THREE.MathUtils.clamp((17.5 - camDist) / 8.5, 0, 1) : 0;
+      const flying = gsap.isTweening(flightProg.current) || gsap.isTweening(camera.position);
+      const zoomT = flying ? 0 : THREE.MathUtils.clamp((17.5 - camDist) / 8.5, 0, 1);
       revealCur.current += (zoomT - revealCur.current) * (reduced ? 1 : 1 - Math.exp(-3 * dt));
       if (bgMatRef.current) bgMatRef.current.uniforms.uReveal.value = revealCur.current;
+
+      // LABEL reveal — its own curve, tuned for "flying through the stars":
+      // spread across almost the WHOLE zoom journey (17 → 4 world units; the
+      // first cut saturated by 9, halfway, so two notches dumped dozens of
+      // names at once — Caroline: overwhelming). pow 2.2 keeps the early
+      // notches to a name or two; steps of 4; a slower damp (rate 2) lets
+      // each scroll's names trickle in a beat behind the movement. Only
+      // while unfocused (a focused halo owns its labels).
+      const labelT = flying || focused !== null ? 0
+        : THREE.MathUtils.clamp((17 - camDist) / 13, 0, 1);
+      labelCur.current += (labelT - labelCur.current) * (reduced ? 1 : 1 - Math.exp(-2 * dt));
+      const lvl = labelCur.current;
+      const want = lvl < 0.04 ? 0
+        : Math.min(zoomOrder.length, 6 + Math.round((Math.pow(lvl, 2.2) * (zoomOrder.length - 6)) / 4) * 4);
+      if (want !== zoomLabelsRef.current) {
+        zoomLabelsRef.current = want;
+        setZoomLabels(want);
+      }
     }
 
     // edge clip disc tracks the focused close-up body in screen space
@@ -1021,7 +1061,7 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
 
   // ── labels ────────────────────────────────────────────────────────
   const labelSet = useMemo(() => {
-    const out: { idx: number; kind: "focused" | "neighbour" | "featured" | "hover" }[] = [];
+    const out: { idx: number; kind: "focused" | "neighbour" | "featured" | "hover" | "zoom" }[] = [];
     if (focused !== null) {
       out.push({ idx: focused, kind: "focused" });
       for (const nb of layout.neighbours[focused]) out.push({ idx: nb, kind: "neighbour" });
@@ -1029,11 +1069,18 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
         out.push({ idx: hovered, kind: "hover" });
       }
     } else {
-      nodes.forEach((n, i) => { if (n.featured) out.push({ idx: i, kind: "featured" }); });
-      if (hovered !== null && !nodes[hovered].featured) out.push({ idx: hovered, kind: "hover" });
+      const shown = new Set<number>();
+      nodes.forEach((n, i) => { if (n.featured) { out.push({ idx: i, kind: "featured" }); shown.add(i); } });
+      // zoom-revealed names, in reveal order (first entries are the featured
+      // set, already shown above)
+      for (let k = 0; k < zoomLabels && k < zoomOrder.length; k++) {
+        const i = zoomOrder[k];
+        if (!shown.has(i)) { out.push({ idx: i, kind: "zoom" }); shown.add(i); }
+      }
+      if (hovered !== null && !shown.has(hovered)) out.push({ idx: hovered, kind: "hover" });
     }
     return out;
-  }, [focused, hovered, nodes, layout]);
+  }, [focused, hovered, nodes, layout, zoomLabels, zoomOrder]);
 
   const focusedNode = focused !== null ? nodes[focused] : null;
 
@@ -1423,7 +1470,7 @@ function GalaxyLabel({ node, kind, offsetPx, onSelect }: {
           className={
             (primary
               ? "font-mono text-sm font-bold tracking-[0.08em] text-fg"
-              : kind === "neighbour"
+              : kind === "neighbour" || kind === "zoom"
                 // same grey as the section's /skills heading (9.07:1)
                 ? "font-mono text-[11px] tracking-[0.08em] text-fg/70"
                 : "font-mono text-[11px] tracking-[0.08em] text-fg/80") +
