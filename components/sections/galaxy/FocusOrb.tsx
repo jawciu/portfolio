@@ -608,6 +608,52 @@ const SUN_OVERRIDES: Record<string, Partial<SunStyle>> = {
   "logo-design": { a: "#2a5aa7", soft: 0.65 },
 };
 
+// ── no random colours (Caroline, 2026-08-02) ─────────────────────────
+// Every body she has NOT hand-painted wears one of her painted styles BY
+// REFERENCE — repeats are literal copies of her choices, never a new colour.
+// Donors are grouped thematically (cog projects wear cog-family styles, AI
+// skills rotate through her four painted AI suns, …) and rotated within a
+// cluster so neighbours vary. Only fully-coloured styles donate.
+// HARD RULE: nothing that appears in the hand-painted registry (CLAUDE.md)
+// may EVER appear on the left side of these maps.
+const PLANET_DONORS: Record<string, string> = {
+  // cog family
+  "check-in": "cog-clinic", "daily-insights": "cog-ds", subscription: "cog-website", "self-help": "cog",
+  // eon family
+  "performance-tools": "perf-insights", "figma-make-kit": "eon-ds", "live-help": "call-analytics",
+  // personal builds
+  synapse: "wiki-whisperer", portfolio: "vector",
+};
+const SUN_DONORS: Record<string, string> = {
+  // design cluster → art-direction / brand-identity / design-systems
+  "motion-design": "art-direction", accessibility: "design-systems", "conversion-design": "brand-identity",
+  moodboarding: "art-direction", "brand-guidelines": "design-systems", "onboarding-design": "brand-identity",
+  "data-viz": "art-direction",
+  // research cluster → user-interviews / empathy / mentoring
+  "pilot-design": "user-interviews", "ab-testing": "empathy", "personas-journeys": "mentoring",
+  "competitive-analysis": "user-interviews", "field-research": "empathy", "research-ops": "mentoring",
+  surveys: "user-interviews", "moderated-research": "empathy", "desk-research": "mentoring",
+  // ai cluster → ai-agents / context-design / tool-design / building-with-agents
+  langgraph: "ai-agents", langchain: "context-design", rag: "tool-design", "knowledge-graphs": "building-with-agents",
+  "claude-api": "ai-agents", "prompt-design": "context-design", evals: "tool-design", guardrails: "building-with-agents",
+  "human-in-the-loop": "ai-agents", "ai-observability": "context-design", "model-benchmarking": "tool-design",
+  "ai-architecture": "building-with-agents", "trust-design": "ai-agents", "safety-design": "context-design",
+  "agent-harnesses": "tool-design", "agent-loops": "building-with-agents", tracing: "ai-agents",
+  "agent-memory": "context-design", "agent-skills": "tool-design",
+  // engineering cluster → tokens-in-code / design-engineering / dense-data-ui
+  "front-end": "tokens-in-code", "back-end": "design-engineering", "typescript-react": "dense-data-ui",
+  tailwind: "tokens-in-code", "python-fastapi": "design-engineering", "postgres-prisma": "dense-data-ui",
+  surrealdb: "tokens-in-code", "webgl-glsl": "design-engineering", r3f: "dense-data-ui",
+  gsap: "tokens-in-code", playwright: "design-engineering", "webhooks-crons": "dense-data-ui",
+  // product cluster → success-tracking / roadmapping / prioritisation
+  "product-metrics": "success-tracking", "business-cases": "roadmapping", monetisation: "prioritisation",
+  "stakeholder-mgmt": "success-tracking", "icp-research": "roadmapping",
+  // leadership cluster → mentoring / team-leadership / cross-functional
+  workshops: "mentoring", "founding-autonomy": "team-leadership", ownership: "cross-functional",
+};
+for (const [id, donor] of Object.entries(PLANET_DONORS)) PLANET_OVERRIDES[id] = PLANET_OVERRIDES[donor];
+for (const [id, donor] of Object.entries(SUN_DONORS)) SUN_OVERRIDES[id] = SUN_OVERRIDES[donor];
+
 /** A sun's tones + dials: cluster palette, then any per-id override. */
 export function sunStyle(node: GalaxyNode): SunStyle {
   const p = PALETTES[node.cluster] ?? PALETTES.career;

@@ -21,7 +21,6 @@ import { GalaxyTuner } from "./galaxy/GalaxyTuner";
 import { PlanetPainter } from "./galaxy/PlanetPainter";
 import { useGPUTier } from "@/lib/useGPUTier";
 import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
-import { GALAXY_NODES, GALAXY_EDGES } from "@/lib/galaxyData";
 
 const GalaxyCanvas = dynamic(() => import("./galaxy/GalaxyScene"), {
   ssr: false,
@@ -36,7 +35,6 @@ export function SkillsGalaxy() {
   const frameRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(false);
   const [visible, setVisible] = useState(false);
-  const [helpOpen, setHelpOpen] = useState(false);
   const reduced = usePrefersReducedMotion();
   const tier = useGPUTier();
 
@@ -112,64 +110,49 @@ export function SkillsGalaxy() {
         <div
           ref={frameRef}
           onClick={() => { if (!active) activate(); }}
-          className={`relative mt-9 overflow-hidden rounded-2xl border bg-[#070709] transition-[border-color,box-shadow] duration-500 md:mt-12 ${
-            active
-              ? "border-white/25 shadow-[0_0_60px_-12px_rgba(188,215,255,0.25)]"
-              : "border-white/10 cursor-pointer"
+          className={`relative mt-9 overflow-hidden rounded-2xl border bg-[#070709] transition-[border-color] duration-500 md:mt-12 ${
+            active ? "border-white/25" : "border-white/10 cursor-pointer"
           }`}
           style={{ height: "min(78vh, 860px)", minHeight: 460 }}
         >
-          {/* window chrome */}
-          <div className="pointer-events-none absolute inset-x-0 top-0 z-20 flex items-center justify-between gap-3 border-b border-white/[0.06] bg-[rgba(7,7,9,0.6)] px-4 py-2.5 backdrop-blur-sm">
-            <p className="font-mono text-[10px] tracking-[0.18em] text-fg/45 md:text-[11px]">
-              ~/skills-galaxy · {GALAXY_NODES.length} stars · {GALAXY_EDGES.length} links
+          {/* control panel — full frame width along the bottom edge.
+              "click in to start" left (idle only), four controls right,
+              icons per Caroline's design (2026-08-02): chevron pair scroll,
+              △ travel, outward chevrons drag, circled ↻ back-to-start.
+              Hints are flat grey; ONLY back-to-start is a real button
+              (case-study reverse-on-hover). Cross/card layouts rejected as
+              too space-hungry; mouse glyphs rejected as obsolete.
+              stopPropagation: panel clicks must not focus stars behind it
+              or trip the frame's click handling. (no em dashes: house rule) */}
+          <div
+            className="absolute inset-x-0 bottom-0 z-20 flex items-center justify-between gap-6 border-t border-white/10 bg-[rgba(7,7,9,0.82)] px-5 py-3 font-mono backdrop-blur-md md:px-7"
+            onClick={(e) => { e.stopPropagation(); if (!active) activate(); }}
+            onPointerDown={(e) => e.stopPropagation()}
+          >
+            <p className={`text-[10px] tracking-[0.18em] text-fg/70 md:text-[11px] ${active ? "invisible" : ""}`}>
+              click in to start
             </p>
-            <div className="flex items-center gap-4">
-              <p className="hidden font-mono text-[10px] tracking-[0.18em] text-fg/45 sm:block md:text-[11px]">
-                {active ? "drag to orbit · scroll to zoom · esc to exit" : "click a star to explore"}
-              </p>
-              {active && (
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    // must not read as a star click or a frame activation
-                    e.stopPropagation();
-                    window.dispatchEvent(new CustomEvent("galaxy:recentre"));
-                  }}
-                  className="pointer-events-auto cursor-pointer whitespace-nowrap rounded border border-white/15 px-2 py-0.5 font-mono text-[10px] tracking-[0.18em] text-fg/60 transition-colors hover:border-white/30 hover:text-fg md:text-[11px]"
-                >
-                  ↺ re-centre
-                </button>
-              )}
+            <div className="flex items-center gap-8 md:gap-11">
+              {/* hint-to-hint gaps sit at exactly 2/3 of the group gap to the
+                  back-to-start button (21/32, 29/44 — Caroline, 2026-08-02) */}
+              <div className="flex items-center gap-[21px] md:gap-[29px]">
+                <ControlHint glyph={<ScrollZoomIcon />} lines={["scroll", "to zoom"]} />
+                <ControlHint glyph={<TriangleIcon />} lines={["click", "to travel"]} />
+                <ControlHint glyph={<DragOrbitIcon />} lines={["drag", "to orbit"]} />
+              </div>
               <button
                 type="button"
-                onClick={(e) => { e.stopPropagation(); setHelpOpen((v) => !v); }}
-                aria-label="How to navigate the galaxy"
-                className="pointer-events-auto cursor-pointer rounded-full border border-white/15 px-2 py-0.5 font-mono text-[10px] text-fg/50 transition-colors hover:border-white/30 hover:text-fg md:text-[11px]"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  window.dispatchEvent(new CustomEvent("galaxy:recentre"));
+                }}
+                className="flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-lg border border-fg/80 px-3.5 py-1.5 text-[11px] tracking-[0.12em] text-fg/90 transition-colors hover:border-fg hover:bg-fg hover:text-bg"
               >
-                ?
+                <BackToStartIcon />
+                back to start
               </button>
             </div>
           </div>
-
-          {/* controls legend — drops from the chrome bar, clear of the canvas
-              centre where halo labels roam (no em dashes: house rule) */}
-          {helpOpen && (
-            <div
-              className="absolute right-3 top-12 z-20 w-64 rounded-lg border border-white/15 bg-[rgba(7,7,9,0.85)] p-3 font-mono text-[10px] leading-relaxed tracking-[0.08em] text-fg/70 backdrop-blur-sm"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="mb-1.5 flex items-center justify-between">
-                <span className="tracking-[0.15em] text-fg/45">how to explore</span>
-                <button type="button" className="cursor-pointer text-fg/50 hover:text-fg" onClick={() => setHelpOpen(false)}>×</button>
-              </div>
-              <p>click any star or its label to fly to it</p>
-              <p>click another star to travel between them</p>
-              <p>drag to orbit · scroll to zoom</p>
-              <p>esc or click empty space to zoom back out</p>
-              <p>↺ re-centre returns to the start view</p>
-            </div>
-          )}
 
           <GalaxyCanvas active={active} visible={visible} reduced={reduced} tier={tier} />
 
@@ -184,5 +167,70 @@ export function SkillsGalaxy() {
         </div>
       </div>
     </section>
+  );
+}
+
+// ---- control panel glyphs — Caroline's icon designs (2026-08-02) ----------
+
+// A hint: small icon beside a two-line label, flat light grey and
+// chrome-free so it reads as legend, not as a button. All icons are drawn
+// 1:1 (viewBox = rendered px) with the SAME 1.25 stroke — resizing one via
+// viewBox scaling would silently fatten or thin its stroke.
+
+const ICON_STROKE = 1.25;
+
+function ControlHint({ glyph, lines }: { glyph: React.ReactNode; lines: string[] }) {
+  return (
+    <div className="flex items-center gap-2">
+      {glyph}
+      <p className="text-left text-[11px] leading-[1.4] tracking-[0.1em] text-fg/65">
+        {lines.map((l) => (
+          <span key={l} className="block whitespace-nowrap">{l}</span>
+        ))}
+      </p>
+    </div>
+  );
+}
+
+// Two chevrons up over two chevrons down: the scroll gesture.
+function ScrollZoomIcon() {
+  return (
+    <svg width="15" height="16" viewBox="0 0 15 16" aria-hidden="true" className="shrink-0 text-fg/55">
+      <path d="M1 4.1 L3.6 1.5 L6.2 4.1" fill="none" stroke="currentColor" strokeWidth={ICON_STROKE} strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M8.8 4.1 L11.4 1.5 L14 4.1" fill="none" stroke="currentColor" strokeWidth={ICON_STROKE} strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M1 11.9 L3.6 14.5 L6.2 11.9" fill="none" stroke="currentColor" strokeWidth={ICON_STROKE} strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M8.8 11.9 L11.4 14.5 L14 11.9" fill="none" stroke="currentColor" strokeWidth={ICON_STROKE} strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function TriangleIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true" className="shrink-0 text-fg/55">
+      <path d="M7 2.4 L12.6 11.6 L1.4 11.6 Z" fill="none" stroke="currentColor" strokeWidth={ICON_STROKE} strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+// Four outward chevrons around an empty hub: drag in any direction.
+function DragOrbitIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" className="shrink-0 text-fg/55">
+      <path d="M5.7 3.3 L8 1 L10.3 3.3" fill="none" stroke="currentColor" strokeWidth={ICON_STROKE} strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M5.7 12.7 L8 15 L10.3 12.7" fill="none" stroke="currentColor" strokeWidth={ICON_STROKE} strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M3.3 5.7 L1 8 L3.3 10.3" fill="none" stroke="currentColor" strokeWidth={ICON_STROKE} strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M12.7 5.7 L15 8 L12.7 10.3" fill="none" stroke="currentColor" strokeWidth={ICON_STROKE} strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+// Clockwise refresh arrow, no enclosing circle: the button border is the
+// chrome. Inherits currentColor so it inverts with the reverse-on-hover.
+function BackToStartIcon() {
+  return (
+    <svg width="13" height="13" viewBox="0 0 13 13" aria-hidden="true" className="shrink-0">
+      <path d="M9.4 4.2 A 4.1 4.1 0 1 0 10.1 8.1" fill="none" stroke="currentColor" strokeWidth={ICON_STROKE} strokeLinecap="round" />
+      <path d="M7.3 4.1 L9.6 4.3 L10.3 2.1" fill="none" stroke="currentColor" strokeWidth={ICON_STROKE} strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
   );
 }

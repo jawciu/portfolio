@@ -248,6 +248,39 @@ cards, element-screenshot. Delete the temp script after.
 > current state (working / broken / in-progress), explicit next steps. Sweep settled entries into
 > the archive periodically so this file stays short.
 
+### 2026-08-02 — galaxy nav: gamepad "controls" card (bottom-right). UNCOMMITTED on `skills-galaxy`.
+
+- Caroline asked for gaming-controls-inspired navigation hints (more noticeable + more fun). Her
+  calls, in order: subtle HUD tone (not retro arcade); reactive glyphs (lighting up on input)
+  vetoed as likely clunky; a first pass with mouse pictograms + a drawn-mouse diagram was
+  REJECTED ("people don't use the mouse anymore", most visitors on trackpads) in favour of a
+  single card in the bottom-right corner with the instructions arranged like a controller cross.
+- `SkillsGalaxy.tsx`: old right-edge text rail GONE. Went through three rounds with her
+  (bottom glyph strip with mouse pictograms → bottom-right gamepad card with PS-button cross →
+  final). FINAL: a full-frame-width bottom panel (border-t hairline, blurred dark bg) inside
+  the frame. Left: pulsing "▶ click in to start" (galaxy-start-pulse keyframe, off under
+  reduced motion, `invisible` while active so the row doesn't reflow). Right: exactly FOUR
+  controls with icons SHE DESIGNED (recreated from her two mockups, 2026-08-02): each a small
+  icon BESIDE a two-line left-aligned label — chevron pair up/down "scroll / to zoom"
+  (`ScrollZoomIcon`), △ "click / to travel" (`TriangleIcon`), four outward chevrons, empty
+  hub, "drag / to orbit" (`DragOrbitIcon`), and "back to start" as a SLIM case-study-style
+  button (rounded-lg border, one line, bare refresh arrow `BackToStartIcon`, reverse-on-hover
+  `hover:bg-fg hover:text-bg`, dispatches galaxy:recentre). Hints are flat light grey
+  (`text-fg/55` icons, `fg/65` labels), chrome-free so they don't look clickable. ALL icons
+  drawn 1:1 (viewBox = rendered px) sharing `ICON_STROKE` 1.25 — resizing via viewBox scaling
+  would silently fatten/thin a stroke, redraw instead. Cut along the way on her orders:
+  mouse glyphs (obsolete, trackpads), the cross/d-pad layout (too much space), "click another
+  · travel", "click empty · zoom out", the esc·exit pill, the collapsible card + `[ ? ]` chip
+  and its `helpOpen` state. Panel is pointer-events-auto + stopPropagation so clicks never hit
+  stars behind it; panel click while idle activates.
+- Dev-only chips both live in the TOP corners now (tune `top-3 left-3`, paint `top-3 right-3`,
+  panels hang downward) — the full-width bottom panel owns the frame's bottom edge.
+- Verified via Playwright on :3001 (idle / start-pill activate / star focus / collapse):
+  0 console errors, active-state pill swap works. tsc + lint clean. Known nit: halo labels
+  don't know the card exists, so a neighbour label near bottom-right (e.g. E.ON on Live Help's
+  halo) can slip under the card edge; the label resolver treats only the focused block + hover
+  as obstacles today.
+
 ### 2026-08-01 (afternoon) — label resolver, julien style, umbrellas, softness dial. COMMITTED on `skills-galaxy`, NOT pushed.
 
 - **Label de-collision resolver SHIPPED** (`GalaxyScene.tsx`): per-frame screen-space greedy sweep.

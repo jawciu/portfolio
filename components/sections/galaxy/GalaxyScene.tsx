@@ -952,8 +952,10 @@ function GalaxyContents({ active, reduced, tier, unfocusSignal }: ContentsProps)
         : THREE.MathUtils.clamp((17 - camDist) / 13, 0, 1);
       labelCur.current += (labelT - labelCur.current) * (reduced ? 1 : 1 - Math.exp(-2 * dt));
       const lvl = labelCur.current;
+      // ×2/3 on the whole curve (Caroline, 2026-08-02: still a bit
+      // overwhelming) — deep zoom now tops out around ~79 names, not 116
       const want = lvl < 0.04 ? 0
-        : Math.min(zoomOrder.length, 6 + Math.round((Math.pow(lvl, 2.2) * (zoomOrder.length - 6)) / 4) * 4);
+        : Math.min(zoomOrder.length, 6 + Math.round((Math.pow(lvl, 2.2) * (zoomOrder.length - 6) * 0.66) / 4) * 4);
       if (want !== zoomLabelsRef.current) {
         zoomLabelsRef.current = want;
         setZoomLabels(want);

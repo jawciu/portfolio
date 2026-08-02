@@ -71,7 +71,7 @@ export function PlanetPainter() {
     // stopPropagation: panel interactions must not focus stars or trip the
     // frame's activation / click-outside deactivation
     <div
-      className="absolute bottom-3 right-3 z-30 font-mono text-[10px] text-fg/70"
+      className="absolute top-3 right-3 z-30 font-mono text-[10px] text-fg/70"
       onClick={(e) => e.stopPropagation()}
       onPointerDown={(e) => e.stopPropagation()}
     >
