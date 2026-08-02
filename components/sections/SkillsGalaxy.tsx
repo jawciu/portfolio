@@ -100,13 +100,6 @@ export function SkillsGalaxy() {
       className="px-8 pb-16 md:px-12 md:pb-28"
     >
       <div className="mx-auto w-full max-w-7xl 2xl:max-w-[88rem]">
-        <p
-          id="skills-galaxy-label"
-          className="pl-2 font-mono text-xs md:text-sm tracking-[0.2em] text-fg/70"
-        >
-          /skills
-        </p>
-
         <div
           ref={frameRef}
           onClick={() => { if (!active) activate(); }}
@@ -115,10 +108,18 @@ export function SkillsGalaxy() {
           }`}
           style={{ height: "min(78vh, 860px)", minHeight: 460 }}
         >
+          {/* section label lives INSIDE the window frame — floating above it
+              users didn't connect "/skills" to the galaxy (2026-08-02) */}
+          <p
+            id="skills-galaxy-label"
+            className="pointer-events-none absolute left-5 top-4 z-20 font-mono text-xs tracking-[0.2em] text-fg/70 md:left-7 md:text-sm"
+          >
+            /skills
+          </p>
           {/* control panel — full frame width along the bottom edge.
-              "click in to start" left (idle only), four controls right,
-              icons per Caroline's design (2026-08-02): chevron pair scroll,
-              △ travel, outward chevrons drag, circled ↻ back-to-start.
+              Non-clickable hints grouped LEFT (play click-in, chevron-pair
+              scroll, △ travel, outward-chevron drag; icons per Caroline's
+              design, 2026-08-02), back-to-start button alone on the right.
               Hints are flat grey; ONLY back-to-start is a real button
               (case-study reverse-on-hover). Cross/card layouts rejected as
               too space-hungry; mouse glyphs rejected as obsolete.
@@ -129,29 +130,42 @@ export function SkillsGalaxy() {
             onClick={(e) => { e.stopPropagation(); if (!active) activate(); }}
             onPointerDown={(e) => e.stopPropagation()}
           >
-            <p className={`text-[10px] tracking-[0.18em] text-fg/70 md:text-[11px] ${active ? "invisible" : ""}`}>
-              click in to start
-            </p>
-            <div className="flex items-center gap-8 md:gap-11">
-              {/* hint-to-hint gaps sit at exactly 2/3 of the group gap to the
-                  back-to-start button (21/32, 29/44 — Caroline, 2026-08-02) */}
-              <div className="flex items-center gap-[21px] md:gap-[29px]">
-                <ControlHint glyph={<ScrollZoomIcon />} lines={["scroll", "to zoom"]} />
-                <ControlHint glyph={<TriangleIcon />} lines={["click", "to travel"]} />
-                <ControlHint glyph={<DragOrbitIcon />} lines={["drag", "to orbit"]} />
-              </div>
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  window.dispatchEvent(new CustomEvent("galaxy:recentre"));
-                }}
-                className="flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-lg border border-fg/80 px-3.5 py-1.5 text-[11px] tracking-[0.12em] text-fg/90 transition-colors hover:border-fg hover:bg-fg hover:text-bg"
+            {/* hint-to-hint gaps kept at 21/29px (Caroline's 2/3-ratio pass,
+                2026-08-02); click-in renders as a fourth hint (play icon)
+                so the non-clickable set reads as one family. On activation
+                its wrapper animates to zero width (0fr grid track) so the
+                other hints slide left into the space instead of leaving a
+                dead gap, and slide back when it returns. The wrapper owns
+                its trailing gap (pr, outside the gap container) so nothing
+                is left over once collapsed. */}
+            <div className="flex items-center">
+              <div
+                className="grid transition-[grid-template-columns,opacity] duration-500 ease-out motion-reduce:transition-none"
+                style={{ gridTemplateColumns: active ? "0fr" : "1fr", opacity: active ? 0 : 1 }}
               >
-                <BackToStartIcon />
-                back to start
-              </button>
+                <div className="min-w-0 overflow-hidden">
+                  <div className="pr-[21px] md:pr-[29px]">
+                    <ControlHint glyph={<PlayIcon />} lines={["click in to start"]} />
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center gap-[21px] md:gap-[29px]">
+                <ControlHint glyph={<ScrollZoomIcon />} lines={["scroll to zoom"]} />
+                <ControlHint glyph={<TriangleIcon />} lines={["click to travel"]} />
+                <ControlHint glyph={<DragOrbitIcon />} lines={["drag to orbit"]} />
+              </div>
             </div>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                window.dispatchEvent(new CustomEvent("galaxy:recentre"));
+              }}
+              className="flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-lg border border-fg/80 px-3.5 py-1.5 text-[11px] tracking-[0.12em] text-fg/90 transition-colors hover:border-fg hover:bg-fg hover:text-bg"
+            >
+              <BackToStartIcon />
+              back to start
+            </button>
           </div>
 
           <GalaxyCanvas active={active} visible={visible} reduced={reduced} tier={tier} />
@@ -200,6 +214,15 @@ function ScrollZoomIcon() {
       <path d="M8.8 4.1 L11.4 1.5 L14 4.1" fill="none" stroke="currentColor" strokeWidth={ICON_STROKE} strokeLinecap="round" strokeLinejoin="round" />
       <path d="M1 11.9 L3.6 14.5 L6.2 11.9" fill="none" stroke="currentColor" strokeWidth={ICON_STROKE} strokeLinecap="round" strokeLinejoin="round" />
       <path d="M8.8 11.9 L11.4 14.5 L14 11.9" fill="none" stroke="currentColor" strokeWidth={ICON_STROKE} strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+// Outline play triangle: the "click in to start" cue, idle only.
+function PlayIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true" className="shrink-0 text-fg/55">
+      <path d="M3.2 2.2 L11.8 7 L3.2 11.8 Z" fill="none" stroke="currentColor" strokeWidth={ICON_STROKE} strokeLinejoin="round" />
     </svg>
   );
 }

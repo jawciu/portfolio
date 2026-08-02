@@ -248,7 +248,12 @@ cards, element-screenshot. Delete the temp script after.
 > current state (working / broken / in-progress), explicit next steps. Sweep settled entries into
 > the archive periodically so this file stays short.
 
-### 2026-08-02 — galaxy nav: gamepad "controls" card (bottom-right). UNCOMMITTED on `skills-galaxy`.
+### 2026-08-02 — galaxy nav: bottom control panel. Committed through `9a117b3` (a parallel
+session folded the panel into `16e9b3e`; this session's leftover tune-chip move is `9a117b3`).
+UNCOMMITTED experiment on top, at her request: all non-clickable hints grouped LEFT with
+"click in / to start" as a fourth two-line hint led by an outline `PlayIcon` (idle only,
+`invisible` while active so neighbours don't reflow), back-to-start button alone on the right.
+Verified on :3001 both states; awaiting her verdict.
 
 - Caroline asked for gaming-controls-inspired navigation hints (more noticeable + more fun). Her
   calls, in order: subtle HUD tone (not retro arcade); reactive glyphs (lighting up on input)
