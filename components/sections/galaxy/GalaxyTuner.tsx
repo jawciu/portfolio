@@ -25,7 +25,7 @@ export function GalaxyTuner() {
     // stopPropagation: panel interactions must not activate the frame,
     // focus stars, or trip the click-outside deactivation
     <div
-      className="absolute bottom-3 left-3 z-30 font-mono text-[10px] text-fg/70"
+      className="absolute top-3 left-3 z-30 font-mono text-[10px] text-fg/70"
       onClick={(e) => e.stopPropagation()}
       onPointerDown={(e) => e.stopPropagation()}
     >
