@@ -19,10 +19,14 @@ import type { GalaxyNode } from "@/lib/galaxyData";
 import { PAINT, PAINT_EVENT } from "./paint";
 
 const NOISE = /* glsl */ `
+  // Hash13 (Dave Hoskins) — replaced the old p.x*p.y*p.z*(sum) hash, whose
+  // permutation symmetry mirrored every surface across the x=y / y=z / x=z
+  // planes (Caroline spotted the kaleidoscope, 2026-08-03). Asymmetric,
+  // sin-free, deterministic: same planet still renders identically per load.
   float hash(vec3 p) {
-    p = fract(p * 0.3183099 + .1);
-    p *= 17.0;
-    return fract(p.x * p.y * p.z * (p.x + p.y + p.z));
+    p = fract(p * vec3(0.1031, 0.1030, 0.0973));
+    p += dot(p, p.yxz + 33.33);
+    return fract((p.x + p.y) * p.z);
   }
   float noise(vec3 x) {
     vec3 i = floor(x); vec3 f = fract(x);
