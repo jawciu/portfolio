@@ -67,10 +67,12 @@ const SUN_FRAG = NOISE + /* glsl */ `
   uniform float uFlareAmt; // rim flare strength
   uniform float uGlow;     // overall exposure
   uniform float uSoft;     // granulation contrast damper: >1 creamier, 1 = baseline
+  uniform vec3 uSeed;      // per-node noise-domain offset (deterministic)
   varying vec3 vN; varying vec3 vP; varying vec3 vView;
   void main() {
-    float g = fbm(vP * uGran + vec3(0.0, uTime * 0.06, uTime * 0.04));
-    float g2 = fbm(vP * uGran * 2.571 - uTime * 0.05);
+    vec3 q = vP + uSeed;
+    float g = fbm(q * uGran + vec3(0.0, uTime * 0.06, uTime * 0.04));
+    float g2 = fbm(q * uGran * 2.571 - uTime * 0.05);
     // softness damps the granulation AROUND ITS MEAN (fbm median ≈ 0.47), so
     // texture flattens without shifting exposure or average hue — glow stays
     // the only brightness dial. At uSoft == 1 both lines reduce EXACTLY to
@@ -104,6 +106,7 @@ const PLANET_FRAG = NOISE + /* glsl */ `
   uniform vec3 uRim;       // atmosphere rim tint (defaults to uB)
   uniform float uRimAmt;   // fresnel rim strength (default 0.25)
   uniform float uSoft;     // edge-width multiplier: <1 crisper, >1 dreamier, 1 = baseline
+  uniform vec3 uSeed;      // per-node noise-domain offset (deterministic)
   varying vec3 vN; varying vec3 vP; varying vec3 vView;
   // smoothstep with its window scaled around the midpoint by uSoft — the one
   // knob that makes every surface register sharper or blurrier together.
@@ -115,9 +118,14 @@ const PLANET_FRAG = NOISE + /* glsl */ `
     return smoothstep(m - w, m + w, x);
   }
   void main() {
-    float warp = fbm(vP * 3.0 + uTime * 0.02) * 0.7;
+    // Per-node domain shift: every world reads its OWN region of the noise
+    // field, so no two planets share terrain (Caroline's step 2, 2026-08-03).
+    // Latitude structure still comes from true vP.y (bands stay horizontal,
+    // poles stay polar); the offset only relocates where features land.
+    vec3 q = vP + uSeed;
+    float warp = fbm(q * 3.0 + uTime * 0.02) * 0.7;
     // register 1: base terrain / belts between the deep (uA) and lifted (uB) tones
-    float band = fbm(vec3(vP.y * uBandFreq + warp, vP.x * uBlotch, vP.z * uBlotch));
+    float band = fbm(vec3(q.y * uBandFreq + warp, q.x * uBlotch, q.z * uBlotch));
     // contrast push relaxes as the surface softens (sqrt so it moves gently)
     band = clamp((band - 0.5) * 1.7 / sqrt(uSoft) + 0.5, 0.0, 1.0);
     vec3 col = mix(uA, uB, band);
@@ -128,14 +136,14 @@ const PLANET_FRAG = NOISE + /* glsl */ `
     // only ever rendered at a fraction of their strength and their dials felt
     // dead. Every range is now placed inside the real distribution.
     // register 2: dark lanes / maria / storm belts (uD) at a different scale
-    float lane = fbm(vP * (2.0 + uBlotch * 1.5) - 5.1 + warp * 0.4);
+    float lane = fbm(q * (2.0 + uBlotch * 1.5) - 5.1 + warp * 0.4);
     col = mix(col, uD, sedge(0.50, 0.62, lane) * 0.65);
     // register 2b: secondary mottle (uE) — its own scale + offset so the
     // patches never align with the uD lanes; sits UNDER the cloud layer
-    float mott = fbm(vP * 3.6 - 11.4 + warp * 0.6);
+    float mott = fbm(q * 3.6 - 11.4 + warp * 0.6);
     col = mix(col, uE, sedge(0.46, 0.60, mott) * uEAmt);
     // register 3: cloud / swirl layer (uC)
-    float swirl = fbm(vP * 5.0 + 3.7 + warp * 0.5);
+    float swirl = fbm(q * 5.0 + 3.7 + warp * 0.5);
     col = mix(col, uC, sedge(0.58 - 0.22 * uCloud, 0.70 - 0.12 * uCloud, swirl));
     // polar shading with a noisy edge so the caps read painted, not stamped
     float pol = smoothstep(0.5, 0.92, abs(vP.y) + (warp - 0.35) * 0.2);
@@ -144,11 +152,11 @@ const PLANET_FRAG = NOISE + /* glsl */ `
     // Frequency 26 put the flecks under a pixel and the 0.8 threshold almost
     // never fired: measured, the dial moved the render LESS than frame noise.
     // Coarser cells + an earlier threshold make it a control you can see.
-    float spk = noise(vP * 13.0 + 4.7);
+    float spk = noise(q * 13.0 + 4.7);
     col = mix(col, col * 0.28, sedge(0.58, 0.88, spk) * uSpeckle);
     // fine grain so no region reads as one flat hue — fades as the surface
     // softens (grit IS sharpness at this frequency), grows when crisped
-    col *= 0.82 + (0.36 / (0.6 + 0.4 * uSoft)) * fbm(vP * 11.0 + 7.3);
+    col *= 0.82 + (0.36 / (0.6 + 0.4 * uSoft)) * fbm(q * 11.0 + 7.3);
     float light = 0.34 + 0.62 * max(dot(normalize(vN), normalize(vec3(0.6, 0.5, 0.8))), 0.0);
     col *= light;
     float fres = pow(1.0 - max(dot(normalize(vN), vView), 0.0), 2.5);
@@ -170,6 +178,7 @@ const RING_FRAG = /* glsl */ `
   uniform vec3 uColB;  // darker rock tone
   uniform float uInner;
   uniform float uOuter;
+  uniform float uSeedR; // per-node ring-band offset (deterministic)
   varying vec3 vLocal;
   float h1(float p) { return fract(sin(p * 127.1) * 43758.5453); }
   float n1(float x) {
@@ -182,9 +191,9 @@ const RING_FRAG = /* glsl */ `
     float t = clamp((r - uInner) / (uOuter - uInner), 0.0, 1.0);
     // layered 1D noise → bands of genuinely different widths and weights
     // (the old fixed-frequency sin made every ringlet identical)
-    float wide = n1(t * 7.0 + 3.1);
-    float mid = n1(t * 23.0 + 9.7);
-    float fine = n1(t * 90.0 + 31.0);
+    float wide = n1(t * 7.0 + 3.1 + uSeedR);
+    float mid = n1(t * 23.0 + 9.7 + uSeedR * 1.7);
+    float fine = n1(t * 90.0 + 31.0 + uSeedR * 2.3);
     float density = smoothstep(0.18, 0.72, wide * 0.55 + mid * 0.3 + fine * 0.15);
     // true divisions (Cassini-like): one broad, one narrow
     float gap1 = 1.0 - 0.9 * smoothstep(0.50, 0.545, t) * (1.0 - smoothstep(0.575, 0.62, t));
@@ -681,6 +690,22 @@ function hashId(id: string) {
   return Math.abs(h);
 }
 
+/** Deterministic per-node noise-domain seed: shifts each body into its own
+ *  region of the shared noise field so no two share terrain, while the same
+ *  body renders identically on every load (Caroline's step 2, 2026-08-03).
+ *  Twins that share a STYLE (nextjs = eon-ds, donor copies) now differ in
+ *  pattern while keeping identical palettes. */
+function noiseSeed(id: string): [number, number, number] {
+  return [
+    (hashId(id + "sx") % 1000) * 0.097,
+    (hashId(id + "sy") % 1000) * 0.089,
+    (hashId(id + "sz") % 1000) * 0.083,
+  ];
+}
+function ringSeed(id: string) {
+  return (hashId(id + "ringseed") % 1000) * 0.11;
+}
+
 export function orbKind(node: GalaxyNode) {
   // a handful of skills are drawn as planets rather than suns (PLANET_SKILLS)
   if (node.type === "skill" && PLANET_SKILLS.has(node.id)) return "planet";
@@ -807,6 +832,7 @@ export function FocusOrb({ node, reduced, glowTex }: FocusOrbProps) {
         uFlareAmt: { value: sun.flareAmt },
         uGlow: { value: sun.glow },
         uSoft: { value: sun.soft },
+        uSeed: { value: new THREE.Vector3(...noiseSeed(node.id)) },
       };
       return u;
     }
@@ -829,9 +855,10 @@ export function FocusOrb({ node, reduced, glowTex }: FocusOrbProps) {
       uRim: { value: style?.rim ? new THREE.Color(style.rim) : colB },
       uRimAmt: { value: style?.rimAmt ?? 0.25 },
       uSoft: { value: style?.soft ?? DEFAULT_PLANET_SOFT },
+      uSeed: { value: new THREE.Vector3(...noiseSeed(node.id)) },
     };
     return u;
-  }, [colA, colB, colC, colD, style, sun]);
+  }, [colA, colB, colC, colD, style, sun, node.id]);
   const ringUniforms = useMemo(
     () => {
       // default: neutral rock/ice dust with only a hint of the body's hue, the
@@ -843,9 +870,10 @@ export function FocusOrb({ node, reduced, glowTex }: FocusOrbProps) {
         uColB: { value: new THREE.Color(ringB) },
         uInner: { value: radius * 1.35 },
         uOuter: { value: radius * 2.3 },
+        uSeedR: { value: ringSeed(node.id) },
       };
     },
-    [colB, radius, style, sun],
+    [colB, radius, style, sun, node.id],
   );
 
   useFrame((_, dt) => {
