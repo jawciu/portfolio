@@ -148,7 +148,7 @@ Clusters: `design` · `research` · `ai` · `engineering` · `product` · `leade
 | yes  | trust-design      | ai          | designing for trust      | 2    |          | wiki-whisperer vector human-in-the-loop guardrails   |
 | yes  | ux-writing        | design      | UX writing               | 2    |          | cog wiki-whisperer daily-insights self-help live-help perf-insights performance-tools vector gateway cog-clinic eon check-in subscription  |
 | yes  | onboarding-design | design      | onboarding design        | 1    |          | cog subscription vector                              |
-| yes  | data-viz          | design      | data visualisation       | 1    |          | performance-tools perf-insights vector               |
+| yes  | data-viz          | design      | data visualisation       | 1    |          | performance-tools perf-insights vector call-analytics check-in visual-craft empathy user-interviews usability-testing                |
 | yes  | safety-design     | ai          | safety-first AI design   | 1    |          | synapse cog                                          |
 | yes  | communication     | leadership  | communication            | 2    |          | stakeholder-mgmt workshops mentoring ux-writing brainstation eon cog consultancy burberry gateway cog-website self-help  |
 | yes  | empathy           | research    | empathy                  | 2    |          | user-interviews usability-testing moderated-research personas-journeys product-work ux-writing accessibility cog eon cog-clinic mentoring stakeholder-mgmt communication workshops check-in daily-insights self-help  |
