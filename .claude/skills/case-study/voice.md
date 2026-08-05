@@ -272,6 +272,10 @@ by introducing Y"). She uses British spelling (*optimise, colour, prioritise, an
 
 ### LinkedIn carryover — what's *her* vs what to drop
 
+(The 7 raw posts are now archived verbatim in the global skill
+`~/.claude/skills/caroline-writing-voice/linkedin-posts.md` — go there when drafting
+anything LinkedIn-shaped.)
+
 Her natural voice (from posts) is **warm, curious, energetic, self-aware, and generous**
 (credits collaborators; comfortable being a designer-who-builds-with-AI; gently playful —
 *"The perfectionist in me is still recovering"*). That warmth and curiosity can lightly
