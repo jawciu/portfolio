@@ -24,7 +24,7 @@ import { NextProject } from "../../../components/project/gateway/sections/NextPr
 
 export const metadata: Metadata = {
   title:
-    "Gateway - Turning a spreadsheet back-channel into a product | Caroline Jaworsky",
+    "Gateway - Turning a manual legacy process into a self-serve product | Caroline Jaworsky",
   description:
     "Product design case study: redesigning how housing developers hand new homes over to E.ON Next - from manual Google Sheets to a self-serve product with autofill, live statuses and bulk validation.",
   robots: { index: false }, // TODO(caro): remove when the study goes live

@@ -33,9 +33,9 @@ carousel or nav until Caroline calls it final. Support kit cloned from wiki-whis
 4. **Rounds of research/testing** — how many interview rounds, with whom.
 5. **Status model** in the Hub (what the real statuses are).
 6. **Anonymisation** — bulk screens may contain real developer/plot data.
-7. **Title thesis** — current: "Turning a spreadsheet back-channel into a product".
-   Alternatives: "Designing out the debt in developer handovers" / plain
-   "Developer handovers, redesigned".
+7. ~~**Title thesis**~~ RESOLVED 2026-08-05: Caroline chose "Turning a manual legacy
+   process into a self-serve product" (sentence case in source, per her
+   no-Title-Case rule).
 
 ## Shot list (replaces the PlaceholderShot frames)
 

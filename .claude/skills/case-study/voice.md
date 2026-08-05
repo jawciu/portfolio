@@ -58,6 +58,12 @@ story, tighten it or cut it.
 - **Never fabricate** findings, quotes, metrics, personas, or testimonials. Ask for the real
   material.
 - **British spelling** throughout (optimise, colour, prioritise, analyse, behaviour).
+- **Sentence case, never Title Case** (Caroline, 2026-08-05: "no one does this apart
+  from AI"). Titles, headings, and all copy capitalise only the first word plus proper
+  nouns (names, companies, products). The `case-study-title` token uppercases the H1
+  visually, but the SOURCE stays sentence case ("Turning a manual legacy process into
+  a self-serve product"). This also covers metadata titles and anything not uppercased
+  by a token.
 - **Asides go in parentheses, not spaced hyphens.** Write "Energy specialists (support call
   centre agents at E.ON Next) need to…", never "Energy specialists - support call centre
   agents at E.ON Next - need to…". (Caroline rewrites every spaced-hyphen aside into

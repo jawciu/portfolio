@@ -15,10 +15,11 @@ export function Hero() {
         {/* Page title — H1, two lines via a manual break (desktop only; ≤640px the
             32px mobile title flows naturally). Space BEFORE the \n keeps the words
             apart when the <br/> is hidden on phones. */}
-        {/* TODO(caro): title thesis — working option below, alternatives in OUTLINE.md */}
+        {/* Title chosen by Caroline 2026-08-05. Sentence case in source (her
+            rule: never Title Case); the token uppercases it visually. */}
         <h1 className="case-study-title">
           <HeroStream step={0.01} breakClassName="max-sm:hidden">
-            {"Gateway: Turning a Spreadsheet \nBack-channel into a Product"}
+            {"Turning a manual legacy process \ninto a self-serve product"}
           </HeroStream>
         </h1>
 
