@@ -23,9 +23,10 @@ export function Problem() {
           <Body>
             Nothing is validated, so submissions arrive with missing fields,
             typos and mismatched details, and the back and forth makes the
-            process longer than it needs to be. The delays build up debt on
-            accounts and make for a poor first experience for new property
-            owners.
+            process longer than it needs to be. Without a centralised space to
+            track them, handovers in progress with issues get forgotten. The
+            delays build up debt on accounts and make for a poor first
+            experience for new property owners.
           </Body>
         </Reveal>
         <Reveal className="mt-12">

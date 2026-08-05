@@ -22,8 +22,11 @@ import type { RailSection } from "../ScrollRail";
 export const GATEWAY_RAIL: RailSection[] = [
   { label: "Intro" },
   { id: "MyRole", label: "My role" },
-  { id: "Problem", label: "Problem space" },
   { id: "Research", label: "Starting the project" },
+  { id: "Problem", label: "Problem space" },
+  { id: "Interviews", label: "Research" },
+  { id: "V1", label: "V1" },
+  { id: "Testing", label: "Testing" },
   { id: "HandoverFlow", label: "Handover flow" },
   { id: "Hub", label: "The handovers hub" },
   { id: "BulkUpload", label: "Bulk handovers" },

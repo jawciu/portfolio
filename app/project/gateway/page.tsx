@@ -9,6 +9,9 @@ import { Hero } from "../../../components/project/gateway/sections/Hero";
 import { MyRole } from "../../../components/project/gateway/sections/MyRole";
 import { Problem } from "../../../components/project/gateway/sections/Problem";
 import { Research } from "../../../components/project/gateway/sections/Research";
+import { Interviews } from "../../../components/project/gateway/sections/Interviews";
+import { V1 } from "../../../components/project/gateway/sections/V1";
+import { Testing } from "../../../components/project/gateway/sections/Testing";
 import { HandoverFlow } from "../../../components/project/gateway/sections/HandoverFlow";
 import { Hub } from "../../../components/project/gateway/sections/Hub";
 import { BulkUpload } from "../../../components/project/gateway/sections/BulkUpload";
@@ -77,8 +80,11 @@ export default function GatewayCaseStudy() {
         </div>
 
         <div data-gw="MyRole"><MyRole /></div>
-        <div data-gw="Problem"><Problem /></div>
         <div data-gw="Research"><Research /></div>
+        <div data-gw="Problem"><Problem /></div>
+        <div data-gw="Interviews"><Interviews /></div>
+        <div data-gw="V1"><V1 /></div>
+        <div data-gw="Testing"><Testing /></div>
         <div data-gw="HandoverFlow"><HandoverFlow /></div>
         <div data-gw="Hub"><Hub /></div>
         <div data-gw="BulkUpload"><BulkUpload /></div>

@@ -13,10 +13,12 @@ export function Roles() {
         </Reveal>
         <Reveal className="max-w-[680px] space-y-5">
           <Body>
-            {/* TODO(caro): draft: */}
-            Not everyone submitting a handover should see the financials. Access
-            roles shape what each person sees, so a developer&apos;s whole team can
-            work in Gateway without exposing what shouldn&apos;t travel.
+            Research surfaced a constraint the bigger developers live with. The
+            people who process their handovers often must not have access to
+            financial data, and Gateway handles a lot of developer invoicing.
+            Access roles shape what each person sees, so a developer&apos;s
+            whole team can work in Gateway without exposing what shouldn&apos;t
+            travel.
           </Body>
         </Reveal>
         <Reveal className="mt-12">

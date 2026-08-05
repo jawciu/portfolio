@@ -25,7 +25,8 @@ carousel or nav until Caroline calls it final. Support kit cloned from wiki-whis
 
 ## Open facts to confirm before any copy is final
 
-1. **CSV vs "SVG"** — Caroline said SVG twice for the bulk-upload format; assumed CSV.
+1. ~~**CSV vs "SVG"**~~ RESOLVED 2026-08-05: it is a CSV upload ("SVG" was a slip of
+   the tongue).
 2. **Baseline numbers** — avg handover cycle time, % submissions needing rework, ops
    hours per handover. Grab BEFORE launch, while access + goodwill exist.
 3. **AI notetaker name** — "Marvin"? And whether E.ON is OK naming internal research

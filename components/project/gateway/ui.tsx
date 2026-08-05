@@ -192,6 +192,67 @@ export function TestimonialBubble({
   );
 }
 
+/** cute flat-vector robot for the AIWorkflow aside — drawn to match the
+    wiki/cog MyRole icon aesthetic: chunky flat fills, base + highlight + deep
+    shadow tones, white details, on a skewed pastel parallelogram plate
+    (same 145×91 canvas as those assets). Baked E.ON purple palette, like the
+    wiki icons' baked colours — retint the hexes when porting to another study. */
+function RobotIllustration({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 145 91" fill="none" aria-hidden="true" className={className}>
+      {/* pastel plate */}
+      <path d="M8 24 L4 80 L140 68 L130 22 Z" fill="#F3E7FF" />
+      {/* deep-purple shadow layer (offset copy of the head) */}
+      <rect x={41} y={22} width={70} height={46} rx={16} fill="#3C1D7A" />
+      {/* antenna */}
+      <rect x={70.5} y={8} width={3} height={10} fill="#6A3FD6" />
+      <circle cx={72} cy={7} r={5} fill="#E5007D" />
+      {/* ears */}
+      <rect x={30} y={32} width={9} height={18} rx={4.5} fill="#6A3FD6" />
+      <rect x={105} y={32} width={9} height={18} rx={4.5} fill="#6A3FD6" />
+      {/* head — 👾-style, no body */}
+      <rect x={37} y={18} width={70} height={46} rx={16} fill="#6A3FD6" />
+      <rect x={44} y={23} width={22} height={7} rx={3.5} fill="#C4AAFF" />
+      {/* face */}
+      <circle cx={57} cy={39} r={6} fill="#FFFFFF" />
+      <circle cx={87} cy={39} r={6} fill="#FFFFFF" />
+      <path
+        d="M58 50 Q72 57 86 50"
+        stroke="#FFFFFF"
+        strokeWidth={4}
+        strokeLinecap="round"
+        fill="none"
+      />
+      {/* feet nubs */}
+      <rect x={51} y={64} width={9} height={11} rx={4.5} fill="#6A3FD6" />
+      <rect x={84} y={64} width={9} height={11} rx={4.5} fill="#6A3FD6" />
+    </svg>
+  );
+}
+
+/** TEMPLATE "AI workflows" aside — cute robot vector in a left column, an
+    eyebrow-style label + a couple of lines on the right. Deliberately NOT a
+    card (no border, no background): it reads as an aside, quieter than
+    CaseStudyCallout. One per section max; the paragraph describes how AI was
+    used at that stage. Reusable across case studies. */
+export function AIWorkflow({
+  children,
+  label = "AI workflows",
+}: {
+  children: ReactNode;
+  label?: string;
+}) {
+  return (
+    <div className="flex max-w-[680px] items-start gap-7">
+      <RobotIllustration className="w-[124px] shrink-0" />
+      <div>
+        <p className="case-study-eyebrows-heading">{label}</p>
+        <Body>{children}</Body>
+      </div>
+    </div>
+  );
+}
+
 /** SCAFFOLD-ONLY placeholder for a screenshot / visual that doesn't exist yet.
     Delete this component once all sections carry real assets. */
 export function PlaceholderShot({

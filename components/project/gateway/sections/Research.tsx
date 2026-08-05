@@ -1,4 +1,4 @@
-import { Container, Kicker, Title, Body, CaseStudyCallout, InsightCard, PlaceholderShot } from "../ui";
+import { AIWorkflow, Container, Kicker, Title, Body, CaseStudyCallout, PlaceholderShot } from "../ui";
 import { Reveal } from "../Reveal";
 
 /* Starting the project: the avenues story (handovers vs disputes), sized up
@@ -40,20 +40,15 @@ export function Research() {
         <Reveal className="mt-12">
           <PlaceholderShot label="the inherited Miro boards, gloriously cluttered (anonymise) — TODO" />
         </Reveal>
-        <Reveal
-          stagger={0.1}
-          className="mt-12 grid grid-cols-1 justify-items-center gap-8 md:grid-cols-3"
-        >
-          {/* TODO(caro): the 3 insights that drove the design — placeholders: */}
-          <InsightCard width="auto" height="auto" label="insight 01" title="TODO: lost information">
-            TODO(caro): what got lost in the sheets, and what it cost downstream.
-          </InsightCard>
-          <InsightCard width="auto" height="auto" label="insight 02" title="TODO: no visibility">
-            TODO(caro): developers couldn&apos;t see handover status, so they chased.
-          </InsightCard>
-          <InsightCard width="auto" height="auto" label="insight 03" title="TODO: scale hurts">
-            TODO(caro): big developers submit in bulk; manual processing breaks.
-          </InsightCard>
+        {/* How AI helped the ramp-up (Caroline, 2026-08-05). NOTE: overlaps with
+            WorkingWithAI's "AI compresses input" card — trim there if it reads
+            twice. */}
+        <Reveal className="mt-12">
+          <AIWorkflow>
+            With AI in Miro I synthesised the sticky notes, then loaded all the
+            interview transcripts into NotebookLM and queried it for everything
+            I needed to know.
+          </AIWorkflow>
         </Reveal>
       </Container>
     </section>
