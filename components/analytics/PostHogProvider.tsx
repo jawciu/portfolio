@@ -21,6 +21,13 @@ function initPostHog() {
   const key = process.env.NEXT_PUBLIC_POSTHOG_KEY;
   if (!key) return;
 
+  // Capture real visitors on the live site only. Skip local dev and any
+  // localhost production build so Caroline's own testing never pollutes the
+  // analytics or session replays.
+  if (process.env.NODE_ENV !== "production") return;
+  const host = window.location.hostname;
+  if (host === "localhost" || host === "127.0.0.1") return;
+
   posthog.init(key, {
     // Reverse proxy: ingest through our own domain, but point the toolbar /
     // "view in PostHog" links at the real EU app host.
