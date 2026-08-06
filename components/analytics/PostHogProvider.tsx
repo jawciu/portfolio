@@ -16,17 +16,17 @@ import { PostHogProvider as PHProvider } from "posthog-js/react";
 
 let initialised = false;
 
-function initPostHog() {
-  if (initialised) return;
+function initPostHog(): boolean {
+  if (initialised) return true;
   const key = process.env.NEXT_PUBLIC_POSTHOG_KEY;
-  if (!key) return;
+  if (!key) return false;
 
   // Capture real visitors on the live site only. Skip local dev and any
   // localhost production build so Caroline's own testing never pollutes the
   // analytics or session replays.
-  if (process.env.NODE_ENV !== "production") return;
+  if (process.env.NODE_ENV !== "production") return false;
   const host = window.location.hostname;
-  if (host === "localhost" || host === "127.0.0.1") return;
+  if (host === "localhost" || host === "127.0.0.1") return false;
 
   posthog.init(key, {
     // Reverse proxy: ingest through our own domain, but point the toolbar /
@@ -60,11 +60,22 @@ function initPostHog() {
   });
 
   initialised = true;
+  return true;
 }
 
 export function PostHogProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
-    initPostHog();
+    const active = initPostHog();
+    if (!active) return;
+
+    // Personal opt-out so Caroline can exclude her own devices from analytics.
+    // Visit the live site once per device/browser with ?ph_optout=1 to stop all
+    // capture there (events, replays, heatmaps); ?ph_optin=1 re-enables it.
+    // PostHog persists the choice in local storage and respects it on every
+    // future visit.
+    const params = new URLSearchParams(window.location.search);
+    if (params.has("ph_optout")) posthog.opt_out_capturing();
+    else if (params.has("ph_optin")) posthog.opt_in_capturing();
   }, []);
 
   return <PHProvider client={posthog}>{children}</PHProvider>;
