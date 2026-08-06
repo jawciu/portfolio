@@ -16,7 +16,9 @@
 
 import dynamic from "next/dynamic";
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { usePostHog } from "posthog-js/react";
 import { getLenis } from "@/components/SmoothScroll";
+import { FOCUS_EVENT } from "./galaxy/paint";
 import { GalaxyTuner } from "./galaxy/GalaxyTuner";
 import { PlanetPainter } from "./galaxy/PlanetPainter";
 import { useGPUTier } from "@/lib/useGPUTier";
@@ -70,6 +72,13 @@ export function SkillsGalaxy() {
   const reduced = usePrefersReducedMotion();
   const tier = useGPUTier();
 
+  // Analytics: the galaxy is a WebGL canvas, so autocapture can't see any
+  // interaction inside it. Capture a few explicit events (no-op when PostHog
+  // isn't initialised — dev / opted-out). Each fires once per mount.
+  const posthog = usePostHog();
+  const viewedRef = useRef(false);
+  const engagedRef = useRef(false);
+
   const deactivate = useCallback(() => {
     setActive(false);
     getLenis()?.start();
@@ -78,7 +87,11 @@ export function SkillsGalaxy() {
   const activate = useCallback(() => {
     setActive(true);
     getLenis()?.stop();
-  }, []);
+    if (!engagedRef.current) {
+      engagedRef.current = true;
+      posthog?.capture("galaxy_engaged");
+    }
+  }, [posthog]);
 
   // Label clicks stop native propagation (they'd corrupt R3F's pointer math),
   // so they signal activation explicitly instead of bubbling to the frame.
@@ -116,12 +129,28 @@ export function SkillsGalaxy() {
       ([entry]) => {
         setVisible(entry.isIntersecting);
         if (!entry.isIntersecting) deactivate();
+        else if (!viewedRef.current) {
+          viewedRef.current = true;
+          posthog?.capture("galaxy_viewed");
+        }
       },
       { threshold: 0.05 },
     );
     io.observe(el);
     return () => io.disconnect();
-  }, [deactivate]);
+  }, [deactivate, posthog]);
+
+  // Which stars people explore: the scene fires galaxy:focus with the focused
+  // node id (or null on unfocus). Capture the id so the analytics show which
+  // skills/projects draw curiosity.
+  useEffect(() => {
+    const fn = (e: Event) => {
+      const node = (e as CustomEvent<string | null>).detail;
+      if (node) posthog?.capture("galaxy_node_focused", { node });
+    };
+    window.addEventListener(FOCUS_EVENT, fn);
+    return () => window.removeEventListener(FOCUS_EVENT, fn);
+  }, [posthog]);
 
   // Never leave the page scroll-locked if the section unmounts mid-activation.
   useEffect(() => () => { getLenis()?.start(); }, []);
