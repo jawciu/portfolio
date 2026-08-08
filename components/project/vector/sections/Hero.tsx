@@ -45,7 +45,12 @@ export function Hero() {
           <div>
             <p className="case-study-hero-label">brand</p>
             <div className="mt-3 flex items-center gap-3">
-              {/* Icon logo intentionally omitted until Vector has one of its own. */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={A("vector-logo.svg")}
+                alt="Vector logo"
+                className="h-6 w-auto object-contain"
+              />
               <span className="font-[family-name:var(--font-mono)] text-[28px] font-bold tracking-wide text-[var(--case-study-ink)]">
                 VECTOR
               </span>
