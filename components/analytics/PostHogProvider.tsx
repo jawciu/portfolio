@@ -63,10 +63,17 @@ function initPostHog(): boolean {
   return true;
 }
 
+// Init at module load (client only), NOT inside the provider's useEffect:
+// React runs child effects before parent effects, so an effect-time init ran
+// AFTER PostHogPageView's $pageview capture and the first pageview of every
+// visit was silently dropped. During SSR `window` is absent and this no-ops.
+if (typeof window !== "undefined") {
+  initPostHog();
+}
+
 export function PostHogProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
-    const active = initPostHog();
-    if (!active) return;
+    if (!initialised) return;
 
     // Personal opt-out so Caroline can exclude her own devices from analytics.
     // Visit the live site once per device/browser with ?ph_optout=1 to stop all
