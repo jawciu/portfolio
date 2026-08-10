@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import { HeroPoster } from "./hero/HeroPoster";
 
 // Scene contains <Canvas> — touches window at import time.
@@ -30,6 +31,35 @@ const Scene = dynamic(
 export function PersistentHero() {
   const pathname = usePathname();
   const isHome = pathname === "/";
+
+  // Pause the frameloop on home too, once the hero is fully covered by opaque
+  // content. About is the last section it shows through (glass sheet); after
+  // About's bottom edge leaves the viewport everything sits on solid bg-bg, so
+  // rendering the fullscreen scene + postprocessing behind it is pure GPU waste
+  // (it starved weaker machines to single-digit fps at the galaxy section).
+  // Hysteresis: pause at bottom <= 0, resume once bottom > 80 — the band is
+  // opaque About footer, so the canvas is live again before it can be seen.
+  // Off-home `covered` may go stale — irrelevant, paused is true there anyway;
+  // re-entering home re-measures on the next frame (one hidden frame at most).
+  const [covered, setCovered] = useState(false);
+  useEffect(() => {
+    if (!isHome) return;
+    const onScroll = () => {
+      const about = document.getElementById("about");
+      if (!about) return;
+      const bottom = about.getBoundingClientRect().bottom;
+      setCovered((prev) => (bottom <= 0 ? true : bottom > 80 ? false : prev));
+    };
+    const raf = requestAnimationFrame(onScroll);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, [isHome]);
+
   return (
     <div
       aria-hidden
@@ -41,7 +71,7 @@ export function PersistentHero() {
       className="fixed inset-0 z-0"
       style={{ opacity: isHome ? 1 : 0, pointerEvents: "none" }}
     >
-      <Scene paused={!isHome} />
+      <Scene paused={!isHome || covered} />
     </div>
   );
 }
