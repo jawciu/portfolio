@@ -63,11 +63,7 @@ export default function Home() {
         <div className="-mt-px bg-bg">
           {/* Career highlights — sits on the black plate directly under About. */}
           <Highlights />
-          {/* Skills galaxy — interactive knowledge graph in a window frame.
-              Self-contained: to re-home it, move this one mount. */}
-          <SkillsGalaxy />
-          <Toolkit />
-          {/* pb adds +88px below the cards before the footer (48/80 base + 88). */}
+          {/* pb adds +88px below the cards (48/80 base + 88). */}
           {/* mobile pt-6 (was 12): halves the toolkit->projects gap on phones;
               md:pt-20 == the old md:py-20 top, so desktop is unchanged. */}
           <section id="work" className="px-8 pt-6 pb-[136px] md:px-12 md:pt-20 md:pb-[168px]">
@@ -75,6 +71,10 @@ export default function Home() {
               <ProjectShowcasePrototype />
             </Suspense>
           </section>
+          {/* Skills galaxy — interactive knowledge graph in a window frame.
+              Self-contained: to re-home it, move this one mount. */}
+          <SkillsGalaxy />
+          <Toolkit />
         </div>
       </div>
     </>
