@@ -13,11 +13,11 @@ gsap.registerPlugin(ScrollTrigger, useGSAP);
 // Caroline's voice — kept casual on purpose (lowercase starts + unicode
 // sprinkles are intentional). Paragraph breaks survive via whitespace-pre-line
 // on the StreamingText element; the streaming reveal is length-agnostic.
-const BIO = `I'm a multi-skilled product designer. I solve problems quickly, listening to users through qualitative and quantitative methods. ˚ ⊹ ｡ ·
+const BIO = `I solve problems quickly, listening to users through qualitative and quantitative methods. I don't chase pixel-perfect. I ship and iterate, and the craft means I do it fast and well. ˚ ⊹ ｡ ·
 
-✧ A background in fashion and graphics means real attention to detail and an eye for design. I don't chase pixel-perfect. I ship and iterate, and the craft means I do it fast and well. ♡
+✧ Fashion trained my eye, the startup years trained my product judgement, and AI gave me the means to build it all myself. The backend too. Vector is live, and I wrote all of it. ♡
 
-❀ I'm forever learning, always on a side quest, building skills and finding tools while shipping the next thing. ° ◦
+❀ New domains are the fun part. I pick things up fast and put them to work while they're still new. ° ◦
 
 ☆⋆✦ right now: vibing with Claude, going deeper on code architecture and 3D, trying to land a handstand and getting way too competitive at ultimate frisbee. ✿`;
 

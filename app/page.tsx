@@ -35,16 +35,44 @@ export default function Home() {
 
         {/* Hero copy — sits lower-left, like the comp */}
         <section className="flex-1 flex flex-col justify-center px-8 md:px-12">
-          <div className="max-w-3xl flex flex-col gap-4">
+          <div className="max-w-4xl flex flex-col gap-4">
             {/* role line */}
             <div className="flex items-center gap-4 mb-7 font-mono text-sm md:text-base tracking-[0.25em] max-sm:gap-2.5 max-sm:text-xs max-sm:tracking-[0.12em] uppercase text-fg/85">
               <span aria-hidden className="inline-block w-3.5 h-3.5 bg-fg/90" />
-              <span>Product Designer</span>
+              <span>Founding designer</span>
               <span aria-hidden className="text-fg/40">•</span>
-              <span>AI Builder</span>
+              <span>Design engineer</span>
             </div>
 
             <HeroCopy />
+
+            {/* Subheading — the positioning copy (Caroline-approved 2026-08-17).
+                Static on purpose: only the intro + headline get the typing effect. */}
+            <div className="mt-4 flex flex-col gap-3 font-body text-lg md:text-xl leading-relaxed text-fg/75">
+              <p>
+                I&rsquo;m a designer with{" "}
+                <strong className="text-fg font-semibold">13 years</strong> across
+                physical and digital products. I started in luxury fashion,
+                designing garments, graphics and brand identities for Alexander
+                McQueen, Burberry and Casablanca. Now I design and{" "}
+                <strong className="text-fg font-semibold">build AI products</strong>,
+                front end to backend. <span aria-hidden>˚ ⊹ ｡ ·</span>
+              </p>
+              <p>
+                <span aria-hidden>✧ </span>I spent two years as the{" "}
+                <strong className="text-fg font-semibold">founding designer at a pre-seed startup</strong>,
+                owning discovery, research and delivery, with 0-to-1 launches that
+                lifted engagement by 30%.
+              </p>
+              <p>
+                <span aria-hidden>✦ </span>Today I build AI tools at E.ON Next,
+                where my squad owns its products end to end. The knowledge
+                assistant I designed reached a{" "}
+                <strong className="text-fg font-semibold">97% would-recommend</strong>{" "}
+                score and a green light for company-wide rollout.{" "}
+                <span aria-hidden>° ◦</span>
+              </p>
+            </div>
           </div>
         </section>
       </main>
