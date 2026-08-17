@@ -45,7 +45,7 @@ export function Footer() {
             target="_blank"
             rel="noreferrer"
             aria-label="Portfolio source on GitHub (opens in a new tab)"
-            className="font-mono text-xs tracking-[0.2em] text-fg/70 transition-colors hover:text-fg md:text-sm"
+            className="font-mono text-xs tracking-[0.2em] text-[#94FFD9] transition-colors hover:text-fg md:text-sm"
           >
             github.com/jawciu/portfolio
           </a>
@@ -79,7 +79,7 @@ export function Footer() {
               target="_blank"
               rel="noreferrer"
               aria-label="LinkedIn - Caroline Jaworsky"
-              className="inline-flex h-11 w-11 items-center justify-center rounded-md text-fg transition-colors hover:bg-fg/10"
+              className="inline-flex h-11 w-11 items-center justify-center rounded-md text-[#94FFD9] transition-colors hover:bg-fg/10"
             >
               <svg
                 width="24"
@@ -99,7 +99,7 @@ export function Footer() {
             <a
               href="mailto:jaworskycaroline@gmail.com"
               aria-label="Email Caroline"
-              className="inline-flex h-11 w-11 items-center justify-center rounded-md text-fg transition-colors hover:bg-fg/10"
+              className="inline-flex h-11 w-11 items-center justify-center rounded-md text-[#94FFD9] transition-colors hover:bg-fg/10"
             >
               <svg
                 width="24"
@@ -123,7 +123,7 @@ export function Footer() {
               target="_blank"
               rel="noreferrer"
               aria-label="GitHub - jawciu (opens in a new tab)"
-              className="inline-flex h-11 w-11 items-center justify-center rounded-md text-fg transition-colors hover:bg-fg/10"
+              className="inline-flex h-11 w-11 items-center justify-center rounded-md text-[#94FFD9] transition-colors hover:bg-fg/10"
             >
               <svg
                 width="24"

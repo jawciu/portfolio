@@ -7,6 +7,33 @@ import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 // against elapsed time (chars-per-second) rather than a per-char setTimeout, so the
 // pace is framerate-independent and stays smooth. Starts when `active` flips true
 // (wired to useInView in About). Reduced motion -> full text immediately.
+// Opt-in accent: any character present in `accentChars` renders wrapped in a
+// span with `accentClass` (used by About to tint the unicode sparkles mint).
+// Callers that don't pass it are byte-identical to before.
+function renderAccented(s: string, chars?: string, cls?: string) {
+  if (!chars || !cls) return s;
+  const out: React.ReactNode[] = [];
+  let buf = "";
+  let key = 0;
+  for (const ch of s) {
+    if (chars.includes(ch)) {
+      if (buf) {
+        out.push(buf);
+        buf = "";
+      }
+      out.push(
+        <span key={key++} className={cls}>
+          {ch}
+        </span>,
+      );
+    } else {
+      buf += ch;
+    }
+  }
+  if (buf) out.push(buf);
+  return out;
+}
+
 export function StreamingText({
   text,
   active,
@@ -14,6 +41,8 @@ export function StreamingText({
   delay = 0,
   className = "",
   style,
+  accentChars,
+  accentClass,
 }: {
   text: string;
   active: boolean;
@@ -23,6 +52,8 @@ export function StreamingText({
   delay?: number;
   className?: string;
   style?: React.CSSProperties;
+  accentChars?: string;
+  accentClass?: string;
 }) {
   const reduced = usePrefersReducedMotion();
   const [count, setCount] = useState(0);
@@ -55,7 +86,7 @@ export function StreamingText({
     <p className={className} style={style}>
       {/* Full text for assistive tech; the streamed copy is decorative. */}
       <span className="sr-only">{text}</span>
-      <span aria-hidden>{text.slice(0, total)}</span>
+      <span aria-hidden>{renderAccented(text.slice(0, total), accentChars, accentClass)}</span>
       {active && !reduced && !done && count > 0 && (
         <span
           aria-hidden

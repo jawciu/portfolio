@@ -286,6 +286,8 @@ export function About() {
           text={BIO}
           active={inView}
           className="whitespace-pre-line font-body text-lg leading-relaxed text-fg/90 md:text-xl"
+          accentChars={"˚⊹｡·✧♡❀°◦☆⋆✦✿"}
+          accentClass="text-[#94FFD9]"
         />
       </div>
       </div>

@@ -34,7 +34,10 @@ export default function Home() {
         {/* Top bar lives in the shared sticky <NavBar /> (root layout) now. */}
 
         {/* Hero copy — sits lower-left, like the comp */}
-        <section className="flex-1 flex flex-col justify-center px-8 md:px-12">
+        {/* max-md: content is taller than a phone viewport, so justify-center
+            slid the top under the fixed nav — anchor to top with clearance
+            instead. Desktop (md+) unchanged. */}
+        <section className="flex-1 flex flex-col justify-center px-8 md:px-12 max-md:justify-start max-md:pt-28 max-md:pb-12">
           <div className="max-w-4xl flex flex-col gap-4">
             {/* role line */}
             <div className="flex items-center gap-4 mb-7 font-mono text-sm md:text-base tracking-[0.25em] max-sm:gap-2.5 max-sm:text-xs max-sm:tracking-[0.12em] uppercase text-fg/85">
@@ -48,7 +51,7 @@ export default function Home() {
 
             {/* Subheading — the positioning copy (Caroline-approved 2026-08-17).
                 Static on purpose: only the intro + headline get the typing effect. */}
-            <div className="mt-10 max-w-[47rem] flex flex-col gap-6 font-body text-lg md:text-xl leading-relaxed text-fg/75">
+            <div className="mt-10 max-w-[47rem] flex flex-col gap-6 font-body text-lg md:text-xl leading-relaxed text-fg/75 max-md:mt-6 max-md:gap-4 max-md:text-base">
               <p>
                 I&rsquo;m a designer with{" "}
                 <strong className="text-fg font-semibold">13 years</strong> across
