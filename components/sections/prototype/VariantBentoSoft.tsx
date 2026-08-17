@@ -55,8 +55,8 @@ export function VariantBentoSoft() {
           const open = i === hot;
           const onActivate = () => setHot(i);
 
-          // Project 01 (E.ON Next) — the real, reusable card.
-          if (i === 0) {
+          // Wiki Whisperer (E.ON Next) — the real, reusable card.
+          if (p.slug === "nest-agentic-rag") {
             return (
               <ProjectCard
                 key={p.slug}
@@ -84,8 +84,8 @@ export function VariantBentoSoft() {
             );
           }
 
-          // Project 02 (cog_adhd) — reusable card; amber→green blob, two-phone visual.
-          if (i === 1) {
+          // cog_adhd — reusable card; amber→green blob, two-phone visual.
+          if (p.slug === "cog-adhd") {
             return (
               <ProjectCard
                 key={p.slug}
@@ -117,8 +117,8 @@ export function VariantBentoSoft() {
             );
           }
 
-          // Project 03 (synapse) — reusable card; purple→magenta blob, app screenshot.
-          if (i === 2) {
+          // synapse — reusable card; purple→magenta blob, app screenshot.
+          if (p.slug === "synapse") {
             return (
               <ProjectCard
                 key={p.slug}
@@ -154,8 +154,8 @@ export function VariantBentoSoft() {
             );
           }
 
-          // Project 04 (vector) — reusable card layout; source + live-product CTAs.
-          if (i === 3) {
+          // vector — reusable card layout; source + live-product CTAs.
+          if (p.slug === "project-05") {
             return (
               <ProjectCard
                 key={p.slug}
@@ -183,9 +183,9 @@ export function VariantBentoSoft() {
             );
           }
 
-          // Project 05 (AI design system, E.ON Next) — reusable card layout.
+          // AI design system (E.ON Next) — reusable card layout.
           // Wiki Whisperer blob colours; case study still to come.
-          if (i === 4) {
+          if (p.slug === "project-04") {
             return (
               <ProjectCard
                 key={p.slug}

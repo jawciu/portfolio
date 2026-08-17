@@ -2,15 +2,12 @@
 
 import { useEffect, useState } from "react";
 
-// The intro types itself in on first paint — "Hi I'm Caroline," then the
-// headline — as if someone were keying it in live. Iosevka Charon
-// (terminal-ish, quasi-proportional) sells the effect.
-const INTRO = "Hi I’m Caroline,";
+// The headline types itself in on first paint — as if someone were keying it
+// in live. Iosevka Charon (terminal-ish, quasi-proportional) sells the effect.
+// ("Hi I'm Caroline," intro line removed 2026-08-17 per Caroline.)
 const HEADLINE = "I turn early concepts into\nlaunch-ready products";
 
 const START_DELAY = 350; // ms before the first character
-const INTRO_SPEED = 55; // ms per character
-const PAUSE = 450; // beat between intro and headline
 const HEADLINE_SPEED = 42;
 
 function Caret({ blink }: { blink: boolean }) {
@@ -26,20 +23,17 @@ function Caret({ blink }: { blink: boolean }) {
 }
 
 export function HeroCopy() {
-  const [introLen, setIntroLen] = useState(0);
   const [headLen, setHeadLen] = useState(0);
   const [done, setDone] = useState(false);
 
   useEffect(() => {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduce) {
-      setIntroLen(INTRO.length);
       setHeadLen(HEADLINE.length);
       setDone(true);
       return;
     }
 
-    let i = 0;
     let h = 0;
     let timer: ReturnType<typeof setTimeout>;
 
@@ -53,43 +47,22 @@ export function HeroCopy() {
       }
     };
 
-    const typeIntro = () => {
-      i += 1;
-      setIntroLen(i);
-      if (i < INTRO.length) {
-        timer = setTimeout(typeIntro, INTRO_SPEED);
-      } else {
-        timer = setTimeout(typeHeadline, PAUSE);
-      }
-    };
-
-    timer = setTimeout(typeIntro, START_DELAY);
+    timer = setTimeout(typeHeadline, START_DELAY);
     return () => clearTimeout(timer);
   }, []);
-
-  const introTyping = introLen < INTRO.length;
-  const headlineStarted = headLen > 0;
-  // Caret lives on the intro line until the headline starts keying in.
-  const caretOnIntro = !headlineStarted && !done;
 
   return (
     <div className="font-hero">
       {/* Accessible, instantly-complete copy for screen readers */}
-      <p className="sr-only">
-        {INTRO} {HEADLINE.replace("\n", " ")}
-      </p>
+      <p className="sr-only">{HEADLINE.replace("\n", " ")}</p>
 
       <div aria-hidden className="flex flex-col gap-4">
-        <p className="text-2xl md:text-4xl text-fg font-black">
-          {INTRO.slice(0, introLen)}
-          {caretOnIntro && <Caret blink={!introTyping} />}
-        </p>
         {/* Desktop keeps the authored break after "into" (pre-line renders the \n).
             Below md the \n collapses to a space (whitespace-normal) so the headline
             wraps naturally to three lines instead of stranding INTO alone. */}
         <h1 className="font-bold uppercase text-[clamp(2rem,5.2vw,4.25rem)] leading-[1.02] tracking-tight text-fg whitespace-pre-line max-md:whitespace-normal min-h-[2.04em]">
           {HEADLINE.slice(0, headLen)}
-          {headlineStarted && <Caret blink={done} />}
+          <Caret blink={done} />
         </h1>
       </div>
     </div>

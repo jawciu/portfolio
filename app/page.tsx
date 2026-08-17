@@ -48,29 +48,27 @@ export default function Home() {
 
             {/* Subheading — the positioning copy (Caroline-approved 2026-08-17).
                 Static on purpose: only the intro + headline get the typing effect. */}
-            <div className="mt-4 flex flex-col gap-3 font-body text-lg md:text-xl leading-relaxed text-fg/75">
+            <div className="mt-10 max-w-[47rem] flex flex-col gap-6 font-body text-lg md:text-xl leading-relaxed text-fg/75">
               <p>
                 I&rsquo;m a designer with{" "}
                 <strong className="text-fg font-semibold">13 years</strong> across
                 physical and digital products. I started in luxury fashion,
                 designing garments, graphics and brand identities for Alexander
-                McQueen, Burberry and Casablanca. Now I design and{" "}
-                <strong className="text-fg font-semibold">build AI products</strong>,
-                front end to backend. <span aria-hidden>˚ ⊹ ｡ ·</span>
+                McQueen, Burberry and Casablanca. <span aria-hidden className="text-[#94FFD9]">˚ ⊹ ｡ ·</span>
               </p>
               <p>
-                <span aria-hidden>✧ </span>I spent two years as the{" "}
+                <span aria-hidden className="text-[#94FFD9]">✧ </span>I spent two years as the{" "}
                 <strong className="text-fg font-semibold">founding designer at a pre-seed startup</strong>,
                 owning discovery, research and delivery, with 0-to-1 launches that
                 lifted engagement by 30%.
               </p>
               <p>
-                <span aria-hidden>✦ </span>Today I build AI tools at E.ON Next,
+                <span aria-hidden className="text-[#94FFD9]">✦ </span>Today I build AI tools at E.ON Next,
                 where my squad owns its products end to end. The knowledge
                 assistant I designed reached a{" "}
                 <strong className="text-fg font-semibold">97% would-recommend</strong>{" "}
                 score and a green light for company-wide rollout.{" "}
-                <span aria-hidden>° ◦</span>
+                <span aria-hidden className="text-[#94FFD9]">° ◦</span>
               </p>
             </div>
           </div>

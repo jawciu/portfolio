@@ -1,6 +1,8 @@
-// Carousel data. Index 0 is the one finished card (Nest); the rest are
-// scaffolding placeholders to flesh out in later design passes — drop in a
-// company, copy, tags and an `image` when each is ready and remove `placeholder`.
+// Carousel data. ARRAY ORDER = display order (cards dispatch by slug in
+// VariantBentoSoft, so reordering here is all it takes). Current order is the
+// founding-role screen order (2026-08-17): Vector (solo, shipped, full-stack)
+// first, then Wiki Whisperer, Cog, Synapse, AI DS. Gateway slots 4th once its
+// study ships.
 export type Project = {
   slug: string;
   company: string;
@@ -15,6 +17,14 @@ export type Project = {
 };
 
 export const projects: Project[] = [
+  {
+    slug: "project-05",
+    company: "vector",
+    title: "Rethinking time-to-value\nin B2B SaaS onboarding",
+    description:
+      "built an ai-native vendor-customer platform that makes onboarding effortless on both sides",
+    tags: ["Product", "UX/UI", "AI", "Full-stack"],
+  },
   {
     slug: "nest-agentic-rag",
     company: "E.ON Next",
@@ -41,14 +51,6 @@ export const projects: Project[] = [
       "built a memory-first reflection agent for the london langchain x surrealdb hackathon",
     tags: ["Product", "AI Architecture", "Backend"],
     accent: "linear-gradient(120deg, #C24E86 0%, #6D1B76 100%)",
-  },
-  {
-    slug: "project-05",
-    company: "vector",
-    title: "Rethinking time-to-value\nin B2B SaaS onboarding",
-    description:
-      "built an ai-native vendor-customer platform that makes onboarding effortless on both sides",
-    tags: ["Product", "UX/UI", "AI", "Full-stack"],
   },
   {
     slug: "project-04",

@@ -75,6 +75,20 @@ export const backdropFragment = /* glsl */ `
     // screen). Desktop passes exactly 0.0 -> no-op, rendering bit-identical.
     P.x += uCometShift;
 
+    // FIREBALL ANCHOR + TRAJECTORY (Option A, 2026-08-17): on landscape the
+    // comet is MIRRORED (nose leads on the RIGHT) and tilted ~20deg so it reads
+    // as falling toward the orb in the lower right. head = the NOSE position.
+    // ta = tail direction (the cap chain streams that way on screen), tb = its
+    // perpendicular; the /0.85 renders the whole comet 15% smaller for depth.
+    // Knobs: head anchor, the ta/tb angle pair, the 0.85 scale.
+    // Portrait keeps the original top-left anchor (+ uCometShift crop) so
+    // mobile renders exactly as before.
+    vec2 head = (aspect >= 1.0) ? vec2(aspect - 0.08, 0.30) : vec2(0.150, 0.195);
+    vec2 ta = vec2(-0.940, -0.342);
+    vec2 tb = vec2(0.342, -0.940);
+    vec2 dHf = P - head;
+    vec2 Pfire = (aspect >= 1.0) ? head + vec2(dot(dHf, ta), dot(dHf, tb)) / 3.18 : P;
+
     // mouse-driven REVEAL — same feel as hovering the orbs: as the cursor moves toward
     // the fireball (screen LEFT) each circle unmasks a little more. 0 at centre/right
     // (baseline), opening up to ~0.20 of extra reveal at the far-left edge. One-sided so
@@ -85,11 +99,18 @@ export const backdropFragment = /* glsl */ `
     // fireball reacted to the same motion). mY is the cursor in the fireball's y-down space.
     float mY   = 1.0 - uMouse.y;
     float zone = 1.0 - smoothstep(0.58, 0.82, mY); // 1 near the fireball (top) -> 0 over the orbs (bottom)
-    float hoverReveal = max(0.5 - uMouse.x, 0.0) * 0.40 * zone;
+    // Reveal direction follows the fireball's side: toward the RIGHT on
+    // landscape (comet now lives right), toward the LEFT on portrait (original).
+    float hoverReveal = ((aspect >= 1.0) ? max(uMouse.x - 0.5, 0.0) : max(0.5 - uMouse.x, 0.0)) * 0.40 * zone;
 
     vec3 col = uBg;
     // faint warm bloom hugging the fireball head + cool fill bottom-right (mood)
-    col += vec3(0.09,0.035,0.045) * smoothstep(0.7,0.0,length(P-vec2(0.20,0.20)));
+    // Head bloom. Landscape radius reaches 1.25 so the comet's wash meets the
+    // orb slices' glow — without it a dark unlit "moat" rings the nose where
+    // neither element's light reaches. Portrait keeps the original 0.7.
+    float bloomR = (aspect >= 1.0) ? 1.25 : 0.7;
+    float bloomAmp = (aspect >= 1.0) ? 1.15 : 1.0;
+    col += vec3(0.09,0.035,0.045) * bloomAmp * smoothstep(bloomR,0.0,length(P-(head+vec2(0.05,0.005))));
     col += vec3(0.02,0.025,0.06) * smoothstep(1.1,0.0,length(P-vec2(1.4,0.85)));
 
     // ---- FIREWALL -------------------------------------------------------
@@ -101,7 +122,8 @@ export const backdropFragment = /* glsl */ `
     // notches in the reference). Radii grow left->right; colour orange->...->blue.
     {
       const int N = 7;
-      vec2  head  = vec2(0.150, 0.195);
+      // head anchor + Pfire frame declared above (aspect-dependent).
+      vec2 P = Pfire; // shadow: the whole comet renders in the mirrored, tilted frame
       float breathe = 1.0 + 0.030 * sin(uTime * 0.6);
       float wob = (fbm(P * 7.0 + uTime * 0.05) - 0.5);   // shared lumpy-edge wobble
 
@@ -207,9 +229,16 @@ export const backdropFragment = /* glsl */ `
       // magenta-pink halo ringing the head — sits OUTSIDE the orange core so it
       // doesn't redden it (a soft annulus around the body, not on top of it).
       {
+        // Landscape: wider + stronger ring to fill the luminance trough between
+        // the head's glow falloff and the orb slices' glow (the perceived dark
+        // halo). Portrait keeps the original subtle ring.
         float hd = length(P - head);
-        float ring = smoothstep(0.095, 0.18, hd) * smoothstep(0.30, 0.18, hd);
-        col += vec3(0.22,0.02,0.12) * ring * 0.28;
+        float ringIn  = (aspect >= 1.0) ? 0.04 : 0.095;
+        float ringMid = (aspect >= 1.0) ? 0.10 : 0.18;
+        float ringOut = (aspect >= 1.0) ? 0.42 : 0.30;
+        float ringAmp = (aspect >= 1.0) ? 0.32 : 0.28;
+        float ring = smoothstep(ringIn, ringMid, hd) * smoothstep(ringOut, ringMid, hd);
+        col += vec3(0.22,0.02,0.12) * ring * ringAmp;
       }
       // broad deep-blue halo wrapping the whole chain (linear)
       float chainY = abs(P.y - head.y);

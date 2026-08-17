@@ -67,6 +67,13 @@ const glslCommon = /* glsl */ `
     col *= uBright * (1.0 + 0.6 * (wOrange / sum) + 0.36 * (wMag / sum)
                           + 0.2 * (wYellow / sum) + 0.12 * (wPale / sum));
     alpha = 1.0 - smoothstep(uEdge, uEdge + uFeather, r);
+    // Outside the magenta band, opacity tracks the glow's own brightness: the
+    // dim outer ring used to stay near-opaque and DARKENED bright content
+    // behind it (read as a dark halo where the row overlaps the fireball).
+    // Over black this is visually identical; over the comet the fringe fades
+    // instead of shadowing.
+    float glowZone = smoothstep(uMagR, uMagR + uBandS * 2.2, r);
+    alpha *= mix(1.0, clamp(wMag * 1.6, 0.0, 1.0), glowZone);
     return col;
   }
 `;
@@ -201,6 +208,8 @@ type OrbDef = {
 // and oscillating. Positions are chosen so that even at each orb's WIDEST wax its
 // left edge stays ~0.08 short of the orb on its left (almost touching, never merging).
 // Orb 1 carries a negative bias + larger amp so it thins to nothing and returns.
+// (Row-level mirror/tilt lives on the wrapper groups in <DistortedOrb>, NOT here —
+// these local positions are the original composition and stay untouched.)
 const LEFT_ORBS: OrbDef[] = [
   {
     // A very THIN sliver that gently breathes, then fully vanishes for ~0.5s each
@@ -289,6 +298,7 @@ function Orb({
         depthWrite={false}
         blending={THREE.NormalBlending}
         toneMapped={false}
+        side={THREE.DoubleSide}
       />
     </mesh>
   );
@@ -367,6 +377,7 @@ function MergedOrbs({
         depthWrite={false}
         blending={THREE.NormalBlending}
         toneMapped={false}
+        side={THREE.DoubleSide}
       />
     </mesh>
   );
@@ -409,11 +420,21 @@ export function DistortedOrb({
     smoothMouse.current.lerp(mouse.current, 0.25);
   });
   return (
-    <group ref={groupRef} position={[-0.12, ORB_BASE_Y, 0]} scale={orbScale}>
-      {LEFT_ORBS.map((def, i) => (
-        <Orb key={i} def={def} order={i} mouse={smoothMouse} reduced={reduced} />
-      ))}
-      <MergedOrbs mouse={smoothMouse} reduced={reduced} order={3} />
+    <group ref={groupRef} position={[2.5, ORB_BASE_Y, 0]} scale={orbScale}>
+      {/* Whole-row transform (2026-08-17, Caroline's direction): the ORIGINAL
+          composition, treated as ONE element — mirrored so the full circle sits
+          at the LEFT end and the biggest slice at the RIGHT, tilted so the row
+          ascends toward the top-right (counter-diagonal to the comet), and
+          scaled up so it spans further. Knobs: outer position x (1.9), the
+          rotation z (0.22), the scale (1.5). Inner [-1,1,1] = the mirror. */}
+      <group position={[0, 0.59, 0]} rotation={[0, 0, 0.32]} scale={1.05}>
+        <group scale={[-1, 1, 1]}>
+          {LEFT_ORBS.map((def, i) => (
+            <Orb key={i} def={def} order={i} mouse={smoothMouse} reduced={reduced} />
+          ))}
+          <MergedOrbs mouse={smoothMouse} reduced={reduced} order={3} />
+        </group>
+      </group>
     </group>
   );
 }

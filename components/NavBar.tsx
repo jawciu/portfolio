@@ -57,8 +57,8 @@ export function NavBar() {
     : "bg-transparent";
   // dark site: dim by default, brighten on hover. light pages: keep the default
   // tone, deepen toward black on hover.
-  const pathColor = light ? "text-[#1a1a1a]/65" : "text-fg/70";
-  const navColor = light ? "text-[#1a1a1a]/65" : "text-fg/60";
+  const pathColor = light ? "text-[#1a1a1a]/65" : "text-[#94FFD9]";
+  const navColor = light ? "text-[#1a1a1a]/65" : "text-[#94FFD9]";
   const hover = light ? "hover:text-black" : "hover:text-fg";
 
   return (
