@@ -55,14 +55,8 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: "Caroline Jaworsky",
-    images: [
-      {
-        url: "/og.png",
-        width: 1200,
-        height: 630,
-        alt: "Caroline Jaworsky - founding designer and design engineer. I turn early concepts into launch-ready products.",
-      },
-    ],
+    // og:image comes from the file convention: app/opengraph-image.png (and
+    // app/twitter-image.png) — Caroline's designed card. Don't add images here.
   },
   twitter: { card: "summary_large_image" },
 };

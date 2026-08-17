@@ -52,33 +52,9 @@ export default function Home() {
               <span className="max-md:pl-[30px] max-sm:pl-6">Design engineer</span>
             </div>
 
+            {/* Headline + intro paragraphs live together in HeroCopy now: the
+                headline types, then the paragraphs STREAM in on one timeline. */}
             <HeroCopy />
-
-            {/* Subheading — the positioning copy (Caroline-approved 2026-08-17).
-                Static on purpose: only the intro + headline get the typing effect. */}
-            <div className="mt-10 max-w-[47rem] flex flex-col gap-6 font-body text-lg md:text-xl leading-relaxed text-fg/75 max-md:mt-6 max-md:gap-4 max-md:text-base">
-              <p>
-                I&rsquo;m a designer with{" "}
-                <strong className="text-fg font-semibold">13 years</strong> across
-                physical and digital products. I started in luxury fashion,
-                designing garments, graphics and brand identities for Alexander
-                McQueen, Burberry and Casablanca. <span aria-hidden className="text-[#94FFD9]">˚ ⊹ ｡ ·</span>
-              </p>
-              <p>
-                <span aria-hidden className="text-[#94FFD9]">✧ </span>I spent two years as the{" "}
-                <strong className="text-fg font-semibold">founding designer at a pre-seed startup</strong>,
-                owning discovery, research and delivery, with 0-to-1 launches that
-                lifted engagement by 30%.
-              </p>
-              <p>
-                <span aria-hidden className="text-[#94FFD9]">✦ </span>Today I build AI tools at E.ON Next,
-                where my squad owns its products end to end. The knowledge
-                assistant I designed reached a{" "}
-                <strong className="text-fg font-semibold">97% would-recommend</strong>{" "}
-                score and a green light for company-wide rollout.{" "}
-                <span aria-hidden className="text-[#94FFD9]">° ◦</span>
-              </p>
-            </div>
           </div>
         </section>
       </main>
