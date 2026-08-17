@@ -40,18 +40,25 @@ export default function Home() {
         <section className="flex-1 flex flex-col justify-center px-8 md:px-12 max-md:justify-start max-md:pt-28 max-md:pb-12">
           <div className="max-w-4xl flex flex-col gap-4">
             {/* role line */}
-            <div className="flex items-center gap-4 mb-7 font-mono text-sm md:text-base tracking-[0.25em] max-sm:gap-2.5 max-sm:text-xs max-sm:tracking-[0.12em] uppercase text-fg/85">
-              <span aria-hidden className="inline-block w-3.5 h-3.5 bg-fg/90" />
-              <span>Founding designer</span>
-              <span aria-hidden className="text-fg/40">•</span>
-              <span>Design engineer</span>
+            {/* max-md: the two titles stack vertically (dot hidden, second line
+                indented to align with the first title's text). Desktop: same
+                single row as before. */}
+            <div className="flex items-center gap-4 mb-7 font-mono text-sm md:text-base tracking-[0.25em] max-sm:text-xs max-sm:tracking-[0.12em] uppercase text-fg/85 max-md:flex-col max-md:items-start max-md:gap-1">
+              <div className="flex items-center gap-4 max-sm:gap-2.5">
+                <span aria-hidden className="inline-block w-3.5 h-3.5 bg-fg/90" />
+                <span>Founding designer</span>
+              </div>
+              <span aria-hidden className="text-fg/40 max-md:hidden">•</span>
+              <span className="max-md:pl-[30px] max-sm:pl-6">Design engineer</span>
             </div>
 
             <HeroCopy />
 
             {/* Subheading — the positioning copy (Caroline-approved 2026-08-17).
                 Static on purpose: only the intro + headline get the typing effect. */}
-            <div className="mt-10 max-w-[47rem] flex flex-col gap-6 font-body text-lg md:text-xl leading-relaxed text-fg/75 max-md:mt-6 max-md:gap-4 max-md:text-base">
+            {/* max-md:mt-[26vh]: a deliberate break between headline and copy
+                where the (repositioned) portrait fireball shows through. */}
+            <div className="mt-10 max-w-[47rem] flex flex-col gap-6 font-body text-lg md:text-xl leading-relaxed text-fg/75 max-md:mt-[26vh] max-md:gap-4 max-md:text-base">
               <p>
                 I&rsquo;m a designer with{" "}
                 <strong className="text-fg font-semibold">13 years</strong> across

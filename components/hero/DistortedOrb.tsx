@@ -407,7 +407,13 @@ export function DistortedOrb({
   const groupRef = useRef<THREE.Group>(null);
   // Canvas width (reactive on resize) -> halve the row on phones, 1 on desktop.
   const canvasWidth = useThree((s) => s.size.width);
-  const orbScale = canvasWidth < MOBILE_MAX_WIDTH ? MOBILE_ORB_SCALE : 1;
+  const isMobile = canvasWidth < MOBILE_MAX_WIDTH;
+  const orbScale = isMobile ? MOBILE_ORB_SCALE : 1;
+  // Mobile: the desktop group offset (x 2.5) pushes the whole row off a narrow
+  // portrait frame's right edge — recentre it so the row is actually visible;
+  // it rises into view on scroll (after the intro copy) via the existing
+  // progress choreography. Desktop keeps 2.5.
+  const orbX = isMobile ? 0.15 : 2.5;
   // Smoothed cursor shared by the orbs. `pointermove` fires irregularly, so reading the
   // raw ref every frame makes the parallax JUMP between events (reads as stutter/glitch).
   // Lerp it per-frame for fluid motion — kept snappy (0.25) so it doesn't feel laggy.
@@ -420,7 +426,7 @@ export function DistortedOrb({
     smoothMouse.current.lerp(mouse.current, 0.25);
   });
   return (
-    <group ref={groupRef} position={[2.5, ORB_BASE_Y, 0]} scale={orbScale}>
+    <group ref={groupRef} position={[orbX, ORB_BASE_Y, 0]} scale={orbScale}>
       {/* Whole-row transform (2026-08-17, Caroline's direction): the ORIGINAL
           composition, treated as ONE element — mirrored so the full circle sits
           at the LEFT end and the biggest slice at the RIGHT, tilted so the row
