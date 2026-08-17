@@ -29,7 +29,7 @@ export function Architecture() {
         <Reveal>
           <Kicker>Under the hood</Kicker>
           <Title>
-            Putting together Saas <br/>
+            Putting together SaaS <br/>
             product from scratch
           </Title>
         </Reveal>
@@ -38,7 +38,7 @@ export function Architecture() {
             heading's baked 48px mb (larger wins, they don't add). */}
         <Reveal className="mt-16 max-w-[860px]">
           <CaseStudyCallout stream>
-            {"I built Vector to grow my range as a designer who can also ship. Every architectural decision was a conscious choice and a learning experience."}
+            {"I made every architecture call in Vector myself, and the product is live. Agents wrote syntax. The decisions about what got built, and why, were mine."}
           </CaseStudyCallout>
         </Reveal>
 

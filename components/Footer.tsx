@@ -61,9 +61,8 @@ export function Footer() {
           </h2>
 
           <p className="case-study-body-md mt-5">
-            I find great joy in working with others and testing my skills in new
-            environments. Whether you would like to collaborate on a project or
-            simply want to chat, feel free to reach out to me.
+            I&rsquo;m drawn to early-stage teams where design and code are the
+            same job. Building something? Say hello.
           </p>
 
           <p className="mt-7 font-[family-name:var(--font-body)] text-base font-bold text-fg">

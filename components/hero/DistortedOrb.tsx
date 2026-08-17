@@ -409,11 +409,10 @@ export function DistortedOrb({
   const canvasWidth = useThree((s) => s.size.width);
   const isMobile = canvasWidth < MOBILE_MAX_WIDTH;
   const orbScale = isMobile ? MOBILE_ORB_SCALE : 1;
-  // Mobile: the desktop group offset (x 2.5) pushes the whole row off a narrow
-  // portrait frame's right edge — recentre it so the row is actually visible;
-  // it rises into view on scroll (after the intro copy) via the existing
-  // progress choreography. Desktop keeps 2.5.
-  const orbX = isMobile ? 0.15 : 2.5;
+  // Mobile keeps the desktop offset, which parks the row off the right edge:
+  // phones show only the fireball (a recentred on-screen mobile row was tried
+  // 2026-08-17 and reverted same day, Caroline's call).
+  const orbX = 2.5;
   // Smoothed cursor shared by the orbs. `pointermove` fires irregularly, so reading the
   // raw ref every frame makes the parallax JUMP between events (reads as stutter/glitch).
   // Lerp it per-frame for fluid motion — kept snappy (0.25) so it doesn't feel laggy.

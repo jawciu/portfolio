@@ -563,7 +563,8 @@ export const GALAXY_NODES: GalaxyNode[] = [
     "type": "skill",
     "name": "AI architecture",
     "cluster": "ai",
-    "size": 2
+    "size": 2,
+    "featured": true
   },
   {
     "id": "front-end",
@@ -577,7 +578,8 @@ export const GALAXY_NODES: GalaxyNode[] = [
     "type": "skill",
     "name": "back-end engineering",
     "cluster": "engineering",
-    "size": 2
+    "size": 2,
+    "featured": true
   },
   {
     "id": "typescript-react",
@@ -795,7 +797,8 @@ export const GALAXY_NODES: GalaxyNode[] = [
     "type": "skill",
     "name": "design engineering",
     "cluster": "engineering",
-    "size": 3
+    "size": 3,
+    "featured": true
   },
   {
     "id": "trust-design",

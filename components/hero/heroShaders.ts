@@ -81,10 +81,10 @@ export const backdropFragment = /* glsl */ `
     // ta = tail direction (the cap chain streams that way on screen), tb = its
     // perpendicular; the /0.85 renders the whole comet 15% smaller for depth.
     // Knobs: head anchor, the ta/tb angle pair, the scale divisor.
-    // Portrait (2026-08-17): comet moved DOWN to y 0.48 so it fills the
-    // deliberate break between the mobile headline and the intro copy
-    // (page.tsx max-md:mt-[26vh]); keeps the original left anchor + crop.
-    vec2 head = (aspect >= 1.0) ? vec2(aspect - 0.08, 0.30) : vec2(0.150, 0.48);
+    // Portrait keeps the ORIGINAL top-left anchor (+ uCometShift crop): the
+    // comet washes over the top of the mobile hero. (A mid-page "break"
+    // placement was tried 2026-08-17 and reverted same day, Caroline's call.)
+    vec2 head = (aspect >= 1.0) ? vec2(aspect - 0.08, 0.30) : vec2(0.150, 0.195);
     vec2 ta = vec2(-0.940, -0.342);
     vec2 tb = vec2(0.342, -0.940);
     vec2 dHf = P - head;

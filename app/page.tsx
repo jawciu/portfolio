@@ -56,9 +56,7 @@ export default function Home() {
 
             {/* Subheading — the positioning copy (Caroline-approved 2026-08-17).
                 Static on purpose: only the intro + headline get the typing effect. */}
-            {/* max-md:mt-[26vh]: a deliberate break between headline and copy
-                where the (repositioned) portrait fireball shows through. */}
-            <div className="mt-10 max-w-[47rem] flex flex-col gap-6 font-body text-lg md:text-xl leading-relaxed text-fg/75 max-md:mt-[26vh] max-md:gap-4 max-md:text-base">
+            <div className="mt-10 max-w-[47rem] flex flex-col gap-6 font-body text-lg md:text-xl leading-relaxed text-fg/75 max-md:mt-6 max-md:gap-4 max-md:text-base">
               <p>
                 I&rsquo;m a designer with{" "}
                 <strong className="text-fg font-semibold">13 years</strong> across

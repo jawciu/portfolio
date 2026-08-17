@@ -51,10 +51,18 @@ export const metadata: Metadata = {
     template: "%s - Caroline Jaworsky",
   },
   description:
-    "Product designer working on consumer apps and B2B SaaS. Selected work, case studies, and writing.",
+    "Founding designer and design engineer. 13 years in design; I build AI products front end to backend.",
   openGraph: {
     type: "website",
     siteName: "Caroline Jaworsky",
+    images: [
+      {
+        url: "/og.png",
+        width: 1200,
+        height: 630,
+        alt: "Caroline Jaworsky - founding designer and design engineer. I turn early concepts into launch-ready products.",
+      },
+    ],
   },
   twitter: { card: "summary_large_image" },
 };

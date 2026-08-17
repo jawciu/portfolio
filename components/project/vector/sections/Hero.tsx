@@ -119,9 +119,8 @@ export function Hero() {
               <p className="case-study-body-md mt-2">
                 I noticed a problem: procured tools promise value, then lose momentum at
                 onboarding. Vendor-customer context gets lost in a sea of meetings and
-                time-to-value slips. While playing with agentic engineering tools and
-                wanting to get better at building, I jumped into Claude Code and built a
-                tool to tackle the problem I saw.
+                time-to-value slips. So I scoped the product and shipped it solo, from
+                the data model and AI pipeline to the front end and deploys.
               </p>
             </div>
           </div>
