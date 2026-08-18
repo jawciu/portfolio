@@ -12,10 +12,11 @@ export function Hub() {
         </Reveal>
         <Reveal className="max-w-[680px] space-y-5">
           <Body>
-            {/* TODO(caro): draft — sharpen with the real status model: */}
-            Every handover and its status, visible in one place. When developers
-            can see where things stand, they stop chasing, and operations stop
-            answering the same question by email.
+            Every handover and its status, visible in one place. Each plot walks
+            a visible path from Not Metered and Meter Installed through to
+            Handover Received and Handover Complete. When developers can see
+            where things stand, they stop chasing, and operations stop answering
+            the same question by email.
           </Body>
         </Reveal>
         <Reveal className="mt-12">

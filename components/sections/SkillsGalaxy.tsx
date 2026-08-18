@@ -163,17 +163,16 @@ export function SkillsGalaxy() {
       <div className="mx-auto w-full max-w-7xl 2xl:max-w-[88rem]">
         {/* Galaxy intro — why this section is a galaxy and not a list
             (Caroline's framing, 2026-08-18; copy is hers to tune) */}
-        <p className="max-w-3xl font-body text-lg leading-relaxed text-fg/75 md:text-xl">
-          Thirteen years of designing very different things left me with skills
-          that refuse to sit in a tidy list. They overlap, they tangle, some are
-          old friends and some are brand new. That is a knowledge graph, so I
-          built one, and made it a galaxy while I was at it. Click around, learn
-          about me, have fun. <span aria-hidden className="text-[#94FFD9]">✦</span>
+        <p className="max-w-xl font-body text-lg leading-relaxed text-fg/75 md:text-xl">
+          <span aria-hidden className="text-[#94FFD9]">˚ ⊹ ☆⋆✦ </span>13 years
+          of design evolution is a skill list too long for any showcase. So I
+          created an intergalactic knowledge graph you can hop around and have
+          fun! <span aria-hidden className="text-[#94FFD9]">✦</span>
         </p>
         <div
           ref={frameRef}
           onClick={() => { if (!active) activate(); }}
-          className={`relative mt-9 overflow-hidden rounded-2xl border bg-[#070709] transition-[border-color] duration-500 md:mt-[68px] ${
+          className={`relative mt-[18px] overflow-hidden rounded-2xl border bg-[#070709] transition-[border-color] duration-500 md:mt-[34px] ${
             active ? "border-white/25" : "border-white/10 cursor-pointer"
           }`}
           style={{ height: "min(78vh, 860px)", minHeight: 460 }}

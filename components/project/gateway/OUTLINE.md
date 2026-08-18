@@ -27,26 +27,38 @@ carousel or nav until Caroline calls it final. Support kit cloned from wiki-whis
 
 1. ~~**CSV vs "SVG"**~~ RESOLVED 2026-08-05: it is a CSV upload ("SVG" was a slip of
    the tongue).
-2. **Baseline numbers** — avg handover cycle time, % submissions needing rework, ops
-   hours per handover. Grab BEFORE launch, while access + goodwill exist.
+2. **Baseline numbers** — LARGELY RESOLVED 2026-08-06, Caroline's project records. In use:
+   10% of SNC debt book tied to handover customers · ~£2m locked in disputes · 2,000
+   incomplete submissions/yr · 26 critical mismatches/yr · welcome packs up to 6 weeks
+   late · 53% of handovers are single plots. On the bench (unused, available): £35m
+   system balances verified daily · 45 disputes/day, team of 9 · 14-person validation
+   team · 95,000 legacy tasks cleaned · 196 cases bulk-reactivated · 3,676-plot example
+   portfolio. Still wanted post-launch: cycle time + rework deltas. NOTE: "several
+   million" handover debt has NO specific figure — never write "several million".
 3. **AI notetaker name** — "Marvin"? And whether E.ON is OK naming internal research
    tooling + the global research repo publicly.
 4. **Rounds of research/testing** — how many interview rounds, with whom.
-5. **Status model** in the Hub (what the real statuses are).
-6. **Anonymisation** — bulk screens may contain real developer/plot data.
+5. ~~**Status model**~~ RESOLVED 2026-08-06 from the real dashboard shot: Not Metered →
+   Meter Installed → Handover Received → Handover Complete.
+6. **Anonymisation** — bulk screens may contain real developer/plot data. Also OPEN:
+   testing + stakeholder quotes are in (Testing.tsx, Status.tsx) anonymised to roles —
+   Caroline to rule whether tester companies
+   and internal names can be shown. Hero dashboard shot appears to be demo data
+   (Plot 4 / Ellesmere) — confirm.
 7. ~~**Title thesis**~~ RESOLVED 2026-08-05: Caroline chose "Turning a manual legacy
    process into a self-serve product" (sentence case in source, per her
    no-Title-Case rule).
 
 ## Shot list (replaces the PlaceholderShot frames)
 
-- Hero: Gateway mockups (wiki-style device composition)
+- ~~Hero~~ DONE 2026-08-06: real plot dashboard (`handovers-enter.png`)
 - Before: the old spreadsheet channel (anonymised)
 - Flow: empty state + autofilled state (side by side)
 - Handovers Hub with statuses
 - Bulk table with missing/mismatched highlighting (the money shot — anonymise)
 - Role-gated view (financials hidden)
-- MyRole icons (4, matching wiki's icon-card treatment)
+- ~~MyRole icons~~ DONE 2026-08-06: Caroline's four icons (research / design /
+  prototyping / delivery) in `public/projects/gateway/`
 
 ## Copy rules
 

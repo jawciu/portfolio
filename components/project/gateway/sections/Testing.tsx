@@ -19,6 +19,24 @@ const FINDINGS = [
     title: "Digitising yes, but not overnight",
     body: "Bigger developers welcomed digitising the process, but warned that some of their people would really struggle with the change, and forcing it straight away could go badly.",
   },
+  {
+    label: "finding 03",
+    title: "The words needed work",
+    body: "Testers were confused by statuses like To-Do versus Needs Completing, and feared losing work without a clear autosave cue. I renamed the status to Partially Done, scrapped the To-Do button and added Save and Continue.",
+  },
+];
+
+/* Verbatim tester quotes from Caroline's records (2026-08-06), anonymised to
+   roles per the portfolio convention. */
+const QUOTES = [
+  {
+    text: "The Excel spreadsheet is very clunky to use, it feels outdated. This just feels like a much smoother, easier way of doing it.",
+    who: "@Housing developer, user testing",
+  },
+  {
+    text: "The fact that it would flag it up at this stage means you can query it before we even complete the handover, rather than going through potentially weeks and months of trying to sort out any mismatched data.",
+    who: "@Housing developer, user testing",
+  },
 ];
 
 export function Testing() {
@@ -38,7 +56,7 @@ export function Testing() {
         </Reveal>
         <Reveal
           stagger={0.1}
-          className="mt-12 grid grid-cols-1 justify-items-center gap-8 md:grid-cols-2"
+          className="mt-12 grid grid-cols-1 justify-items-center gap-8 md:grid-cols-3"
         >
           {FINDINGS.map((f) => (
             <InsightCard
@@ -52,11 +70,23 @@ export function Testing() {
             </InsightCard>
           ))}
         </Reveal>
+        <Reveal stagger={0.1} className="mt-12 max-w-[680px] space-y-8">
+          {QUOTES.map((q) => (
+            <figure key={q.who + q.text.slice(0, 16)}>
+              <blockquote className="case-study-quote">
+                &ldquo;{q.text}&rdquo;
+              </blockquote>
+              <figcaption className="mt-2 text-[14px] text-[var(--cog-muted)]">
+                {q.who}
+              </figcaption>
+            </figure>
+          ))}
+        </Reveal>
         <Reveal className="mt-12 max-w-[680px]">
           <Body>
-            Both findings reshaped what shipped. Autofill became a choice, and
-            bulk handovers grew an interim path for the teams not ready to
-            change.
+            The findings reshaped what shipped. Autofill became a choice, the
+            words got plainer, and bulk handovers grew an interim path for the
+            teams not ready to change.
           </Body>
         </Reveal>
       </Container>

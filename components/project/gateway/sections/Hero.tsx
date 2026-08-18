@@ -1,5 +1,5 @@
 import { HeroFade, HeroStream } from "../../HeroIntro";
-import { Container, PlaceholderShot } from "../ui";
+import { A, Container } from "../ui";
 
 /* Hero — template layout (mirrors wiki-whisperer): 2-line streamed title, then a
    two-column meta block (LEFT: brand + logo + role/tools vertical lists;
@@ -98,11 +98,25 @@ export function Hero() {
         </div>
         </HeroFade>
 
-        {/* Product visual — PlaceholderShot until the Gateway mockups exist.
+        {/* Product visual — the real plot dashboard (added 2026-08-06). Soft
+            gradient glow behind, wiki-hero recipe. width/height reserve the box
+            so late image load can't shift the Reveal trigger positions below.
             HeroFade is display:contents, so only opacity animates. */}
         <HeroFade delay={150} duration={0.5}>
-        <div className="mt-14">
-          <PlaceholderShot label="hero visual — Gateway mockups (TODO)" ratio="16/9" />
+        <div className="relative mt-14">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -bottom-4 left-5 right-5 top-8 rounded-[1.75rem] blur-lg"
+            style={{ background: "#F2E6E1" }}
+          />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={A("handovers-enter.png")}
+            alt="Gateway plot dashboard: plot details, balance, meters, a four-step handover status path and a start-handover panel"
+            width={2000}
+            height={1217}
+            className="relative block h-auto w-full rounded-[16px] border-[1.5px] border-[#F7EBFF]"
+          />
         </div>
         </HeroFade>
       </Container>

@@ -192,9 +192,10 @@ export function HeroCopy() {
         <div className="mt-10 max-w-[47rem] flex flex-col gap-6 font-body text-lg md:text-xl leading-relaxed text-fg/75 max-md:mt-6 max-md:gap-4 max-md:text-base">
           <p>
             <img
-              src="/assets/avatar-diecut7.png"
+              src="/assets/avatar-diecut9.png"
               alt=""
-              className={`float-left mr-4 mb-1 h-[4.6rem] w-auto transition-opacity duration-700 max-md:h-14 max-md:mr-3 ${
+              style={{ transformOrigin: "50% 92%" }}
+              className={`float-left mr-4 mb-1 h-24 w-auto transition-opacity duration-700 motion-safe:animate-[avatar-sway_7s_ease-in-out_infinite] max-md:h-20 max-md:mr-3 ${
                 subLen > 0 ? "opacity-100" : "opacity-0"
               }`}
             />

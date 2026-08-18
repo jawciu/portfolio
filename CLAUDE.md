@@ -248,6 +248,103 @@ cards, element-screenshot. Delete the temp script after.
 > current state (working / broken / in-progress), explicit next steps. Sweep settled entries into
 > the archive periodically so this file stays short.
 
+### 2026-08-10 (later) — hero pause COMMITTED + PUSHED (`ae0891b`); section reorder UNCOMMITTED.
+Caroline approved the perf fix: committed + pushed. Then, on her instruction, #work
+(projects) moved ABOVE SkillsGalaxy in `app/page.tsx` (new order: About → Highlights →
+projects → galaxy → Toolkit). Verified on :3001: tsc/lint clean, 0 console errors, galaxy
+fine in its new slot. FLAGGED for her: #work keeps `pb-[136px]/md:pb-[168px]`, which was
+sized as "+88px extra before the FOOTER" — mid-page it makes a roomy black gap before the
+galaxy; trim to ~pb-20 if she finds it too empty (offered, she said "fine" and shipped
+as-is). Reorder COMMITTED + PUSHED (`661b9e7`).
+
+### 2026-08-10 — homepage perf: hero now pauses when scrolled out of view (UNCOMMITTED).
+Someone told Caroline homepage frame rate isn't 60. Measured (prod build, Playwright,
+metal + SwiftShader): on capable GPUs it's a locked 60 everywhere, but the PersistentHero
+canvas kept `frameloop="always"` for the whole homepage scroll — fullscreen shaders +
+bloom rendering invisibly behind the opaque plate, and double-WebGL at the galaxy. On a
+weak GPU (SwiftShader proxy) that meant 6.3fps at the galaxy vs 23.5 with the hero
+collapsed. FIX in `PersistentHero.tsx`: `covered` state — scroll listener watches
+`#about`'s rect.bottom (About is the last section the hero shows through, via glass);
+pause at bottom <= 0, resume at bottom > 80 (hysteresis band is opaque About footer).
+Initial measure deferred to rAF (react-hooks/set-state-in-effect forbids sync setState in
+effects — same rule that flags the PRE-EXISTING HeroCopy.tsx lint error, not mine).
+Verified: SwiftShader galaxy 6.3→24.2fps, top drops back to ~9 on scroll-up (proves
+resume), metal 60fps everywhere, hero + About glass visuals unchanged (screenshots), tsc
++ lint + build clean. Known local-only 404: `/_vercel/insights/script.js` (Vercel
+Analytics, only exists on Vercel hosting) — harmless, pre-existing. Not committed —
+Caroline hasn't asked. Optional further lever, not built: lower hero DPR cap on mid-tier.
+
+### 2026-08-10 — PostHog branch merged to main, PUSHED + deployed (`47c8da0`).
+Follow-up same session: dashboard showed $pageleave/scroll passing but ZERO $pageview —
+init ran in the provider's useEffect but React runs child effects first, so
+PostHogPageView's manual $pageview fired pre-init and was dropped (the only pageview of
+most visits). Fixed by initing at module load (client-only guard), committed `47c8da0`,
+pushed. Original merge details below.
+Caroline's PostHog dashboard showed zero visitors: a cloud Claude session (2026-08-06) had
+built the full integration on `claude/portfolio-posthog-analytics-mktq87` but it was never
+merged, PR'd, or journaled here. Merged into main today on her instruction (clean, no
+conflicts, PostHog-only: provider + PostHogPageView, `/ingest` EU reverse proxy in
+next.config, `posthog-js` dep, `.env.example`, galaxy events `galaxy_viewed` /
+`galaxy_engaged` / `galaxy_node_focused`). Init is gated to production AND the presence of
+`NEXT_PUBLIC_POSTHOG_KEY`, so local dev/Playwright no-op — no `.env.local` needed locally.
+Personal opt-out: visit live site once with `?ph_optout=1`. Caroline has set the env vars
+in Vercel already. **Next: push main to deploy it** (awaiting her say-so). Known
+pre-existing lint error in `HeroCopy.tsx` (react-hooks/set-state-in-effect), unrelated.
+
+### 2026-08-06 — HANDOFF: gateway case study built out (sessions 08-05 + 08-06).
+Committed on `main` through `4a8dc2c`; one batch UNCOMMITTED on top (list below), all
+verified tsc + lint + 0 console errors on :3001. Gateway is still `noindex` + unlinked.
+
+**Committed** (`23a921b` scaffold+hero → `b93bd68` title → `4a8dc2c` narrative):
+- Hero on the wiki template (streamed 2-line title, brand/role/tools + summary +
+  setting-the-stage meta block). Title, Caroline's pick: "Turning a manual legacy
+  process into a self-serve product".
+- **NEW GLOBAL VOICE RULE (2026-08-05): sentence case, never Title Case** — only first
+  word + proper nouns capitalised, even where a CSS token uppercases the render. Baked
+  into `~/.claude/skills/caroline-writing-voice/SKILL.md` (rule 12) AND
+  `.claude/skills/case-study/voice.md`. The older studies' source copy (wiki title etc.)
+  is Title Case and now off-guideline; sweep only if she asks.
+- Structure is research-first: My role → Starting the project (avenues story, handovers
+  vs disputes) → Problem space → Research (3 interviewee groups + insights, cog-style) →
+  V1 → Testing (2 rounds, findings incl. autofill split) → product 01-04 → Working with
+  AI → Status. Scroll-rail roster mirrors the eyebrows.
+- `AIWorkflow` primitive in gateway `ui.tsx`: flat-vector 👾-style robot head (wiki-icon
+  aesthetic, baked E.ON purples) + "AI workflows" eyebrow + short paragraph. One per
+  stage; first instance in Starting the project (Miro AI / NotebookLM / Figma Make,
+  her own wording).
+
+**UNCOMMITTED batch (2026-08-06)** — commit when she says:
+- Accent swapped to WIKI'S pink/magenta (#e15bad / #b3005f) in `theme.css` — her call,
+  the two E.ON studies share the case colour. Robot stays purple deliberately.
+- REAL hero image `public/projects/gateway/handovers-enter.png` (plot dashboard,
+  resized 2000px) with `#F2E6E1` glow (was pink gradient). Her 4 MyRole icons in the
+  same dir (renamed `prototypying`→`prototyping` on copy).
+- REAL NUMBERS from her project records, distributed: 10% SNC debt book (Problem
+  callout), stats row 2,000 / 26 / 6, £2m disputes + disputes-are-proxies (Starting the
+  project), 53% single plots (HandoverFlow), real status model (Hub), customer outcomes
+  + anonymised stakeholder quotes (Status), tester quotes + finding 03 To-Do/autosave
+  (Testing). **NEVER write "several million" — no source figure exists** (her explicit
+  note; benched spare numbers live in OUTLINE.md fact 2).
+- **TIMELINE EXPERIMENT in Problem.tsx**: the problem retold as a vector-Matching-style
+  5-stop rail (lavender→magenta ramp, hollow last stop) BELOW the prose. Deliberate
+  duplication — she wants to compare and pick. If the timeline wins, shrink paragraphs
+  2-3 and keep the callout + stats.
+
+**Open, in priority order**
+1. Caroline picks timeline vs paragraphs in Problem space; then commit the batch.
+2. Undecided proposal: dissolve the WorkingWithAI section into per-stage robot asides
+   (V1 gets a "no AI on purpose" beat, Testing gets prototype + notetaker). She hasn't
+   ruled; the outline's original one-AI-section framing stands until she does.
+3. Anonymisation rulings (OUTLINE.md fact 6): tester companies (Rose Builders,
+   Shropshire Homes, Thakeham) + internal names in quotes are currently roles-only;
+   hero shot looks like demo data (Plot 4/Ellesmere) — confirm.
+4. Remaining placeholders: cluttered-Miro shot, V1 wireframes ×2, flow empty/autofilled,
+   Hub, bulk batch + interim CSV shots, cog-style mascots for the 3 interviewee cards.
+5. Small TODO(caro)s in code: "a couple of weeks" timeframe (Starting the project
+   callout), testing-setup line (who/how many), V1 copy confirm.
+- `components/project/gateway/OUTLINE.md` is the live facts ledger — facts 1 (CSV,
+  confirmed), 5 (status model) and 7 (title) resolved 2026-08-06; keep it current.
+
 ### 2026-08-02 — galaxy nav: bottom control panel. Committed through `9a117b3` (a parallel
 session folded the panel into `16e9b3e`; this session's leftover tune-chip move is `9a117b3`).
 UNCOMMITTED experiment on top, at her request: all non-clickable hints grouped LEFT with
@@ -428,7 +525,7 @@ committed and verified. Dev server was left running on **:3001** (never touch 30
 | `skills-galaxy` | Interactive knowledge-graph galaxy section (see below) | **MERGED TO MAIN + DEPLOYED 2026-08-02.** Desktop-only (hidden below md, canvas never mounts there); dev tune/paint panels need `?dev` on the URL | Remaining polish lives on main now: label text-halo idea, iPhone on-device check of the homepage flow without the section, sr-only alternative |
 | `scroll-progress` | Right-edge case-study progress rail, ported to all 4 studies | Working, uncommitted. Pre-merge cleanup done | ONE decision: cog's Methodology "exploratory sketches" row deliberately bleeds past the rail at 1440 and the label is unreadable over the artwork. Options: frosted plate behind the rail / right padding on that one row / accept |
 | `token-cleanup` | `--cog-*` / `--green` → `--case-study-*` template slots + new `template-tokens` skill | Committed, not pushed/merged | Caroline's review. Only intended pixel change: cog's rail `#1e7a4d` → `#19a072` |
-| (untracked, no branch) | Gateway case study scaffold (`app/project/gateway/`, `components/project/gateway/`) | Builds + prerenders, all copy is DRAFT `TODO(caro)`, `noindex`, unlinked | Read `components/project/gateway/OUTLINE.md` first: 7 open facts + shot list. Still on legacy `--cog-*` tokens with a 3-line bridge for the rail |
+| `main` (was untracked) | Gateway case study (`app/project/gateway/`, `components/project/gateway/`) | COMMITTED to main through `4a8dc2c` + an uncommitted 2026-08-06 batch (see the 2026-08-06 handoff); real copy/numbers/hero, still `noindex`, unlinked | Timeline-vs-paragraphs pick, then commit. OUTLINE.md is the facts ledger. Still on legacy `--cog-*` tokens with a 3-line bridge for the rail |
 
 ### 2026-07-31 — SKILLS GALAXY (branch `skills-galaxy`)
 

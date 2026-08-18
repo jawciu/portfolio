@@ -1,24 +1,32 @@
-import { Container, Title, Body } from "../ui";
+import { A, Container, Title, Body } from "../ui";
 import { Reveal } from "../Reveal";
 
-/* Mirrors wiki-whisperer MyRole (icon cards). Icons TODO — text-only until then.
-   The step-up story (inherited an orphaned project, foreign domain) lives in
-   the hero's setting-the-stage block, NOT here. Copy confirmed by Caroline
-   2026-08-05. */
+/* Mirrors wiki-whisperer MyRole (icon cards) — Caroline's icons added
+   2026-08-06. The step-up story (inherited an orphaned project, foreign
+   domain) lives in the hero's setting-the-stage block, NOT here. Copy
+   confirmed by Caroline 2026-08-05. */
 const ROLES = [
   {
+    icon: "research.png",
+    alt: "Magnifying glass icon on a mint plate",
     label: "research",
     body: "I interviewed housing developers and internal ops teams, synthesised the existing Miro board research, and ran two rounds of testing.",
   },
   {
+    icon: "design.png",
+    alt: "Paint palette icon on a warm greige plate",
     label: "design",
     body: "I designed the end-to-end UX and UI flows within E.ON Next's design system, expanding it where the product needed new patterns.",
   },
   {
+    icon: "prototyping.png",
+    alt: "Rising chart icon on a warm greige plate",
     label: "prototyping",
     body: "I wireframed the main screens for stakeholder alignment, then used AI to build a functioning prototype for user testing.",
   },
   {
+    icon: "delivery.png",
+    alt: "Connector plug icon on a mint plate",
     label: "delivery",
     body: "I wrote the specs and documentation, and collaborate continuously with the engineering team that's building Gateway now.",
   },
@@ -38,8 +46,17 @@ export function MyRole() {
         >
           {ROLES.map((r) => (
             <div key={r.label}>
-              <p className="case-study-label mb-3">{r.label} &gt;</p>
-              <Body>{r.body}</Body>
+              {/* Mobile (1-col): icon centred; the label+copy block is centred AS AN
+                  ELEMENT (max-w + mx-auto) while its text stays left-aligned, so the
+                  label and copy share a left edge. sm+ keeps the original left grid. */}
+              <div className="mb-4 flex h-[72px] justify-center sm:justify-start">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={A(r.icon)} alt={r.alt} className="h-[72px] w-auto" />
+              </div>
+              <div className="max-sm:mx-auto max-sm:max-w-[85%]">
+                <p className="case-study-label mb-3">{r.label} &gt;</p>
+                <Body>{r.body}</Body>
+              </div>
             </div>
           ))}
         </Reveal>

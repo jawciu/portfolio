@@ -14,6 +14,18 @@
   --font-hero: var(--font-hero);
 }
 
+/* Sticker avatar idle sway — she looks left and right, the hair stars swing.
+   Pivots at the neck; disabled under prefers-reduced-motion via motion-safe. */
+@keyframes avatar-sway {
+  0%,
+  100% {
+    transform: rotate(-4deg);
+  }
+  50% {
+    transform: rotate(4deg);
+  }
+}
+
 /* Blinking caret for the hero type-on intro */
 @keyframes hero-caret-blink {
   0%,

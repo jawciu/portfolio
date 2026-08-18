@@ -22,6 +22,11 @@ export function HandoverFlow() {
             Autofill is a choice, not a default. Testing showed trust in the
             held data varies by developer, so a toggle turns it on or off.
           </Body>
+          <Body>
+            {/* Fact from Caroline's project records, 2026-08-06 */}
+            53% of all handovers arrive as single plots, so this flow shipped
+            first.
+          </Body>
         </Reveal>
         <Reveal className="mt-12">
           <CaseStudyCallout stream>

@@ -1,8 +1,7 @@
 /* Gateway (developer handovers) case study — LIGHT theme, scoped to .gw-root so it
    never leaks into the dark portfolio. SCAFFOLD cloned from wiki-whisperer (same
-   E.ON Next world) with the accent slots switched from pink/magenta to the E.ON
-   purple so the two studies read as siblings, not twins.
-   TODO(caro): pick Gateway's accent (purple? cyan? amber?) — swap the 4 slots below.
+   E.ON Next world). Accent RESOLVED 2026-08-06: Caroline chose wiki's pink/magenta
+   for callouts + accents, so the two E.ON studies share the case colour.
    The .case-study-* type rules are the shared TEMPLATE — do not diverge. */
 
 .gw-root {
@@ -25,10 +24,12 @@
   --cog-line: #f7ebff; /* hairlines / card + asset-frame borders — unified lavender */
   --cog-card: #ffffff;
 
-  --green: #6a3fd6; /* TEMPLATE accent slot — E.ON purple (dividers / rules / callout) */
-  --dark-green: #3c1d7a; /* TEMPLATE dark-accent slot — deep purple (emphasised labels) */
-  --cog-green: #6a3fd6; /* mapped to the purple accent */
-  --cog-green-deep: #3c1d7a;
+  /* Accent = wiki-whisperer's pink/magenta (Caroline's call 2026-08-06: same
+     case colour as wiki for callouts + accents — the two E.ON studies share it). */
+  --green: #e15bad; /* TEMPLATE accent slot — pink (dividers / rules / callout) */
+  --dark-green: #b3005f; /* TEMPLATE dark-accent slot — deep magenta (emphasised labels) */
+  --cog-green: #e15bad; /* mapped to the pink accent */
+  --cog-green-deep: #b3005f;
 
   /* E.ON Next decorative spectrum (used sparingly for dots / blobs / accents) */
   --eon-magenta: #e5007d;
