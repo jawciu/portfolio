@@ -107,15 +107,19 @@ export function Hero() {
           <div
             aria-hidden
             className="pointer-events-none absolute -bottom-4 left-5 right-5 top-8 rounded-[1.75rem] blur-lg"
-            style={{ background: "#F2E6E1" }}
+            /* rosy beige — same perceived tint as the glass-seam shadow in
+               page.tsx (Caroline 2026-08-18: middle of old-brown #F2E6E1 and
+               old-purple, then nudged warmer, "less purple-y");
+               retune BOTH together if this changes. */
+            style={{ background: "#EDE1E3" }}
           />
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={A("handovers-enter.png")}
             alt="Gateway plot dashboard: plot details, balance, meters, a four-step handover status path and a start-handover panel"
-            width={2000}
-            height={1217}
-            className="relative block h-auto w-full rounded-[16px] border-[1.5px] border-[#F7EBFF]"
+            width={3840}
+            height={2805}
+            className="relative block h-auto w-full rounded-[16px] border-[1.5px] border-[#F2E6E1]"
           />
         </div>
         </HeroFade>

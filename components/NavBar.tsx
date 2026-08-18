@@ -56,9 +56,10 @@ export function NavBar() {
       } backdrop-blur-md backdrop-saturate-150`
     : "bg-transparent";
   // dark site: dim by default, brighten on hover. light pages: keep the default
-  // tone, deepen toward black on hover.
-  const pathColor = light ? "text-[#1a1a1a]/65" : "text-[#94FFD9]";
-  const navColor = light ? "text-[#1a1a1a]/65" : "text-[#94FFD9]";
+  // tone, deepen toward black on hover — and BOLD, or the labels disappear into
+  // the light case-study backgrounds (Caroline, 2026-08-18).
+  const pathColor = light ? "font-bold text-[#1a1a1a]/65" : "text-[#94FFD9]";
+  const navColor = light ? "font-bold text-[#1a1a1a]/65" : "text-[#94FFD9]";
   const hover = light ? "hover:text-black" : "hover:text-fg";
 
   return (

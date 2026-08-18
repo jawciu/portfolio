@@ -49,13 +49,17 @@ export default function GatewayCaseStudy() {
       </StickyHero>
 
       {/* GLASS SEAM — frosted light plate sliding up over the pinned hero.
-          Gradient copied from wiki-whisperer (same near-white E.ON palette);
-          retint when Gateway's accent is chosen. */}
+          Retinted 2026-08-18 (Caroline): wiki's lilac stops swapped for the warm
+          rosy-beige family of the hero-image glow (#E9DEE7 in sections/Hero.tsx),
+          fading to the page white by 192px as before. */}
       <div
-        className="relative isolate z-10 rounded-t-[2.5rem] backdrop-blur-2xl backdrop-saturate-150 shadow-[0_-24px_60px_-20px_rgba(60,29,122,0.18)]"
+        /* shadow: warm rose-brown, not the old eon-purple-deep — at 0.18 over
+           the near-white hero it reads as the same rosy beige as the hero-image
+           glow (#EDE1E3 in sections/Hero.tsx); retune BOTH together. */
+        className="relative isolate z-10 rounded-t-[2.5rem] backdrop-blur-2xl backdrop-saturate-150 shadow-[0_-24px_60px_-20px_rgba(128,88,98,0.18)]"
         style={{
           background:
-            "linear-gradient(180deg, rgba(247,240,252,0.55) 0px, rgba(250,245,254,0.78) 70px, rgba(252,250,254,0.93) 138px, rgba(253,252,255,0.98) 172px, #fefcff 192px)",
+            "linear-gradient(180deg, rgba(250,242,246,0.55) 0px, rgba(252,246,249,0.78) 70px, rgba(253,250,252,0.93) 138px, rgba(254,252,254,0.98) 172px, #fefcff 192px)",
         }}
       >
         {/* glass rim glint */}
