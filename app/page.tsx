@@ -1,6 +1,5 @@
 import { Suspense } from "react";
 import { HeroCopy } from "@/components/HeroCopy";
-import { TelemetryRail } from "@/components/TelemetryRail";
 import { About } from "@/components/sections/About";
 import { Highlights } from "@/components/sections/Highlights";
 import { ProjectCarousel } from "@/components/sections/ProjectCarousel";
@@ -59,8 +58,8 @@ export default function Home() {
         </section>
       </main>
 
-      {/* Telemetry strip, right edge — live render facts about THIS visitor's session */}
-      <TelemetryRail />
+      {/* TelemetryRail (right-edge render stats) and the PixelGarden
+          experiment both removed 2026-08-18 per Caroline. */}
 
       {/* Below the hero: About is a glass sheet — the fixed WebGL canvas (z-0)
           glows through its backdrop blur, and its background gradient lands on

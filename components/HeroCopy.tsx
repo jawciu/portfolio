@@ -34,16 +34,8 @@ const PARAGRAPHS: Seg[][] = [
     { t: "I spent two years as the " },
     { t: "founding designer at a pre-seed startup", cls: BOLD },
     {
-      t: ", owning discovery, research and delivery, with 0-to-1 launches that lifted engagement by 30%.",
+      t: ", owning discovery, research and delivery, with 0-to-1 launches. Today I build AI tools at E.ON Next, where my squad owns its products end to end. ",
     },
-  ],
-  [
-    { t: "✦ ", cls: MINT, decor: true },
-    {
-      t: "Today I build AI tools at E.ON Next, where my squad owns its products end to end. The knowledge assistant I designed reached a ",
-    },
-    { t: "97% would-recommend", cls: BOLD },
-    { t: " score and a green light for company-wide rollout. " },
     { t: "° ◦", cls: MINT, decor: true },
   ],
 ];
