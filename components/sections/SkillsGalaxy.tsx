@@ -161,6 +161,15 @@ export function SkillsGalaxy() {
       className="hidden px-8 pb-16 md:block md:px-12 md:pb-[72px]"
     >
       <div className="mx-auto w-full max-w-7xl 2xl:max-w-[88rem]">
+        {/* Galaxy intro — why this section is a galaxy and not a list
+            (Caroline's framing, 2026-08-18; copy is hers to tune) */}
+        <p className="max-w-3xl font-body text-lg leading-relaxed text-fg/75 md:text-xl">
+          Thirteen years of designing very different things left me with skills
+          that refuse to sit in a tidy list. They overlap, they tangle, some are
+          old friends and some are brand new. That is a knowledge graph, so I
+          built one, and made it a galaxy while I was at it. Click around, learn
+          about me, have fun. <span aria-hidden className="text-[#94FFD9]">✦</span>
+        </p>
         <div
           ref={frameRef}
           onClick={() => { if (!active) activate(); }}

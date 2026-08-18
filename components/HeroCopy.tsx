@@ -2,13 +2,16 @@
 
 import { useEffect, useState } from "react";
 
-// The headline types itself in on first paint, then the intro paragraphs
-// STREAM in after it (same feel as the About bio) — one timeline, so the copy
-// never sits there fully-formed while the headline is still keying in.
-// ("Hi I'm Caroline," intro line removed 2026-08-17 per Caroline.)
+// The intro types itself in on first paint — "Hi I'm Caroline," then the
+// headline — then the intro paragraphs STREAM in (same feel as the About bio),
+// with the die-cut sticker avatar floated into the first paragraph so the
+// lower lines wrap around it. One timeline drives the whole sequence.
+const INTRO = "Hi I’m Caroline,";
 const HEADLINE = "I turn early concepts into\nlaunch-ready products";
 
 const START_DELAY = 350; // ms before the first character
+const INTRO_SPEED = 55; // ms per intro character
+const PAUSE = 450; // beat between intro and headline
 const HEADLINE_SPEED = 42;
 const SUB_DELAY = 250; // beat between headline finishing and the stream
 const SUB_CPS = 550; // paragraph stream speed (chars/second)
@@ -43,24 +46,34 @@ const PARAGRAPHS: Seg[][] = [
 const paraLen = (segs: Seg[]) => segs.reduce((n, s) => n + s.t.length, 0);
 const SUB_TOTAL = PARAGRAPHS.reduce((n, p) => n + paraLen(p), 0);
 
-// Render a paragraph's segments up to `count` visible characters.
-function renderSegs(segs: Seg[], count: number) {
+// Render a paragraph's segments: the first `count` characters visible, the
+// remainder rendered INVISIBLE in the same inline flow — so the paragraph
+// always occupies its final space (no layout shift, and text wraps correctly
+// around the floated avatar).
+function renderSplit(segs: Seg[], count: number) {
   const out: React.ReactNode[] = [];
   let used = 0;
   segs.forEach((s, i) => {
-    if (used >= count) return;
-    const take = Math.min(s.t.length, count - used);
-    used += take;
-    const slice = s.t.slice(0, take);
-    out.push(
-      s.cls || s.decor ? (
-        <span key={i} className={s.cls} aria-hidden={s.decor || undefined}>
-          {slice}
-        </span>
-      ) : (
-        <span key={i}>{slice}</span>
-      ),
-    );
+    const take = Math.max(0, Math.min(s.t.length, count - used));
+    used += s.t.length;
+    const vis = s.t.slice(0, take);
+    const hid = s.t.slice(take);
+    if (vis)
+      out.push(
+        <span key={`v${i}`} className={s.cls} aria-hidden={s.decor || undefined}>
+          {vis}
+        </span>,
+      );
+    if (hid)
+      out.push(
+        <span
+          key={`h${i}`}
+          className={s.cls ? `${s.cls} invisible` : "invisible"}
+          aria-hidden={s.decor || undefined}
+        >
+          {hid}
+        </span>,
+      );
   });
   return out;
 }
@@ -78,6 +91,7 @@ function Caret({ blink }: { blink: boolean }) {
 }
 
 export function HeroCopy() {
+  const [introLen, setIntroLen] = useState(0);
   const [headLen, setHeadLen] = useState(0);
   const [subLen, setSubLen] = useState(0);
   const [done, setDone] = useState(false);
@@ -85,12 +99,14 @@ export function HeroCopy() {
   useEffect(() => {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduce) {
+      setIntroLen(INTRO.length);
       setHeadLen(HEADLINE.length);
       setSubLen(SUB_TOTAL);
       setDone(true);
       return;
     }
 
+    let i = 0;
     let h = 0;
     let timer: ReturnType<typeof setTimeout>;
     let raf = 0;
@@ -117,12 +133,26 @@ export function HeroCopy() {
       }
     };
 
-    timer = setTimeout(typeHeadline, START_DELAY);
+    const typeIntro = () => {
+      i += 1;
+      setIntroLen(i);
+      if (i < INTRO.length) {
+        timer = setTimeout(typeIntro, INTRO_SPEED);
+      } else {
+        timer = setTimeout(typeHeadline, PAUSE);
+      }
+    };
+
+    timer = setTimeout(typeIntro, START_DELAY);
     return () => {
       clearTimeout(timer);
       cancelAnimationFrame(raf);
     };
   }, []);
+
+  const introTyping = introLen < INTRO.length;
+  const headlineStarted = headLen > 0;
+  const caretOnIntro = !headlineStarted && !done;
 
   // Per-paragraph visible counts from the single stream counter.
   const counts: number[] = [];
@@ -137,32 +167,70 @@ export function HeroCopy() {
     <div className="font-hero">
       {/* Accessible, instantly-complete copy for screen readers */}
       <p className="sr-only">
-        {HEADLINE.replace("\n", " ")}{" "}
+        {INTRO} {HEADLINE.replace("\n", " ")}{" "}
         {PARAGRAPHS.map((p) =>
           p.filter((s) => !s.decor).map((s) => s.t).join(""),
         ).join(" ")}
       </p>
 
       <div aria-hidden className="flex flex-col gap-4">
+        <p className="text-2xl md:text-4xl text-fg font-black">
+          {INTRO.slice(0, introLen)}
+          {caretOnIntro && <Caret blink={!introTyping} />}
+        </p>
         {/* Desktop keeps the authored break after "into" (pre-line renders the \n).
             Below md the \n collapses to a space (whitespace-normal) so the headline
             wraps naturally to three lines instead of stranding INTO alone. */}
         <h1 className="font-bold uppercase text-[clamp(2rem,5.2vw,4.25rem)] leading-[1.02] tracking-tight text-fg whitespace-pre-line max-md:whitespace-normal min-h-[2.04em]">
           {HEADLINE.slice(0, headLen)}
-          <Caret blink={done} />
+          {headlineStarted && <Caret blink={done} />}
         </h1>
 
-        {/* Streamed intro paragraphs. Each <p> keeps an INVISIBLE full copy for
-            sizing (no layout shift while streaming) with the streamed text
-            overlaid on top — identical content prefix, identical wrapping. */}
+        {/* Streamed intro paragraphs. The avatar floats left inside the first
+            one so its lower lines wrap around the sticker; the invisible
+            remainder of each paragraph reserves final space (no layout shift). */}
         <div className="mt-10 max-w-[47rem] flex flex-col gap-6 font-body text-lg md:text-xl leading-relaxed text-fg/75 max-md:mt-6 max-md:gap-4 max-md:text-base">
-          {PARAGRAPHS.map((p, i) => (
-            <p key={i} className="relative">
-              <span className="invisible">{renderSegs(p, Infinity)}</span>
-              <span className="absolute inset-0">{renderSegs(p, counts[i])}</span>
-            </p>
-          ))}
+          <p>
+            <img
+              src="/assets/avatar-diecut7.png"
+              alt=""
+              className={`float-left mr-4 mb-1 h-[4.6rem] w-auto transition-opacity duration-700 max-md:h-14 max-md:mr-3 ${
+                subLen > 0 ? "opacity-100" : "opacity-0"
+              }`}
+            />
+            {renderSplit(PARAGRAPHS[0], counts[0])}
+          </p>
+          <p>{renderSplit(PARAGRAPHS[1], counts[1])}</p>
         </div>
+      </div>
+
+      {/* Social links — outside the aria-hidden block so they stay reachable.
+          They fade in once the paragraph stream completes. */}
+      <div
+        className={`mt-8 flex items-center gap-5 transition-opacity duration-700 max-md:mt-5 ${
+          subLen >= SUB_TOTAL ? "opacity-100" : "opacity-0"
+        }`}
+      >
+        <a
+          href="https://github.com/jawciu"
+          target="_blank"
+          rel="noreferrer"
+          aria-label="GitHub - jawciu (opens in a new tab)"
+          className="transition hover:brightness-125"
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/assets/icon-github.svg" alt="" width={38} height={38} />
+        </a>
+        <a
+          href="https://www.linkedin.com/in/carolinejaworsky/"
+          target="_blank"
+          rel="noreferrer"
+          aria-label="LinkedIn - Caroline Jaworsky (opens in a new tab)"
+          className="transition hover:brightness-125"
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/assets/icon-linkedin.svg" alt="" width={38} height={38} />
+        </a>
       </div>
     </div>
   );
