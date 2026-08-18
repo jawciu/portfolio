@@ -61,21 +61,33 @@ export function StreamingQuote({
     return () => io.disconnect();
   }, [reduced]);
 
-  const chars = [...children];
+  // Minimal **bold** support: odd segments of a "**"-split are bold. Keeps
+  // children a plain string (so callers like CaseStudyCallout still stream)
+  // while allowing an emphasised word or two inside the quote.
+  const segments = children
+    .split("**")
+    .map((text, si) => ({ text, bold: si % 2 === 1 }));
+  const plain = segments.map((s) => s.text).join("");
+  let charIndex = 0;
   const inner = (
     <>
       {/* full quote for assistive tech; the streamed copy is decorative */}
-      <span className="sr-only">{children}</span>
+      <span className="sr-only">{plain}</span>
       <span aria-hidden>
-        {chars.map((ch, i) => (
-          <span
-            key={i}
-            className="cs-char"
-            style={{ transitionDelay: `${i * step}s` }}
-          >
-            {ch}
-          </span>
-        ))}
+        {segments.map((seg, si) =>
+          [...seg.text].map((ch) => {
+            const i = charIndex++;
+            return (
+              <span
+                key={`${si}-${i}`}
+                className={`cs-char${seg.bold ? " font-bold" : ""}`}
+                style={{ transitionDelay: `${i * step}s` }}
+              >
+                {ch}
+              </span>
+            );
+          })
+        )}
       </span>
     </>
   );

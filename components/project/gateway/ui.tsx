@@ -197,7 +197,7 @@ export function TestimonialBubble({
     shadow tones, white details, on a skewed pastel parallelogram plate
     (same 145×91 canvas as those assets). Baked E.ON purple palette, like the
     wiki icons' baked colours — retint the hexes when porting to another study. */
-function RobotIllustration({ className = "" }: { className?: string }) {
+export function RobotIllustration({ className = "" }: { className?: string }) {
   return (
     <svg viewBox="0 0 145 91" fill="none" aria-hidden="true" className={className}>
       {/* pastel plate */}

@@ -1,4 +1,4 @@
-import { AIWorkflow, Container, Kicker, Title, Body, CaseStudyCallout, PlaceholderShot } from "../ui";
+import { A, Container, Kicker, Title, Body, CaseStudyCallout } from "../ui";
 import { Reveal } from "../Reveal";
 
 /* Starting the project: the avenues story (handovers vs disputes), sized up
@@ -28,28 +28,28 @@ export function Research() {
             monetary value was locked.
           </Body>
         </Reveal>
-        <Reveal className="mt-12">
+        <Reveal className="mt-12 max-w-[820px]">
           <CaseStudyCallout stream>
-            I evaluated all directions and prioritised where design could bring
+            I evaluated both directions and prioritised where design could bring
             value fastest. Within a couple of weeks I convinced ops to build
             around handovers first.
           </CaseStudyCallout>
         </Reveal>
         <Reveal className="mt-12">
-          <PlaceholderShot label="the inherited Miro boards, gloriously cluttered (anonymise) — TODO" />
+          {/* the two directions as product cards (Caroline's asset, 2026-08-18):
+              Handover and Dispute side by side — the fork the callout resolves. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={A("handover-dispute-cards.png")}
+            alt="Two Gateway cards side by side: Handover, with a start-handover button, and Dispute, promising a resolution within 10 working days"
+            width={3600}
+            height={432}
+            className="block h-auto w-full rounded-[16px] border-[1.5px] border-[#F2E6E1]"
+          />
         </Reveal>
-        {/* How AI helped the ramp-up (Caroline, 2026-08-05). NOTE: overlaps with
-            WorkingWithAI's "AI compresses input" card — trim there if it reads
-            twice. */}
-        <Reveal className="mt-12">
-          <AIWorkflow>
-            Miro AI helped me synthesise the boards&apos; content and get up to
-            speed with research. Loading all the interview transcripts into
-            NotebookLM and querying it filled in the gaps. And Figma Make
-            allowed for generating quick ideas that could be refined or
-            discarded.
-          </AIWorkflow>
-        </Reveal>
+        {/* The AI-workflows content moved to its own section, sections/
+            AIWorkflows.tsx (Caroline 2026-08-18) — mounted right after this
+            one in page.tsx. Miro-boards placeholder shot cut same day. */}
       </Container>
     </section>
   );

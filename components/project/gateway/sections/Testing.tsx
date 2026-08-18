@@ -1,4 +1,4 @@
-import { Container, Kicker, Title, Body, InsightCard } from "../ui";
+import { Container, Kicker, Title, Body, InsightCard, TestimonialBubble } from "../ui";
 import { Reveal } from "../Reveal";
 
 /* Testing — what two rounds of testing surfaced (Caroline's facts, 2026-08-05).
@@ -27,15 +27,29 @@ const FINDINGS = [
 ];
 
 /* Verbatim tester quotes from Caroline's records (2026-08-06), anonymised to
-   roles per the portfolio convention. */
+   roles per the portfolio convention. Rendered as TestimonialBubbles (cog/wiki
+   treatment, Caroline 2026-08-18), ABOVE the findings.
+   TODO(caro): the third slot needs a REAL verbatim quote from the testing
+   records — quotes are never invented; the placeholder renders until then. */
 const QUOTES = [
   {
     text: "The Excel spreadsheet is very clunky to use, it feels outdated. This just feels like a much smoother, easier way of doing it.",
     who: "@Housing developer, user testing",
+    asset: "bubble-1.png",
+    quoteClassName: "",
   },
   {
     text: "The fact that it would flag it up at this stage means you can query it before we even complete the handover, rather than going through potentially weeks and months of trying to sort out any mismatched data.",
     who: "@Housing developer, user testing",
+    asset: "bubble-2.png",
+    flip: true,
+    quoteClassName: "text-[12px] leading-snug",
+  },
+  {
+    text: "TODO(caro): third verbatim quote from the testing records",
+    who: "@Housing developer, user testing",
+    asset: "bubble-3.png",
+    quoteClassName: "",
   },
 ];
 
@@ -54,9 +68,26 @@ export function Testing() {
             on both ends of the scale.
           </Body>
         </Reveal>
+        {/* positive quotes FIRST (bubbles), findings below — her 2026-08-18 order */}
+        <Reveal
+          stagger={0.12}
+          className="mt-12 grid grid-cols-1 items-start justify-items-center gap-8 lg:grid-cols-3"
+        >
+          {QUOTES.map((q) => (
+            <TestimonialBubble
+              key={q.asset}
+              asset={q.asset}
+              quote={q.text}
+              who={q.who}
+              width={440}
+              flip={"flip" in q ? q.flip : false}
+              quoteClassName={q.quoteClassName}
+            />
+          ))}
+        </Reveal>
         <Reveal
           stagger={0.1}
-          className="mt-12 grid grid-cols-1 justify-items-center gap-8 md:grid-cols-3"
+          className="mt-16 grid grid-cols-1 justify-items-center gap-8 md:grid-cols-3"
         >
           {FINDINGS.map((f) => (
             <InsightCard
@@ -68,18 +99,6 @@ export function Testing() {
             >
               {f.body}
             </InsightCard>
-          ))}
-        </Reveal>
-        <Reveal stagger={0.1} className="mt-12 max-w-[680px] space-y-8">
-          {QUOTES.map((q) => (
-            <figure key={q.who + q.text.slice(0, 16)}>
-              <blockquote className="case-study-quote">
-                &ldquo;{q.text}&rdquo;
-              </blockquote>
-              <figcaption className="mt-2 text-[14px] text-[var(--cog-muted)]">
-                {q.who}
-              </figcaption>
-            </figure>
           ))}
         </Reveal>
         <Reveal className="mt-12 max-w-[680px]">

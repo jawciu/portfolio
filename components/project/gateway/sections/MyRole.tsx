@@ -10,25 +10,25 @@ const ROLES = [
     icon: "research.png",
     alt: "Magnifying glass icon on a mint plate",
     label: "research",
-    body: "I interviewed housing developers and internal ops teams, synthesised the existing Miro board research, and ran two rounds of testing.",
+    body: "I interviewed housing developers and ops teams, synthesised the research, and ran two rounds of testing.",
   },
   {
     icon: "design.png",
     alt: "Paint palette icon on a warm greige plate",
     label: "design",
-    body: "I designed the end-to-end UX and UI flows within E.ON Next's design system, expanding it where the product needed new patterns.",
+    body: "I designed the end-to-end flows within E.ON Next's design system, expanding it where the product needed new patterns.",
   },
   {
     icon: "prototyping.png",
     alt: "Rising chart icon on a warm greige plate",
     label: "prototyping",
-    body: "I wireframed the main screens for stakeholder alignment, then used AI to build a functioning prototype for user testing.",
+    body: "I wireframed the main screens for stakeholder alignment and used AI to build a interactive prototype for user testing.",
   },
   {
     icon: "delivery.png",
     alt: "Connector plug icon on a mint plate",
     label: "delivery",
-    body: "I wrote the specs and documentation, and collaborate continuously with the engineering team that's building Gateway now.",
+    body: "I documented all designs, and now collaborate closely with the engineers, reviewing the work on each feature.",
   },
 ];
 

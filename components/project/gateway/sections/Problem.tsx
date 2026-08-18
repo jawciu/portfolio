@@ -1,11 +1,10 @@
-import { Container, Kicker, Title, Body, CaseStudyCallout, PlaceholderShot, Stats } from "../ui";
+import { A, Container, Kicker, Title, Body, CaseStudyCallout } from "../ui";
 import { Reveal } from "../Reveal";
 
-/* EXPERIMENT (2026-08-06, Caroline's ask): the problem story retold as a
-   vector-Matching-style timeline BELOW the prose, so she can compare the two
-   treatments side by side. Keep BOTH until she picks; if the timeline wins,
-   the second/third paragraphs likely shrink. Rail ramps lavender → deep
-   magenta (things getting worse); last stop is a hollow ring — the hole
+/* RESOLVED experiment (2026-08-18): Caroline picked the vector-Matching-style
+   TIMELINE over the prose paragraphs — the prose intro was deleted; the
+   timeline alone tells the problem story. Rail ramps purple → accent orchid
+   (things getting worse); last stop is a hollow ring — the hole
    Gateway plugs. */
 const STAGES = [
   [
@@ -15,28 +14,29 @@ const STAGES = [
   ],
   [
     "stage #02",
-    "Spreadsheet submitted",
+    "Spreadsheet",
     "The handover reaches E.ON Next as a manually filled spreadsheet. Nothing is validated on the way in.",
   ],
   [
     "stage #03",
-    "The back and forth",
+    "back and forth",
     "Missing fields, typos and mismatched details bounce between ops and the developer over email.",
   ],
   [
     "stage #04",
-    "The handover stalls",
+    "The stall",
     "With no central place to track it, a handover still waiting on information gets forgotten in a flooded inbox.",
   ],
   [
     "the fallout",
-    "Debt builds",
-    "The plot stays in the developer's name. The new owner can't set up an account, and unbilled energy turns into debt.",
+    "Debt build",
+    "The plot stays in the developer's name. The new owner can't set up an account, unbilled energy turns into debt.",
   ],
 ] as const;
 
-/* Stop colours — lavender ramping into the study's deep magenta. */
-const RAMP = ["#c9a6f0", "#dd8ad4", "#e96bb0", "#e1418d", "#b3005f"];
+/* Stop colours — purple #9254FF ramping into the accent orchid #FF83FF
+   (Caroline 2026-08-18), interpolated evenly across the five stops. */
+const RAMP = ["#9254ff", "#ad60ff", "#c86cff", "#e477ff", "#ff83ff"];
 
 /* The business problem — handovers arrive as manually submitted Google Sheets;
    information gets lost, handovers drag, and the delay is where debt accrues.
@@ -50,31 +50,8 @@ export function Problem() {
           <Kicker>problem space</Kicker>
           <Title className="mb-10">Handovers lived in a spreadsheet</Title>
         </Reveal>
-        <Reveal className="max-w-[680px] space-y-5">
-          {/* Caroline's copy, 2026-08-05 */}
-          <Body>
-            When a new-build home is sold, the property developer hands the
-            plot&apos;s energy account over to the new owner. Today that handover
-            reaches E.ON Next as a manually submitted spreadsheet.
-          </Body>
-          <Body>
-            Nothing is validated, so submissions arrive with missing fields,
-            typos and mismatched details, and the back and forth makes the
-            process longer than it needs to be. Without a centralised space to
-            track them, handovers in progress with issues get forgotten. The
-            delays build up debt on accounts and make for a poor first
-            experience for new property owners.
-          </Body>
-          <Body>
-            {/* Facts from Caroline's project records, 2026-08-06 */}
-            Until a handover is processed, the plot stays registered in the
-            developer&apos;s name. New owners move in unable to set up their
-            energy account, and welcome packs can arrive up to six weeks late.
-          </Body>
-        </Reveal>
-
-        {/* — the same story as a timeline (comparison experiment, see note above) — */}
-        <Reveal stagger={0.12} className="mt-16 grid grid-cols-1 lg:grid-cols-5">
+        {/* the problem story as a timeline (see note above) */}
+        <Reveal stagger={0.12} className="grid grid-cols-1 lg:grid-cols-5">
           {STAGES.map(([label, title, body], i) => {
             const last = i === STAGES.length - 1;
             return (
@@ -119,22 +96,23 @@ export function Problem() {
           })}
         </Reveal>
 
-        <Reveal className="mt-16">
+        <Reveal className="mt-24 max-w-[820px]">
           <CaseStudyCallout stream>
-            10% of the Smart New Connections debt book is tied to customers
-            waiting on a handover.
+            {"**4 million** pounds of the Smart New Connections debt book is tied to customers waiting on a handover."}
           </CaseStudyCallout>
         </Reveal>
-        <Stats
-          className="mt-6"
-          items={[
-            { n: "2,000", caption: "incomplete submissions arrive every year" },
-            { n: "26", caption: "critical data mismatches submitted a year" },
-            { n: "6", caption: "weeks late a welcome pack can arrive" },
-          ]}
-        />
-        <Reveal className="mt-12">
-          <PlaceholderShot label="before: the spreadsheet channel (anonymised) — TODO" />
+        <Reveal className="mt-24">
+          {/* the real before-artefact (added 2026-08-18): the handover form
+              spreadsheet, empty template as sent to developers; the internal
+              email address is painted out of the source image. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={A("handover-spreadsheet.png")}
+            alt="The old handover form: a macro-enabled Excel spreadsheet with red mandatory columns, a click-here-to-validate button and instructions to email it back within seven days"
+            width={3398}
+            height={1268}
+            className="block h-auto w-full rounded-[16px] border-[1.5px] border-[#F2E6E1]"
+          />
         </Reveal>
       </Container>
     </section>

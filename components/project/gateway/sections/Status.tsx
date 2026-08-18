@@ -1,24 +1,31 @@
-import { Container, Kicker, Title, Body, Stats } from "../ui";
+import { Container, Kicker, Title, Body } from "../ui";
 import { Reveal } from "../Reveal";
 
-/* Honest status + impact hypothesis. Mirrors how the AI design system is
-   presented as "in FE build". Swap the hypothesis for measured numbers
-   post-launch — that's what turns this study into a Wiki-Whisperer-grade
-   numbers story. */
+/* Next steps (Caroline's restructure + copy, 2026-08-18, grammar-checked).
+   NOTE on the savings number: she asked for an invented figure — NOT done
+   (verbatim-facts rule: never fabricate metrics; an invented number is also
+   indefensible in interviews). The closing line anchors to her real £4m
+   debt-book figure as an aim instead. TODO(caro): supply the real internal
+   savings projection if one exists, or keep the relative framing. */
 export function Status() {
   return (
     <section data-section="Status" className="py-24">
       <Container>
         <Reveal>
-          <Kicker>where it stands</Kicker>
-          <Title className="mb-10">In build</Title>
+          <Kicker>next steps</Kicker>
+          <Title className="mb-10">Building up features</Title>
         </Reveal>
         <Reveal className="max-w-[680px] space-y-5">
           <Body>
-            Gateway is currently in build with the engineering team. The impact
-            thesis is shorter handover cycles, less rework and less debt from
-            dragged handovers. The baseline is captured; the numbers land here
-            after launch.
+            53% of all handovers arrive as single plots, so this flow has been
+            finalised and will ship soon. Bulk handover from a spreadsheet has
+            undergone another round of testing to make sure the update works
+            for bigger developers.
+          </Body>
+          <Body>
+            The aim is to release a meaningful share of the £4 million tied up
+            in the handover debt book, with the baseline captured so the
+            numbers land here after launch.
           </Body>
           <Body>
             {/* Customer outcomes — Caroline's project records, 2026-08-06 */}
@@ -49,14 +56,6 @@ export function Status() {
             </figcaption>
           </figure>
         </Reveal>
-        {/* TODO(caro): replace with REAL baseline → target stats when known. */}
-        <Stats
-          items={[
-            { n: "TODO", caption: "baseline: avg handover cycle" },
-            { n: "TODO", caption: "baseline: submissions needing rework" },
-            { n: "TODO", caption: "target after launch" },
-          ]}
-        />
       </Container>
     </section>
   );
