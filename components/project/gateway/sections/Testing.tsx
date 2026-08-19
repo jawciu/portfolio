@@ -26,29 +26,32 @@ const FINDINGS = [
   },
 ];
 
-/* Verbatim tester quotes from Caroline's records (2026-08-06), anonymised to
-   roles per the portfolio convention. Rendered as TestimonialBubbles (cog/wiki
-   treatment, Caroline 2026-08-18), ABOVE the findings.
-   TODO(caro): the third slot needs a REAL verbatim quote from the testing
-   records — quotes are never invented; the placeholder renders until then. */
+/* Verbatim tester quotes from Caroline's records (2026-08-06; third quote
+   recovered from the same records 2026-08-18 — the "what I had in my mind
+   already" one), anonymised to roles per the portfolio convention, stutters
+   removed but no words changed. Rendered as TestimonialBubbles (cog/wiki
+   treatment, Caroline 2026-08-18), ABOVE the findings. */
 const QUOTES = [
   {
     text: "The Excel spreadsheet is very clunky to use, it feels outdated. This just feels like a much smoother, easier way of doing it.",
     who: "@Housing developer, user testing",
     asset: "bubble-1.png",
+    width: 420,
     quoteClassName: "",
   },
   {
     text: "The fact that it would flag it up at this stage means you can query it before we even complete the handover, rather than going through potentially weeks and months of trying to sort out any mismatched data.",
     who: "@Housing developer, user testing",
     asset: "bubble-2.png",
+    width: 560,
     flip: true,
-    quoteClassName: "text-[12px] leading-snug",
+    quoteClassName: "text-[13px] leading-snug",
   },
   {
-    text: "TODO(caro): third verbatim quote from the testing records",
+    text: "I think it looks quite simple. That's exactly what I was thinking. What you've got there was what I had in my mind already.",
     who: "@Housing developer, user testing",
     asset: "bubble-3.png",
+    width: 420,
     quoteClassName: "",
   },
 ];
@@ -68,10 +71,12 @@ export function Testing() {
             on both ends of the scale.
           </Body>
         </Reveal>
-        {/* positive quotes FIRST (bubbles), findings below — her 2026-08-18 order */}
+        {/* positive quotes FIRST (bubbles), findings below — her 2026-08-18 order.
+            Flex-wrap zigzag (not a rigid grid) so each bubble takes its own
+            width — bubble 2 carries the longest quote and needs the room. */}
         <Reveal
           stagger={0.12}
-          className="mt-12 grid grid-cols-1 items-start justify-items-center gap-8 lg:grid-cols-3"
+          className="mt-12 flex flex-wrap items-start justify-center gap-8"
         >
           {QUOTES.map((q) => (
             <TestimonialBubble
@@ -79,7 +84,7 @@ export function Testing() {
               asset={q.asset}
               quote={q.text}
               who={q.who}
-              width={440}
+              width={q.width}
               flip={"flip" in q ? q.flip : false}
               quoteClassName={q.quoteClassName}
             />
