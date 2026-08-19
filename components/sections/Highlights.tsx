@@ -26,23 +26,20 @@ const HIGHLIGHTS: Highlight[] = [
     role: "founding designer",
     company: "COG · health-tech startup",
     detail: "pre-seed · built it 0→1",
-    accent: "#3fc4ad", // orb-4 — green
+    accent: "#ffcf52", // orb-3 — yellow (warm ramp yellow → orange → red, Caroline 2026-08-19)
   },
   {
     role: "product designer",
-    company: "E.ON Next",
-    detail: "AI tools · end-to-end",
-    accent: "#ffcf52", // orb-3 — yellow
+    company: "E.ON Next · energy",
+    detail: "AI tools · end-to-end · B2B",
+    accent: "#ff8526", // orb-2 — hot orange
   },
-  {
-    role: "educator",
-    company: "BrainStation",
-    detail: "passing the craft forward",
-    accent: "#F56267", // flame-2 — red
-  },
+  // educator/BrainStation card removed 2026-08-19 (Caroline): scrubbed from
+  // LinkedIn + CV during the repositioning, portfolio was the last trace.
+  // Three cards = the three positioning pillars, one each.
   {
     role: "senior print designer",
-    company: "Burberry · McQueen",
+    company: "Burberry · McQueen · fashion",
     detail: "top-label craft pedigree",
     accent: "#ff2f7e", // orb-1 — pink
   },
@@ -71,7 +68,7 @@ export function Highlights() {
         <ul
           ref={ref}
           role="list"
-          className="mt-9 grid grid-cols-1 gap-x-8 gap-y-12 pl-2 sm:grid-cols-2 md:mt-12 md:grid-cols-4 md:gap-10"
+          className="mt-9 grid grid-cols-1 gap-x-8 gap-y-12 pl-2 sm:grid-cols-2 md:mt-12 md:flex md:justify-between md:gap-0"
         >
           {HIGHLIGHTS.map((item, i) => {
             const base = i * CARD_GAP;
@@ -84,7 +81,7 @@ export function Highlights() {
                   active={inView}
                   cps={CPS}
                   delay={base}
-                  className="font-mono text-[11px] uppercase tracking-[0.18em] md:text-xs"
+                  className="font-mono text-xs uppercase tracking-[0.18em] md:text-sm"
                   style={{ color: item.accent }}
                 />
                 <StreamingText
@@ -92,14 +89,14 @@ export function Highlights() {
                   active={inView}
                   cps={CPS}
                   delay={base + LINE_GAP}
-                  className="mt-3.5 font-body text-base font-medium text-fg md:text-lg"
+                  className="mt-4 font-body text-lg font-medium text-fg md:text-xl"
                 />
                 <StreamingText
                   text={item.detail}
                   active={inView}
                   cps={CPS}
                   delay={base + 2 * LINE_GAP}
-                  className="mt-1 font-mono text-[10px] tracking-[0.2em] text-fg/70 max-sm:tracking-[0.04em] md:text-[11px]"
+                  className="mt-1.5 font-mono text-[11px] tracking-[0.2em] text-fg/70 max-sm:tracking-[0.04em] md:text-xs"
                 />
               </li>
             );

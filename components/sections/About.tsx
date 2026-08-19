@@ -17,9 +17,7 @@ const BIO = `I solve problems quickly, listening to users through qualitative an
 
 ✧ Fashion trained my eye, the startup years trained my product judgement, and AI gave me the means to build it all myself. The backend too. Vector is live, and I wrote all of it. ♡
 
-❀ New domains are the fun part. I pick things up fast and put them to work while they're still new. ° ◦
-
-☆⋆✦ right now: vibing with Claude, going deeper on code architecture and 3D, trying to land a handstand and getting way too competitive at ultimate frisbee. ✿`;
+❀ New domains are the fun part. I pick things up fast. right now: vibing with Claude, going deeper on code architecture and 3D, trying to land a handstand and getting way too competitive at ultimate frisbee. ✿`;
 
 // Rim reflections, Apple-icon style (refs: Caroline's glass sphere + the
 // Liquid Glass Podcasts icon; Icon Composer docs — "crisp specular highlights
