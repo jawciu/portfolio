@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 // with the die-cut sticker avatar floated into the first paragraph so the
 // lower lines wrap around it. One timeline drives the whole sequence.
 const INTRO = "Hi I’m Caroline,";
-const HEADLINE = "I turn early concepts into\nlaunch-ready products";
+const HEADLINE = "I turn early concepts\ninto live products";
 
 const START_DELAY = 350; // ms before the first character
 const INTRO_SPEED = 55; // ms per intro character
